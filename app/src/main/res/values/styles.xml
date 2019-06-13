@@ -5,4 +5,8 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="ImperialKeypad" parent="@android:style/TextAppearance">
+        <item name="android:fontFamily">@font/gotham_pro_bold</item>
+    </style>
+
 </resources>
