@@ -8,398 +8,401 @@
     android:background="@drawable/school_background"
     tools:context=".MeasuringActivity">
 
-    <LinearLayout
-        android:id="@+id/main_layout"
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/conversion_board"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="0dp">
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent">
 
         <android.support.constraint.ConstraintLayout
-            android:id="@+id/conversion_board"
-            android:layout_width="match_parent"
-            android:layout_height="480dp">
+            android:id="@+id/convert_from"
+            android:layout_width="0dp"
+            android:layout_height="167dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginRight="24dp"
+            android:background="@drawable/ic_from_panel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/convert_from"
-                android:layout_width="360dp"
-                android:layout_height="167dp"
-                android:layout_marginStart="24dp"
-                android:layout_marginLeft="24dp"
-                android:layout_marginTop="48dp"
-                android:layout_marginEnd="24dp"
-                android:layout_marginRight="24dp"
-                android:background="@drawable/ic_from_panel"
+            <TextView
+                android:id="@+id/conv_from_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Аршин"
+                android:textAppearance="@style/ImperialKeypad"
+                android:textColor="@color/colorPrimary"
+                android:textSize="59sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/conv_from_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="Аршин"
-                    android:textAppearance="@style/ImperialKeypad"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="59sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <EditText
-                    android:id="@+id/conv_from_input"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginLeft="32dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="32dp"
-                    android:layout_marginRight="32dp"
-                    android:layout_marginBottom="16dp"
-                    android:background="@color/backgroundAccent"
-                    android:ems="10"
-                    android:gravity="right"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp"
-                    android:selectAllOnFocus="true"
-                    android:singleLine="true"
-                    android:text="60"
-                    android:textAppearance="@style/ImperialKeypad"
-                    android:textColor="@color/colorAccent"
-                    android:textIsSelectable="true"
-                    android:textSize="40sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/conv_from_title" />
-            </android.support.constraint.ConstraintLayout>
-
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/convert_to"
-                android:layout_width="330dp"
-                android:layout_height="153dp"
-                android:layout_marginStart="40dp"
-                android:layout_marginLeft="40dp"
-                android:layout_marginTop="56dp"
-                android:layout_marginEnd="40dp"
-                android:layout_marginRight="40dp"
-                android:background="@drawable/ic_to_panel"
+            <EditText
+                android:id="@+id/conv_from_input"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginLeft="32dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="32dp"
+                android:layout_marginRight="32dp"
+                android:layout_marginBottom="16dp"
+                android:background="@color/backgroundAccent"
+                android:ems="10"
+                android:gravity="right"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                android:text="60"
+                android:textAppearance="@style/ImperialKeypad"
+                android:textColor="@color/colorAccent"
+                android:textIsSelectable="true"
+                android:textSize="40sp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/convert_from">
-
-                <TextView
-                    android:id="@+id/conv_to_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="Дюйм"
-                    android:textAppearance="@style/ImperialKeypad"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textSize="48sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <EditText
-                    android:id="@+id/conv_to_input"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginLeft="32dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="32dp"
-                    android:layout_marginRight="32dp"
-                    android:layout_marginBottom="16dp"
-                    android:background="@color/backgroundDark"
-                    android:ems="10"
-                    android:gravity="right"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp"
-                    android:singleLine="true"
-                    android:text="680"
-                    android:textAppearance="@style/ImperialKeypad"
-                    android:textColor="@color/colorAccentDark"
-                    android:textIsSelectable="true"
-                    android:textSize="40sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/conv_to_title" />
-            </android.support.constraint.ConstraintLayout>
-
+                app:layout_constraintTop_toBottomOf="@+id/conv_from_title" />
         </android.support.constraint.ConstraintLayout>
 
-        <LinearLayout
-            android:id="@+id/keyboard_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/ic_keyboard_panel"
-            android:orientation="horizontal">
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/convert_to"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/ic_to_panel"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/convert_from">
 
-            <TableLayout
-                android:id="@+id/digits"
+            <TextView
+                android:id="@+id/conv_to_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
-                android:layout_marginTop="30dp"
-                android:layout_marginRight="30dp"
-                android:layout_marginBottom="10dp"
-                android:soundEffectsEnabled="false"
-                tools:layout_editor_absoluteX="91dp"
-                tools:layout_editor_absoluteY="718dp">
+                android:layout_marginTop="16dp"
+                android:text="Дюйм"
+                android:textAppearance="@style/ImperialKeypad"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="48sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <TableRow
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent">
-
-                    <Button
-                        android:id="@+id/digit_1"
-                        style="@android:style/Widget.Button"
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:layout_marginRight="10dp"
-                        android:background="@drawable/ic_digit_button"
-                        android:text="@string/key_1"
-                        android:textAppearance="@style/ImperialKeypad"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="48sp" />
-
-                    <Button
-                        android:id="@+id/digit_2"
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:layout_marginRight="10dp"
-                        android:background="@drawable/ic_digit_button"
-                        android:text="@string/key_2"
-                        android:textAppearance="@style/ImperialKeypad"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="48sp" />
-
-                    <Button
-                        android:id="@+id/digit_3"
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:background="@drawable/ic_digit_button"
-                        android:text="@string/key_3"
-                        android:textAppearance="@style/ImperialKeypad"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="48sp" />
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="10dp">
-
-                    <Button
-                        android:id="@+id/digit_4"
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:layout_marginRight="10dp"
-                        android:background="@drawable/ic_digit_button"
-                        android:text="@string/key_4"
-                        android:textAppearance="@style/ImperialKeypad"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="48sp" />
-
-                    <Button
-                        android:id="@+id/digit_5"
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:layout_marginRight="10dp"
-                        android:background="@drawable/ic_digit_button"
-                        android:text="@string/key_5"
-                        android:textAppearance="@style/ImperialKeypad"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="48sp" />
-
-                    <Button
-                        android:id="@+id/digit_6"
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:background="@drawable/ic_digit_button"
-                        android:text="@string/key_6"
-                        android:textAppearance="@style/ImperialKeypad"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="48sp" />
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="10dp">
-
-                    <Button
-                        android:id="@+id/digit_7"
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:layout_marginRight="10dp"
-                        android:background="@drawable/ic_digit_button"
-                        android:text="@string/key_7"
-                        android:textAppearance="@style/ImperialKeypad"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="48sp" />
-
-                    <Button
-                        android:id="@+id/digit_8"
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:layout_marginRight="10dp"
-                        android:background="@drawable/ic_digit_button"
-                        android:text="@string/key_8"
-                        android:textAppearance="@style/ImperialKeypad"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="48sp" />
-
-                    <Button
-                        android:id="@+id/digit_9"
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:background="@drawable/ic_digit_button"
-                        android:text="@string/key_9"
-                        android:textAppearance="@style/ImperialKeypad"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="48sp" />
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-            </TableLayout>
-
-            <TableLayout
-                android:id="@+id/operations"
-                android:layout_width="wrap_content"
+            <EditText
+                android:id="@+id/conv_to_input"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="22dp"
-                android:layout_marginBottom="5dp">
+                android:layout_marginStart="32dp"
+                android:layout_marginLeft="32dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="32dp"
+                android:layout_marginRight="32dp"
+                android:layout_marginBottom="16dp"
+                android:background="@color/backgroundDark"
+                android:ems="10"
+                android:gravity="right"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:singleLine="true"
+                android:text="680"
+                android:textAppearance="@style/ImperialKeypad"
+                android:textColor="@color/colorAccentDark"
+                android:textIsSelectable="true"
+                android:textSize="40sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/conv_to_title" />
+        </android.support.constraint.ConstraintLayout>
 
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+    </android.support.constraint.ConstraintLayout>
 
-                    <Button
-                        android:id="@+id/op_back"
-                        style="@android:style/Widget.Button"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginRight="10dp"
-                        android:background="@drawable/ic_operator_button"
-                        android:text="@string/key_back"
-                        android:textAppearance="@style/ImperialKeypad"
-                        android:textColor="@color/colorAccent"
-                        android:textSize="28sp" />
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/keyboard_layout"
+        android:layout_width="344dp"
+        android:layout_height="0dp"
+        android:background="@drawable/ic_keyboard_panel"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/conversion_board">
 
-                    <Button
-                        android:id="@+id/op_clear"
-                        style="@android:style/Widget.Button"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:background="@drawable/ic_operator_button"
-                        android:text="@string/key_clear"
-                        android:textAppearance="@style/ImperialKeypad"
-                        android:textColor="@color/colorAccent"
-                        android:textSize="28sp" />
-                </TableRow>
+        <TableLayout
+            android:id="@+id/digits"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="30dp"
+            android:soundEffectsEnabled="false"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="5dp">
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
 
-                    <Button
-                        android:id="@+id/op_mult"
-                        style="@android:style/Widget.Button"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginRight="10dp"
-                        android:background="@drawable/ic_operator_button"
-                        android:text="@string/key_mult"
-                        android:textAppearance="@style/ImperialKeypad"
-                        android:textColor="@color/colorAccent"
-                        android:textSize="28sp" />
+                <Button
+                    android:id="@+id/digit_1"
+                    style="@android:style/Widget.Button"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/ic_digit_button"
+                    android:text="@string/key_1"
+                    android:textAppearance="@style/ImperialKeypad"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="48sp" />
 
-                    <Button
-                        android:id="@+id/op_div"
-                        style="@android:style/Widget.Button"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:background="@drawable/ic_operator_button"
-                        android:text="@string/key_div"
-                        android:textAppearance="@style/ImperialKeypad"
-                        android:textColor="@color/colorAccent"
-                        android:textSize="28sp" />
+                <Button
+                    android:id="@+id/digit_2"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/ic_digit_button"
+                    android:text="@string/key_2"
+                    android:textAppearance="@style/ImperialKeypad"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="48sp" />
 
-                </TableRow>
+                <Button
+                    android:id="@+id/digit_3"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/ic_digit_button"
+                    android:text="@string/key_3"
+                    android:textAppearance="@style/ImperialKeypad"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="48sp" />
 
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="5dp">
+            </TableRow>
 
-                    <Button
-                        android:id="@+id/op_plus"
-                        style="@android:style/Widget.Button"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginRight="10dp"
-                        android:background="@drawable/ic_operator_button"
-                        android:text="@string/key_plus"
-                        android:textAppearance="@style/ImperialKeypad"
-                        android:textColor="@color/colorAccent"
-                        android:textSize="28sp" />
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp">
 
-                    <Button
-                        android:id="@+id/op_minus"
-                        style="@android:style/Widget.Button"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:background="@drawable/ic_operator_button"
-                        android:text="@string/key_minus"
-                        android:textAppearance="@style/ImperialKeypad"
-                        android:textColor="@color/colorAccent"
-                        android:textSize="28sp" />
+                <Button
+                    android:id="@+id/digit_4"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/ic_digit_button"
+                    android:text="@string/key_4"
+                    android:textAppearance="@style/ImperialKeypad"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="48sp" />
 
-                </TableRow>
+                <Button
+                    android:id="@+id/digit_5"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/ic_digit_button"
+                    android:text="@string/key_5"
+                    android:textAppearance="@style/ImperialKeypad"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="48sp" />
 
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="5dp">
+                <Button
+                    android:id="@+id/digit_6"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/ic_digit_button"
+                    android:text="@string/key_6"
+                    android:textAppearance="@style/ImperialKeypad"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="48sp" />
 
-                    <Button
-                        android:id="@+id/op_dot"
-                        style="@android:style/Widget.Button"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginRight="10dp"
-                        android:background="@drawable/ic_operator_button"
-                        android:text="@string/key_dot"
-                        android:textAppearance="@style/ImperialKeypad"
-                        android:textColor="@color/colorAccent"
-                        android:textSize="28sp" />
+            </TableRow>
 
-                    <Button
-                        android:id="@+id/op_eval"
-                        style="@android:style/Widget.Button"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:background="@drawable/ic_operator_button"
-                        android:text="@string/key_eval"
-                        android:textAppearance="@style/ImperialKeypad"
-                        android:textColor="@color/colorAccent"
-                        android:textSize="28sp" />
-                </TableRow>
-            </TableLayout>
-        </LinearLayout>
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp">
 
-    </LinearLayout>
+                <Button
+                    android:id="@+id/digit_7"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/ic_digit_button"
+                    android:text="@string/key_7"
+                    android:textAppearance="@style/ImperialKeypad"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="48sp" />
+
+                <Button
+                    android:id="@+id/digit_8"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/ic_digit_button"
+                    android:text="@string/key_8"
+                    android:textAppearance="@style/ImperialKeypad"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="48sp" />
+
+                <Button
+                    android:id="@+id/digit_9"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/ic_digit_button"
+                    android:text="@string/key_9"
+                    android:textAppearance="@style/ImperialKeypad"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="48sp" />
+
+                <Button
+                    android:id="@+id/digit_0"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/ic_digit_button"
+                    android:text="@string/key_0"
+                    android:textAppearance="@style/ImperialKeypad"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="48sp" />
+
+            </TableRow>
+
+        </TableLayout>
+
+        <TableLayout
+            android:id="@+id/operations"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/digits"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <Button
+                    android:id="@+id/op_back"
+                    style="@android:style/Widget.Button"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/ic_operator_button"
+                    android:text="@string/key_back"
+                    android:textAppearance="@style/ImperialKeypad"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="28sp" />
+
+                <Button
+                    android:id="@+id/op_clear"
+                    style="@android:style/Widget.Button"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/ic_operator_button"
+                    android:text="@string/key_clear"
+                    android:textAppearance="@style/ImperialKeypad"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="28sp" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="5dp">
+
+                <Button
+                    android:id="@+id/op_mult"
+                    style="@android:style/Widget.Button"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/ic_operator_button"
+                    android:text="@string/key_mult"
+                    android:textAppearance="@style/ImperialKeypad"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="28sp" />
+
+                <Button
+                    android:id="@+id/op_div"
+                    style="@android:style/Widget.Button"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/ic_operator_button"
+                    android:text="@string/key_div"
+                    android:textAppearance="@style/ImperialKeypad"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="28sp" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="5dp">
+
+                <Button
+                    android:id="@+id/op_plus"
+                    style="@android:style/Widget.Button"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/ic_operator_button"
+                    android:text="@string/key_plus"
+                    android:textAppearance="@style/ImperialKeypad"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="28sp" />
+
+                <Button
+                    android:id="@+id/op_minus"
+                    style="@android:style/Widget.Button"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/ic_operator_button"
+                    android:text="@string/key_minus"
+                    android:textAppearance="@style/ImperialKeypad"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="28sp" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="5dp">
+
+                <Button
+                    android:id="@+id/op_dot"
+                    style="@android:style/Widget.Button"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/ic_operator_button"
+                    android:text="@string/key_dot"
+                    android:textAppearance="@style/ImperialKeypad"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="28sp" />
+
+                <Button
+                    android:id="@+id/op_eval"
+                    style="@android:style/Widget.Button"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/ic_operator_button"
+                    android:text="@string/key_eval"
+                    android:textAppearance="@style/ImperialKeypad"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="28sp" />
+            </TableRow>
+        </TableLayout>
+    </android.support.constraint.ConstraintLayout>
 
 </android.support.constraint.ConstraintLayout>
