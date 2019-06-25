@@ -17,19 +17,17 @@ class BasicCalculator(val expression: String) {
     }
 
 
-    fun nextChar() {
+    fun hasNextChar(): Boolean {
+        return pos + 1 < expression.length
+    }
+
+    fun nextChar(): Char? {
         char = expression.elementAtOrNull(++pos)
+        return char
     }
 
     fun eat(charToEat: Char): Boolean {
-        while (char == ' ') nextChar()
-        return when (char) {
-            charToEat -> {
-                nextChar()
-                true
-            }
-            else -> false
-        }
+        return (char == charToEat) && hasNextChar() && nextChar() != null
     }
 
     fun parse(): Double{
@@ -66,8 +64,9 @@ class BasicCalculator(val expression: String) {
     }
 
     fun parseFactor(): Double {
-        if (eat('+')) return parseFactor()
-        if (eat('-')) return parseFactor()
+
+        if (eat('+')) return parseFactor() // unary plus
+        if (eat('-')) return -parseFactor() // unary minus
         val startPos = pos
         var x = .0
         while (char in '0'..'9' || char == '.') {

@@ -20,7 +20,7 @@
             android:layout_height="167dp"
             android:layout_marginStart="24dp"
             android:layout_marginLeft="24dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="24dp"
             android:layout_marginRight="24dp"
             android:background="@drawable/ic_from_panel"
@@ -28,7 +28,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
+            <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/conv_from_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -36,24 +36,24 @@
                 android:text="Аршин"
                 android:textAppearance="@style/ImperialKeypad"
                 android:textColor="@color/colorPrimary"
-                android:textSize="59sp"
+                android:textSize="45sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <EditText
+            <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/conv_from_input"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginLeft="32dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="32dp"
-                android:layout_marginRight="32dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginRight="24dp"
+                android:layout_marginBottom="8dp"
                 android:background="@color/backgroundAccent"
                 android:ems="10"
-                android:gravity="right"
+                android:gravity="right|center_vertical"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp"
                 android:selectAllOnFocus="true"
@@ -62,7 +62,7 @@
                 android:textAppearance="@style/ImperialKeypad"
                 android:textColor="@color/colorAccent"
                 android:textIsSelectable="true"
-                android:textSize="40sp"
+                android:textSize="38sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -85,32 +85,32 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/convert_from">
 
-            <TextView
+            <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/conv_to_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:text="Дюйм"
                 android:textAppearance="@style/ImperialKeypad"
                 android:textColor="@color/colorPrimaryDark"
-                android:textSize="48sp"
+                android:textSize="42sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <EditText
+            <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/conv_to_input"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginLeft="32dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="32dp"
-                android:layout_marginRight="32dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginRight="24dp"
+                android:layout_marginBottom="8dp"
                 android:background="@color/backgroundDark"
                 android:ems="10"
-                android:gravity="right"
+                android:gravity="right|center_vertical"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp"
                 android:singleLine="true"
@@ -118,7 +118,7 @@
                 android:textAppearance="@style/ImperialKeypad"
                 android:textColor="@color/colorAccentDark"
                 android:textIsSelectable="true"
-                android:textSize="40sp"
+                android:textSize="38sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -129,7 +129,7 @@
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/keyboard_layout"
-        android:layout_width="344dp"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@drawable/ic_keyboard_panel"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -149,37 +149,40 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <TableRow
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <Button
+                <android.support.v7.widget.AppCompatButton
                     android:id="@+id/digit_1"
                     style="@android:style/Widget.Button"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginRight="@dimen/keypad_margin"
                     android:background="@drawable/ic_digit_button"
+                    android:gravity="center"
                     android:text="@string/key_1"
                     android:textAppearance="@style/ImperialKeypad"
                     android:textColor="@color/colorPrimary"
                     android:textSize="48sp" />
 
-                <Button
+                <android.support.v7.widget.AppCompatButton
                     android:id="@+id/digit_2"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginRight="@dimen/keypad_margin"
                     android:background="@drawable/ic_digit_button"
+                    android:gravity="center"
                     android:text="@string/key_2"
                     android:textAppearance="@style/ImperialKeypad"
                     android:textColor="@color/colorPrimary"
                     android:textSize="48sp" />
 
-                <Button
+                <android.support.v7.widget.AppCompatButton
                     android:id="@+id/digit_3"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:background="@drawable/ic_digit_button"
+                    android:gravity="center"
                     android:text="@string/key_3"
                     android:textAppearance="@style/ImperialKeypad"
                     android:textColor="@color/colorPrimary"
@@ -190,35 +193,38 @@
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="10dp">
+                android:layout_marginTop="@dimen/keypad_margin">
 
-                <Button
+                <android.support.v7.widget.AppCompatButton
                     android:id="@+id/digit_4"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginRight="@dimen/keypad_margin"
                     android:background="@drawable/ic_digit_button"
+                    android:gravity="center"
                     android:text="@string/key_4"
                     android:textAppearance="@style/ImperialKeypad"
                     android:textColor="@color/colorPrimary"
                     android:textSize="48sp" />
 
-                <Button
+                <android.support.v7.widget.AppCompatButton
                     android:id="@+id/digit_5"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginRight="@dimen/keypad_margin"
                     android:background="@drawable/ic_digit_button"
+                    android:gravity="center"
                     android:text="@string/key_5"
                     android:textAppearance="@style/ImperialKeypad"
                     android:textColor="@color/colorPrimary"
                     android:textSize="48sp" />
 
-                <Button
+                <android.support.v7.widget.AppCompatButton
                     android:id="@+id/digit_6"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:background="@drawable/ic_digit_button"
+                    android:gravity="center"
                     android:text="@string/key_6"
                     android:textAppearance="@style/ImperialKeypad"
                     android:textColor="@color/colorPrimary"
@@ -229,50 +235,61 @@
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="10dp">
+                android:layout_marginTop="@dimen/keypad_margin">
 
-                <Button
+                <android.support.v7.widget.AppCompatButton
                     android:id="@+id/digit_7"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginRight="@dimen/keypad_margin"
                     android:background="@drawable/ic_digit_button"
+                    android:gravity="center"
                     android:text="@string/key_7"
                     android:textAppearance="@style/ImperialKeypad"
                     android:textColor="@color/colorPrimary"
                     android:textSize="48sp" />
 
-                <Button
+                <android.support.v7.widget.AppCompatButton
                     android:id="@+id/digit_8"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginRight="@dimen/keypad_margin"
                     android:background="@drawable/ic_digit_button"
+                    android:gravity="center"
                     android:text="@string/key_8"
                     android:textAppearance="@style/ImperialKeypad"
                     android:textColor="@color/colorPrimary"
                     android:textSize="48sp" />
 
-                <Button
+                <android.support.v7.widget.AppCompatButton
                     android:id="@+id/digit_9"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:background="@drawable/ic_digit_button"
+                    android:gravity="center"
                     android:text="@string/key_9"
                     android:textAppearance="@style/ImperialKeypad"
                     android:textColor="@color/colorPrimary"
                     android:textSize="48sp" />
 
-                <Button
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <android.support.v7.widget.AppCompatButton
                     android:id="@+id/digit_0"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
+                    android:layout_marginTop="@dimen/keypad_margin"
+                    android:layout_marginRight="@dimen/keypad_margin"
                     android:background="@drawable/ic_digit_button"
+                    android:gravity="center"
                     android:text="@string/key_0"
                     android:textAppearance="@style/ImperialKeypad"
                     android:textColor="@color/colorPrimary"
                     android:textSize="48sp" />
-
             </TableRow>
 
         </TableLayout>
@@ -290,19 +307,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <Button
+                <android.support.v7.widget.AppCompatButton
                     android:id="@+id/op_back"
                     style="@android:style/Widget.Button"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginRight="@dimen/keypad_margin"
                     android:background="@drawable/ic_operator_button"
                     android:text="@string/key_back"
                     android:textAppearance="@style/ImperialKeypad"
                     android:textColor="@color/colorAccent"
                     android:textSize="28sp" />
 
-                <Button
+                <android.support.v7.widget.AppCompatButton
                     android:id="@+id/op_clear"
                     style="@android:style/Widget.Button"
                     android:layout_width="50dp"
@@ -319,19 +336,19 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="5dp">
 
-                <Button
+                <android.support.v7.widget.AppCompatButton
                     android:id="@+id/op_mult"
                     style="@android:style/Widget.Button"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginRight="@dimen/keypad_margin"
                     android:background="@drawable/ic_operator_button"
                     android:text="@string/key_mult"
                     android:textAppearance="@style/ImperialKeypad"
                     android:textColor="@color/colorAccent"
                     android:textSize="28sp" />
 
-                <Button
+                <android.support.v7.widget.AppCompatButton
                     android:id="@+id/op_div"
                     style="@android:style/Widget.Button"
                     android:layout_width="50dp"
@@ -349,19 +366,19 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="5dp">
 
-                <Button
+                <android.support.v7.widget.AppCompatButton
                     android:id="@+id/op_plus"
                     style="@android:style/Widget.Button"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginRight="@dimen/keypad_margin"
                     android:background="@drawable/ic_operator_button"
                     android:text="@string/key_plus"
                     android:textAppearance="@style/ImperialKeypad"
                     android:textColor="@color/colorAccent"
                     android:textSize="28sp" />
 
-                <Button
+                <android.support.v7.widget.AppCompatButton
                     android:id="@+id/op_minus"
                     style="@android:style/Widget.Button"
                     android:layout_width="50dp"
@@ -379,19 +396,19 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="5dp">
 
-                <Button
+                <android.support.v7.widget.AppCompatButton
                     android:id="@+id/op_dot"
                     style="@android:style/Widget.Button"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginRight="@dimen/keypad_margin"
                     android:background="@drawable/ic_operator_button"
                     android:text="@string/key_dot"
                     android:textAppearance="@style/ImperialKeypad"
                     android:textColor="@color/colorAccent"
                     android:textSize="28sp" />
 
-                <Button
+                <android.support.v7.widget.AppCompatButton
                     android:id="@+id/op_eval"
                     style="@android:style/Widget.Button"
                     android:layout_width="50dp"

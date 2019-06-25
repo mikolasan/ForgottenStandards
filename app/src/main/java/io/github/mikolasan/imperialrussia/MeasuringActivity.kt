@@ -123,8 +123,8 @@ class MeasuringActivity : Activity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (s?.isNotEmpty()!!) {
-                    val inches = s.toString().toDouble()
+                s?.let {
+                    val inches = BasicCalculator(s.toString()).eval()
                     val arshin = convertToArshin(inches)
                     convFromInput.setText(arshin.toString())
                 }
