@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="keypad_margin">5dp</dimen>
+    <dimen name="digit_key_side">54dp</dimen>
+    <dimen name="digit_font_size">42sp</dimen>
+    <dimen name="op_key_side">48dp</dimen>
 </resources>

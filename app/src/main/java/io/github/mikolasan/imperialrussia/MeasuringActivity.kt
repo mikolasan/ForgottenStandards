@@ -4,6 +4,9 @@ import android.app.Activity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.Gravity.CENTER_HORIZONTAL
+import android.view.Gravity.CENTER_VERTICAL
+import android.view.Gravity.RIGHT
 import android.widget.EditText
 import android.widget.Button
 
@@ -110,10 +113,24 @@ class MeasuringActivity : Activity() {
         val convToInput = findViewById<EditText>(R.id.conv_to_input)
         selectedInput = convToInput
         convToInput.setOnFocusChangeListener{
-            view, hasFocus -> if (hasFocus && view is EditText) selectedInput = view
+            view, hasFocus -> if (view is EditText) {
+                if (hasFocus) {
+                    selectedInput = view
+                    view.gravity = RIGHT or CENTER_VERTICAL
+                } else {
+                    view.gravity = CENTER_HORIZONTAL or CENTER_VERTICAL
+                }
+            }
         }
         convFromInput.setOnFocusChangeListener{
-            view, hasFocus -> if (hasFocus && view is EditText) selectedInput = view
+            view, hasFocus -> if (view is EditText) {
+                if (hasFocus) {
+                    selectedInput = view
+                    view.gravity = RIGHT or CENTER_VERTICAL
+                } else {
+                    view.gravity = CENTER_HORIZONTAL or CENTER_VERTICAL
+                }
+            }
         }
         convToInput.addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(s: Editable?) {
