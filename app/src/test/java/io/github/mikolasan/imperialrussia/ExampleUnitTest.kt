@@ -62,4 +62,24 @@ class ExampleUnitTest {
     fun eval_appliesMinusToSub() {
         assertEquals(-10.0, BasicCalculator("-2-8").eval(), 1e-10)
     }
+
+    @Test
+    fun eval_ignoresDoubleDot() {
+        assertEquals(-10.0, BasicCalculator("-10..").eval(), 1e-10)
+    }
+
+    @Test
+    fun eval_ignoresDoubleSlash() {
+        assertEquals(-10.0, BasicCalculator("-10//").eval(), 1e-10)
+    }
+
+    @Test
+    fun eval_ignoresDoubleStar() {
+        assertEquals(-10.0, BasicCalculator("-10**").eval(), 1e-10)
+    }
+
+    @Test
+    fun eval_parsesDecimalWithoutZero() {
+        assertEquals(0.15, BasicCalculator(".15").eval(), 1e-10)
+    }
 }
