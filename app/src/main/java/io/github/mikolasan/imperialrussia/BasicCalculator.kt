@@ -38,8 +38,7 @@ class BasicCalculator(val expression: String) {
     // Grammar:
     // expression = term | expression `+` term | expression `-` term
     // term = factor | term `*` factor | term `/` factor
-    // factor = `+` factor | `-` factor | `(` expression `)`
-    //        | number | functionName factor | factor `^` factor
+    // factor = `+` factor | `-` factor | number
 
     fun parseExpression(): Double {
         var x = parseTerm()
@@ -63,17 +62,29 @@ class BasicCalculator(val expression: String) {
         }
     }
 
-    fun parseFactor(): Double {
+    fun parseNumber(factor: String): Double {
+        var x = .0
+        try {
+            x = factor.toDouble()
+        } catch (e: NumberFormatException) {
+            if (e.message?.compareTo("multiple points") == 0) { // TODO
+                x = parseNumber(factor.dropLast(1))
+            }
+        }
+        return x
+    }
 
+    fun parseFactor(): Double {
         if (eat('+')) return parseFactor() // unary plus
         if (eat('-')) return -parseFactor() // unary minus
         val startPos = pos
-        var x = .0
         while (char in '0'..'9' || char == '.') {
             nextChar()
-            x = expression.substring(startPos, pos).toDouble()
         }
+        val factor = expression.substring(startPos, pos)
+        if (factor == ".") return 0.0
+        if (factor.isNotEmpty()) return parseNumber(factor)
 
-        return x
+        return 1.0 // TODO
     }
 }

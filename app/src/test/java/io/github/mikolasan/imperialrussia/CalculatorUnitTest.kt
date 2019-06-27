@@ -3,16 +3,13 @@ package io.github.mikolasan.imperialrussia
 import org.junit.Test
 
 import org.junit.Assert.*
-import org.junit.Rule
-import org.junit.rules.ExpectedException
-import java.lang.NumberFormatException
 
 /**
- * Example local unit test, which will execute on the development machine (host).
+ * Local unit test, which will execute on the development machine (host).
  *
  * See [testing documentation](http://d.android.com/tools/testing).
  */
-class ExampleUnitTest {
+class CalculatorUnitTest {
     @Test
     fun eval_parsesMultiplication() {
         assertEquals(4.0, BasicCalculator("2*2").eval(), 1e-10)
@@ -66,6 +63,11 @@ class ExampleUnitTest {
     @Test
     fun eval_ignoresDoubleDot() {
         assertEquals(-10.0, BasicCalculator("-10..").eval(), 1e-10)
+    }
+
+    @Test
+    fun eval_ignoresSingleDot() {
+        assertEquals(0.0, BasicCalculator(".").eval(), 1e-10)
     }
 
     @Test
