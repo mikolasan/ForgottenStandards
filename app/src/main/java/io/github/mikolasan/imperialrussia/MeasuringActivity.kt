@@ -9,6 +9,7 @@ import android.view.Gravity.CENTER_VERTICAL
 import android.view.Gravity.RIGHT
 import android.widget.EditText
 import android.widget.Button
+import java.text.DecimalFormat
 
 class MeasuringActivity : Activity() {
 
@@ -105,6 +106,16 @@ class MeasuringActivity : Activity() {
         }
     }
 
+    fun valueForDisplay(value: Double): String {
+        val decimalFormat = DecimalFormat()
+        if (value >= 1e+9)
+            decimalFormat.applyLocalizedPattern("0.0#E0")
+        else
+            decimalFormat.applyLocalizedPattern("0.0#")
+
+        return decimalFormat.format(value)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_measuring)
@@ -143,7 +154,7 @@ class MeasuringActivity : Activity() {
                 s?.let {
                     val inches = BasicCalculator(s.toString()).eval()
                     val arshin = convertToArshin(inches)
-                    convFromInput.setText(arshin.toString())
+                    convFromInput.setText(valueForDisplay(arshin))
                 }
             }
         })
