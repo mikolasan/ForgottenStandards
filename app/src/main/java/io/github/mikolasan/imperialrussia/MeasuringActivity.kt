@@ -79,27 +79,39 @@ class MeasuringActivity : Activity() {
         private val digitString = digit.toString()
         init {
             button.setOnClickListener {
-                val value = selectedInput!!.text.toString()
-                selectedInput!!.setText(value + digitString)
+                val value = selectedInput?.text.toString()
+                selectedInput?.setText(value + digitString)
             }
         }
     }
 
     inner class OperationButton(button: Button, operation: Operation) {
+        val operations = setOf('/', '*', '+', '-', '.')
+
+        fun addSymbol(sym: Char) {
+            var value = selectedInput?.text.toString()
+            if (operations.contains(value.last()))
+                value = value.dropLast(1)
+            selectedInput?.setText(value + sym)
+        }
+
         init {
             button.setOnClickListener {
-                val value = selectedInput!!.text.toString()
                 when (operation) {
-                    Operation.MULT -> selectedInput!!.setText(value+"*")
-                    Operation.DIV -> selectedInput!!.setText(value+"/")
-                    Operation.PLUS -> selectedInput!!.setText(value+"+")
-                    Operation.MINUS -> selectedInput!!.setText(value+"-")
-                    Operation.CLEAR -> selectedInput!!.setText("")
-                    Operation.BACK -> selectedInput!!.setText(value.dropLast(1))
-                    Operation.DOT -> selectedInput!!.setText(value + ".")
+                    Operation.MULT -> addSymbol('*')
+                    Operation.DIV -> addSymbol('/')
+                    Operation.PLUS -> addSymbol('+')
+                    Operation.MINUS -> addSymbol('-')
+                    Operation.CLEAR -> selectedInput?.setText("")
+                    Operation.BACK -> {
+                        val value = selectedInput?.text.toString()
+                        selectedInput?.setText(value.dropLast(1))
+                    }
+                    Operation.DOT -> addSymbol('.')
                     Operation.EVAL -> {
+                        val value = selectedInput?.text.toString()
                         val calculator = BasicCalculator(value)
-                        selectedInput!!.setText(calculator.eval().toString())
+                        selectedInput?.setText(calculator.eval().toString())
                     }
                 }
             }
@@ -145,17 +157,17 @@ class MeasuringActivity : Activity() {
         }
         convToInput.addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(s: Editable?) {
+                s?.let {
+                    val inches = BasicCalculator(s.toString()).eval()
+                    val arshin = convertToArshin(inches)
+                    convFromInput.setText(valueForDisplay(arshin))
+                }
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                s?.let {
-                    val inches = BasicCalculator(s.toString()).eval()
-                    val arshin = convertToArshin(inches)
-                    convFromInput.setText(valueForDisplay(arshin))
-                }
             }
         })
 

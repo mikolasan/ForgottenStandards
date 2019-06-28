@@ -84,4 +84,9 @@ class CalculatorUnitTest {
     fun eval_parsesDecimalWithoutZero() {
         assertEquals(0.15, BasicCalculator(".15").eval(), 1e-10)
     }
+
+    @Test
+    fun eval_emptyStringIsZero() {
+        assertEquals(0.0, BasicCalculator("").eval(), 1e-10)
+    }
 }

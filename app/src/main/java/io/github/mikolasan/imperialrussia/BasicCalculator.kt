@@ -52,11 +52,15 @@ class BasicCalculator(val expression: String) {
     }
 
     fun parseTerm(): Double {
-        var x = parseFactor()
+        var x = parseFactor() ?: 0.0
         while (true) {
             when {
-                eat('*') -> x *= parseFactor()
-                eat('/') -> x /= parseFactor()
+                eat('*') -> {
+                    x *= parseFactor() ?: 1.0
+                }
+                eat('/') -> {
+                    x /= parseFactor() ?: 1.0
+                }
                 else -> return x
             }
         }
@@ -74,17 +78,18 @@ class BasicCalculator(val expression: String) {
         return x
     }
 
-    fun parseFactor(): Double {
+    fun parseFactor(): Double? {
         if (eat('+')) return parseFactor() // unary plus
-        if (eat('-')) return -parseFactor() // unary minus
+        if (eat('-')) return -parseFactor()!! // unary minus
         val startPos = pos
         while (char in '0'..'9' || char == '.') {
             nextChar()
         }
         val factor = expression.substring(startPos, pos)
-        if (factor == ".") return 0.0
-        if (factor.isNotEmpty()) return parseNumber(factor)
-
-        return 1.0 // TODO
+        return when {
+            factor.isEmpty() -> null
+            factor == "." -> 0.0
+            else -> parseNumber(factor)
+        }
     }
 }
