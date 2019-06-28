@@ -10,23 +10,23 @@
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/conversion_board"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/keyboard_layout"
+        app:layout_constraintStart_toStartOf="parent">
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/convert_from"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="167dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginLeft="24dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="24dp"
-            android:layout_marginRight="24dp"
+            android:layout_marginBottom="32dp"
             android:background="@drawable/ic_from_panel"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:maxWidth="500dp"
+            android:minWidth="300dp"
+            app:layout_constraintBottom_toTopOf="@+id/convert_to"
+            app:layout_constraintEnd_toEndOf="@+id/convert_to"
+            app:layout_constraintStart_toStartOf="@+id/convert_to">
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/conv_from_title"
@@ -54,8 +54,8 @@
                 android:background="@color/backgroundAccent"
                 android:ems="10"
                 android:gravity="right|center_vertical"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
                 android:selectAllOnFocus="true"
                 android:singleLine="true"
                 android:text="60"
@@ -71,19 +71,17 @@
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/convert_to"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="40dp"
-            android:layout_marginLeft="40dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="40dp"
-            android:layout_marginRight="40dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginStart="34dp"
+            android:layout_marginLeft="34dp"
+            android:layout_marginEnd="34dp"
+            android:layout_marginRight="34dp"
             android:background="@drawable/ic_to_panel"
+            android:minWidth="280dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/convert_from">
+            app:layout_constraintStart_toStartOf="parent">
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/conv_to_title"
@@ -93,7 +91,7 @@
                 android:text="Дюйм"
                 android:textAppearance="@style/ImperialKeypad"
                 android:textColor="@color/colorPrimaryDark"
-                android:textSize="42sp"
+                android:textSize="40sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -111,14 +109,14 @@
                 android:background="@color/backgroundDark"
                 android:ems="10"
                 android:gravity="right|center_vertical"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp"
+                android:paddingTop="3dp"
+                android:paddingBottom="3dp"
                 android:singleLine="true"
                 android:text="680"
                 android:textAppearance="@style/ImperialKeypad"
                 android:textColor="@color/colorAccentDark"
                 android:textIsSelectable="true"
-                android:textSize="38sp"
+                android:textSize="34sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -129,23 +127,22 @@
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/keyboard_layout"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/ic_keyboard_panel"
+        android:minWidth="348dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/conversion_board"
-        app:layout_constraintVertical_bias="1.0">
+        app:layout_constraintLeft_toLeftOf="@+id/conversion_board"
+        app:layout_constraintRight_toRightOf="@+id/conversion_board">
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/digit_7"
             android:layout_width="@dimen/digit_key_side"
             android:layout_height="@dimen/digit_key_side"
-            android:layout_marginStart="24dp"
-            android:layout_marginLeft="24dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
             android:background="@drawable/ic_digit_button"
             android:gravity="center"
             android:text="@string/key_7"
@@ -314,7 +311,7 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/op_key_side"
             android:layout_marginTop="@dimen/keypad_margin"
-            android:background="@drawable/ic_operator_button"
+            android:background="@drawable/ic_operator_button_wide"
             android:text="@string/key_eval"
             android:textAppearance="@style/ImperialKeypad"
             android:textColor="@color/colorAccent"

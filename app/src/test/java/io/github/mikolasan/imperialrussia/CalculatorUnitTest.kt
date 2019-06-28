@@ -89,4 +89,9 @@ class CalculatorUnitTest {
     fun eval_emptyStringIsZero() {
         assertEquals(0.0, BasicCalculator("").eval(), 1e-10)
     }
+
+    @Test
+    fun eval_parsesScientificFormat() {
+        assertEquals(10.0, BasicCalculator("1E10").eval(), 1e-10)
+    }
 }
