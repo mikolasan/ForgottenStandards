@@ -187,11 +187,8 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="height" value="96" />
-                            <entry key="outputName" value="ic_operator_button_wide" />
-                            <entry key="overrideSize" value="true" />
-                            <entry key="sourceFile" value="C:\Users\neupo\develop\ImperialRussia\assets\operator-button-wide.svg" />
-                            <entry key="width" value="214" />
+                            <entry key="outputName" value="ic_background_damask" />
+                            <entry key="sourceFile" value="C:\Users\neupo\develop\ImperialRussia\assets\background-damask.svg" />
                           </map>
                         </option>
                       </PersistentState>
