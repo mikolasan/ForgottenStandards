@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.appcompat.widget.AppCompatTextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/textView2"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:text=".."
+    android:textAppearance="@style/ImperialKeypad"
+    android:textColor="@color/colorAccent"
+    android:textSize="28sp" />

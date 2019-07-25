@@ -7,8 +7,10 @@ import android.text.TextWatcher
 import android.view.Gravity.CENTER_HORIZONTAL
 import android.view.Gravity.CENTER_VERTICAL
 import android.view.Gravity.RIGHT
+import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Button
+import android.widget.ListView
 import java.text.DecimalFormat
 
 class MeasuringActivity : Activity() {
@@ -131,6 +133,11 @@ class MeasuringActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_measuring)
+
+        val lengthUnits = arrayOf("Point", "Line", "Inch", "Tip", "Palm", "Foot", "Yard", "Fathom", "Turn", "Mile")
+        val lengthAdapter = ArrayAdapter(this, R.layout.listview_item, lengthUnits)
+        val lengthList = findViewById<ListView>(R.id.units_list)
+        lengthList.adapter = lengthAdapter
 
         val convFromInput = findViewById<EditText>(R.id.conv_from_input)
         val convToInput = findViewById<EditText>(R.id.conv_to_input)
