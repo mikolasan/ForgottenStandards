@@ -26,18 +26,18 @@ class MeasuringActivity : Activity() {
         EVAL,
     }
 
-    lateinit var selectedInput: EditText
-    var fromUnit: ImperialUnit = arshin
-    var toUnit: ImperialUnit = inch
-
+    lateinit var fromUnit: ImperialUnit
+    lateinit var toUnit: ImperialUnit
+    lateinit var selectedPanel: ImperialUnitPanel
 
 
     inner class DigitButton(button: Button, digit: Int) {
         private val digitString = digit.toString()
         init {
             button.setOnClickListener {
-                val value = selectedInput?.text.toString()
-                selectedInput?.setText(value + digitString)
+                val selectedInput = selectedPanel.input
+                val value = selectedInput.text.toString()
+                selectedInput.setText(value + digitString)
             }
         }
     }
@@ -46,29 +46,31 @@ class MeasuringActivity : Activity() {
         val operations = setOf('/', '*', '+', '-', '.')
 
         fun addSymbol(sym: Char) {
-            var value = selectedInput?.text.toString()
+            val selectedInput = selectedPanel.input
+            var value = selectedInput.text.toString()
             if (operations.contains(value.last()))
                 value = value.dropLast(1)
-            selectedInput?.setText(value + sym)
+            selectedInput.setText(value + sym)
         }
 
         init {
             button.setOnClickListener {
+                val selectedInput = selectedPanel.input
                 when (operation) {
                     Operation.MULT -> addSymbol('*')
                     Operation.DIV -> addSymbol('/')
                     Operation.PLUS -> addSymbol('+')
                     Operation.MINUS -> addSymbol('-')
-                    Operation.CLEAR -> selectedInput?.setText("")
+                    Operation.CLEAR -> selectedInput.setText("")
                     Operation.BACK -> {
-                        val value = selectedInput?.text.toString()
-                        selectedInput?.setText(value.dropLast(1))
+                        val value = selectedInput.text.toString()
+                        selectedInput.setText(value.dropLast(1))
                     }
                     Operation.DOT -> addSymbol('.')
                     Operation.EVAL -> {
-                        val value = selectedInput?.text.toString()
+                        val value = selectedInput.text.toString()
                         val calculator = BasicCalculator(value)
-                        selectedInput?.setText(calculator.eval().toString())
+                        selectedInput.setText(calculator.eval().toString())
                     }
                 }
             }
@@ -80,28 +82,35 @@ class MeasuringActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_measuring)
 
+        fromUnit = arshin
+        toUnit = inch
+        val convFromInput = findViewById<EditText>(R.id.conv_from_input)
+        val convToInput = findViewById<EditText>(R.id.conv_to_input)
+        val convFromTitle = findViewById<TextView>(R.id.conv_from_title)
+        val convToTitle = findViewById<TextView>(R.id.conv_to_title)
+
+        val convFromPanel = ImperialUnitPanel(convFromTitle, convFromInput, fromUnit)
+        val convToPanel = ImperialUnitPanel(convToTitle, convToInput, toUnit)
+        selectedPanel = convFromPanel
+        convFromTitle.text = fromUnit.name
+        convToTitle.text = toUnit.name
+
+
         val lengthUnits = arrayOf(point, line, inch, tip, palm, foot, arshin, fathom, turn, mile)
         val lengthAdapter = LengthAdapter(this, R.layout.listview_item, lengthUnits)
         val lengthList = findViewById<ListView>(R.id.units_list)
         lengthList.adapter = lengthAdapter
-//        lengthList.setOnClickListener {
-//            if (it.id == R.layout.listview_item)
-//                if (it is ConstraintLayout)
-//                    fromUnit = it.findViewById<TextView>(R.id.unit_name)
-//        }
+        lengthList.setOnItemClickListener{ parent, view, position, id ->
+            val unit = lengthAdapter.getItem(position) as? ImperialUnit
+            unit?.let {
+                selectedPanel.changeUnit(unit)
+            }
+        }
 
-        val convFromInput = findViewById<EditText>(R.id.conv_from_input)
-        val convToInput = findViewById<EditText>(R.id.conv_to_input)
-        selectedInput = convFromInput
-        val convFromTitle = findViewById<TextView>(R.id.conv_from_title)
-        val convToTitle = findViewById<TextView>(R.id.conv_to_title)
-        convFromTitle.text = fromUnit.name
-        convToTitle.text = toUnit.name
-
-        convFromInput.setOnFocusChangeListener{
-            view, hasFocus -> if (view is EditText) {
+        convFromInput.setOnFocusChangeListener{ view, hasFocus ->
+            if (view is EditText) {
                 if (hasFocus) {
-                    selectedInput = view
+                    selectedPanel = convFromPanel
                     view.gravity = RIGHT or CENTER_VERTICAL
                 } else {
                     view.gravity = CENTER_HORIZONTAL or CENTER_VERTICAL
@@ -125,10 +134,10 @@ class MeasuringActivity : Activity() {
             }
         })
 
-        convToInput.setOnFocusChangeListener{
-            view, hasFocus -> if (view is EditText) {
+        convToInput.setOnFocusChangeListener{ view, hasFocus ->
+            if (view is EditText) {
                 if (hasFocus) {
-                    selectedInput = view
+                    selectedPanel = convToPanel
                     view.gravity = RIGHT or CENTER_VERTICAL
                 } else {
                     view.gravity = CENTER_HORIZONTAL or CENTER_VERTICAL
