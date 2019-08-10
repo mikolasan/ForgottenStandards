@@ -7,26 +7,13 @@ import android.text.TextWatcher
 import android.view.Gravity.CENTER_HORIZONTAL
 import android.view.Gravity.CENTER_VERTICAL
 import android.view.Gravity.RIGHT
-import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Button
 import android.widget.ListView
-import java.text.DecimalFormat
+import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 
 class MeasuringActivity : Activity() {
-
-    enum class Unit {
-        POINT,
-        LINE,
-        INCH,
-        TIP, // vershok
-        PALM, // piad
-        FOOT,
-        YARD, // arshin
-        FATHOM, // sazhen
-        TURN, // versta
-        MILE,
-    }
 
     enum class Operation {
         PLUS,
@@ -39,43 +26,11 @@ class MeasuringActivity : Activity() {
         EVAL,
     }
 
-    val ratio : DoubleArray = doubleArrayOf(
-            3.5714285714285714285714285714286e-4,
-            0.00357142857142857142857142857143,
-            0.03571428571428571428571428571429,
-            0.0625,
-            0.25,
-            0.42857142857142857142857142857143,
-            1.0,
-            3.0,
-            1500.0,
-            10500.0
-    )
+    lateinit var selectedInput: EditText
+    var fromUnit: ImperialUnit = arshin
+    var toUnit: ImperialUnit = inch
 
-    private fun convertToYard(type: Unit, value: Double): Double {
-        return value / ratio[type.ordinal]
-    }
 
-    private fun convertYardTo(type: Unit, value: Double): Double {
-        return value * ratio[type.ordinal]
-    }
-
-    fun convertUnits(type: Unit, value: Double, resultType: Unit): Double {
-        if (type == resultType) {
-            return value;
-        } else if (Unit.YARD == type) {
-            return convertYardTo(resultType, value)
-        } else if (Unit.YARD == resultType) {
-            return convertToYard(type, value)
-        }
-        return .0
-    }
-
-    fun convertToArshin(inches: Double): Double {
-        return convertYardTo(Unit.YARD, convertToYard(Unit.INCH, inches))
-    }
-
-    var selectedInput: EditText? = null
 
     inner class DigitButton(button: Button, digit: Int) {
         private val digitString = digit.toString()
@@ -120,38 +75,29 @@ class MeasuringActivity : Activity() {
         }
     }
 
-    fun valueForDisplay(value: Double): String {
-        val decimalFormat = DecimalFormat()
-        if (value >= 1e+9)
-            decimalFormat.applyLocalizedPattern("0.0#E0")
-        else
-            decimalFormat.applyLocalizedPattern("0.0#")
-
-        return decimalFormat.format(value)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_measuring)
 
-        val lengthUnits = arrayOf("Point", "Line", "Inch", "Tip", "Palm", "Foot", "Yard", "Fathom", "Turn", "Mile")
-        val lengthAdapter = ArrayAdapter(this, R.layout.listview_item, lengthUnits)
+        val lengthUnits = arrayOf(point, line, inch, tip, palm, foot, arshin, fathom, turn, mile)
+        val lengthAdapter = LengthAdapter(this, R.layout.listview_item, lengthUnits)
         val lengthList = findViewById<ListView>(R.id.units_list)
         lengthList.adapter = lengthAdapter
+//        lengthList.setOnClickListener {
+//            if (it.id == R.layout.listview_item)
+//                if (it is ConstraintLayout)
+//                    fromUnit = it.findViewById<TextView>(R.id.unit_name)
+//        }
 
         val convFromInput = findViewById<EditText>(R.id.conv_from_input)
         val convToInput = findViewById<EditText>(R.id.conv_to_input)
-        selectedInput = convToInput
-        convToInput.setOnFocusChangeListener{
-            view, hasFocus -> if (view is EditText) {
-                if (hasFocus) {
-                    selectedInput = view
-                    view.gravity = RIGHT or CENTER_VERTICAL
-                } else {
-                    view.gravity = CENTER_HORIZONTAL or CENTER_VERTICAL
-                }
-            }
-        }
+        selectedInput = convFromInput
+        val convFromTitle = findViewById<TextView>(R.id.conv_from_title)
+        val convToTitle = findViewById<TextView>(R.id.conv_to_title)
+        convFromTitle.text = fromUnit.name
+        convToTitle.text = toUnit.name
+
         convFromInput.setOnFocusChangeListener{
             view, hasFocus -> if (view is EditText) {
                 if (hasFocus) {
@@ -162,12 +108,13 @@ class MeasuringActivity : Activity() {
                 }
             }
         }
-        convToInput.addTextChangedListener(object: TextWatcher {
+        convFromInput.addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 s?.let {
-                    val inches = BasicCalculator(s.toString()).eval()
-                    val arshin = convertToArshin(inches)
-                    convFromInput.setText(valueForDisplay(arshin))
+                    val fromValue = BasicCalculator(s.toString()).eval()
+                    val toValue = convertValue(fromUnit, toUnit, fromValue)
+                    convToInput.setText(valueForDisplay(toValue))
+                    lengthAdapter.setCurrentValue(fromUnit, fromValue)
                 }
             }
 
@@ -177,6 +124,32 @@ class MeasuringActivity : Activity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             }
         })
+
+        convToInput.setOnFocusChangeListener{
+            view, hasFocus -> if (view is EditText) {
+                if (hasFocus) {
+                    selectedInput = view
+                    view.gravity = RIGHT or CENTER_VERTICAL
+                } else {
+                    view.gravity = CENTER_HORIZONTAL or CENTER_VERTICAL
+                }
+            }
+        }
+//        convToInput.addTextChangedListener(object: TextWatcher {
+//            override fun afterTextChanged(s: Editable?) {
+//                s?.let {
+//                    val toValue = BasicCalculator(s.toString()).eval()
+//                    val fromValue = convertValue(toUnit, fromUnit, toValue)
+//                    convFromInput.setText(valueForDisplay(fromValue))
+//                }
+//            }
+//
+//            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+//            }
+//
+//            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+//            }
+//        })
 
         val key_1 = DigitButton(findViewById(R.id.digit_1), 1)
         val key_2 = DigitButton(findViewById(R.id.digit_2), 2)
