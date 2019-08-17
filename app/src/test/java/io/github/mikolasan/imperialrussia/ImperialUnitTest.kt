@@ -78,9 +78,33 @@ class ImperialUnitTest {
     }
 
     @Test
+    fun findConversionRatio_arshinToTurn() {
+        val ratio = findConversionRatio(arshin, turn)
+        assertEquals(1.0/1500.0, ratio, 1e-10)
+    }
+
+    @Test
+    fun findConversionRatio_arshinToMile() {
+        val ratio = findConversionRatio(arshin, mile)
+        assertEquals(1.0/10500.0, ratio, 1e-10)
+    }
+
+    @Test
+    fun findConversionRatio_checkRatioForAllUnits() {
+        val units = arrayOf(point, line, inch, tip, palm, quarter, foot, arshin, fathom, turn, mile)
+        for (fromUnit in units) {
+            for (toUnit in units) {
+                println("Find ratio for ${fromUnit.name} -> ${toUnit.name}")
+                val ratio = findConversionRatio(fromUnit, toUnit)
+                println("${fromUnit.name} -> $ratio ${toUnit.name}")
+            }
+        }
+    }
+
+    // inverse
+    @Test
     fun findConversionRatio_inchToArshin() {
         val ratio = findConversionRatio(inch, arshin)
         assertEquals(0.03571428571428571428571428571429, ratio, 1e-10)
     }
-
 }
