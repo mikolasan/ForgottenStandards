@@ -104,6 +104,18 @@ class MeasuringActivity : Activity() {
             val unit = lengthAdapter.getItem(position) as? ImperialUnit
             unit?.let {
                 selectedPanel.changeUnit(unit)
+                if (selectedPanel.input == convToInput) {
+                    toUnit = unit
+                    val fromValue = convFromInput.text.toString().toDouble()
+                    val toValue = convertValue(fromUnit, unit, fromValue)
+                    convToInput.setText(valueForDisplay(toValue))
+                } else if (selectedPanel.input == convFromInput) {
+                    fromUnit = unit
+                    val toValue = convToInput.text.toString().toDouble()
+                    val fromValue = convertValue(toUnit, unit, toValue)
+                    convFromInput.setText(valueForDisplay(fromValue))
+                    lengthAdapter.setCurrentValue(unit, fromValue)
+                }
             }
         }
 
@@ -119,6 +131,9 @@ class MeasuringActivity : Activity() {
         }
         convFromInput.addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(s: Editable?) {
+                if (selectedPanel.input != convFromInput)
+                    return
+
                 s?.let {
                     val fromValue = BasicCalculator(s.toString()).eval()
                     val toValue = convertValue(fromUnit, toUnit, fromValue)
@@ -144,21 +159,25 @@ class MeasuringActivity : Activity() {
                 }
             }
         }
-//        convToInput.addTextChangedListener(object: TextWatcher {
-//            override fun afterTextChanged(s: Editable?) {
-//                s?.let {
-//                    val toValue = BasicCalculator(s.toString()).eval()
-//                    val fromValue = convertValue(toUnit, fromUnit, toValue)
-//                    convFromInput.setText(valueForDisplay(fromValue))
-//                }
-//            }
-//
-//            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-//            }
-//
-//            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-//            }
-//        })
+        convToInput.addTextChangedListener(object: TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                if (selectedPanel.input != convToInput)
+                    return
+
+                s?.let {
+                    val toValue = BasicCalculator(s.toString()).eval()
+                    val fromValue = convertValue(toUnit, fromUnit, toValue)
+                    convFromInput.setText(valueForDisplay(fromValue))
+                    lengthAdapter.setCurrentValue(fromUnit, fromValue)
+                }
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+        })
 
         val key_1 = DigitButton(findViewById(R.id.digit_1), 1)
         val key_2 = DigitButton(findViewById(R.id.digit_2), 2)

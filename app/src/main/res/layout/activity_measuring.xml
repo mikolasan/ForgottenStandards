@@ -5,8 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/motionLayout"
     android:background="@color/colorPrimaryDark"
-    app:layoutDescription="@xml/unit_list_motion"
-    app:showPaths="true">
+    app:layoutDescription="@xml/unit_list_motion">
 
     <include layout="@layout/imperial_base"/>
 
