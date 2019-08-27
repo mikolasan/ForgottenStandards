@@ -119,14 +119,23 @@ class MeasuringActivity : Activity() {
             }
         }
 
+        fun getColor(resourceId: Int): Int {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                val theme = null
+                return resources.getColor(resourceId, theme)
+            } else {
+                return resources.getColor(resourceId)
+            }
+        }
+        val colorInputSelected = getColor(R.color.inputSelected)
+        val colorInputNormal = getColor(R.color.inputNormal)
+
         convFromInput.setOnFocusChangeListener{ view, hasFocus ->
             if (view is EditText) {
                 if (hasFocus) {
                     selectedPanel = convFromPanel
-                    view.gravity = RIGHT or CENTER_VERTICAL
-                } else {
-                    view.gravity = CENTER_HORIZONTAL or CENTER_VERTICAL
                 }
+                view.setTextColor(if (hasFocus) colorInputSelected else colorInputNormal)
             }
         }
         convFromInput.addTextChangedListener(object: TextWatcher {
@@ -153,10 +162,8 @@ class MeasuringActivity : Activity() {
             if (view is EditText) {
                 if (hasFocus) {
                     selectedPanel = convToPanel
-                    view.gravity = RIGHT or CENTER_VERTICAL
-                } else {
-                    view.gravity = CENTER_HORIZONTAL or CENTER_VERTICAL
                 }
+                view.setTextColor(if (hasFocus) colorInputSelected else colorInputNormal)
             }
         }
         convToInput.addTextChangedListener(object: TextWatcher {

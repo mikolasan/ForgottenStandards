@@ -4,8 +4,15 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/motionLayout"
-    android:background="@color/colorPrimaryDark"
     app:layoutDescription="@xml/unit_list_motion">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_background_damask" />
 
     <include layout="@layout/imperial_base"/>
 

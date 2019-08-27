@@ -187,8 +187,11 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="outputName" value="ic_background_damask" />
-                            <entry key="sourceFile" value="C:\Users\neupo\develop\ImperialRussia\assets\background-damask.svg" />
+                            <entry key="height" value="42" />
+                            <entry key="outputName" value="ic_cursor" />
+                            <entry key="overrideSize" value="true" />
+                            <entry key="sourceFile" value="C:\Users\neupo\develop\ImperialRussia\assets\cursor.svg" />
+                            <entry key="width" value="5" />
                           </map>
                         </option>
                       </PersistentState>
