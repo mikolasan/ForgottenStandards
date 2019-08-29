@@ -8,4 +8,6 @@
     <color name="backgroundDark">#1E1E24</color>
     <color name="inputSelected">#FFB433</color>
     <color name="inputNormal">#FCFCFC</color>
+    <color name="keyboardDigit">#7B6D91</color>
+    <color name="keyboardFunc">#634A85</color>
 </resources>
