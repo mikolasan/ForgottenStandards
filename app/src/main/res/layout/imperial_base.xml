@@ -32,6 +32,7 @@
 
             android:minWidth="280dp"
             android:paddingBottom="10dp"
+            android:elevation="2dp"
             app:layout_constraintBottom_toTopOf="@+id/convert_to"
             app:layout_constraintEnd_toEndOf="@+id/convert_to"
             app:layout_constraintStart_toStartOf="@+id/convert_to">
@@ -87,6 +88,7 @@
 
             android:minWidth="280dp"
             android:paddingBottom="10dp"
+            android:elevation="2dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
@@ -152,15 +154,16 @@
             android:layout_height="@dimen/digit_key_side"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:background="@drawable/ic_keyboard_key_back"
+            android:background="@drawable/ic_keyboard_digit_back"
             android:gravity="center"
             android:text="@string/key_7"
             android:textAppearance="@style/ImperialKeypad"
             android:textColor="@color/keyboardDigit"
             android:textSize="@dimen/digit_font_size"
-            android:elevation="2dp"
+            android:elevation="3dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/digit_8"
@@ -168,13 +171,13 @@
             android:layout_height="@dimen/digit_key_side"
             android:layout_marginStart="@dimen/keypad_margin"
             android:layout_marginLeft="@dimen/keypad_margin"
-            android:background="@drawable/ic_keyboard_key_back"
+            android:background="@drawable/ic_keyboard_digit_back"
             android:gravity="center"
             android:text="@string/key_8"
             android:textAppearance="@style/ImperialKeypad"
             android:textColor="@color/keyboardDigit"
             android:textSize="@dimen/digit_font_size"
-            android:elevation="2dp"
+            android:elevation="3dp"
             app:layout_constraintStart_toEndOf="@+id/digit_7"
             app:layout_constraintTop_toTopOf="@+id/digit_7" />
 
@@ -184,13 +187,13 @@
             android:layout_height="@dimen/digit_key_side"
             android:layout_marginStart="@dimen/keypad_margin"
             android:layout_marginLeft="@dimen/keypad_margin"
-            android:background="@drawable/ic_keyboard_key_back"
+            android:background="@drawable/ic_keyboard_digit_back"
             android:gravity="center"
             android:text="@string/key_9"
             android:textAppearance="@style/ImperialKeypad"
             android:textColor="@color/keyboardDigit"
             android:textSize="@dimen/digit_font_size"
-            android:elevation="2dp"
+            android:elevation="3dp"
             app:layout_constraintStart_toEndOf="@+id/digit_8"
             app:layout_constraintTop_toTopOf="@+id/digit_8" />
 
@@ -199,13 +202,13 @@
             android:layout_width="@dimen/digit_key_side"
             android:layout_height="@dimen/digit_key_side"
             android:layout_marginTop="@dimen/keypad_margin"
-            android:background="@drawable/ic_keyboard_key_back"
+            android:background="@drawable/ic_keyboard_digit_back"
             android:gravity="center"
             android:text="@string/key_4"
             android:textAppearance="@style/ImperialKeypad"
             android:textColor="@color/keyboardDigit"
             android:textSize="@dimen/digit_font_size"
-            android:elevation="2dp"
+            android:elevation="3dp"
             app:layout_constraintStart_toStartOf="@+id/digit_7"
             app:layout_constraintTop_toBottomOf="@+id/digit_7" />
 
@@ -216,13 +219,13 @@
             android:layout_marginStart="@dimen/keypad_margin"
             android:layout_marginLeft="@dimen/keypad_margin"
             android:layout_marginTop="@dimen/keypad_margin"
-            android:background="@drawable/ic_keyboard_key_back"
+            android:background="@drawable/ic_keyboard_digit_back"
             android:gravity="center"
             android:text="@string/key_5"
             android:textAppearance="@style/ImperialKeypad"
             android:textColor="@color/keyboardDigit"
             android:textSize="@dimen/digit_font_size"
-            android:elevation="2dp"
+            android:elevation="3dp"
             app:layout_constraintStart_toEndOf="@+id/digit_4"
             app:layout_constraintTop_toBottomOf="@+id/digit_8" />
 
@@ -233,13 +236,13 @@
             android:layout_marginStart="@dimen/keypad_margin"
             android:layout_marginLeft="@dimen/keypad_margin"
             android:layout_marginTop="@dimen/keypad_margin"
-            android:background="@drawable/ic_keyboard_key_back"
+            android:background="@drawable/ic_keyboard_digit_back"
             android:gravity="center"
             android:text="@string/key_6"
             android:textAppearance="@style/ImperialKeypad"
             android:textColor="@color/keyboardDigit"
             android:textSize="@dimen/digit_font_size"
-            android:elevation="2dp"
+            android:elevation="3dp"
             app:layout_constraintStart_toEndOf="@+id/digit_5"
             app:layout_constraintTop_toBottomOf="@+id/digit_9" />
 
@@ -249,13 +252,13 @@
             android:layout_width="@dimen/digit_key_side"
             android:layout_height="@dimen/digit_key_side"
             android:layout_marginTop="@dimen/keypad_margin"
-            android:background="@drawable/ic_keyboard_key_back"
+            android:background="@drawable/ic_keyboard_digit_back"
             android:gravity="center"
             android:text="@string/key_1"
             android:textAppearance="@style/ImperialKeypad"
             android:textColor="@color/keyboardDigit"
             android:textSize="@dimen/digit_font_size"
-            android:elevation="2dp"
+            android:elevation="3dp"
             app:layout_constraintStart_toStartOf="@+id/digit_4"
             app:layout_constraintTop_toBottomOf="@+id/digit_4" />
 
@@ -266,13 +269,13 @@
             android:layout_marginStart="@dimen/keypad_margin"
             android:layout_marginLeft="@dimen/keypad_margin"
             android:layout_marginTop="@dimen/keypad_margin"
-            android:background="@drawable/ic_keyboard_key_back"
+            android:background="@drawable/ic_keyboard_digit_back"
             android:gravity="center"
             android:text="@string/key_2"
             android:textAppearance="@style/ImperialKeypad"
             android:textColor="@color/keyboardDigit"
             android:textSize="@dimen/digit_font_size"
-            android:elevation="2dp"
+            android:elevation="3dp"
             app:layout_constraintStart_toEndOf="@+id/digit_1"
             app:layout_constraintTop_toBottomOf="@+id/digit_5" />
 
@@ -283,13 +286,13 @@
             android:layout_marginStart="@dimen/keypad_margin"
             android:layout_marginLeft="@dimen/keypad_margin"
             android:layout_marginTop="@dimen/keypad_margin"
-            android:background="@drawable/ic_keyboard_key_back"
+            android:background="@drawable/ic_keyboard_digit_back"
             android:gravity="center"
             android:text="@string/key_3"
             android:textAppearance="@style/ImperialKeypad"
             android:textColor="@color/keyboardDigit"
             android:textSize="@dimen/digit_font_size"
-            android:elevation="2dp"
+            android:elevation="3dp"
             app:layout_constraintStart_toEndOf="@+id/digit_2"
             app:layout_constraintTop_toBottomOf="@+id/digit_6" />
 
@@ -304,7 +307,7 @@
             android:textAppearance="@style/ImperialKeypad"
             android:textColor="@color/keyboardFunc"
             android:textSize="28sp"
-            android:elevation="2dp"
+            android:elevation="3dp"
             app:layout_constraintRight_toRightOf="@+id/digit_1"
             app:layout_constraintTop_toBottomOf="@+id/digit_1" />
 
@@ -314,13 +317,13 @@
             android:layout_height="@dimen/digit_key_side"
             android:layout_marginTop="@dimen/keypad_margin"
             android:layout_marginBottom="8dp"
-            android:background="@drawable/ic_keyboard_key_back"
+            android:background="@drawable/ic_keyboard_digit_back"
             android:gravity="center"
             android:text="@string/key_0"
             android:textAppearance="@style/ImperialKeypad"
             android:textColor="@color/keyboardDigit"
             android:textSize="@dimen/digit_font_size"
-            android:elevation="2dp"
+            android:elevation="3dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/digit_2"
             app:layout_constraintTop_toBottomOf="@+id/digit_2" />
@@ -331,12 +334,12 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/op_key_side"
             android:layout_marginTop="@dimen/keypad_margin"
-            android:background="@drawable/ic_operator_button_wide"
+            android:background="@drawable/ic_keyboard_func_back"
             android:text="@string/key_eval"
             android:textAppearance="@style/ImperialKeypad"
             android:textColor="@color/keyboardFunc"
             android:textSize="28sp"
-            android:elevation="2dp"
+            android:elevation="3dp"
             app:layout_constraintEnd_toEndOf="@+id/op_minus"
             app:layout_constraintStart_toStartOf="@+id/digit_3"
             app:layout_constraintTop_toBottomOf="@+id/digit_3" />
@@ -348,12 +351,12 @@
             android:layout_height="@dimen/op_key_side"
             android:layout_marginStart="@dimen/keypad_margin"
             android:layout_marginLeft="@dimen/keypad_margin"
-            android:background="@drawable/ic_keyboard_func_back"
+            android:background="@drawable/ic_keyboard_special_back"
             android:text="@string/key_clear"
             android:textAppearance="@style/ImperialKeypad"
-            android:textColor="@color/keyboardFunc"
+            android:textColor="@color/keyboardSpecial"
             android:textSize="28sp"
-            android:elevation="2dp"
+            android:elevation="3dp"
             app:layout_constraintStart_toEndOf="@+id/op_back"
             app:layout_constraintTop_toTopOf="@+id/op_back" />
 
@@ -369,7 +372,7 @@
             android:textAppearance="@style/ImperialKeypad"
             android:textColor="@color/keyboardFunc"
             android:textSize="28sp"
-            android:elevation="2dp"
+            android:elevation="3dp"
             app:layout_constraintStart_toEndOf="@+id/op_div"
             app:layout_constraintTop_toTopOf="@+id/op_div" />
 
@@ -385,7 +388,7 @@
             android:textAppearance="@style/ImperialKeypad"
             android:textColor="@color/keyboardFunc"
             android:textSize="28sp"
-            android:elevation="2dp"
+            android:elevation="3dp"
             app:layout_constraintStart_toEndOf="@+id/op_minus"
             app:layout_constraintTop_toTopOf="@+id/op_minus" />
 
@@ -400,6 +403,7 @@
             android:textAppearance="@style/ImperialKeypad"
             android:textColor="@color/keyboardFunc"
             android:textSize="28sp"
+            android:elevation="3dp"
             app:layout_constraintBottom_toTopOf="@+id/op_div"
             app:layout_constraintStart_toStartOf="@+id/op_div" />
 
@@ -414,7 +418,7 @@
             android:textAppearance="@style/ImperialKeypad"
             android:textColor="@color/keyboardFunc"
             android:textSize="28sp"
-            android:elevation="2dp"
+            android:elevation="3dp"
             app:layout_constraintBottom_toTopOf="@+id/op_minus"
             app:layout_constraintStart_toStartOf="@+id/op_minus" />
 
@@ -430,7 +434,7 @@
             android:textAppearance="@style/ImperialKeypad"
             android:textColor="@color/keyboardFunc"
             android:textSize="28sp"
-            android:elevation="2dp"
+            android:elevation="3dp"
             app:layout_constraintBottom_toBottomOf="@+id/digit_3"
             app:layout_constraintStart_toEndOf="@+id/digit_3" />
 

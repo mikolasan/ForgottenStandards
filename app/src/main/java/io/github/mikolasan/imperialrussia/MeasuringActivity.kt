@@ -4,14 +4,10 @@ import android.app.Activity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.Gravity.CENTER_HORIZONTAL
-import android.view.Gravity.CENTER_VERTICAL
-import android.view.Gravity.RIGHT
 import android.widget.EditText
 import android.widget.Button
 import android.widget.ListView
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 
 class MeasuringActivity : Activity() {
 

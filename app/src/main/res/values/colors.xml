@@ -10,4 +10,5 @@
     <color name="inputNormal">#FCFCFC</color>
     <color name="keyboardDigit">#7B6D91</color>
     <color name="keyboardFunc">#634A85</color>
+    <color name="keyboardSpecial">#A995C5</color>
 </resources>

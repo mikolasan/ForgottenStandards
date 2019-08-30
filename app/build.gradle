@@ -8,7 +8,7 @@ android {
     compileSdkVersion 29
     defaultConfig {
         applicationId "io.github.mikolasan.imperialrussia"
-        minSdkVersion 19
+        minSdkVersion 24
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -28,6 +28,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta2'
     implementation 'androidx.legacy:legacy-support-core-utils:1.0.0'
     implementation 'androidx.appcompat:appcompat:1.0.2'
+
     // For @Nullable/@NonNull
     implementation 'androidx.annotation:annotation:1.1.0'
     testImplementation 'junit:junit:4.12'
