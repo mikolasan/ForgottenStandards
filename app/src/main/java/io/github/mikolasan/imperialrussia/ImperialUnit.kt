@@ -74,7 +74,7 @@ fun findConversionRatio(inputUnit: ImperialUnit, outputUnit: ImperialUnit): Doub
         inverseCommonUnit?.let {
             val newRatio = inverseCommonUnit.ratioMap.get(outputUnit.id)
             if (newRatio != null)
-                return newRatio / k
+                return 1.0 / (k * newRatio)
         }
     }
 
