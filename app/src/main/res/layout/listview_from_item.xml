@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_layout"
+    android:layout_width="236dp"
+    android:layout_height="100dp"
+    android:layout_marginTop="5dp"
+    android:layout_marginBottom="5dp"
+    android:background="@drawable/ic_side_from_back"
+    android:elevation="3dp">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/unit_name"
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="10dp"
+        android:minWidth="100dp"
+        android:text="Arshin"
+        android:textAppearance="@style/ImperialKeypad"
+        android:textColor="@color/inputNormal"
+        android:textIsSelectable="false"
+        android:textSize="32sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/unit_value"
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:minWidth="100dp"
+        android:text="123.45"
+        android:textAppearance="@style/ImperialKeypad"
+        android:textColor="@color/keyboardDigit"
+        android:textSize="30sp"
+        app:layout_constraintStart_toStartOf="@+id/unit_name"
+        app:layout_constraintTop_toBottomOf="@+id/unit_name" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

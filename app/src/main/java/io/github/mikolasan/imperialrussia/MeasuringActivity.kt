@@ -3,11 +3,14 @@ package io.github.mikolasan.imperialrussia
 import android.app.Activity
 import android.os.Bundle
 import android.text.Editable
+import android.text.InputType
 import android.text.TextWatcher
 import android.widget.EditText
 import android.widget.Button
 import android.widget.ListView
 import android.widget.TextView
+import androidx.constraintlayout.motion.widget.MotionLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 
 class MeasuringActivity : Activity() {
 
@@ -78,22 +81,26 @@ class MeasuringActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_measuring)
 
-        fromUnit = arshin
-        toUnit = inch
+        val motionLayout = findViewById<MotionLayout>(R.id.motion_layout)
+        val lengthUnits = arrayOf(palm, mile, point, line, inch, tip, palm, foot, arshin, fathom, turn, mile)
+        fromUnit = lengthUnits[0]
+        toUnit = lengthUnits[1]
+        val convFromLayout = findViewById<ConstraintLayout>(R.id.convert_from)
+        val convToLayout = findViewById<ConstraintLayout>(R.id.convert_to)
         val convFromInput = findViewById<EditText>(R.id.conv_from_input)
         val convToInput = findViewById<EditText>(R.id.conv_to_input)
+        convFromInput.inputType = InputType.TYPE_NULL // hide keyboard on focus
+        convToInput.inputType = InputType.TYPE_NULL
         val convFromTitle = findViewById<TextView>(R.id.conv_from_title)
         val convToTitle = findViewById<TextView>(R.id.conv_to_title)
+        val convFromPanel = ImperialUnitPanel(convFromLayout, convFromTitle, convFromInput)
+        val convToPanel = ImperialUnitPanel(convToLayout, convToTitle, convToInput)
+        convFromPanel.changeUnit(fromUnit)
+        convToPanel.changeUnit(toUnit)
 
-        val convFromPanel = ImperialUnitPanel(convFromTitle, convFromInput, fromUnit)
-        val convToPanel = ImperialUnitPanel(convToTitle, convToInput, toUnit)
         selectedPanel = convFromPanel
-        convFromTitle.text = fromUnit.name
-        convToTitle.text = toUnit.name
 
-
-        val lengthUnits = arrayOf(point, line, inch, tip, palm, foot, arshin, fathom, turn, mile)
-        val lengthAdapter = LengthAdapter(this, R.layout.listview_item, lengthUnits)
+        val lengthAdapter = LengthAdapter(this, lengthUnits)
         val lengthList = findViewById<ListView>(R.id.units_list)
         lengthList.adapter = lengthAdapter
         lengthList.setOnItemClickListener{ parent, view, position, id ->
@@ -105,12 +112,15 @@ class MeasuringActivity : Activity() {
                     val fromValue = convFromInput.text.toString().toDouble()
                     val toValue = convertValue(fromUnit, unit, fromValue)
                     convToInput.setText(valueForDisplay(toValue))
+                    lengthAdapter.selectToUnit(unit)
+                    lengthAdapter.notifyDataSetChanged()
                 } else if (selectedPanel.input == convFromInput) {
                     fromUnit = unit
-                    val toValue = convToInput.text.toString().toDouble()
-                    val fromValue = convertValue(toUnit, unit, toValue)
-                    convFromInput.setText(valueForDisplay(fromValue))
+                    val fromValue = convFromInput.text.toString().toDouble()
+                    val toValue = convertValue(fromUnit, toUnit, fromValue)
+                    convToInput.setText(valueForDisplay(toValue))
                     lengthAdapter.setCurrentValue(unit, fromValue)
+                    lengthAdapter.selectFromUnit(unit)
                 }
             }
         }
@@ -126,14 +136,24 @@ class MeasuringActivity : Activity() {
         val colorInputSelected = getColor(R.color.inputSelected)
         val colorInputNormal = getColor(R.color.inputNormal)
 
-        convFromInput.setOnFocusChangeListener{ view, hasFocus ->
+        convFromInput.setOnFocusChangeListener { view, hasFocus ->
             if (view is EditText) {
                 if (hasFocus) {
                     selectedPanel = convFromPanel
+                    convFromPanel.setHighlight(true)
+                    convToPanel.setHighlight(false)
                 }
                 view.setTextColor(if (hasFocus) colorInputSelected else colorInputNormal)
             }
         }
+        convFromLayout.setOnClickListener { view ->
+            selectedPanel = convFromPanel
+            convFromPanel.setHighlight(true)
+            convToPanel.setHighlight(false)
+            convFromInput.setTextColor(colorInputSelected)
+            convToInput.setTextColor(colorInputNormal)
+        }
+
         convFromInput.addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 if (selectedPanel.input != convFromInput)
@@ -144,6 +164,7 @@ class MeasuringActivity : Activity() {
                     val toValue = convertValue(fromUnit, toUnit, fromValue)
                     convToInput.setText(valueForDisplay(toValue))
                     lengthAdapter.setCurrentValue(fromUnit, fromValue)
+                    convFromInput.setSelection(convFromInput.text.length)
                 }
             }
 
@@ -154,17 +175,31 @@ class MeasuringActivity : Activity() {
             }
         })
 
-        convToInput.setOnFocusChangeListener{ view, hasFocus ->
+        convToInput.setOnFocusChangeListener { view, hasFocus ->
             if (view is EditText) {
                 if (hasFocus) {
                     selectedPanel = convToPanel
+                    convFromPanel.setHighlight(false)
+                    convToPanel.setHighlight(true)
                 }
                 view.setTextColor(if (hasFocus) colorInputSelected else colorInputNormal)
             }
         }
+        convToLayout.setOnClickListener{ view ->
+            selectedPanel = convToPanel
+            convFromPanel.setHighlight(false)
+            convToPanel.setHighlight(true)
+            convFromInput.setTextColor(colorInputNormal)
+            convToInput.setTextColor(colorInputSelected)
+        }
+
         convToInput.addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(s: Editable?) {
+
                 if (selectedPanel.input != convToInput)
+                    return
+
+                if (motionLayout.progress.equals(1.0))
                     return
 
                 s?.let {
@@ -202,6 +237,9 @@ class MeasuringActivity : Activity() {
         val opDot = OperationButton(findViewById(R.id.op_dot), Operation.DOT)
         val opEval = OperationButton(findViewById(R.id.op_eval), Operation.EVAL)
 
+        convFromInput.setText(valueForDisplay(0.0))
+        convFromInput.setCursorVisible(true);
+        convFromInput.requestFocus();
 
     }
 }
