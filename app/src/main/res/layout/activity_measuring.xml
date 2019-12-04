@@ -17,7 +17,7 @@
 
     <include
         layout="@layout/imperial_base"
-        android:layout_width="344dp"
+        android:layout_width="360dp"
         android:layout_height="786dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

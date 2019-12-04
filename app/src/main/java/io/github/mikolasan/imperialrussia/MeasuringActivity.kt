@@ -82,7 +82,7 @@ class MeasuringActivity : Activity() {
         setContentView(R.layout.activity_measuring)
 
         val motionLayout = findViewById<MotionLayout>(R.id.motion_layout)
-        val lengthUnits = arrayOf(palm, mile, point, line, inch, tip, palm, foot, arshin, fathom, turn, mile)
+        val lengthUnits = arrayOf(point, line, inch, tip, palm, foot, arshin, fathom, turn, mile)
         fromUnit = lengthUnits[0]
         toUnit = lengthUnits[1]
         val convFromLayout = findViewById<ConstraintLayout>(R.id.convert_from)
@@ -240,6 +240,11 @@ class MeasuringActivity : Activity() {
         convFromInput.setText(valueForDisplay(0.0))
         convFromInput.setCursorVisible(true);
         convFromInput.requestFocus();
+
+        val languageButton = findViewById<Button>(R.id.language)
+        languageButton.setOnClickListener { view ->
+            
+        }
 
     }
 }

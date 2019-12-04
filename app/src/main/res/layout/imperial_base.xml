@@ -12,17 +12,15 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/convert_to"
-        android:layout_width="@dimen/min_panel_width"
+        android:layout_width="312dp"
         android:layout_height="133dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
         android:background="@drawable/ic_input_panel_back"
         android:clickable="true"
         android:elevation="5dp"
         android:minWidth="@dimen/min_panel_width"
         android:paddingBottom="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -70,15 +68,13 @@
         android:id="@+id/convert_from"
         android:layout_width="@dimen/min_panel_width"
         android:layout_height="133dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
         android:background="@drawable/ic_input_panel_back"
         android:clickable="true"
         android:elevation="5dp"
         android:minWidth="@dimen/min_panel_width"
         android:paddingBottom="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/convert_to">
 
@@ -130,13 +126,11 @@
         android:id="@+id/keyboard_layout"
         android:layout_width="312dp"
         android:layout_height="255dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
         android:background="@drawable/ic_keyboard_panel_back"
         android:elevation="5dp"
         android:minWidth="@dimen/min_panel_width"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/convert_from">
 
@@ -431,5 +425,36 @@
             app:layout_constraintStart_toEndOf="@+id/digit_3" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/slide_area"
+        android:layout_width="24dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:background="@drawable/ic_keyboard_panel_back"
+        android:clickable="false"
+        android:maxWidth="24dp"
+        android:minWidth="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/keyboard_layout"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/language"
+        style="@android:style/Widget.Button"
+        android:layout_width="@dimen/op_key_side"
+        android:layout_height="@dimen/op_key_side"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/ic_keyboard_special_back"
+        android:elevation="10dp"
+        android:text="@string/lang_ru"
+        android:textAppearance="@style/ImperialKeypad"
+        android:textColor="@color/keyboardSpecial"
+        android:textSize="28sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

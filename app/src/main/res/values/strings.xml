@@ -20,4 +20,5 @@
     <string name="key_0">0</string>
     <string name="yard"><u>Аршин</u></string>
     <string name="inch"><u>Дюйм</u></string>
+    <string name="lang_ru">ru</string>
 </resources>
