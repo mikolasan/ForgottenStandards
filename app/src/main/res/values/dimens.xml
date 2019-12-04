@@ -4,4 +4,5 @@
     <dimen name="digit_key_side">54dp</dimen>
     <dimen name="digit_font_size">42sp</dimen>
     <dimen name="op_key_side">48dp</dimen>
+    <dimen name="min_panel_width">312dp</dimen>
 </resources>
