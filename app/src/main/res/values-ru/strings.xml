@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Imperial Russia</string>
+    <string name="lang_ru">рус</string>
+    <string name="unit_arshin">Аршин</string>
+    <string name="unit_fathom">Сажень</string>
+    <string name="unit_foot">Фут</string>
+    <string name="unit_quarter">Пядь</string>
+    <string name="unit_tip">Вершок</string>
+    <string name="unit_line">Линия</string>
+    <string name="unit_inch">Дюйм</string>
+    <string name="unit_mile">Миля</string>
+    <string name="unit_palm">Ладонь</string>
+    <string name="unit_point">Точка</string>
+    <string name="unit_turn">Верста</string>
+    <string name="unit_to"><u>Дюйм</u></string>
+    <string name="unit_from"><u>Аршин</u></string>
+</resources>

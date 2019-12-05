@@ -1,24 +1,35 @@
 <resources>
     <string name="app_name">Imperial Russia</string>
-    <string name="key_back"><![CDATA[<]]></string>
-    <string name="key_clear">C</string>
-    <string name="key_mult">*</string>
-    <string name="key_div">/</string>
-    <string name="key_plus">+</string>
-    <string name="key_minus">-</string>
-    <string name="key_dot">.</string>
-    <string name="key_eval">=</string>
-    <string name="key_9">9</string>
-    <string name="key_8">8</string>
-    <string name="key_7">7</string>
-    <string name="key_6">6</string>
-    <string name="key_5">5</string>
-    <string name="key_4">4</string>
-    <string name="key_3">3</string>
-    <string name="key_2">2</string>
-    <string name="key_1">1</string>
-    <string name="key_0">0</string>
-    <string name="yard"><u>Аршин</u></string>
-    <string name="inch"><u>Дюйм</u></string>
+    <string name="key_back" translatable="false"><![CDATA[<]]></string>
+    <string name="key_clear" translatable="false">C</string>
+    <string name="key_mult" translatable="false">*</string>
+    <string name="key_div" translatable="false">/</string>
+    <string name="key_plus" translatable="false">+</string>
+    <string name="key_minus" translatable="false">-</string>
+    <string name="key_dot" translatable="false">.</string>
+    <string name="key_eval" translatable="false">=</string>
+    <string name="key_9" translatable="false">9</string>
+    <string name="key_8" translatable="false">8</string>
+    <string name="key_7" translatable="false">7</string>
+    <string name="key_6" translatable="false">6</string>
+    <string name="key_5" translatable="false">5</string>
+    <string name="key_4" translatable="false">4</string>
+    <string name="key_3" translatable="false">3</string>
+    <string name="key_2" translatable="false">2</string>
+    <string name="key_1" translatable="false">1</string>
+    <string name="key_0" translatable="false">0</string>
+    <string name="unit_from"><u>Arshin</u></string>
+    <string name="unit_to"><u>Inch</u></string>
     <string name="lang_ru">ru</string>
+    <string name="unit_arshin">Arshin</string>
+    <string name="unit_inch">Inch</string>
+    <string name="unit_point">Point</string>
+    <string name="unit_line">Line</string>
+    <string name="unit_tip">Tip</string>
+    <string name="unit_palm">Palm</string>
+    <string name="unit_quarter">Quarter</string>
+    <string name="unit_foot">Foot</string>
+    <string name="unit_fathom">Fathom</string>
+    <string name="unit_turn">Turn</string>
+    <string name="unit_mile">Mile</string>
 </resources>
