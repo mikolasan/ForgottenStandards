@@ -10,7 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MeasuringActivity"
-            android:windowSoftInputMode="stateHidden">
+            android:windowSoftInputMode="stateHidden"
+            android:configChanges="layoutDirection|locale">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

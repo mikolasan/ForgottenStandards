@@ -1,6 +1,8 @@
 package io.github.mikolasan.imperialrussia
 
 import android.app.Activity
+import android.content.Context
+import android.content.res.Configuration
 import android.os.Bundle
 import android.text.Editable
 import android.text.InputType
@@ -12,67 +14,11 @@ import android.widget.TextView
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import java.lang.Exception
+import java.util.*
 
 class MeasuringActivity : Activity() {
 
-    private val inchName: String = resources.getString(R.string.unit_inch)
-    private val arshinName: String = resources.getString(R.string.unit_arshin)
-    private val pointName: String = resources.getString(R.string.unit_point)
-    private val lineName: String = resources.getString(R.string.unit_line)
-    private val tipName: String = resources.getString(R.string.unit_tip)
-    private val palmName: String = resources.getString(R.string.unit_palm)
-    private val quarterName: String = resources.getString(R.string.unit_quarter)
-    private val footName: String = resources.getString(R.string.unit_foot)
-    private val fathomName: String = resources.getString(R.string.unit_fathom)
-    private val turnName: String = resources.getString(R.string.unit_turn)
-    private val mileName: String = resources.getString(R.string.unit_mile)
-
-    val arshinRatio = mutableMapOf(
-            ImperialUnitName.TIP to 0.0625,
-            ImperialUnitName.QUARTER to 0.25,
-            ImperialUnitName.FOOT to 0.4285714285714286,
-            ImperialUnitName.FATHOM to 3.0, // 1 fathom = 3 arshin
-            ImperialUnitName.TURN to 1500.0,
-            ImperialUnitName.MILE to 10500.0
-    )
-
-    private val arshin = ImperialUnit(arshinName, ImperialUnitName.YARD, arshinRatio)
-
-    val inchRatio = mutableMapOf(
-            ImperialUnitName.TIP to 1.75,
-            ImperialUnitName.PALM to 2.9375,
-            ImperialUnitName.QUARTER to 7.0,
-            ImperialUnitName.FOOT to 12.0,
-            ImperialUnitName.YARD to 28.0,
-            ImperialUnitName.FATHOM to 84.0, // 1 fathom = 84 inches
-            ImperialUnitName.TURN to 42000.0,
-            ImperialUnitName.MILE to 294000.0
-    )
-
-    private val inch = ImperialUnit(inchName, ImperialUnitName.INCH, inchRatio)
-    private val point = ImperialUnit(pointName, ImperialUnitName.POINT, mutableMapOf(ImperialUnitName.INCH to 100.0))
-    private val line = ImperialUnit(lineName, ImperialUnitName.LINE, mutableMapOf(ImperialUnitName.INCH to 10.0))
-    private val tip = ImperialUnit(tipName, ImperialUnitName.TIP, mutableMapOf(ImperialUnitName.YARD to 16.0))
-    private val palm = ImperialUnit(palmName, ImperialUnitName.PALM, mutableMapOf(ImperialUnitName.INCH to 16.0/47.0))
-    private val quarter = ImperialUnit(quarterName, ImperialUnitName.QUARTER, mutableMapOf(ImperialUnitName.YARD to 4.0))
-    private val foot = ImperialUnit(footName, ImperialUnitName.FOOT, mutableMapOf(ImperialUnitName.YARD to 7.0/3.0))
-    private val fathom = ImperialUnit(fathomName, ImperialUnitName.FATHOM, mutableMapOf(ImperialUnitName.YARD to 1.0/3.0))
-    private val turn = ImperialUnit(turnName, ImperialUnitName.TURN, mutableMapOf(ImperialUnitName.YARD to 1.0/1500.0))
-    private val mile = ImperialUnit(mileName, ImperialUnitName.MILE, mutableMapOf(ImperialUnitName.YARD to 1.0/10500.0))
-
-    private val imperialUnits = mapOf(
-            ImperialUnitName.POINT to point,
-            ImperialUnitName.LINE to line,
-            ImperialUnitName.INCH to inch,
-            ImperialUnitName.TIP to tip,
-            ImperialUnitName.PALM to palm,
-            ImperialUnitName.QUARTER to quarter,
-            ImperialUnitName.FOOT to foot,
-            ImperialUnitName.YARD to arshin,
-            ImperialUnitName.FATHOM to fathom,
-            ImperialUnitName.TURN to turn,
-            ImperialUnitName.MILE to mile
-    )
+    lateinit var imperialUnits: Map<ImperialUnitName, ImperialUnit>
 
     private fun findConversionRatio(inputUnit: ImperialUnit, outputUnit: ImperialUnit): Double {
         val inputMap = inputUnit.ratioMap
@@ -131,6 +77,7 @@ class MeasuringActivity : Activity() {
     lateinit var toUnit: ImperialUnit
     lateinit var selectedPanel: ImperialUnitPanel
 
+    private var newLocale: Locale? = null
 
     inner class DigitButton(button: Button, digit: Int) {
         private val digitString = digit.toString()
@@ -182,6 +129,80 @@ class MeasuringActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_measuring)
+
+
+        var inchName: String = resources.getString(R.string.unit_inch)
+        var arshinName: String = resources.getString(R.string.unit_arshin)
+        var pointName: String = resources.getString(R.string.unit_point)
+        var lineName: String = resources.getString(R.string.unit_line)
+        var tipName: String = resources.getString(R.string.unit_tip)
+        var palmName: String = resources.getString(R.string.unit_palm)
+        var quarterName: String = resources.getString(R.string.unit_quarter)
+        var footName: String = resources.getString(R.string.unit_foot)
+        var fathomName: String = resources.getString(R.string.unit_fathom)
+        var turnName: String = resources.getString(R.string.unit_turn)
+        var mileName: String = resources.getString(R.string.unit_mile)
+
+        fun updateUnitNames() {
+            inchName = resources.getString(R.string.unit_inch)
+            arshinName = resources.getString(R.string.unit_arshin)
+            pointName = resources.getString(R.string.unit_point)
+            lineName = resources.getString(R.string.unit_line)
+            tipName = resources.getString(R.string.unit_tip)
+            palmName = resources.getString(R.string.unit_palm)
+            quarterName = resources.getString(R.string.unit_quarter)
+            footName = resources.getString(R.string.unit_foot)
+            fathomName = resources.getString(R.string.unit_fathom)
+            turnName = resources.getString(R.string.unit_turn)
+            mileName = resources.getString(R.string.unit_mile)
+        }
+
+        val arshinRatio = mutableMapOf(
+                ImperialUnitName.TIP to 0.0625,
+                ImperialUnitName.QUARTER to 0.25,
+                ImperialUnitName.FOOT to 0.4285714285714286,
+                ImperialUnitName.FATHOM to 3.0, // 1 fathom = 3 arshin
+                ImperialUnitName.TURN to 1500.0,
+                ImperialUnitName.MILE to 10500.0
+        )
+
+        val arshin = ImperialUnit(arshinName, ImperialUnitName.YARD, arshinRatio)
+
+        val inchRatio = mutableMapOf(
+                ImperialUnitName.TIP to 1.75,
+                ImperialUnitName.PALM to 2.9375,
+                ImperialUnitName.QUARTER to 7.0,
+                ImperialUnitName.FOOT to 12.0,
+                ImperialUnitName.YARD to 28.0,
+                ImperialUnitName.FATHOM to 84.0, // 1 fathom = 84 inches
+                ImperialUnitName.TURN to 42000.0,
+                ImperialUnitName.MILE to 294000.0
+        )
+
+        val inch = ImperialUnit(inchName, ImperialUnitName.INCH, inchRatio)
+        val point = ImperialUnit(pointName, ImperialUnitName.POINT, mutableMapOf(ImperialUnitName.INCH to 100.0))
+        val line = ImperialUnit(lineName, ImperialUnitName.LINE, mutableMapOf(ImperialUnitName.INCH to 10.0))
+        val tip = ImperialUnit(tipName, ImperialUnitName.TIP, mutableMapOf(ImperialUnitName.YARD to 16.0))
+        val palm = ImperialUnit(palmName, ImperialUnitName.PALM, mutableMapOf(ImperialUnitName.INCH to 16.0/47.0))
+        val quarter = ImperialUnit(quarterName, ImperialUnitName.QUARTER, mutableMapOf(ImperialUnitName.YARD to 4.0))
+        val foot = ImperialUnit(footName, ImperialUnitName.FOOT, mutableMapOf(ImperialUnitName.YARD to 7.0/3.0))
+        val fathom = ImperialUnit(fathomName, ImperialUnitName.FATHOM, mutableMapOf(ImperialUnitName.YARD to 1.0/3.0))
+        val turn = ImperialUnit(turnName, ImperialUnitName.TURN, mutableMapOf(ImperialUnitName.YARD to 1.0/1500.0))
+        val mile = ImperialUnit(mileName, ImperialUnitName.MILE, mutableMapOf(ImperialUnitName.YARD to 1.0/10500.0))
+
+        imperialUnits = mapOf(
+                ImperialUnitName.POINT to point,
+                ImperialUnitName.LINE to line,
+                ImperialUnitName.INCH to inch,
+                ImperialUnitName.TIP to tip,
+                ImperialUnitName.PALM to palm,
+                ImperialUnitName.QUARTER to quarter,
+                ImperialUnitName.FOOT to foot,
+                ImperialUnitName.YARD to arshin,
+                ImperialUnitName.FATHOM to fathom,
+                ImperialUnitName.TURN to turn,
+                ImperialUnitName.MILE to mile
+        )
 
         val motionLayout = findViewById<MotionLayout>(R.id.motion_layout)
         val lengthUnits = arrayOf(point, line, inch, tip, palm, foot, arshin, fathom, turn, mile)
@@ -340,13 +361,46 @@ class MeasuringActivity : Activity() {
         val opEval = OperationButton(findViewById(R.id.op_eval), Operation.EVAL)
 
         convFromInput.setText(valueForDisplay(0.0))
-        convFromInput.setCursorVisible(true);
-        convFromInput.requestFocus();
+        convFromInput.isCursorVisible = true
+        convFromInput.requestFocus()
+
+        val languageSetting = "language"
+        val preferencesFile = "ImperialRussiaPrefs"
+        val prefs = applicationContext.getSharedPreferences(preferencesFile, Context.MODE_PRIVATE)
+        var currentLang = prefs.getString(languageSetting, "en") ?: "en" // just want a safe call
+        val editor = prefs.edit()
 
         val languageButton = findViewById<Button>(R.id.language)
-        languageButton.setOnClickListener { view ->
 
+        languageButton.text = currentLang
+        languageButton.setOnClickListener { view ->
+            val btn = view as Button
+            if (currentLang == "ru") {
+                currentLang = "en"
+            } else if (currentLang == "en") {
+                currentLang = "ru"
+            }
+
+            newLocale = Locale(currentLang)
+            Locale.setDefault(newLocale)
+            btn.text = currentLang
+            editor.putString(languageSetting, currentLang)
+            editor.apply()
+
+            val config = resources.configuration
+            config.locale = newLocale
+            resources.updateConfiguration(config, resources.displayMetrics)
+            updateUnitNames()
         }
 
     }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        if (newLocale != null) {
+            newConfig.locale = newLocale
+        }
+
+    }
+
 }
