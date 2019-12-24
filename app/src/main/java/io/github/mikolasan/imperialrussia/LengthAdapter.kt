@@ -19,7 +19,7 @@ class LengthAdapter(context: Context, private val units: Array<ImperialUnit>) : 
         masterUnit = unit
         masterValue = value
         for (listUnit in units) {
-            listUnit.value = convertValue(unit, listUnit, value)
+            listUnit.value = LengthUnits.convertValue(unit, listUnit, value)
             if (listUnit == masterUnit)
                 fromUnit = masterUnit
         }
