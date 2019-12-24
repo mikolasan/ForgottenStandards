@@ -8,11 +8,12 @@ import androidx.constraintlayout.widget.ConstraintLayout
 
 
 class ImperialUnitPanel(val layout: ConstraintLayout, val title: TextView, val input: EditText) {
-    private var unit: ImperialUnit = ImperialUnit("No unit", ImperialUnitName.MILE, mutableMapOf())
+    private var unit: ImperialUnit = ImperialUnit(0, ImperialUnitName.MILE, mutableMapOf())
 
     fun changeUnit(newUnit: ImperialUnit) {
         unit = newUnit
-        val underlineText = SpannableString(unit.name)
+
+        val underlineText = SpannableString(title.context.resources.getString(unit.resourceId))
         underlineText.setSpan(UnderlineSpan(), 0, underlineText.length, 0)
         title.text = underlineText
     }

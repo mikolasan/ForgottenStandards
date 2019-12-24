@@ -130,33 +130,6 @@ class MeasuringActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_measuring)
 
-
-        var inchName: String = resources.getString(R.string.unit_inch)
-        var arshinName: String = resources.getString(R.string.unit_arshin)
-        var pointName: String = resources.getString(R.string.unit_point)
-        var lineName: String = resources.getString(R.string.unit_line)
-        var tipName: String = resources.getString(R.string.unit_tip)
-        var palmName: String = resources.getString(R.string.unit_palm)
-        var quarterName: String = resources.getString(R.string.unit_quarter)
-        var footName: String = resources.getString(R.string.unit_foot)
-        var fathomName: String = resources.getString(R.string.unit_fathom)
-        var turnName: String = resources.getString(R.string.unit_turn)
-        var mileName: String = resources.getString(R.string.unit_mile)
-
-        fun updateUnitNames() {
-            inchName = resources.getString(R.string.unit_inch)
-            arshinName = resources.getString(R.string.unit_arshin)
-            pointName = resources.getString(R.string.unit_point)
-            lineName = resources.getString(R.string.unit_line)
-            tipName = resources.getString(R.string.unit_tip)
-            palmName = resources.getString(R.string.unit_palm)
-            quarterName = resources.getString(R.string.unit_quarter)
-            footName = resources.getString(R.string.unit_foot)
-            fathomName = resources.getString(R.string.unit_fathom)
-            turnName = resources.getString(R.string.unit_turn)
-            mileName = resources.getString(R.string.unit_mile)
-        }
-
         val arshinRatio = mutableMapOf(
                 ImperialUnitName.TIP to 0.0625,
                 ImperialUnitName.QUARTER to 0.25,
@@ -166,7 +139,7 @@ class MeasuringActivity : Activity() {
                 ImperialUnitName.MILE to 10500.0
         )
 
-        val arshin = ImperialUnit(arshinName, ImperialUnitName.YARD, arshinRatio)
+        val arshin = ImperialUnit(R.string.unit_arshin, ImperialUnitName.YARD, arshinRatio)
 
         val inchRatio = mutableMapOf(
                 ImperialUnitName.TIP to 1.75,
@@ -179,16 +152,16 @@ class MeasuringActivity : Activity() {
                 ImperialUnitName.MILE to 294000.0
         )
 
-        val inch = ImperialUnit(inchName, ImperialUnitName.INCH, inchRatio)
-        val point = ImperialUnit(pointName, ImperialUnitName.POINT, mutableMapOf(ImperialUnitName.INCH to 100.0))
-        val line = ImperialUnit(lineName, ImperialUnitName.LINE, mutableMapOf(ImperialUnitName.INCH to 10.0))
-        val tip = ImperialUnit(tipName, ImperialUnitName.TIP, mutableMapOf(ImperialUnitName.YARD to 16.0))
-        val palm = ImperialUnit(palmName, ImperialUnitName.PALM, mutableMapOf(ImperialUnitName.INCH to 16.0/47.0))
-        val quarter = ImperialUnit(quarterName, ImperialUnitName.QUARTER, mutableMapOf(ImperialUnitName.YARD to 4.0))
-        val foot = ImperialUnit(footName, ImperialUnitName.FOOT, mutableMapOf(ImperialUnitName.YARD to 7.0/3.0))
-        val fathom = ImperialUnit(fathomName, ImperialUnitName.FATHOM, mutableMapOf(ImperialUnitName.YARD to 1.0/3.0))
-        val turn = ImperialUnit(turnName, ImperialUnitName.TURN, mutableMapOf(ImperialUnitName.YARD to 1.0/1500.0))
-        val mile = ImperialUnit(mileName, ImperialUnitName.MILE, mutableMapOf(ImperialUnitName.YARD to 1.0/10500.0))
+        val inch = ImperialUnit(R.string.unit_inch, ImperialUnitName.INCH, inchRatio)
+        val point = ImperialUnit(R.string.unit_point, ImperialUnitName.POINT, mutableMapOf(ImperialUnitName.INCH to 100.0))
+        val line = ImperialUnit(R.string.unit_line, ImperialUnitName.LINE, mutableMapOf(ImperialUnitName.INCH to 10.0))
+        val tip = ImperialUnit(R.string.unit_tip, ImperialUnitName.TIP, mutableMapOf(ImperialUnitName.YARD to 16.0))
+        val palm = ImperialUnit(R.string.unit_palm, ImperialUnitName.PALM, mutableMapOf(ImperialUnitName.INCH to 16.0/47.0))
+        val quarter = ImperialUnit(R.string.unit_quarter, ImperialUnitName.QUARTER, mutableMapOf(ImperialUnitName.YARD to 4.0))
+        val foot = ImperialUnit(R.string.unit_foot, ImperialUnitName.FOOT, mutableMapOf(ImperialUnitName.YARD to 7.0/3.0))
+        val fathom = ImperialUnit(R.string.unit_fathom, ImperialUnitName.FATHOM, mutableMapOf(ImperialUnitName.YARD to 1.0/3.0))
+        val turn = ImperialUnit(R.string.unit_turn, ImperialUnitName.TURN, mutableMapOf(ImperialUnitName.YARD to 1.0/1500.0))
+        val mile = ImperialUnit(R.string.unit_mile, ImperialUnitName.MILE, mutableMapOf(ImperialUnitName.YARD to 1.0/10500.0))
 
         imperialUnits = mapOf(
                 ImperialUnitName.POINT to point,
@@ -390,7 +363,10 @@ class MeasuringActivity : Activity() {
             val config = resources.configuration
             config.locale = newLocale
             resources.updateConfiguration(config, resources.displayMetrics)
-            updateUnitNames()
+
+            lengthAdapter.notifyDataSetChanged()
+            convFromPanel.changeUnit(fromUnit)
+            convToPanel.changeUnit(toUnit)
         }
 
     }

@@ -41,7 +41,7 @@ class LengthAdapter(context: Context, private val units: Array<ImperialUnit>) : 
             else -> inflater.inflate(R.layout.listview_item, parent, false)
         }
         val nameTextView: TextView = view.findViewById(R.id.unit_name)
-        nameTextView.text = units[position].name
+        nameTextView.text = inflater.context.resources.getString(units[position].resourceId)
         val valueTextView: TextView = view.findViewById(R.id.unit_value)
         valueTextView.text = valueForDisplay(units[position].value)
         return view
