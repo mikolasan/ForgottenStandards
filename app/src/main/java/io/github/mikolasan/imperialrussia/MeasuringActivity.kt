@@ -1,8 +1,10 @@
 package io.github.mikolasan.imperialrussia
 
+import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.InputType
@@ -15,6 +17,13 @@ import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import java.lang.Exception
 import java.util.*
+import android.text.Spannable
+import android.text.style.RelativeSizeSpan
+import android.text.style.SuperscriptSpan
+import android.text.SpannableStringBuilder
+import android.view.inputmethod.InputMethodManager
+import androidx.annotation.RequiresApi
+
 
 class MeasuringActivity : Activity() {
 
@@ -95,7 +104,7 @@ class MeasuringActivity : Activity() {
         val convFromInput = findViewById<EditText>(R.id.conv_from_input)
         val convToInput = findViewById<EditText>(R.id.conv_to_input)
         convFromInput.inputType = InputType.TYPE_NULL // hide keyboard on focus
-        convToInput.inputType = InputType.TYPE_NULL
+        convToInput.inputType = InputType.TYPE_CLASS_NUMBER
         val convFromTitle = findViewById<TextView>(R.id.conv_from_title)
         val convToTitle = findViewById<TextView>(R.id.conv_to_title)
         val convFromPanel = ImperialUnitPanel(convFromLayout, convFromTitle, convFromInput)
@@ -131,13 +140,16 @@ class MeasuringActivity : Activity() {
         }
 
         fun getColor(resourceId: Int): Int {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // >= (API 23) Android 6.0 Marshmallow
                 val theme = null
-                return resources.getColor(resourceId, theme)
+                resources.getColor(resourceId, theme)
             } else {
-                return resources.getColor(resourceId)
+                @Suppress("DEPRECATION")
+                resources.getColor(resourceId)
             }
         }
+
+
         val colorInputSelected = getColor(R.color.inputSelected)
         val colorInputNormal = getColor(R.color.inputNormal)
 
@@ -159,37 +171,60 @@ class MeasuringActivity : Activity() {
             convToInput.setTextColor(colorInputNormal)
         }
 
-        convFromInput.addTextChangedListener(object: TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                if (selectedPanel.input != convFromInput)
-                    return
+//        convFromInput.addTextChangedListener(object: TextWatcher {
+//            override fun afterTextChanged(s: Editable?) {
+//                if (selectedPanel.input != convFromInput)
+//                    return
+//
+//                s?.let {
+//                    val fromValue = BasicCalculator(s.toString()).eval()
+//                    val toValue = LengthUnits.convertValue(fromUnit, toUnit, fromValue)
+//                    convToInput.setText(valueForDisplay(toValue))
+//                    lengthAdapter.setCurrentValue(fromUnit, fromValue)
+//                    convFromInput.setSelection(convFromInput.text.length)
+//                }
+//            }
+//
+//            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+//            }
+//
+//            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+//            }
+//        })
 
-                s?.let {
-                    val fromValue = BasicCalculator(s.toString()).eval()
-                    val toValue = LengthUnits.convertValue(fromUnit, toUnit, fromValue)
-                    convToInput.setText(valueForDisplay(toValue))
-                    lengthAdapter.setCurrentValue(fromUnit, fromValue)
-                    convFromInput.setSelection(convFromInput.text.length)
-                }
-            }
+//        convToInput.setOnFocusChangeListener { view, hasFocus ->
+//            if (view is EditText) {
+//                if (hasFocus) {
+//                    selectedPanel = convToPanel
+//                    convFromPanel.setHighlight(false)
+//                    convToPanel.setHighlight(true)
+//                }
+//                view.setTextColor(if (hasFocus) colorInputSelected else colorInputNormal)
+//
+//            }
+//        }
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-        })
+        fun setCursor(editText: EditText) {
+            editText.isCursorVisible = true
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                editText.textCursorDrawable = resources.getDrawable(R.drawable.ic_cursor)
+            } else {
 
-        convToInput.setOnFocusChangeListener { view, hasFocus ->
-            if (view is EditText) {
-                if (hasFocus) {
-                    selectedPanel = convToPanel
-                    convFromPanel.setHighlight(false)
-                    convToPanel.setHighlight(true)
-                }
-                view.setTextColor(if (hasFocus) colorInputSelected else colorInputNormal)
             }
         }
+
+
+        //setCursor(convToInput)
+
+//        // X^3 + X^2
+//        val cs = SpannableStringBuilder("X3 + X2")
+//        cs.setSpan(SuperscriptSpan(), 1, 2, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+//        cs.setSpan(RelativeSizeSpan(0.75f), 1, 2, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+//        cs.setSpan(SuperscriptSpan(), 6, 7, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+//        cs.setSpan(RelativeSizeSpan(0.75f), 6, 7, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+//        convToInput.setText(cs)
+
         convToLayout.setOnClickListener{ view ->
             selectedPanel = convToPanel
             convFromPanel.setHighlight(false)
@@ -212,6 +247,7 @@ class MeasuringActivity : Activity() {
                     val fromValue = LengthUnits.convertValue(toUnit, fromUnit, toValue)
                     convFromInput.setText(valueForDisplay(fromValue))
                     lengthAdapter.setCurrentValue(fromUnit, fromValue)
+                    convToInput.setSelection(convToInput.text.length)
                 }
             }
 
