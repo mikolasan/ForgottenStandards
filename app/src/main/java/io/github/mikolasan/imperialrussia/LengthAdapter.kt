@@ -39,12 +39,12 @@ class LengthAdapter(context: Context, private val units: Array<ImperialUnit>) : 
         OTHER
     }
 
-    val backgrounds = mapOf(
+    private val backgrounds = mapOf(
         ViewState.FROM to R.drawable.ic_side_from_back,
         ViewState.TO to R.drawable.ic_side_to_back,
         ViewState.OTHER to R.drawable.ic_side_panel_back
     )
-    val nameColors = mapOf(
+    private val nameColors = mapOf(
         ViewState.FROM to R.color.inputNormal,
         ViewState.TO to R.color.inputSelected,
         ViewState.OTHER to R.color.colorPrimary

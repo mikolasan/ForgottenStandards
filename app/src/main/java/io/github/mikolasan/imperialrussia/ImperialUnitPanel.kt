@@ -12,15 +12,13 @@ import androidx.constraintlayout.widget.ConstraintLayout
 class ImperialUnitPanel(private val layout: ConstraintLayout) {
     private var unit: ImperialUnit = ImperialUnit(0, ImperialUnitName.MILE, mutableMapOf())
     private val title = layout.findViewById<TextView>(R.id.title)
-    private val input = layout.findViewById<EditText>(R.id.input)
+    val input = layout.findViewById<EditText>(R.id.input)
     private val hint = layout.findViewById<TextView>(R.id.hint)
 
     init {
         //input.inputType = InputType.TYPE_NULL // hide keyboard on focus
         input.inputType = InputType.TYPE_CLASS_NUMBER
-        title.visibility = View.INVISIBLE
-        input.visibility = View.INVISIBLE
-        hint.visibility = View.VISIBLE
+        deactivate()
     }
 
     fun changeUnit(newUnit: ImperialUnit) {

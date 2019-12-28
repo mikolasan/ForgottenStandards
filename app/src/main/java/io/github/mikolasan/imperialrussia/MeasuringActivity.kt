@@ -98,10 +98,10 @@ class MeasuringActivity : Activity() {
         toUnit = lengthUnits[1]
         val convFromLayout = findViewById<ConstraintLayout>(R.id.convert_from)
         val convToLayout = findViewById<ConstraintLayout>(R.id.convert_to)
-        val convFromInput = findViewById<EditText>(R.id.conv_from_input)
-        val convToInput = findViewById<EditText>(R.id.input)
         val convFromPanel = ImperialUnitPanel(convFromLayout)
         val convToPanel = ImperialUnitPanel(convToLayout)
+        val convFromInput = convFromPanel.input
+        val convToInput = convToPanel.input
         convFromPanel.changeUnit(fromUnit)
         convToPanel.changeUnit(toUnit)
 

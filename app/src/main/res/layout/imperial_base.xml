@@ -15,14 +15,13 @@
         layout="@layout/convert_panel"
         tools:layout_editor_absoluteX="8dp"
         tools:layout_editor_absoluteY="16dp"
-        android:layout_width="312dp"
+        android:layout_width="@dimen/min_panel_width"
         android:layout_height="133dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
 
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <include
         android:id="@+id/convert_from"
