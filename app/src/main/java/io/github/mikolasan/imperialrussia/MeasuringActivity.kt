@@ -5,18 +5,24 @@ import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
-import android.text.InputType
 import android.text.TextWatcher
 import android.widget.EditText
 import android.widget.Button
 import android.widget.ListView
-import android.widget.TextView
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import java.util.*
 
 
+
+
+
+
+
 class MeasuringActivity : Activity() {
+
+    private val languageSetting = "language"
+    private val preferencesFile = "ImperialRussiaPrefs"
 
     enum class Operation {
         PLUS,
@@ -269,8 +275,7 @@ class MeasuringActivity : Activity() {
         convFromInput.isCursorVisible = true
         convFromInput.requestFocus()
 
-        val languageSetting = "language"
-        val preferencesFile = "ImperialRussiaPrefs"
+
         val prefs = applicationContext.getSharedPreferences(preferencesFile, Context.MODE_PRIVATE)
         var currentLang = prefs.getString(languageSetting, "en") ?: "en" // just want a safe call
         val editor = prefs.edit()
@@ -296,6 +301,7 @@ class MeasuringActivity : Activity() {
             config.locale = newLocale
             resources.updateConfiguration(config, resources.displayMetrics)
 
+
             lengthAdapter.notifyDataSetChanged()
             convFromPanel.changeUnit(fromUnit)
             convToPanel.changeUnit(toUnit)
@@ -303,4 +309,15 @@ class MeasuringActivity : Activity() {
 
     }
 
+    override fun attachBaseContext(newBase: Context) {
+
+        val prefs = newBase.getSharedPreferences(preferencesFile, Context.MODE_PRIVATE)
+        val currentLang = prefs.getString(languageSetting, "en") ?: "en" // just want a safe call
+        newLocale = Locale(currentLang)
+
+        val context = ImperialContextWrapper.wrap(newBase, newLocale!!)
+        super.attachBaseContext(context)
+    }
+
 }
+
