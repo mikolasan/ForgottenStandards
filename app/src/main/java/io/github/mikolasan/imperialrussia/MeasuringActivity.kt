@@ -1,9 +1,7 @@
 package io.github.mikolasan.imperialrussia
 
-import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
-import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
@@ -15,14 +13,7 @@ import android.widget.ListView
 import android.widget.TextView
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.constraintlayout.widget.ConstraintLayout
-import java.lang.Exception
 import java.util.*
-import android.text.Spannable
-import android.text.style.RelativeSizeSpan
-import android.text.style.SuperscriptSpan
-import android.text.SpannableStringBuilder
-import android.view.inputmethod.InputMethodManager
-import androidx.annotation.RequiresApi
 
 
 class MeasuringActivity : Activity() {
@@ -102,13 +93,9 @@ class MeasuringActivity : Activity() {
         val convFromLayout = findViewById<ConstraintLayout>(R.id.convert_from)
         val convToLayout = findViewById<ConstraintLayout>(R.id.convert_to)
         val convFromInput = findViewById<EditText>(R.id.conv_from_input)
-        val convToInput = findViewById<EditText>(R.id.conv_to_input)
-        convFromInput.inputType = InputType.TYPE_NULL // hide keyboard on focus
-        convToInput.inputType = InputType.TYPE_CLASS_NUMBER
-        val convFromTitle = findViewById<TextView>(R.id.conv_from_title)
-        val convToTitle = findViewById<TextView>(R.id.conv_to_title)
-        val convFromPanel = ImperialUnitPanel(convFromLayout, convFromTitle, convFromInput)
-        val convToPanel = ImperialUnitPanel(convToLayout, convToTitle, convToInput)
+        val convToInput = findViewById<EditText>(R.id.input)
+        val convFromPanel = ImperialUnitPanel(convFromLayout)
+        val convToPanel = ImperialUnitPanel(convToLayout)
         convFromPanel.changeUnit(fromUnit)
         convToPanel.changeUnit(toUnit)
 

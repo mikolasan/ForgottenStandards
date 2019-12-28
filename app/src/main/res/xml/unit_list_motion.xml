@@ -4,8 +4,8 @@
     xmlns:motion="http://schemas.android.com/apk/res-auto">
 
     <Transition
-        motion:constraintSetStart="@+id/start"
-        motion:constraintSetEnd="@+id/end"
+        motion:constraintSetStart="@+id/end"
+        motion:constraintSetEnd="@+id/start"
         motion:duration="150"
         motion:motionInterpolator="linear">
         <OnSwipe

@@ -15,14 +15,14 @@ import java.text.ParsePosition
 class LengthAdapter(context: Context, private val units: Array<ImperialUnit>) : BaseAdapter() {
     private val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
     private val getStringFromResourceId: (Int) -> String = { i: Int -> context.resources.getString(i) }
-    private val getDrawableFromResourceId: (Int) -> Drawable = { i: Int ->
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { // >= (API 21) Android 5.0 Lollipop
-            context.resources.getDrawable(i, null)
-        } else {
-            @Suppress("DEPRECATION")
-            context.resources.getDrawable(i)
-        }
-    }
+//    private val getDrawableFromResourceId: (Int) -> Drawable = { i: Int ->
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { // >= (API 21) Android 5.0 Lollipop
+//            context.resources.getDrawable(i, null)
+//        } else {
+//            @Suppress("DEPRECATION")
+//            context.resources.getDrawable(i)
+//        }
+//    }
     private val getColorFromRsourceId: (Int) -> Int = { i: Int ->
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // >= (API 23) Android 6.0 Marshmallow
             val theme = null
@@ -84,15 +84,15 @@ class LengthAdapter(context: Context, private val units: Array<ImperialUnit>) : 
         val nameTextView: TextView = layout.findViewById(R.id.unit_name)
         when (data) {
             fromUnit -> {
-                layout.background = getDrawableFromResourceId(backgrounds.getValue(ViewState.FROM))
+                layout.setBackgroundResource(backgrounds.getValue(ViewState.FROM))
                 nameTextView.setTextColor(getColorFromRsourceId(nameColors.getValue(ViewState.FROM)))
             }
             toUnit -> {
-                layout.background = getDrawableFromResourceId(backgrounds.getValue(ViewState.TO))
+                layout.setBackgroundResource(backgrounds.getValue(ViewState.TO))
                 nameTextView.setTextColor(getColorFromRsourceId(nameColors.getValue(ViewState.TO)))
             }
             else -> {
-                layout.background = getDrawableFromResourceId(backgrounds.getValue(ViewState.OTHER))
+                layout.setBackgroundResource(backgrounds.getValue(ViewState.OTHER))
                 nameTextView.setTextColor(getColorFromRsourceId(nameColors.getValue(ViewState.OTHER)))
             }
         }

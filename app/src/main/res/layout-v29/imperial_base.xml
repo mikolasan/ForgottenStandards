@@ -10,32 +10,117 @@
     android:layout_alignParentEnd="true"
     android:layout_alignParentBottom="true">
 
-    <include
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/convert_to"
-        layout="@layout/convert_panel"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="16dp"
         android:layout_width="312dp"
         android:layout_height="133dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-
+        android:background="@drawable/ic_input_panel_back"
+        android:clickable="true"
+        android:elevation="5dp"
+        android:minWidth="@dimen/min_panel_width"
+        android:paddingBottom="10dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <include
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/unit_to"
+            android:textAppearance="@style/ImperialKeypad"
+            android:textColor="@color/colorPrimary"
+            android:textSize="42sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/input"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/ic_input_text_back"
+            android:cursorVisible="true"
+            android:ems="10"
+            android:gravity="right|fill_vertical"
+            android:paddingTop="3dp"
+            android:paddingEnd="12dp"
+            android:paddingBottom="3dp"
+            android:singleLine="true"
+            android:textAppearance="@style/ImperialKeypad"
+            android:textColor="@color/inputNormal"
+            android:textCursorDrawable="@drawable/ic_cursor"
+            android:textIsSelectable="true"
+            android:textSize="34sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/title" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/convert_from"
-        layout="@layout/convert_panel"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="165dp"
         android:layout_width="@dimen/min_panel_width"
         android:layout_height="133dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-
+        android:background="@drawable/ic_input_panel_back"
+        android:clickable="true"
+        android:elevation="5dp"
+        android:minWidth="@dimen/min_panel_width"
+        android:paddingBottom="10dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/convert_to" />
+        app:layout_constraintTop_toBottomOf="@+id/convert_to">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/conv_from_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/unit_from"
+            android:textAppearance="@style/ImperialKeypad"
+            android:textColor="@color/colorPrimary"
+            android:textSize="42sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/conv_from_input"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/ic_input_text_back"
+
+            android:cursorVisible="true"
+            android:ems="10"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="right|fill_vertical"
+            android:minHeight="50dp"
+            android:paddingTop="3dp"
+            android:paddingEnd="12dp"
+            android:paddingBottom="3dp"
+            android:singleLine="true"
+            android:textAppearance="@style/ImperialKeypad"
+            android:textColor="@color/inputNormal"
+            android:textCursorDrawable="@drawable/ic_cursor"
+            android:textIsSelectable="true"
+            android:textSize="36sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/conv_from_title" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/keyboard_layout"
