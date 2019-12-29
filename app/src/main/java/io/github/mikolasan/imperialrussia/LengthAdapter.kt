@@ -57,8 +57,8 @@ class LengthAdapter(context: Context, private val units: Array<ImperialUnit>) : 
 
     private lateinit var masterUnit: ImperialUnit
     private var masterValue: Double = 0.0
-    private var fromUnit: ImperialUnit = units[0]
-    private var toUnit: ImperialUnit = units[1]
+    private var fromUnit: ImperialUnit? = null
+    private var toUnit: ImperialUnit? = null
 
     fun setCurrentValue(unit: ImperialUnit, value: Double) {
         masterUnit = unit

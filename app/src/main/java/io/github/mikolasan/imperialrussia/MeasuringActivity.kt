@@ -23,6 +23,17 @@ class MeasuringActivity : Activity() {
 
     private val languageSetting = "language"
     private val preferencesFile = "ImperialRussiaPrefs"
+    private var newLocale: Locale? = null
+    private var selectedPanel: ImperialUnitPanel? = null
+
+    inner class DigitButton(button: Button, digit: Int) {
+        private val digitSym: Char = digit.toString()[0]
+        init {
+            button.setOnClickListener {
+                selectedPanel?.appendString(digitSym)
+            }
+        }
+    }
 
     enum class Operation {
         PLUS,
@@ -35,53 +46,24 @@ class MeasuringActivity : Activity() {
         EVAL,
     }
 
-    lateinit var fromUnit: ImperialUnit
-    lateinit var toUnit: ImperialUnit
-    lateinit var selectedPanel: ImperialUnitPanel
-
-    private var newLocale: Locale? = null
-
-    inner class DigitButton(button: Button, digit: Int) {
-        private val digitString = digit.toString()
-        init {
-            button.setOnClickListener {
-                val selectedInput = selectedPanel.input
-                val value = selectedInput.text.toString()
-                selectedInput.setText(value + digitString)
-            }
-        }
-    }
-
     inner class OperationButton(button: Button, operation: Operation) {
-        val operations = setOf('/', '*', '+', '-', '.')
+        private val operations = setOf('/', '*', '+', '-', '.')
 
-        fun addSymbol(sym: Char) {
-            val selectedInput = selectedPanel.input
-            var value = selectedInput.text.toString()
-            if (operations.contains(value.last()))
-                value = value.dropLast(1)
-            selectedInput.setText(value + sym)
+        private fun addSymbol(sym: Char) {
+            selectedPanel?.appendString(sym, operations)
         }
 
         init {
             button.setOnClickListener {
-                val selectedInput = selectedPanel.input
                 when (operation) {
                     Operation.MULT -> addSymbol('*')
                     Operation.DIV -> addSymbol('/')
                     Operation.PLUS -> addSymbol('+')
                     Operation.MINUS -> addSymbol('-')
-                    Operation.CLEAR -> selectedInput.setText("")
-                    Operation.BACK -> {
-                        val value = selectedInput.text.toString()
-                        selectedInput.setText(value.dropLast(1))
-                    }
+                    Operation.CLEAR -> selectedPanel?.setString("")
+                    Operation.BACK -> selectedPanel?.dropLastChar()
                     Operation.DOT -> addSymbol('.')
-                    Operation.EVAL -> {
-                        val value = selectedInput.text.toString()
-                        val calculator = BasicCalculator(value)
-                        selectedInput.setText(calculator.eval().toString())
-                    }
+                    Operation.EVAL -> selectedPanel?.evaluateString()
                 }
             }
         }
@@ -92,42 +74,64 @@ class MeasuringActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_measuring)
 
-        val motionLayout = findViewById<MotionLayout>(R.id.motion_layout)
-        val lengthUnits = LengthUnits.lengthUnits
-        fromUnit = lengthUnits[0]
-        toUnit = lengthUnits[1]
         val convFromLayout = findViewById<ConstraintLayout>(R.id.convert_from)
         val convToLayout = findViewById<ConstraintLayout>(R.id.convert_to)
         val convFromPanel = ImperialUnitPanel(convFromLayout)
         val convToPanel = ImperialUnitPanel(convToLayout)
         val convFromInput = convFromPanel.input
         val convToInput = convToPanel.input
-        convFromPanel.changeUnit(fromUnit)
-        convToPanel.changeUnit(toUnit)
 
-        selectedPanel = convFromPanel
-
+        val lengthUnits = LengthUnits.lengthUnits
         val lengthAdapter = LengthAdapter(this, lengthUnits)
         val lengthList = findViewById<ListView>(R.id.units_list)
         lengthList.adapter = lengthAdapter
         lengthList.setOnItemClickListener{ parent, view, position, id ->
             val unit = lengthAdapter.getItem(position) as? ImperialUnit
             unit?.let {
-                selectedPanel.changeUnit(unit)
-                if (selectedPanel.input == convToInput) {
-                    toUnit = unit
-                    val fromValue = convFromInput.text.toString().toDouble()
-                    val toValue = LengthUnits.convertValue(fromUnit, unit, fromValue)
-                    convToInput.setText(valueForDisplay(toValue))
-                    lengthAdapter.selectToUnit(unit)
-                    lengthAdapter.notifyDataSetChanged()
-                } else if (selectedPanel.input == convFromInput) {
-                    fromUnit = unit
-                    val fromValue = convFromInput.text.toString().toDouble()
-                    val toValue = LengthUnits.convertValue(fromUnit, toUnit, fromValue)
-                    convToInput.setText(valueForDisplay(toValue))
-                    lengthAdapter.setCurrentValue(unit, fromValue)
+                if (!convFromPanel.isActivated()) {
+                    convFromPanel.changeUnit(unit)
+                    convFromPanel.setHighlight(true)
+                    selectedPanel = convFromPanel
+                    val startValue = 1.0
+                    convFromPanel.setValue(startValue)
                     lengthAdapter.selectFromUnit(unit)
+                    lengthAdapter.setCurrentValue(unit, startValue)
+                } else if (!convToPanel.isActivated()) {
+                    if (convFromPanel.unit != unit) {
+                        convToPanel.changeUnit(unit)
+                        convToPanel.setHighlight(true)
+                        convFromPanel.setHighlight(false)
+                        selectedPanel = convToPanel
+                        val fromValue = convFromPanel.getValue()
+                        val toValue = LengthUnits.convertValue(convFromPanel.unit, unit, fromValue)
+                        convToPanel.setValue(toValue)
+                        lengthAdapter.selectToUnit(unit)
+                    } else {
+                        selectedPanel = null
+                        convFromPanel.setHighlight(false)
+                        convFromPanel.deactivate()
+                        lengthAdapter.setCurrentValue(unit, 0.0)
+                    }
+                } else {
+                    if (selectedPanel == convToPanel) {
+                        if (convToPanel.unit != unit) {
+                            convToPanel.changeUnit(unit)
+                            val fromValue = convFromPanel.getValue()
+                            val toValue = LengthUnits.convertValue(convFromPanel.unit, unit, fromValue)
+                            convToPanel.setValue(toValue)
+                            lengthAdapter.selectToUnit(unit)
+                            lengthAdapter.notifyDataSetChanged()
+                        } // else {}
+                    } else if (selectedPanel == convFromPanel) {
+                        if (convFromPanel.unit != unit) {
+                            convFromPanel.changeUnit(unit)
+                            val fromValue = convFromPanel.getValue()
+                            val toValue = LengthUnits.convertValue(convFromPanel.unit, convToPanel.unit, fromValue)
+                            convToPanel.setValue(toValue)
+                            lengthAdapter.setCurrentValue(unit, fromValue)
+                            lengthAdapter.selectFromUnit(unit)
+                        } // else {}
+                    }
                 }
             }
         }
@@ -142,26 +146,25 @@ class MeasuringActivity : Activity() {
             }
         }
 
-
         val colorInputSelected = getColor(R.color.inputSelected)
         val colorInputNormal = getColor(R.color.inputNormal)
+
+        fun selectPanel(new: ImperialUnitPanel, old: ImperialUnitPanel) {
+            selectedPanel = new
+            new.setHighlight(true)
+            old.setHighlight(false)
+        }
 
         convFromInput.setOnFocusChangeListener { view, hasFocus ->
             if (view is EditText) {
                 if (hasFocus) {
-                    selectedPanel = convFromPanel
-                    convFromPanel.setHighlight(true)
-                    convToPanel.setHighlight(false)
+                    selectPanel(convFromPanel, convToPanel)
                 }
-                view.setTextColor(if (hasFocus) colorInputSelected else colorInputNormal)
+                //view.setTextColor(if (hasFocus) colorInputSelected else colorInputNormal)
             }
         }
         convFromLayout.setOnClickListener { view ->
-            selectedPanel = convFromPanel
-            convFromPanel.setHighlight(true)
-            convToPanel.setHighlight(false)
-            convFromInput.setTextColor(colorInputSelected)
-            convToInput.setTextColor(colorInputNormal)
+            selectPanel(convFromPanel, convToPanel)
         }
 
 //        convFromInput.addTextChangedListener(object: TextWatcher {
@@ -171,9 +174,9 @@ class MeasuringActivity : Activity() {
 //
 //                s?.let {
 //                    val fromValue = BasicCalculator(s.toString()).eval()
-//                    val toValue = LengthUnits.convertValue(fromUnit, toUnit, fromValue)
+//                    val toValue = LengthUnits.convertValue(convFromPanel.unit, convToPanel.unit, fromValue)
 //                    convToInput.setText(valueForDisplay(toValue))
-//                    lengthAdapter.setCurrentValue(fromUnit, fromValue)
+//                    lengthAdapter.setCurrentValue(convFromPanel.unit, fromValue)
 //                    convFromInput.setSelection(convFromInput.text.length)
 //                }
 //            }
@@ -188,11 +191,9 @@ class MeasuringActivity : Activity() {
 //        convToInput.setOnFocusChangeListener { view, hasFocus ->
 //            if (view is EditText) {
 //                if (hasFocus) {
-//                    selectedPanel = convToPanel
-//                    convFromPanel.setHighlight(false)
-//                    convToPanel.setHighlight(true)
+//                    selectPanel(convToPanel, convFromPanel)
 //                }
-//                view.setTextColor(if (hasFocus) colorInputSelected else colorInputNormal)
+//                //view.setTextColor(if (hasFocus) colorInputSelected else colorInputNormal)
 //
 //            }
 //        }
@@ -219,17 +220,14 @@ class MeasuringActivity : Activity() {
 //        convToInput.setText(cs)
 
         convToLayout.setOnClickListener{ view ->
-            selectedPanel = convToPanel
-            convFromPanel.setHighlight(false)
-            convToPanel.setHighlight(true)
-            convFromInput.setTextColor(colorInputNormal)
-            convToInput.setTextColor(colorInputSelected)
+            selectPanel(convToPanel, convFromPanel)
         }
 
+        val motionLayout = findViewById<MotionLayout>(R.id.motion_layout)
         convToInput.addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(s: Editable?) {
 
-                if (selectedPanel.input != convToInput)
+                if (selectedPanel?.input != convToInput)
                     return
 
                 if (motionLayout.progress.equals(1.0))
@@ -237,9 +235,9 @@ class MeasuringActivity : Activity() {
 
                 s?.let {
                     val toValue = BasicCalculator(s.toString()).eval()
-                    val fromValue = LengthUnits.convertValue(toUnit, fromUnit, toValue)
+                    val fromValue = LengthUnits.convertValue(convToPanel.unit, convFromPanel.unit, toValue)
                     convFromInput.setText(valueForDisplay(fromValue))
-                    lengthAdapter.setCurrentValue(fromUnit, fromValue)
+                    lengthAdapter.setCurrentValue(convFromPanel.unit, fromValue)
                     convToInput.setSelection(convToInput.text.length)
                 }
             }
@@ -303,8 +301,8 @@ class MeasuringActivity : Activity() {
 
 
             lengthAdapter.notifyDataSetChanged()
-            convFromPanel.changeUnit(fromUnit)
-            convToPanel.changeUnit(toUnit)
+            convFromPanel.changeUnit(convFromPanel.unit)
+            convToPanel.changeUnit(convToPanel.unit)
         }
 
     }
