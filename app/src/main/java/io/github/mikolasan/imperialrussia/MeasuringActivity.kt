@@ -122,27 +122,52 @@ class MeasuringActivity : Activity() {
             val unit = lengthAdapter.getItem(position) as? ImperialUnit
             unit?.let {
                 if (!convFromPanel.isActivated()) {
-                    selectPanel(convFromPanel, null)
-                    setBottomPanel(unit,null)
+                    if (convToPanel.unit != unit) {
+                        selectPanel(convFromPanel, convToPanel)
+                        setBottomPanel(unit,null)
+                    } else {
+                        selectPanel(null, convToPanel)
+                        convToPanel.unit = null
+                        convToPanel.deactivate()
+                        lengthAdapter.selectToUnit(null)
+                        lengthAdapter.notifyDataSetChanged()
+                    }
                 } else if (!convToPanel.isActivated()) {
                     if (convFromPanel.unit != unit) {
                         selectPanel(convToPanel, convFromPanel)
                         setTopPanel(unit, convFromPanel.getValue())
                     } else {
                         selectPanel(null, convFromPanel)
+                        convFromPanel.unit = null
                         convFromPanel.deactivate()
-                        lengthAdapter.setCurrentValue(unit, 0.0)
+                        lengthAdapter.selectFromUnit(null)
+                        lengthAdapter.notifyDataSetChanged()
                     }
                 } else {
                     if (selectedPanel == convToPanel) {
-                        if (convToPanel.unit != unit) {
+                        if (convToPanel.unit == unit) {
+                            selectPanel(convFromPanel, convToPanel)
+                            convToPanel.unit = null
+                            convToPanel.deactivate()
+                            lengthAdapter.selectToUnit(null)
+                            lengthAdapter.notifyDataSetChanged()
+                        } else if (convFromPanel.unit != unit) {
                             setTopPanel(unit, convFromPanel.getValue())
-                            //lengthAdapter.notifyDataSetChanged()
-                        } // else {}
+                        } else {
+                            selectPanel(convFromPanel, convToPanel)
+                        }
                     } else if (selectedPanel == convFromPanel) {
-                        if (convFromPanel.unit != unit) {
+                        if (convFromPanel.unit == unit) {
+                            selectPanel(convToPanel, convFromPanel)
+                            convFromPanel.unit = null
+                            convFromPanel.deactivate()
+                            lengthAdapter.selectFromUnit(null)
+                            lengthAdapter.notifyDataSetChanged()
+                        } else if (convToPanel.unit != unit) {
                             setBottomPanel(unit, convFromPanel.getValue())
-                        } // else {}
+                        } else {
+                            selectPanel(convToPanel, convFromPanel)
+                        }
                     }
                 }
             }

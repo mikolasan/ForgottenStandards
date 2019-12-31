@@ -68,11 +68,11 @@ class LengthAdapter(context: Context, private val units: Array<ImperialUnit>) : 
         notifyDataSetChanged()
     }
 
-    fun selectFromUnit(unit: ImperialUnit) {
+    fun selectFromUnit(unit: ImperialUnit?) {
         fromUnit = unit
     }
 
-    fun selectToUnit(unit: ImperialUnit) {
+    fun selectToUnit(unit: ImperialUnit?) {
         toUnit = unit
     }
 

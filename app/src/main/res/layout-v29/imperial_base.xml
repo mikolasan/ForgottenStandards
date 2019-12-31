@@ -431,7 +431,6 @@
         android:layout_width="24dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:background="@color/colorPrimaryDark"
         android:clickable="false"
         android:maxWidth="24dp"
         android:minWidth="24dp"
