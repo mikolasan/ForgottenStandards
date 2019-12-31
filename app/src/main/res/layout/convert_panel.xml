@@ -53,11 +53,12 @@
         app:layout_constraintTop_toBottomOf="@+id/title"
         tools:visibility="invisible" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/hint"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:text="Select unit to convert TO (swipe left)"
+        android:text="@string/select_unit_hint"
+        android:textAppearance="@style/ImperialKeypad"
         android:textAlignment="center"
         android:textColor="@color/colorPrimary"
         android:textSize="34sp"

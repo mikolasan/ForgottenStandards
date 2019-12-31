@@ -441,20 +441,4 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/language"
-        style="@android:style/Widget.Button"
-        android:layout_width="@dimen/op_key_side"
-        android:layout_height="@dimen/op_key_side"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/ic_keyboard_special_back"
-        android:elevation="10dp"
-        android:text="@string/lang_ru"
-        android:textAppearance="@style/ImperialKeypad"
-        android:textColor="@color/keyboardSpecial"
-        android:textSize="28sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

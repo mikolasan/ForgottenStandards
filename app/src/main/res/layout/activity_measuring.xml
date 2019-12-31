@@ -7,13 +7,13 @@
     android:layout_height="match_parent"
     app:layoutDescription="@xml/unit_list_motion">
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imageView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_background_damask" />
+        android:src="@drawable/background_damask_540x960" />
 
     <include
         layout="@layout/imperial_base"
@@ -28,5 +28,20 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         tools:layout_editor_absoluteX="406dp" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/language"
+        style="@android:style/Widget.Button"
+        android:layout_width="@dimen/op_key_side"
+        android:layout_height="@dimen/op_key_side"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/ic_keyboard_special_back"
+        android:text="@string/lang_ru"
+        android:textAppearance="@style/ImperialKeypad"
+        android:textColor="@color/keyboardSpecial"
+        android:textSize="28sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.motion.widget.MotionLayout>
