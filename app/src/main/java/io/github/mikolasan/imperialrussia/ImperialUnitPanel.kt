@@ -12,7 +12,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 
 
 class ImperialUnitPanel(private val layout: ConstraintLayout) {
-    var unit: ImperialUnit = ImperialUnit(0, ImperialUnitName.MILE, mutableMapOf())
+    var unit: ImperialUnit? = null
     private val title: TextView = layout.findViewById(R.id.title)
     val input: EditText = layout.findViewById(R.id.input)
     private val hint: TextView = layout.findViewById(R.id.hint)
@@ -37,11 +37,21 @@ class ImperialUnitPanel(private val layout: ConstraintLayout) {
 
     fun changeUnit(newUnit: ImperialUnit) {
         unit = newUnit
-
-        val underlineText = SpannableString(title.context.resources.getString(unit.resourceId))
-        underlineText.setSpan(UnderlineSpan(), 0, underlineText.length, 0)
-        title.text = underlineText
+        updateUnitText()
         activate()
+    }
+
+    fun updateUnitText() {
+        val resourceId = unit?.resourceId
+        if (resourceId != null) {
+            val underlineText = SpannableString(title.context.resources.getString(resourceId))
+            underlineText.setSpan(UnderlineSpan(), 0, underlineText.length, 0)
+            title.text = underlineText
+        }
+    }
+
+    fun getNotNullUnit(): ImperialUnit {
+        return unit!!
     }
 
     fun setHighlight(highlight: Boolean) {
@@ -70,6 +80,7 @@ class ImperialUnitPanel(private val layout: ConstraintLayout) {
     }
 
     fun setValue(v: Double) {
+        unit?.value = v
         input.setText(valueForDisplay(v))
     }
 

@@ -89,7 +89,9 @@ object LengthUnits {
         throw Exception("no ratio")
     }
 
-    fun convertValue(inputUnit: ImperialUnit, outputUnit: ImperialUnit, inputValue: Double): Double {
-        return inputValue * findConversionRatio(inputUnit, outputUnit)
+    fun convertValue(inputUnit: ImperialUnit?, outputUnit: ImperialUnit?, inputValue: Double): Double {
+        val input = inputUnit ?: return 0.0
+        val output = outputUnit ?: return 0.0
+        return inputValue * findConversionRatio(input, output)
     }
 }

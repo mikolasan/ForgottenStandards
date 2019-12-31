@@ -55,14 +55,11 @@ class LengthAdapter(context: Context, private val units: Array<ImperialUnit>) : 
         ViewState.OTHER to R.color.keyboardDigit
     )
 
-    private lateinit var masterUnit: ImperialUnit
-    private var masterValue: Double = 0.0
     private var fromUnit: ImperialUnit? = null
     private var toUnit: ImperialUnit? = null
 
-    fun setCurrentValue(unit: ImperialUnit, value: Double) {
-        masterUnit = unit
-        masterValue = value
+    fun setCurrentValue(unit: ImperialUnit?, value: Double) {
+        val masterUnit = unit ?: return
         for (listUnit in units) {
             listUnit.value = LengthUnits.convertValue(unit, listUnit, value)
             if (listUnit == masterUnit)

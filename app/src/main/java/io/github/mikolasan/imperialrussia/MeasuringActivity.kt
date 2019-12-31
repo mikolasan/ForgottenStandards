@@ -80,79 +80,72 @@ class MeasuringActivity : Activity() {
         val convToPanel = ImperialUnitPanel(convToLayout)
         val convFromInput = convFromPanel.input
         val convToInput = convToPanel.input
-
         val lengthUnits = LengthUnits.lengthUnits
         val lengthAdapter = LengthAdapter(this, lengthUnits)
+
+        fun selectPanel(new: ImperialUnitPanel?, old: ImperialUnitPanel?) {
+            selectedPanel = new
+            new?.setHighlight(true)
+            new?.input?.requestFocus()
+            //new.input.isCursorVisible
+            old?.setHighlight(false)
+        }
+
+        fun setTopPanel(unit: ImperialUnit, value: Double?) {
+            convToPanel.changeUnit(unit)
+            val currentValue = value ?: 1.0
+            if (value == null) {
+                convFromPanel.setValue(currentValue)
+            } else {
+                val topValue = LengthUnits.convertValue(convFromPanel.unit, unit, currentValue)
+                convToPanel.setValue(topValue)
+            }
+            lengthAdapter.selectToUnit(unit)
+        }
+
+        fun setBottomPanel(unit: ImperialUnit, value: Double?) {
+            convFromPanel.changeUnit(unit)
+            val currentValue = value ?: 1.0
+            if (value == null) {
+                convFromPanel.setValue(currentValue)
+            } else {
+                val topValue = LengthUnits.convertValue(unit, convToPanel.unit, value)
+                convToPanel.setValue(topValue)
+            }
+            lengthAdapter.selectFromUnit(unit)
+            lengthAdapter.setCurrentValue(unit, currentValue)
+        }
+
         val lengthList = findViewById<ListView>(R.id.units_list)
         lengthList.adapter = lengthAdapter
         lengthList.setOnItemClickListener{ parent, view, position, id ->
             val unit = lengthAdapter.getItem(position) as? ImperialUnit
             unit?.let {
                 if (!convFromPanel.isActivated()) {
-                    convFromPanel.changeUnit(unit)
-                    convFromPanel.setHighlight(true)
-                    selectedPanel = convFromPanel
-                    val startValue = 1.0
-                    convFromPanel.setValue(startValue)
-                    lengthAdapter.selectFromUnit(unit)
-                    lengthAdapter.setCurrentValue(unit, startValue)
+                    selectPanel(convFromPanel, null)
+                    setBottomPanel(unit,null)
                 } else if (!convToPanel.isActivated()) {
                     if (convFromPanel.unit != unit) {
-                        convToPanel.changeUnit(unit)
-                        convToPanel.setHighlight(true)
-                        convFromPanel.setHighlight(false)
-                        selectedPanel = convToPanel
-                        val fromValue = convFromPanel.getValue()
-                        val toValue = LengthUnits.convertValue(convFromPanel.unit, unit, fromValue)
-                        convToPanel.setValue(toValue)
-                        lengthAdapter.selectToUnit(unit)
+                        selectPanel(convToPanel, convFromPanel)
+                        setTopPanel(unit, convFromPanel.getValue())
                     } else {
-                        selectedPanel = null
-                        convFromPanel.setHighlight(false)
+                        selectPanel(null, convFromPanel)
                         convFromPanel.deactivate()
                         lengthAdapter.setCurrentValue(unit, 0.0)
                     }
                 } else {
                     if (selectedPanel == convToPanel) {
                         if (convToPanel.unit != unit) {
-                            convToPanel.changeUnit(unit)
-                            val fromValue = convFromPanel.getValue()
-                            val toValue = LengthUnits.convertValue(convFromPanel.unit, unit, fromValue)
-                            convToPanel.setValue(toValue)
-                            lengthAdapter.selectToUnit(unit)
-                            lengthAdapter.notifyDataSetChanged()
+                            setTopPanel(unit, convFromPanel.getValue())
+                            //lengthAdapter.notifyDataSetChanged()
                         } // else {}
                     } else if (selectedPanel == convFromPanel) {
                         if (convFromPanel.unit != unit) {
-                            convFromPanel.changeUnit(unit)
-                            val fromValue = convFromPanel.getValue()
-                            val toValue = LengthUnits.convertValue(convFromPanel.unit, convToPanel.unit, fromValue)
-                            convToPanel.setValue(toValue)
-                            lengthAdapter.setCurrentValue(unit, fromValue)
-                            lengthAdapter.selectFromUnit(unit)
+                            setBottomPanel(unit, convFromPanel.getValue())
                         } // else {}
                     }
                 }
             }
-        }
-
-        fun getColor(resourceId: Int): Int {
-            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // >= (API 23) Android 6.0 Marshmallow
-                val theme = null
-                resources.getColor(resourceId, theme)
-            } else {
-                @Suppress("DEPRECATION")
-                resources.getColor(resourceId)
-            }
-        }
-
-        val colorInputSelected = getColor(R.color.inputSelected)
-        val colorInputNormal = getColor(R.color.inputNormal)
-
-        fun selectPanel(new: ImperialUnitPanel, old: ImperialUnitPanel) {
-            selectedPanel = new
-            new.setHighlight(true)
-            old.setHighlight(false)
         }
 
         convFromInput.setOnFocusChangeListener { view, hasFocus ->
@@ -160,43 +153,40 @@ class MeasuringActivity : Activity() {
                 if (hasFocus) {
                     selectPanel(convFromPanel, convToPanel)
                 }
-                //view.setTextColor(if (hasFocus) colorInputSelected else colorInputNormal)
             }
         }
         convFromLayout.setOnClickListener { view ->
             selectPanel(convFromPanel, convToPanel)
         }
 
-//        convFromInput.addTextChangedListener(object: TextWatcher {
-//            override fun afterTextChanged(s: Editable?) {
-//                if (selectedPanel.input != convFromInput)
-//                    return
-//
-//                s?.let {
-//                    val fromValue = BasicCalculator(s.toString()).eval()
-//                    val toValue = LengthUnits.convertValue(convFromPanel.unit, convToPanel.unit, fromValue)
-//                    convToInput.setText(valueForDisplay(toValue))
-//                    lengthAdapter.setCurrentValue(convFromPanel.unit, fromValue)
-//                    convFromInput.setSelection(convFromInput.text.length)
-//                }
-//            }
-//
-//            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-//            }
-//
-//            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-//            }
-//        })
+        convFromInput.addTextChangedListener(object: TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                if (selectedPanel?.input != convFromInput)
+                    return
 
-//        convToInput.setOnFocusChangeListener { view, hasFocus ->
-//            if (view is EditText) {
-//                if (hasFocus) {
-//                    selectPanel(convToPanel, convFromPanel)
-//                }
-//                //view.setTextColor(if (hasFocus) colorInputSelected else colorInputNormal)
-//
-//            }
-//        }
+                s?.let {
+                    val fromValue = BasicCalculator(s.toString()).eval()
+                    val toValue = LengthUnits.convertValue(convFromPanel.unit, convToPanel.unit, fromValue)
+                    convToInput.setText(valueForDisplay(toValue))
+                    lengthAdapter.setCurrentValue(convFromPanel.unit, fromValue)
+                    convFromInput.setSelection(convFromInput.text.length)
+                }
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+        })
+
+        convToInput.setOnFocusChangeListener { view, hasFocus ->
+            if (view is EditText) {
+                if (hasFocus) {
+                    selectPanel(convToPanel, convFromPanel)
+                }
+            }
+        }
 
 
         fun setCursor(editText: EditText) {
@@ -269,11 +259,6 @@ class MeasuringActivity : Activity() {
         val opDot = OperationButton(findViewById(R.id.op_dot), Operation.DOT)
         val opEval = OperationButton(findViewById(R.id.op_eval), Operation.EVAL)
 
-        convFromInput.setText(valueForDisplay(0.0))
-        convFromInput.isCursorVisible = true
-        convFromInput.requestFocus()
-
-
         val prefs = applicationContext.getSharedPreferences(preferencesFile, Context.MODE_PRIVATE)
         var currentLang = prefs.getString(languageSetting, "en") ?: "en" // just want a safe call
         val editor = prefs.edit()
@@ -301,8 +286,8 @@ class MeasuringActivity : Activity() {
 
 
             lengthAdapter.notifyDataSetChanged()
-            convFromPanel.changeUnit(convFromPanel.unit)
-            convToPanel.changeUnit(convToPanel.unit)
+            convFromPanel.updateUnitText()
+            convToPanel.updateUnitText()
         }
 
     }
