@@ -1,6 +1,12 @@
 package io.github.mikolasan.imperialrussia
 
 enum class ImperialUnitName {
+    KILOMETER,
+    METER,
+    DECIMETER,
+    CENTIMETER,
+    MILLIMETER,
+    MICROMETER,
     POINT,
     LINE,
     INCH,

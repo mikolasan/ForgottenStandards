@@ -32,5 +32,11 @@
     <string name="unit_fathom">Fathom</string>
     <string name="unit_turn">Turn</string>
     <string name="unit_mile">Mile</string>
-    <string name="select_unit_hint">Select unit to convert TO (swipe left)</string>
+    <string name="unit_kilometer">Kilometer</string>
+    <string name="unit_meter">Meter</string>
+    <string name="unit_decimeter">Decimeter</string>
+    <string name="unit_centimeter">Centimeter</string>
+    <string name="unit_millimeter">Millimeter</string>
+    <string name="unit_micrometer">Micrometer</string>
+    <string name="select_unit_hint">Select unit on the right</string>
 </resources>

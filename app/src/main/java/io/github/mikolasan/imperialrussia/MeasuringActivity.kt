@@ -87,8 +87,9 @@ class MeasuringActivity : Activity() {
             selectedPanel = new
             new?.setHighlight(true)
             new?.input?.requestFocus()
-            //new.input.isCursorVisible
+            new?.input?.isCursorVisible = true
             old?.setHighlight(false)
+            old?.input?.isCursorVisible = false
         }
 
         fun setTopPanel(unit: ImperialUnit, value: Double?) {
@@ -101,9 +102,11 @@ class MeasuringActivity : Activity() {
                 convToPanel.setValue(topValue)
             }
             lengthAdapter.selectToUnit(unit)
+            lengthAdapter.setSelectedUnit(unit)
+            lengthAdapter.notifyDataSetChanged()
         }
 
-        fun setBottomPanel(unit: ImperialUnit, value: Double?) {
+        fun setBottomPanel(unit: ImperialUnit, value: Double? = null) {
             convFromPanel.changeUnit(unit)
             val currentValue = value ?: 1.0
             if (value == null) {
@@ -113,6 +116,7 @@ class MeasuringActivity : Activity() {
                 convToPanel.setValue(topValue)
             }
             lengthAdapter.selectFromUnit(unit)
+            lengthAdapter.setSelectedUnit(unit)
             lengthAdapter.setCurrentValue(unit, currentValue)
         }
 
@@ -124,24 +128,26 @@ class MeasuringActivity : Activity() {
                 if (!convFromPanel.isActivated()) {
                     if (convToPanel.unit != unit) {
                         selectPanel(convFromPanel, convToPanel)
-                        setBottomPanel(unit,null)
+                        setBottomPanel(unit)
+                        //lengthAdapter.setSelectedUnit(unit)
                     } else {
                         selectPanel(null, convToPanel)
                         convToPanel.unit = null
                         convToPanel.deactivate()
                         lengthAdapter.selectToUnit(null)
-                        lengthAdapter.notifyDataSetChanged()
+                        lengthAdapter.resetValues()
                     }
                 } else if (!convToPanel.isActivated()) {
                     if (convFromPanel.unit != unit) {
                         selectPanel(convToPanel, convFromPanel)
                         setTopPanel(unit, convFromPanel.getValue())
+                        //lengthAdapter.setSelectedUnit(unit)
                     } else {
                         selectPanel(null, convFromPanel)
                         convFromPanel.unit = null
                         convFromPanel.deactivate()
                         lengthAdapter.selectFromUnit(null)
-                        lengthAdapter.notifyDataSetChanged()
+                        lengthAdapter.resetValues()
                     }
                 } else {
                     if (selectedPanel == convToPanel) {
@@ -153,8 +159,11 @@ class MeasuringActivity : Activity() {
                             lengthAdapter.notifyDataSetChanged()
                         } else if (convFromPanel.unit != unit) {
                             setTopPanel(unit, convFromPanel.getValue())
+                            //lengthAdapter.setSelectedUnit(unit)
                         } else {
                             selectPanel(convFromPanel, convToPanel)
+                            lengthAdapter.setSelectedUnit(unit)
+                            lengthAdapter.notifyDataSetChanged()
                         }
                     } else if (selectedPanel == convFromPanel) {
                         if (convFromPanel.unit == unit) {
@@ -165,8 +174,11 @@ class MeasuringActivity : Activity() {
                             lengthAdapter.notifyDataSetChanged()
                         } else if (convToPanel.unit != unit) {
                             setBottomPanel(unit, convFromPanel.getValue())
+                            //lengthAdapter.setSelectedUnit(unit)
                         } else {
                             selectPanel(convToPanel, convFromPanel)
+                            lengthAdapter.setSelectedUnit(unit)
+                            lengthAdapter.notifyDataSetChanged()
                         }
                     }
                 }

@@ -2,7 +2,8 @@ package io.github.mikolasan.imperialrussia
 
 import java.text.DecimalFormat
 
-fun valueForDisplay(value: Double): String {
+fun valueForDisplay(value: Double?): String {
+    if (value == null) return "-.-"
     val decimalFormat = DecimalFormat()
     decimalFormat.minimumIntegerDigits = 1
     decimalFormat.maximumIntegerDigits = 7

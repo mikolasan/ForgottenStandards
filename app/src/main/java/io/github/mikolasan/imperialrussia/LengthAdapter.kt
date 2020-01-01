@@ -57,6 +57,16 @@ class LengthAdapter(context: Context, private val units: Array<ImperialUnit>) : 
 
     private var fromUnit: ImperialUnit? = null
     private var toUnit: ImperialUnit? = null
+    private var selectedUnit: ImperialUnit? = null
+    private var secondUnit: ImperialUnit? = null
+    private var selectedUnits: Array<ImperialUnit?> = arrayOf()
+
+    fun resetValues() {
+        for (listUnit in units) {
+            listUnit.value = null
+        }
+        notifyDataSetChanged()
+    }
 
     fun setCurrentValue(unit: ImperialUnit?, value: Double) {
         val masterUnit = unit ?: return
@@ -76,15 +86,19 @@ class LengthAdapter(context: Context, private val units: Array<ImperialUnit>) : 
         toUnit = unit
     }
 
+    fun setSelectedUnit(unit: ImperialUnit?) {
+        selectedUnit = unit
+    }
+
     private fun updateViewColors(layout: ConstraintLayout, dataPosition: Int) {
         val data: ImperialUnit = getItem(dataPosition) as ImperialUnit
         val nameTextView: TextView = layout.findViewById(R.id.unit_name)
         when (data) {
-            fromUnit -> {
+            secondUnit -> {
                 layout.setBackgroundResource(backgrounds.getValue(ViewState.FROM))
                 nameTextView.setTextColor(getColorFromRsourceId(nameColors.getValue(ViewState.FROM)))
             }
-            toUnit -> {
+            selectedUnit -> {
                 layout.setBackgroundResource(backgrounds.getValue(ViewState.TO))
                 nameTextView.setTextColor(getColorFromRsourceId(nameColors.getValue(ViewState.TO)))
             }

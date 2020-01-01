@@ -15,5 +15,11 @@
     <string name="unit_turn">Верста</string>
     <string name="unit_to"><u>Дюйм</u></string>
     <string name="unit_from"><u>Аршин</u></string>
-    <string name="select_unit_hint">Нужно выбрать единицу справа</string>
+    <string name="select_unit_hint">Выберите единицу справа</string>
+    <string name="unit_centimeter">Сантиметр</string>
+    <string name="unit_decimeter">Дециметр</string>
+    <string name="unit_kilometer">Километр</string>
+    <string name="unit_meter">Метр</string>
+    <string name="unit_micrometer">Микрометр</string>
+    <string name="unit_millimeter">Миллиметр</string>
 </resources>

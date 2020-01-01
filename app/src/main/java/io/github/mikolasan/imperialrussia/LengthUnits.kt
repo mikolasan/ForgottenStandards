@@ -12,8 +12,6 @@ object LengthUnits {
             ImperialUnitName.MILE to 10500.0
     )
 
-    val arshin = ImperialUnit(R.string.unit_arshin, ImperialUnitName.YARD, arshinRatio)
-
     val inchRatio = mutableMapOf(
             ImperialUnitName.TIP to 1.75,
             ImperialUnitName.PALM to 2.9375,
@@ -25,53 +23,78 @@ object LengthUnits {
             ImperialUnitName.MILE to 294000.0
     )
 
-    val inch = ImperialUnit(R.string.unit_inch, ImperialUnitName.INCH, inchRatio)
-    val point = ImperialUnit(R.string.unit_point, ImperialUnitName.POINT, mutableMapOf(ImperialUnitName.INCH to 100.0))
-    val line = ImperialUnit(R.string.unit_line, ImperialUnitName.LINE, mutableMapOf(ImperialUnitName.INCH to 10.0))
-    val tip = ImperialUnit(R.string.unit_tip, ImperialUnitName.TIP, mutableMapOf(ImperialUnitName.YARD to 16.0))
-    val palm = ImperialUnit(R.string.unit_palm, ImperialUnitName.PALM, mutableMapOf(ImperialUnitName.INCH to 16.0/47.0))
-    val quarter = ImperialUnit(R.string.unit_quarter, ImperialUnitName.QUARTER, mutableMapOf(ImperialUnitName.YARD to 4.0))
-    val foot = ImperialUnit(R.string.unit_foot, ImperialUnitName.FOOT, mutableMapOf(ImperialUnitName.YARD to 7.0/3.0))
-    val fathom = ImperialUnit(R.string.unit_fathom, ImperialUnitName.FATHOM, mutableMapOf(ImperialUnitName.YARD to 1.0/3.0))
-    val turn = ImperialUnit(R.string.unit_turn, ImperialUnitName.TURN, mutableMapOf(ImperialUnitName.YARD to 1.0/1500.0))
-    val mile = ImperialUnit(R.string.unit_mile, ImperialUnitName.MILE, mutableMapOf(ImperialUnitName.YARD to 1.0/10500.0))
-
-    val lengthUnits = arrayOf(point, line, inch, tip, palm, foot, arshin, fathom, turn, mile)
-
-    val imperialUnits = mapOf(
-        ImperialUnitName.POINT to point,
-        ImperialUnitName.LINE to line,
-        ImperialUnitName.INCH to inch,
-        ImperialUnitName.TIP to tip,
-        ImperialUnitName.PALM to palm,
-        ImperialUnitName.QUARTER to quarter,
-        ImperialUnitName.FOOT to foot,
-        ImperialUnitName.YARD to arshin,
-        ImperialUnitName.FATHOM to fathom,
-        ImperialUnitName.TURN to turn,
-        ImperialUnitName.MILE to mile
+    val centimeterRatio = mutableMapOf(
+            ImperialUnitName.METER to 100.0,
+            ImperialUnitName.INCH to 2.54,
+            ImperialUnitName.TIP to 4.445,
+            ImperialUnitName.PALM to 7.5,
+            ImperialUnitName.QUARTER to 17.78,
+            ImperialUnitName.FOOT to 30.48,
+            ImperialUnitName.YARD to 71.12
     )
+
+    val millimeterRatio = mutableMapOf(
+            ImperialUnitName.POINT to 0.254,
+            ImperialUnitName.LINE to 2.54,
+            ImperialUnitName.METER to 0.001
+    )
+
+    val kilometerRatio = mutableMapOf(
+            ImperialUnitName.TURN to 1.0668,
+            ImperialUnitName.MILE to 7.4676,
+            ImperialUnitName.METER to 0.001
+    )
+
+    val lengthUnits = arrayOf(
+            ImperialUnit(R.string.unit_kilometer, ImperialUnitName.KILOMETER, kilometerRatio),
+            ImperialUnit(R.string.unit_meter, ImperialUnitName.METER, mutableMapOf(ImperialUnitName.CENTIMETER to 0.01)),
+            ImperialUnit(R.string.unit_decimeter, ImperialUnitName.DECIMETER, mutableMapOf(ImperialUnitName.METER to 10.0)),
+            ImperialUnit(R.string.unit_centimeter, ImperialUnitName.CENTIMETER, centimeterRatio),
+            ImperialUnit(R.string.unit_millimeter, ImperialUnitName.MILLIMETER, millimeterRatio),
+            ImperialUnit(R.string.unit_micrometer, ImperialUnitName.MICROMETER, mutableMapOf(ImperialUnitName.MILLIMETER to 10.0)),
+            ImperialUnit(R.string.unit_arshin, ImperialUnitName.YARD, arshinRatio),
+            ImperialUnit(R.string.unit_inch, ImperialUnitName.INCH, inchRatio),
+            ImperialUnit(R.string.unit_point, ImperialUnitName.POINT, mutableMapOf(ImperialUnitName.INCH to 100.0)),
+            ImperialUnit(R.string.unit_line, ImperialUnitName.LINE, mutableMapOf(ImperialUnitName.INCH to 10.0)),
+            ImperialUnit(R.string.unit_tip, ImperialUnitName.TIP, mutableMapOf(ImperialUnitName.YARD to 16.0)),
+            ImperialUnit(R.string.unit_palm, ImperialUnitName.PALM, mutableMapOf(ImperialUnitName.INCH to 16.0/47.0)),
+            ImperialUnit(R.string.unit_quarter, ImperialUnitName.QUARTER, mutableMapOf(ImperialUnitName.YARD to 4.0)),
+            ImperialUnit(R.string.unit_foot, ImperialUnitName.FOOT, mutableMapOf(ImperialUnitName.YARD to 7.0/3.0)),
+            ImperialUnit(R.string.unit_fathom, ImperialUnitName.FATHOM, mutableMapOf(ImperialUnitName.YARD to 1.0/3.0)),
+            ImperialUnit(R.string.unit_turn, ImperialUnitName.TURN, mutableMapOf(ImperialUnitName.YARD to 1.0/1500.0)),
+            ImperialUnit(R.string.unit_mile, ImperialUnitName.MILE, mutableMapOf(ImperialUnitName.YARD to 1.0/10500.0))
+    )
+
+    private fun makeUnitByNameMap(units: Array<ImperialUnit>): Map<ImperialUnitName, ImperialUnit> {
+        val map: MutableMap<ImperialUnitName, ImperialUnit> = mutableMapOf()
+        units.forEach {
+            map[it.unitName] = it
+        }
+        return map.toMap()
+    }
+
+    private val imperialUnits = makeUnitByNameMap(lengthUnits)
 
     private fun findConversionRatio(inputUnit: ImperialUnit, outputUnit: ImperialUnit): Double {
         val inputMap = inputUnit.ratioMap
         val outputMap = outputUnit.ratioMap
-        val ratio = outputMap.get(inputUnit.id)
+        val ratio = outputMap.get(inputUnit.unitName)
         if (ratio != null) return ratio
 
-        val inverse = inputMap.get(outputUnit.id)
+        val inverse = inputMap.get(outputUnit.unitName)
         if (inverse != null) return 1.0/inverse
 
         for ((unitName,k) in inputMap) {
             val commonUnitRatio = outputMap.get(unitName)
             commonUnitRatio?.let {
                 val newRatio = commonUnitRatio / k
-                //outputMap[inputUnit.id] = newRatio
+                //outputMap[inputUnit.unitName] = newRatio
                 return newRatio
             }
 
             val inverseCommonUnit = imperialUnits[unitName]
             inverseCommonUnit?.let {
-                val newRatio = inverseCommonUnit.ratioMap.get(outputUnit.id)
+                val newRatio = inverseCommonUnit.ratioMap.get(outputUnit.unitName)
                 if (newRatio != null)
                     return 1.0 / (k * newRatio)
             }

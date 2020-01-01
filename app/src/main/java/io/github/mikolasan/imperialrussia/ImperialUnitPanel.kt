@@ -13,6 +13,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 
 class ImperialUnitPanel(private val layout: ConstraintLayout) {
     var unit: ImperialUnit? = null
+    var isSelected = false
     private val title: TextView = layout.findViewById(R.id.title)
     val input: EditText = layout.findViewById(R.id.input)
     private val hint: TextView = layout.findViewById(R.id.hint)
@@ -55,6 +56,7 @@ class ImperialUnitPanel(private val layout: ConstraintLayout) {
     }
 
     fun setHighlight(highlight: Boolean) {
+        isSelected = highlight
         layout.setBackgroundResource(if (highlight) R.drawable.ic_selected_panel_back else R.drawable.ic_input_panel_back)
         input.setTextColor(if (highlight) colorInputSelected else colorInputNormal)
     }
