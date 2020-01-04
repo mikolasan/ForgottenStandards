@@ -77,8 +77,12 @@ class ImperialUnitPanel(private val layout: ConstraintLayout) {
         return title.visibility == View.VISIBLE
     }
 
-    fun getValue(): Double {
-        return input.text.toString().toDouble()
+    fun getValue(): Double? {
+        val s = input.text.toString()
+        return if (s.isNotEmpty())
+            s.toDouble()
+        else
+            null
     }
 
     fun setValue(v: Double) {

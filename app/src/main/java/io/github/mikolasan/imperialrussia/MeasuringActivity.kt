@@ -102,7 +102,6 @@ class MeasuringActivity : Activity() {
                 convToPanel.setValue(topValue)
             }
             lengthAdapter.selectToUnit(unit)
-            lengthAdapter.setSelectedUnit(unit)
             lengthAdapter.notifyDataSetChanged()
         }
 
@@ -116,8 +115,29 @@ class MeasuringActivity : Activity() {
                 convToPanel.setValue(topValue)
             }
             lengthAdapter.selectFromUnit(unit)
-            lengthAdapter.setSelectedUnit(unit)
             lengthAdapter.setCurrentValue(unit, currentValue)
+        }
+
+        fun unsetTopPanel() {
+            convToPanel.unit = null
+            convToPanel.deactivate()
+            lengthAdapter.selectToUnit(null)
+            if (!convFromPanel.isActivated()) {
+                lengthAdapter.resetValues()
+            } else {
+                lengthAdapter.notifyDataSetChanged()
+            }
+        }
+
+        fun unsetBottomPanel() {
+            convFromPanel.unit = null
+            convFromPanel.deactivate()
+            lengthAdapter.selectFromUnit(null)
+            if (!convToPanel.isActivated()) {
+                lengthAdapter.resetValues()
+            } else {
+                lengthAdapter.notifyDataSetChanged()
+            }
         }
 
         val lengthList = findViewById<ListView>(R.id.units_list)
@@ -128,56 +148,40 @@ class MeasuringActivity : Activity() {
                 if (!convFromPanel.isActivated()) {
                     if (convToPanel.unit != unit) {
                         selectPanel(convFromPanel, convToPanel)
-                        setBottomPanel(unit)
-                        //lengthAdapter.setSelectedUnit(unit)
+                        setBottomPanel(unit, convFromPanel.getValue())
                     } else {
                         selectPanel(null, convToPanel)
-                        convToPanel.unit = null
-                        convToPanel.deactivate()
-                        lengthAdapter.selectToUnit(null)
-                        lengthAdapter.resetValues()
+                        unsetTopPanel()
                     }
                 } else if (!convToPanel.isActivated()) {
                     if (convFromPanel.unit != unit) {
                         selectPanel(convToPanel, convFromPanel)
                         setTopPanel(unit, convFromPanel.getValue())
-                        //lengthAdapter.setSelectedUnit(unit)
                     } else {
                         selectPanel(null, convFromPanel)
-                        convFromPanel.unit = null
-                        convFromPanel.deactivate()
-                        lengthAdapter.selectFromUnit(null)
-                        lengthAdapter.resetValues()
+                        unsetBottomPanel()
                     }
                 } else {
                     if (selectedPanel == convToPanel) {
                         if (convToPanel.unit == unit) {
                             selectPanel(convFromPanel, convToPanel)
-                            convToPanel.unit = null
-                            convToPanel.deactivate()
-                            lengthAdapter.selectToUnit(null)
-                            lengthAdapter.notifyDataSetChanged()
+                            unsetTopPanel()
                         } else if (convFromPanel.unit != unit) {
                             setTopPanel(unit, convFromPanel.getValue())
-                            //lengthAdapter.setSelectedUnit(unit)
                         } else {
                             selectPanel(convFromPanel, convToPanel)
-                            lengthAdapter.setSelectedUnit(unit)
+                            lengthAdapter.swapSelection()
                             lengthAdapter.notifyDataSetChanged()
                         }
                     } else if (selectedPanel == convFromPanel) {
                         if (convFromPanel.unit == unit) {
                             selectPanel(convToPanel, convFromPanel)
-                            convFromPanel.unit = null
-                            convFromPanel.deactivate()
-                            lengthAdapter.selectFromUnit(null)
-                            lengthAdapter.notifyDataSetChanged()
+                            unsetBottomPanel()
                         } else if (convToPanel.unit != unit) {
                             setBottomPanel(unit, convFromPanel.getValue())
-                            //lengthAdapter.setSelectedUnit(unit)
                         } else {
                             selectPanel(convToPanel, convFromPanel)
-                            lengthAdapter.setSelectedUnit(unit)
+                            lengthAdapter.swapSelection()
                             lengthAdapter.notifyDataSetChanged()
                         }
                     }
@@ -235,16 +239,7 @@ class MeasuringActivity : Activity() {
             }
         }
 
-
         //setCursor(convToInput)
-
-//        // X^3 + X^2
-//        val cs = SpannableStringBuilder("X3 + X2")
-//        cs.setSpan(SuperscriptSpan(), 1, 2, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-//        cs.setSpan(RelativeSizeSpan(0.75f), 1, 2, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-//        cs.setSpan(SuperscriptSpan(), 6, 7, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-//        cs.setSpan(RelativeSizeSpan(0.75f), 6, 7, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-//        convToInput.setText(cs)
 
         convToLayout.setOnClickListener{ view ->
             selectPanel(convToPanel, convFromPanel)

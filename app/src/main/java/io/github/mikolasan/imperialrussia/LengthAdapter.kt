@@ -59,7 +59,7 @@ class LengthAdapter(context: Context, private val units: Array<ImperialUnit>) : 
     private var toUnit: ImperialUnit? = null
     private var selectedUnit: ImperialUnit? = null
     private var secondUnit: ImperialUnit? = null
-    private var selectedUnits: Array<ImperialUnit?> = arrayOf()
+    private var selectedUnits: List<ImperialUnit?> = mutableListOf()
 
     fun resetValues() {
         for (listUnit in units) {
@@ -80,14 +80,24 @@ class LengthAdapter(context: Context, private val units: Array<ImperialUnit>) : 
 
     fun selectFromUnit(unit: ImperialUnit?) {
         fromUnit = unit
+        selectedUnit = fromUnit
+        secondUnit = toUnit
     }
 
     fun selectToUnit(unit: ImperialUnit?) {
         toUnit = unit
+        selectedUnit = toUnit
+        secondUnit = fromUnit
     }
 
     fun setSelectedUnit(unit: ImperialUnit?) {
         selectedUnit = unit
+    }
+
+    fun swapSelection() {
+        val temp = selectedUnit
+        selectedUnit = secondUnit
+        secondUnit = temp
     }
 
     private fun updateViewColors(layout: ConstraintLayout, dataPosition: Int) {
