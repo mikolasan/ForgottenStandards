@@ -27,13 +27,4 @@ class MeasuringActivityTest {
         assertEquals("io.github.mikolasan.imperialrussia", appContext.packageName)
     }
 
-    @Test
-    fun conversion_zeroOnEmptyInput() {
-        val s = ""
-        val inch = LengthUnits.imperialUnits[ImperialUnitName.YARD] ?: error("Inch unit is not defined")
-        val arshin = LengthUnits.imperialUnits[ImperialUnitName.YARD] ?: error("Yard unit is not defined")
-        val inchValue = BasicCalculator(s).eval()
-        val arshinValue = LengthUnits.convertValue(inch, arshin, inchValue)
-        assertEquals("0.0", valueForDisplay(arshinValue))
-    }
 }

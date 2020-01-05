@@ -117,4 +117,14 @@ class ImperialUnitTest {
         val ratio = findConversionRatio(inch, arshin)
         assertEquals(0.03571428571428571428571428571429, ratio, 1e-10)
     }
+
+    @Test
+    fun conversion_zeroOnEmptyInput() {
+        val s = ""
+        val inch = imperialUnits[ImperialUnitName.YARD] ?: error("Inch unit is not defined")
+        val arshin = imperialUnits[ImperialUnitName.YARD] ?: error("Yard unit is not defined")
+        val inchValue = BasicCalculator(s).eval()
+        val arshinValue = LengthUnits.convertValue(inch, arshin, inchValue)
+        assertEquals("0.0", valueForDisplay(arshinValue))
+    }
 }

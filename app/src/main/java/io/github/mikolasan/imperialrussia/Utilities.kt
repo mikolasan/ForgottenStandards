@@ -5,6 +5,8 @@ import android.text.SpannableStringBuilder
 import android.text.style.RelativeSizeSpan
 import android.text.style.SuperscriptSpan
 import java.text.DecimalFormat
+import java.text.NumberFormat
+import java.util.*
 import kotlin.math.abs
 import kotlin.math.floor
 import kotlin.math.log10
@@ -21,18 +23,20 @@ fun valueForDisplay2(value: Double?): String {
     return decimalFormat.format(value)
 }
 
-fun valueForDisplay(value: Double?): SpannableStringBuilder {
+fun valueForDisplay(value: Double?, locale: Locale? = null): SpannableStringBuilder {
     if (value == null) return SpannableStringBuilder("-.-")
 
     val absValue = abs(value)
     val integerPart = floor(absValue)
 //    val fractionPart = absValue - integerPart
 
-    val integerLength = (floor(log10(integerPart)) + 1).toInt()
+    val integerLength = if (integerPart > 0) (floor(log10(integerPart)) + 1).toInt() + 1 else 1
     val maxIntegerLength = 7
 
     val maxDisplayLength = 9
-    val decimalFormat = DecimalFormat()
+
+    val numberFormat = if (locale == null) DecimalFormat.getInstance() else DecimalFormat.getInstance(locale)
+    val decimalFormat = numberFormat as DecimalFormat
     if (integerLength > maxIntegerLength) {
         // do scientific notation
         val separator = decimalFormat.decimalFormatSymbols.decimalSeparator
@@ -51,13 +55,13 @@ fun valueForDisplay(value: Double?): SpannableStringBuilder {
             return spannable
         }
     }
-    decimalFormat.minimumIntegerDigits = 7
+    decimalFormat.maximumIntegerDigits = integerLength
     decimalFormat.maximumFractionDigits = maxDisplayLength - integerLength
     decimalFormat.isDecimalSeparatorAlwaysShown = false
 
     var formattedValue = decimalFormat.format(value)
     val formattedLength = formattedValue.length
-    if (formattedLength > maxDisplayLength) {
+    if (formattedLength > maxDisplayLength + 1) {
         // do scientific notation
         val separator = decimalFormat.decimalFormatSymbols.decimalSeparator
         val exponent = decimalFormat.decimalFormatSymbols.exponentSeparator
@@ -77,4 +81,11 @@ fun valueForDisplay(value: Double?): SpannableStringBuilder {
     }
 
     return SpannableStringBuilder(formattedValue)
+}
+
+fun parseDisplayString(string: String, locale: Locale? = null): Double {
+    val numberFormat = if (locale == null) DecimalFormat.getInstance() else DecimalFormat.getInstance(locale)
+    val decimalFormat = numberFormat as DecimalFormat
+    val number = decimalFormat.parse(string)
+    return number?.toDouble() ?: 0.0
 }
