@@ -1,8 +1,7 @@
 package io.github.mikolasan.imperialrussia
 
-import androidx.test.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import androidx.test.runner.AndroidJUnit4
+import androidx.test.ext.junit.runners.AndroidJUnit4
 
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -24,15 +23,17 @@ class MeasuringActivityTest {
     @Test
     fun useAppContext() {
         // Context of the app under test.
-        val appContext = InstrumentationRegistry.getTargetContext()
+        val appContext = rule.activity.applicationContext
         assertEquals("io.github.mikolasan.imperialrussia", appContext.packageName)
     }
 
     @Test
     fun conversion_zeroOnEmptyInput() {
         val s = ""
-        val inches = BasicCalculator(s).eval()
-        val arshin = rule.activity.convertToArshin(inches)
-        assertEquals("0.0", rule.activity.valueForDisplay(arshin))
+        val inch = LengthUnits.imperialUnits[ImperialUnitName.YARD] ?: error("Inch unit is not defined")
+        val arshin = LengthUnits.imperialUnits[ImperialUnitName.YARD] ?: error("Yard unit is not defined")
+        val inchValue = BasicCalculator(s).eval()
+        val arshinValue = LengthUnits.convertValue(inch, arshin, inchValue)
+        assertEquals("0.0", valueForDisplay(arshinValue))
     }
 }

@@ -1,27 +1,25 @@
 package io.github.mikolasan.imperialrussia
 
+import io.github.mikolasan.imperialrussia.LengthUnits.findConversionRatio
+import io.github.mikolasan.imperialrussia.LengthUnits.imperialUnits
+import io.github.mikolasan.imperialrussia.LengthUnits.lengthUnits
 import org.junit.Test
-
 import org.junit.Assert.*
-import org.junit.Ignore
-
-
-//
-//    POINT,
-//    LINE,
-//    INCH,
-//    TIP, // vershok
-//    PALM, // ladon
-//    QUARTER, // pyad
-//    FOOT,
-//    YARD, // arshin
-//    FATHOM, // sazhen
-//    TURN, // versta
-//    MILE,
-//
 
 
 class ImperialUnitTest {
+    val defaultValue = ImperialUnit(0, ImperialUnitName.LENGTH_ZERO_NO_UNIT, mutableMapOf())
+    val arshin = imperialUnits.getOrDefault(ImperialUnitName.YARD, defaultValue)
+    val point = imperialUnits.getOrDefault(ImperialUnitName.POINT, defaultValue)
+    val line = imperialUnits.getOrDefault(ImperialUnitName.LINE, defaultValue)
+    val inch = imperialUnits.getOrDefault(ImperialUnitName.INCH, defaultValue)
+    val tip = imperialUnits.getOrDefault(ImperialUnitName.TIP, defaultValue)
+    val palm = imperialUnits.getOrDefault(ImperialUnitName.PALM, defaultValue)
+    val quarter = imperialUnits.getOrDefault(ImperialUnitName.QUARTER, defaultValue)
+    val foot = imperialUnits.getOrDefault(ImperialUnitName.FOOT, defaultValue)
+    val fathom = imperialUnits.getOrDefault(ImperialUnitName.FATHOM, defaultValue)
+    val turn = imperialUnits.getOrDefault(ImperialUnitName.TURN, defaultValue)
+    val mile = imperialUnits.getOrDefault(ImperialUnitName.MILE, defaultValue)
 
     @Test
     fun findConversionRatio_arshinToPoint() {
@@ -90,13 +88,25 @@ class ImperialUnitTest {
     }
 
     @Test
-    fun findConversionRatio_checkRatioForAllUnits() {
+    fun findConversionRatio_checkRatioForImperialUnits() {
         val units = arrayOf(point, line, inch, tip, palm, quarter, foot, arshin, fathom, turn, mile)
         for (fromUnit in units) {
             for (toUnit in units) {
-                println("Find ratio for ${fromUnit.name} -> ${toUnit.name}")
+                println("Find ratio for ${fromUnit.unitName} -> ${toUnit.unitName}")
                 val ratio = findConversionRatio(fromUnit, toUnit)
-                println("${fromUnit.name} -> $ratio ${toUnit.name}")
+                println("${fromUnit.unitName} -> $ratio ${toUnit.unitName}")
+            }
+        }
+    }
+
+    @Test
+    fun findConversionRatio_checkRatioForAllUnits() {
+        val units = lengthUnits
+        for (fromUnit in units) {
+            for (toUnit in units) {
+                println("Finding ratio for ${fromUnit.unitName} -> ${toUnit.unitName}...")
+                val ratio = findConversionRatio(fromUnit, toUnit)
+                println("[OK]: ${fromUnit.unitName} -> $ratio ${toUnit.unitName}")
             }
         }
     }

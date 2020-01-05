@@ -1,6 +1,7 @@
 package io.github.mikolasan.imperialrussia
 
 enum class ImperialUnitName {
+    LENGTH_ZERO_NO_UNIT,
     KILOMETER,
     METER,
     DECIMETER,

@@ -36,7 +36,8 @@ object LengthUnits {
     val millimeterRatio = mutableMapOf(
             ImperialUnitName.POINT to 0.254,
             ImperialUnitName.LINE to 2.54,
-            ImperialUnitName.METER to 0.001
+            ImperialUnitName.METER to 0.001,
+            ImperialUnitName.YARD to 0.7112
     )
 
     val kilometerRatio = mutableMapOf(
@@ -48,7 +49,9 @@ object LengthUnits {
     val lengthUnits = arrayOf(
             ImperialUnit(R.string.unit_kilometer, ImperialUnitName.KILOMETER, kilometerRatio),
             ImperialUnit(R.string.unit_meter, ImperialUnitName.METER, mutableMapOf(ImperialUnitName.CENTIMETER to 0.01)),
-            ImperialUnit(R.string.unit_decimeter, ImperialUnitName.DECIMETER, mutableMapOf(ImperialUnitName.METER to 10.0)),
+            ImperialUnit(R.string.unit_decimeter, ImperialUnitName.DECIMETER, mutableMapOf(
+                    ImperialUnitName.METER to 10.0,
+                    ImperialUnitName.YARD to 7.112)),
             ImperialUnit(R.string.unit_centimeter, ImperialUnitName.CENTIMETER, centimeterRatio),
             ImperialUnit(R.string.unit_millimeter, ImperialUnitName.MILLIMETER, millimeterRatio),
             ImperialUnit(R.string.unit_micrometer, ImperialUnitName.MICROMETER, mutableMapOf(ImperialUnitName.MILLIMETER to 10.0)),
@@ -73,9 +76,9 @@ object LengthUnits {
         return map.toMap()
     }
 
-    private val imperialUnits = makeUnitByNameMap(lengthUnits)
+    val imperialUnits = makeUnitByNameMap(lengthUnits)
 
-    private fun findConversionRatio(inputUnit: ImperialUnit, outputUnit: ImperialUnit): Double {
+    fun findConversionRatio(inputUnit: ImperialUnit, outputUnit: ImperialUnit): Double {
         val inputMap = inputUnit.ratioMap
         val outputMap = outputUnit.ratioMap
         val ratio = outputMap.get(inputUnit.unitName)
