@@ -46,7 +46,7 @@ class ImperialUnitPanel(private val layout: ConstraintLayout) {
         val resourceId = unit?.resourceId
         if (resourceId != null) {
             val underlineText = SpannableString(title.context.resources.getString(resourceId))
-            underlineText.setSpan(UnderlineSpan(), 0, underlineText.length, 0)
+            //underlineText.setSpan(UnderlineSpan(), 0, underlineText.length, 0)
             title.text = underlineText
         }
     }
@@ -80,7 +80,7 @@ class ImperialUnitPanel(private val layout: ConstraintLayout) {
     fun getValue(): Double? {
         val s = input.text.toString()
         return if (s.isNotEmpty())
-            s.toDouble()
+            parseDisplayString(s)
         else
             null
     }
@@ -101,8 +101,14 @@ class ImperialUnitPanel(private val layout: ConstraintLayout) {
     fun appendString(c: Char, replaceable: Set<Char>? = null) {
         if (replaceable != null) {
             var value = getString()
-            if (replaceable.contains(value.last()))
-                value = value.dropLast(1)
+
+            if (value.isNotEmpty()) {
+                if (replaceable.contains(value.last())) {
+                    value = value.dropLast(1)
+                } else if (c == '.' && value.contains('.')) {
+                    return
+                }
+            }
             setString(value + c.toString())
         } else {
             setString(getString() + c.toString())

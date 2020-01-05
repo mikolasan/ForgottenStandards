@@ -9,4 +9,8 @@
         <item name="android:fontFamily">@font/gotham_pro_bold</item>
     </style>
 
+    <style name="ImperialPanel" parent="@android:style/TextAppearance">
+        <item name="android:fontFamily">@font/gotham_pro_reg</item>
+    </style>
+
 </resources>

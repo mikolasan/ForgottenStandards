@@ -47,7 +47,7 @@ class MeasuringActivity : Activity() {
     }
 
     inner class OperationButton(button: Button, operation: Operation) {
-        private val operations = setOf('/', '*', '+', '-', '.')
+        private val operations = setOf('/', '*', '+', '-')
 
         private fun addSymbol(sym: Char) {
             selectedPanel?.appendString(sym, operations)
@@ -83,11 +83,21 @@ class MeasuringActivity : Activity() {
         val lengthUnits = LengthUnits.lengthUnits
         val lengthAdapter = LengthAdapter(this, lengthUnits)
 
+
+        fun setCursor(editText: EditText?) {
+            editText?.isCursorVisible = true
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                editText?.textCursorDrawable = resources.getDrawable(R.drawable.ic_cursor)
+            }
+            editText?.setSelection(editText?.text.length)
+        }
+
         fun selectPanel(new: ImperialUnitPanel?, old: ImperialUnitPanel?) {
             selectedPanel = new
             new?.setHighlight(true)
             new?.input?.requestFocus()
-            new?.input?.isCursorVisible = true
+            //new?.input?.isCursorVisible = true
+            setCursor(new?.input)
             old?.setHighlight(false)
             old?.input?.isCursorVisible = false
         }
@@ -140,7 +150,8 @@ class MeasuringActivity : Activity() {
             }
         }
 
-        val lengthList = findViewById<ListView>(R.id.units_list)
+
+        val lengthList: ListView = findViewById<ListView>(R.id.units_list)
         lengthList.adapter = lengthAdapter
         lengthList.setOnItemClickListener{ parent, view, position, id ->
             val unit = lengthAdapter.getItem(position) as? ImperialUnit
@@ -189,15 +200,20 @@ class MeasuringActivity : Activity() {
             }
         }
 
+        convFromLayout.setOnClickListener { view ->
+            selectPanel(convFromPanel, convToPanel)
+        }
+
+        convToLayout.setOnClickListener{ view ->
+            selectPanel(convToPanel, convFromPanel)
+        }
+
         convFromInput.setOnFocusChangeListener { view, hasFocus ->
             if (view is EditText) {
                 if (hasFocus) {
                     selectPanel(convFromPanel, convToPanel)
                 }
             }
-        }
-        convFromLayout.setOnClickListener { view ->
-            selectPanel(convFromPanel, convToPanel)
         }
 
         convFromInput.addTextChangedListener(object: TextWatcher {
@@ -208,7 +224,7 @@ class MeasuringActivity : Activity() {
                 s?.let {
                     val fromValue = BasicCalculator(s.toString()).eval()
                     val toValue = LengthUnits.convertValue(convFromPanel.unit, convToPanel.unit, fromValue)
-                    convToInput.setText(valueForDisplay(toValue))
+                    convToInput.text = valueForDisplay(toValue)
                     lengthAdapter.setCurrentValue(convFromPanel.unit, fromValue)
                     convFromInput.setSelection(convFromInput.text.length)
                 }
@@ -229,22 +245,6 @@ class MeasuringActivity : Activity() {
             }
         }
 
-
-        fun setCursor(editText: EditText) {
-            editText.isCursorVisible = true
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                editText.textCursorDrawable = resources.getDrawable(R.drawable.ic_cursor)
-            } else {
-
-            }
-        }
-
-        //setCursor(convToInput)
-
-        convToLayout.setOnClickListener{ view ->
-            selectPanel(convToPanel, convFromPanel)
-        }
-
         val motionLayout = findViewById<MotionLayout>(R.id.motion_layout)
         convToInput.addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(s: Editable?) {
@@ -258,7 +258,7 @@ class MeasuringActivity : Activity() {
                 s?.let {
                     val toValue = BasicCalculator(s.toString()).eval()
                     val fromValue = LengthUnits.convertValue(convToPanel.unit, convFromPanel.unit, toValue)
-                    convFromInput.setText(valueForDisplay(fromValue))
+                    convFromInput.text = valueForDisplay(fromValue)
                     lengthAdapter.setCurrentValue(convFromPanel.unit, fromValue)
                     convToInput.setSelection(convToInput.text.length)
                 }
@@ -291,36 +291,36 @@ class MeasuringActivity : Activity() {
         val opDot = OperationButton(findViewById(R.id.op_dot), Operation.DOT)
         val opEval = OperationButton(findViewById(R.id.op_eval), Operation.EVAL)
 
-        val prefs = applicationContext.getSharedPreferences(preferencesFile, Context.MODE_PRIVATE)
-        var currentLang = prefs.getString(languageSetting, "en") ?: "en" // just want a safe call
-        val editor = prefs.edit()
+//        val prefs = applicationContext.getSharedPreferences(preferencesFile, Context.MODE_PRIVATE)
+//        var currentLang = prefs.getString(languageSetting, "en") ?: "en" // just want a safe call
+//        val editor = prefs.edit()
 
-        val languageButton = findViewById<Button>(R.id.language)
-
-        languageButton.text = currentLang
-        languageButton.setOnClickListener { view ->
-            val btn = view as Button
-            if (currentLang == "ru") {
-                currentLang = "en"
-            } else if (currentLang == "en") {
-                currentLang = "ru"
-            }
-
-            newLocale = Locale(currentLang)
-            Locale.setDefault(newLocale!!)
-            btn.text = currentLang
-            editor.putString(languageSetting, currentLang)
-            editor.apply()
-
-            val config = resources.configuration
-            config.locale = newLocale
-            resources.updateConfiguration(config, resources.displayMetrics)
-
-
-            lengthAdapter.notifyDataSetChanged()
-            convFromPanel.updateUnitText()
-            convToPanel.updateUnitText()
-        }
+//        val languageButton = findViewById<Button>(R.id.language)
+//
+//        languageButton.text = currentLang
+//        languageButton.setOnClickListener { view ->
+//            val btn = view as Button
+//            if (currentLang == "ru") {
+//                currentLang = "en"
+//            } else if (currentLang == "en") {
+//                currentLang = "ru"
+//            }
+//
+//            newLocale = Locale(currentLang)
+//            Locale.setDefault(newLocale!!)
+//            btn.text = currentLang
+//            editor.putString(languageSetting, currentLang)
+//            editor.apply()
+//
+//            val config = resources.configuration
+//            config.locale = newLocale
+//            resources.updateConfiguration(config, resources.displayMetrics)
+//
+//
+//            lengthAdapter.notifyDataSetChanged()
+//            convFromPanel.updateUnitText()
+//            convToPanel.updateUnitText()
+//        }
 
     }
 

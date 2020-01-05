@@ -86,6 +86,11 @@ class CalculatorUnitTest {
     }
 
     @Test
+    fun eval_parsesSumOfDecimals() {
+        assertEquals(0.025, BasicCalculator(".012+.013").eval(), 1e-10)
+    }
+
+    @Test
     fun eval_emptyStringIsZero() {
         assertEquals(0.0, BasicCalculator("").eval(), 1e-10)
     }
@@ -93,5 +98,10 @@ class CalculatorUnitTest {
     @Test
     fun eval_parsesScientificFormat() {
         assertEquals(10.0, BasicCalculator("1E10").eval(), 1e-10)
+    }
+
+    @Test
+    fun eval_operationPriority() {
+        assertEquals(7.0, BasicCalculator("1+2*3").eval(), 1e-10)
     }
 }
