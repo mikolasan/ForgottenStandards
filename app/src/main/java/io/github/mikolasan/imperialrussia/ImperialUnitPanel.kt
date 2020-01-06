@@ -1,11 +1,9 @@
 package io.github.mikolasan.imperialrussia
 
-import android.icu.text.Replaceable
 import android.os.Build
 import android.text.InputType
 import android.widget.EditText
 import android.widget.TextView
-import android.text.style.UnderlineSpan
 import android.text.SpannableString
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -87,7 +85,14 @@ class ImperialUnitPanel(private val layout: ConstraintLayout) {
 
     fun setValue(v: Double) {
         unit?.value = v
-        input.setText(valueForDisplay(v))
+        val focused = input.hasFocus()
+        if (focused) {
+            input.clearFocus()
+        }
+        input.text = valueForDisplay(v)
+        if (focused) {
+            input.requestFocus()
+        }
     }
 
     fun getString(): String {

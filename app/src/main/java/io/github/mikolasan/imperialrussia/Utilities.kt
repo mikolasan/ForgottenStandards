@@ -12,6 +12,8 @@ import kotlin.math.floor
 import kotlin.math.log10
 
 
+const val maxDisplayLength = 9
+
 fun valueForDisplay2(value: Double?): String {
     if (value == null) return "-.-"
     val decimalFormat = DecimalFormat()
@@ -33,7 +35,7 @@ fun valueForDisplay(value: Double?, locale: Locale? = null): SpannableStringBuil
     val integerLength = if (integerPart > 0) (floor(log10(integerPart)) + 1).toInt() + 1 else 1
     val maxIntegerLength = 7
 
-    val maxDisplayLength = 9
+
 
     val numberFormat = if (locale == null) DecimalFormat.getInstance() else DecimalFormat.getInstance(locale)
     val decimalFormat = numberFormat as DecimalFormat

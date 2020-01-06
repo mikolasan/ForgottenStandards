@@ -14,11 +14,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import java.util.*
 
 
-
-
-
-
-
 class MeasuringActivity : Activity() {
 
     private val languageSetting = "language"
@@ -30,7 +25,9 @@ class MeasuringActivity : Activity() {
         private val digitSym: Char = digit.toString()[0]
         init {
             button.setOnClickListener {
-                selectedPanel?.appendString(digitSym)
+                val text = selectedPanel?.getString() ?: ""
+                if (text.length <= maxDisplayLength)
+                    selectedPanel?.appendString(digitSym)
             }
         }
     }
@@ -50,6 +47,8 @@ class MeasuringActivity : Activity() {
         private val operations = setOf('/', '*', '+', '-')
 
         private fun addSymbol(sym: Char) {
+//            val text = selectedPanel?.getString() ?: ""
+//            if (text.length > maxDisplayLength) return
             selectedPanel?.appendString(sym, operations)
         }
 
@@ -74,8 +73,8 @@ class MeasuringActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_measuring)
 
-        val convFromLayout = findViewById<ConstraintLayout>(R.id.convert_from)
-        val convToLayout = findViewById<ConstraintLayout>(R.id.convert_to)
+        val convFromLayout: ConstraintLayout = findViewById<ConstraintLayout>(R.id.convert_from)
+        val convToLayout: ConstraintLayout = findViewById<ConstraintLayout>(R.id.convert_to)
         val convFromPanel = ImperialUnitPanel(convFromLayout)
         val convToPanel = ImperialUnitPanel(convToLayout)
         val convFromInput = convFromPanel.input
@@ -124,7 +123,6 @@ class MeasuringActivity : Activity() {
                 val topValue = LengthUnits.convertValue(unit, convToPanel.unit, value)
                 convToPanel.setValue(topValue)
             }
-            lengthAdapter.selectFromUnit(unit)
             lengthAdapter.setCurrentValue(unit, currentValue)
         }
 
@@ -201,23 +199,32 @@ class MeasuringActivity : Activity() {
         }
 
         convFromLayout.setOnClickListener { view ->
-            selectPanel(convFromPanel, convToPanel)
+            //selectPanel(convFromPanel, convToPanel)
+            convFromInput.requestFocus()
         }
 
         convToLayout.setOnClickListener{ view ->
-            selectPanel(convToPanel, convFromPanel)
+            //selectPanel(convToPanel, convFromPanel)
+            convToInput.requestFocus()
         }
 
         convFromInput.setOnFocusChangeListener { view, hasFocus ->
             if (view is EditText) {
                 if (hasFocus) {
-                    selectPanel(convFromPanel, convToPanel)
+                    if (selectedPanel != convFromPanel) {
+                        selectPanel(convFromPanel, convToPanel)
+                        lengthAdapter.swapSelection()
+                        lengthAdapter.notifyDataSetChanged()
+                    }
                 }
             }
         }
 
         convFromInput.addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(s: Editable?) {
+                if (!convFromInput.isFocused)
+                    return
+
                 if (selectedPanel?.input != convFromInput)
                     return
 
@@ -240,7 +247,11 @@ class MeasuringActivity : Activity() {
         convToInput.setOnFocusChangeListener { view, hasFocus ->
             if (view is EditText) {
                 if (hasFocus) {
-                    selectPanel(convToPanel, convFromPanel)
+                    if (selectedPanel != convToPanel) {
+                        selectPanel(convToPanel, convFromPanel)
+                        lengthAdapter.swapSelection()
+                        lengthAdapter.notifyDataSetChanged()
+                    }
                 }
             }
         }
@@ -248,6 +259,8 @@ class MeasuringActivity : Activity() {
         val motionLayout = findViewById<MotionLayout>(R.id.motion_layout)
         convToInput.addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(s: Editable?) {
+                if (!convToInput.isFocused)
+                    return
 
                 if (selectedPanel?.input != convToInput)
                     return

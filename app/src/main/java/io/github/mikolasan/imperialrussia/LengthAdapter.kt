@@ -72,8 +72,9 @@ class LengthAdapter(context: Context, private val units: Array<ImperialUnit>) : 
         val masterUnit = unit ?: return
         for (listUnit in units) {
             listUnit.value = LengthUnits.convertValue(unit, listUnit, value)
-            if (listUnit == masterUnit)
-                fromUnit = masterUnit
+            if (listUnit == masterUnit) {
+                selectFromUnit(masterUnit)
+            }
         }
         notifyDataSetChanged()
     }

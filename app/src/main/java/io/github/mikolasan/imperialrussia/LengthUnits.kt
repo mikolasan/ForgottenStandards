@@ -36,8 +36,8 @@ object LengthUnits {
     val millimeterRatio = mutableMapOf(
             ImperialUnitName.POINT to 0.254,
             ImperialUnitName.LINE to 2.54,
-            ImperialUnitName.METER to 0.001,
-            ImperialUnitName.YARD to 0.7112
+            ImperialUnitName.METER to 1000.0,
+            ImperialUnitName.YARD to 711.2
     )
 
     val kilometerRatio = mutableMapOf(
@@ -54,7 +54,11 @@ object LengthUnits {
                     ImperialUnitName.YARD to 7.112)),
             ImperialUnit(R.string.unit_centimeter, ImperialUnitName.CENTIMETER, centimeterRatio),
             ImperialUnit(R.string.unit_millimeter, ImperialUnitName.MILLIMETER, millimeterRatio),
-            ImperialUnit(R.string.unit_micrometer, ImperialUnitName.MICROMETER, mutableMapOf(ImperialUnitName.MILLIMETER to 10.0)),
+            ImperialUnit(R.string.unit_micrometer, ImperialUnitName.MICROMETER, mutableMapOf(
+                    ImperialUnitName.MILLIMETER to 1000.0,
+                    ImperialUnitName.CENTIMETER to 10000.0,
+                    ImperialUnitName.DECIMETER to 100000.0,
+                    ImperialUnitName.METER to 1000000.0)),
             ImperialUnit(R.string.unit_arshin, ImperialUnitName.YARD, arshinRatio),
             ImperialUnit(R.string.unit_inch, ImperialUnitName.INCH, inchRatio),
             ImperialUnit(R.string.unit_point, ImperialUnitName.POINT, mutableMapOf(ImperialUnitName.INCH to 100.0)),
