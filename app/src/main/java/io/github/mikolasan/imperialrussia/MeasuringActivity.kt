@@ -47,8 +47,6 @@ class MeasuringActivity : Activity() {
         private val operations = setOf('/', '*', '+', '-')
 
         private fun addSymbol(sym: Char) {
-//            val text = selectedPanel?.getString() ?: ""
-//            if (text.length > maxDisplayLength) return
             selectedPanel?.appendString(sym, operations)
         }
 
@@ -199,12 +197,10 @@ class MeasuringActivity : Activity() {
         }
 
         convFromLayout.setOnClickListener { view ->
-            //selectPanel(convFromPanel, convToPanel)
             convFromInput.requestFocus()
         }
 
         convToLayout.setOnClickListener{ view ->
-            //selectPanel(convToPanel, convFromPanel)
             convToInput.requestFocus()
         }
 

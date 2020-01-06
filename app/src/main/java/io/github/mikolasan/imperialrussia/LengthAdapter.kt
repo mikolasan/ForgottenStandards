@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import java.text.ParsePosition
@@ -104,18 +105,46 @@ class LengthAdapter(context: Context, private val units: Array<ImperialUnit>) : 
     private fun updateViewColors(layout: ConstraintLayout, dataPosition: Int) {
         val data: ImperialUnit = getItem(dataPosition) as ImperialUnit
         val nameTextView: TextView = layout.findViewById(R.id.unit_name)
+        val panelLock: ImageView = layout.findViewById(R.id.panel_lock)
+        val valueLock: ImageView = layout.findViewById(R.id.value_lock)
+        val unitLock: ImageView = layout.findViewById(R.id.unit_lock)
         when (data) {
             secondUnit -> {
                 layout.setBackgroundResource(backgrounds.getValue(ViewState.FROM))
                 nameTextView.setTextColor(getColorFromRsourceId(nameColors.getValue(ViewState.FROM)))
+                if (secondUnit == fromUnit) {
+                    panelLock.visibility = View.VISIBLE
+                    valueLock.visibility = View.INVISIBLE
+                    unitLock.visibility = View.INVISIBLE
+                } else if (secondUnit == toUnit) {
+                    panelLock.visibility = View.INVISIBLE
+                    valueLock.visibility = View.INVISIBLE
+                    unitLock.visibility = View.VISIBLE
+                } else {
+                    panelLock.visibility = View.INVISIBLE
+                    valueLock.visibility = View.INVISIBLE
+                    unitLock.visibility = View.INVISIBLE
+                }
             }
             selectedUnit -> {
                 layout.setBackgroundResource(backgrounds.getValue(ViewState.TO))
                 nameTextView.setTextColor(getColorFromRsourceId(nameColors.getValue(ViewState.TO)))
+                if (selectedUnit == fromUnit) {
+                    panelLock.visibility = View.INVISIBLE
+                    valueLock.visibility = View.VISIBLE
+                    unitLock.visibility = View.INVISIBLE
+                } else {
+                    panelLock.visibility = View.INVISIBLE
+                    valueLock.visibility = View.INVISIBLE
+                    unitLock.visibility = View.INVISIBLE
+                }
             }
             else -> {
                 layout.setBackgroundResource(backgrounds.getValue(ViewState.OTHER))
                 nameTextView.setTextColor(getColorFromRsourceId(nameColors.getValue(ViewState.OTHER)))
+                panelLock.visibility = View.INVISIBLE
+                valueLock.visibility = View.INVISIBLE
+                unitLock.visibility = View.INVISIBLE
             }
         }
     }
