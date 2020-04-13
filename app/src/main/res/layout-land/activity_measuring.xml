@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/motion_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layoutDescription="@xml/unit_list_motion">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imageView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/background_damask_540x960" />
+
+    <include
+        layout="@layout/imperial_base"
+        android:layout_width="360dp"
+        android:layout_height="786dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="60dp" />
+
+    <include
+        layout="@layout/imperial_length_list"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        tools:layout_editor_absoluteX="406dp" />
+
+    <!--<androidx.appcompat.widget.AppCompatButton-->
+        <!--android:id="@+id/language"-->
+        <!--style="@android:style/Widget.Button"-->
+        <!--android:layout_width="@dimen/op_key_side"-->
+        <!--android:layout_height="@dimen/op_key_side"-->
+        <!--android:layout_marginStart="4dp"-->
+        <!--android:layout_marginTop="8dp"-->
+        <!--android:background="@drawable/ic_keyboard_special_back"-->
+        <!--android:text="@string/lang_ru"-->
+        <!--android:textAppearance="@style/ImperialKeypad"-->
+        <!--android:textColor="@color/keyboardSpecial"-->
+        <!--android:textSize="28sp"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toTopOf="parent" />-->
+
+</androidx.constraintlayout.motion.widget.MotionLayout>
