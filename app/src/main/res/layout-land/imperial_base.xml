@@ -281,7 +281,7 @@
             android:layout_height="@dimen/op_key_side"
             android:layout_marginBottom="@dimen/keypad_margin"
             android:background="@drawable/ic_keyboard_func_back"
-            android:drawableStart="@android:drawable/ic_input_delete"
+            android:text="@string/key_back"
             android:textAppearance="@style/ImperialKeypad"
             android:textColor="@color/keyboardFunc"
             android:textSize="28sp"

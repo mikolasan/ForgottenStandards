@@ -13,7 +13,7 @@
         android:layout_height="fill_parent"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
-        android:src="@drawable/background_damask_540x960" />
+        android:src="@drawable/ic_background_damask" />
 
     <include
         layout="@layout/imperial_base"
