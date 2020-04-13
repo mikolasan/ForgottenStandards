@@ -131,7 +131,8 @@ class LengthAdapter(context: Context, private val units: Array<ImperialUnit>) : 
                 nameTextView.setTextColor(getColorFromRsourceId(nameColors.getValue(ViewState.TO)))
                 if (selectedUnit == fromUnit) {
                     panelLock.visibility = View.INVISIBLE
-                    valueLock.visibility = View.VISIBLE
+                    //valueLock.visibility = View.VISIBLE
+                    valueLock.visibility = View.INVISIBLE
                     unitLock.visibility = View.INVISIBLE
                 } else {
                     panelLock.visibility = View.INVISIBLE

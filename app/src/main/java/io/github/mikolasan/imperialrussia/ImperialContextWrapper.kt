@@ -13,24 +13,28 @@ class ImperialContextWrapper(base: Context) : ContextWrapper(base) {
             val res = ctx.resources
             val configuration = res.configuration
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) { // 24
-                configuration.setLocale(newLocale)
+            when {
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.N -> { // 24
+                    configuration.setLocale(newLocale)
 
-                val localeList = LocaleList(newLocale)
-                LocaleList.setDefault(localeList)
-                configuration.setLocales(localeList)
+                    val localeList = LocaleList(newLocale)
+                    LocaleList.setDefault(localeList)
+                    configuration.setLocales(localeList)
 
-                ctx = ctx.createConfigurationContext(configuration)
+                    ctx = ctx.createConfigurationContext(configuration)
 
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) { // 17
-                configuration.setLocale(newLocale)
-                ctx = ctx.createConfigurationContext(configuration)
+                }
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 -> { // 17
+                    configuration.setLocale(newLocale)
+                    ctx = ctx.createConfigurationContext(configuration)
 
-            } else {
-                @Suppress("DEPRECATION")
-                configuration.locale = newLocale
-                @Suppress("DEPRECATION")
-                res.updateConfiguration(configuration, res.displayMetrics)
+                }
+                else -> {
+                    @Suppress("DEPRECATION")
+                    configuration.locale = newLocale
+                    @Suppress("DEPRECATION")
+                    res.updateConfiguration(configuration, res.displayMetrics)
+                }
             }
 
             return ContextWrapper(ctx)

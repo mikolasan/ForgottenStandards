@@ -2,8 +2,10 @@ package io.github.mikolasan.imperialrussia
 
 import android.app.Activity
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
@@ -17,7 +19,7 @@ import java.util.*
 class MeasuringActivity : Activity() {
 
     private val languageSetting = "language"
-    private val preferencesFile = "ImperialRussiaPrefs"
+    private val preferencesFile = "ImperialRussiaPreferences"
     private var newLocale: Locale? = null
     private var selectedPanel: ImperialUnitPanel? = null
 
@@ -67,9 +69,13 @@ class MeasuringActivity : Activity() {
     }
 
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_measuring)
+
+        val preferences = applicationContext.getSharedPreferences(preferencesFile, Context.MODE_PRIVATE)
+        val preferencesEditor = preferences.edit()
 
         val convFromLayout: ConstraintLayout = findViewById<ConstraintLayout>(R.id.convert_from)
         val convToLayout: ConstraintLayout = findViewById<ConstraintLayout>(R.id.convert_to)
@@ -79,7 +85,6 @@ class MeasuringActivity : Activity() {
         val convToInput = convToPanel.input
         val lengthUnits = LengthUnits.lengthUnits
         val lengthAdapter = LengthAdapter(this, lengthUnits)
-
 
         fun setCursor(editText: EditText?) {
             editText?.isCursorVisible = true
@@ -110,6 +115,9 @@ class MeasuringActivity : Activity() {
             }
             lengthAdapter.selectToUnit(unit)
             lengthAdapter.notifyDataSetChanged()
+            preferencesEditor.putString("topPanelUnit", unit.unitName.name)
+            preferencesEditor.putFloat("topPanelValue", currentValue.toFloat())
+            preferencesEditor.apply()
         }
 
         fun setBottomPanel(unit: ImperialUnit, value: Double? = null) {
@@ -122,9 +130,14 @@ class MeasuringActivity : Activity() {
                 convToPanel.setValue(topValue)
             }
             lengthAdapter.setCurrentValue(unit, currentValue)
+            preferencesEditor.putString("bottomPanelUnit", unit.unitName.name)
+            preferencesEditor.putFloat("bottomPanelValue", currentValue.toFloat())
+            preferencesEditor.apply()
         }
 
         fun unsetTopPanel() {
+            preferencesEditor.putString("topPanelUnit", "")
+            preferencesEditor.apply()
             convToPanel.unit = null
             convToPanel.deactivate()
             lengthAdapter.selectToUnit(null)
@@ -136,6 +149,8 @@ class MeasuringActivity : Activity() {
         }
 
         fun unsetBottomPanel() {
+            preferencesEditor.putString("bottomPanelUnit", "")
+            preferencesEditor.apply()
             convFromPanel.unit = null
             convFromPanel.deactivate()
             lengthAdapter.selectFromUnit(null)
@@ -146,6 +161,25 @@ class MeasuringActivity : Activity() {
             }
         }
 
+        // restore
+        val topPanelUnit = preferences.getString("topPanelUnit", "") ?: ""
+        if (topPanelUnit != "") {
+            val unitName = ImperialUnitName.valueOf(topPanelUnit)
+            val unit = LengthUnits.imperialUnits[unitName]
+            unit?.let {
+                val topPanelValue = preferences.getFloat("topPanelValue", 0.0f)
+                setTopPanel(unit, topPanelValue.toDouble())
+            }
+        }
+        val bottomPanelUnit = preferences.getString("bottomPanelUnit", "") ?: ""
+        if (bottomPanelUnit != "") {
+            val unitName = ImperialUnitName.valueOf(bottomPanelUnit)
+            val unit = LengthUnits.imperialUnits[unitName]
+            unit?.let {
+                val bottomPanelValue = preferences.getFloat("bottomPanelValue", 0.0f)
+                setBottomPanel(unit, bottomPanelValue.toDouble())
+            }
+        }
 
         val lengthList: ListView = findViewById<ListView>(R.id.units_list)
         lengthList.adapter = lengthAdapter
@@ -230,6 +264,9 @@ class MeasuringActivity : Activity() {
                     convToInput.text = valueForDisplay(toValue)
                     lengthAdapter.setCurrentValue(convFromPanel.unit, fromValue)
                     convFromInput.setSelection(convFromInput.text.length)
+                    preferencesEditor.putFloat("topPanelValue", toValue.toFloat())
+                    preferencesEditor.putFloat("bottomPanelValue", fromValue.toFloat())
+                    preferencesEditor.apply()
                 }
             }
 
@@ -270,6 +307,9 @@ class MeasuringActivity : Activity() {
                     convFromInput.text = valueForDisplay(fromValue)
                     lengthAdapter.setCurrentValue(convFromPanel.unit, fromValue)
                     convToInput.setSelection(convToInput.text.length)
+                    preferencesEditor.putFloat("topPanelValue", toValue.toFloat())
+                    preferencesEditor.putFloat("bottomPanelValue", fromValue.toFloat())
+                    preferencesEditor.apply()
                 }
             }
 
