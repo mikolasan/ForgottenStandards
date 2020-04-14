@@ -90,14 +90,7 @@ class ImperialUnitPanel(private val layout: ConstraintLayout) {
 
     fun setValue(v: Double) {
         unit?.value = v
-        val focused = input.hasFocus()
-        if (focused) {
-            input.clearFocus()
-        }
         input.text = valueForDisplay(v)
-        if (focused) {
-            input.requestFocus()
-        }
     }
 
     fun getString(): String {

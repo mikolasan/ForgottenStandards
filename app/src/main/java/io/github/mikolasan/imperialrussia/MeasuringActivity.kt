@@ -91,17 +91,27 @@ class MeasuringActivity : Activity() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 editText?.textCursorDrawable = resources.getDrawable(R.drawable.ic_cursor)
             }
-            editText?.setSelection(editText?.text.length)
+            editText?.setSelection(editText.text.length)
         }
 
         fun selectPanel(new: ImperialUnitPanel?, old: ImperialUnitPanel?) {
             selectedPanel = new
-            new?.setHighlight(true)
-            new?.input?.requestFocus()
-            //new?.input?.isCursorVisible = true
-            setCursor(new?.input)
-            old?.setHighlight(false)
-            old?.input?.isCursorVisible = false
+            new?.let {
+                if (new.unit?.value?.compareTo(0.0) == 0) {
+                    new.setString("")
+                }
+                new.setHighlight(true)
+                //new.input.requestFocus()
+                //new?.input?.isCursorVisible = true
+                setCursor(new.input)
+            }
+            old?.let {
+                if (old.getString() == "") {
+                    old.setValue(0.0)
+                }
+                old.setHighlight(false)
+                old.input.isCursorVisible = false
+            }
         }
 
         fun setTopPanel(unit: ImperialUnit, value: Double?) {
@@ -168,26 +178,6 @@ class MeasuringActivity : Activity() {
             }
         }
 
-        // restore
-        val topPanelUnit = preferences.getString("topPanelUnit", "") ?: ""
-        if (topPanelUnit != "") {
-            val unitName = ImperialUnitName.valueOf(topPanelUnit)
-            val unit = LengthUnits.imperialUnits[unitName]
-            unit?.let {
-                val topPanelValue = preferences.getFloat("topPanelValue", 0.0f)
-                setTopPanel(unit, topPanelValue.toDouble())
-            }
-        }
-        val bottomPanelUnit = preferences.getString("bottomPanelUnit", "") ?: ""
-        if (bottomPanelUnit != "") {
-            val unitName = ImperialUnitName.valueOf(bottomPanelUnit)
-            val unit = LengthUnits.imperialUnits[unitName]
-            unit?.let {
-                val bottomPanelValue = preferences.getFloat("bottomPanelValue", 0.0f)
-                setBottomPanel(unit, bottomPanelValue.toDouble())
-            }
-        }
-
         val unitsList: ListView = findViewById<ListView>(R.id.units_list)
         unitsList.adapter = lengthAdapter
         unitsList.setOnItemClickListener{ _, _, position, id ->
@@ -239,71 +229,66 @@ class MeasuringActivity : Activity() {
             }
         }
 
-        bottomLayout.setOnClickListener { view ->
-            bottomInput.requestFocus()
+        bottomLayout.setOnClickListener{ view ->
+            if (selectedPanel != bottomPanel) {
+                selectPanel(bottomPanel, topPanel)
+                lengthAdapter.swapSelection()
+                lengthAdapter.notifyDataSetChanged()
+            }
+        }
+
+        bottomInput.setOnClickListener{ view ->
+            if (selectedPanel != bottomPanel) {
+                selectPanel(bottomPanel, topPanel)
+                lengthAdapter.swapSelection()
+                lengthAdapter.notifyDataSetChanged()
+            }
         }
 
         topLayout.setOnClickListener{ view ->
-            topInput.requestFocus()
-        }
-
-        bottomInput.setOnFocusChangeListener { view, hasFocus ->
-            if (view is EditText) {
-                if (hasFocus) {
-                    if (selectedPanel != bottomPanel) {
-                        selectPanel(bottomPanel, topPanel)
-                        lengthAdapter.swapSelection()
-                        lengthAdapter.notifyDataSetChanged()
-                    }
-                }
+            if (selectedPanel != topPanel) {
+                selectPanel(topPanel, bottomPanel)
+                lengthAdapter.swapSelection()
+                lengthAdapter.notifyDataSetChanged()
             }
         }
 
-        bottomInput.addTextChangedListener(object: TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                if (!bottomInput.isFocused)
-                    return
-
-                if (selectedPanel?.input != bottomInput)
-                    return
-
-                s?.let {
-                    val fromValue = BasicCalculator(s.toString()).eval()
-                    val toValue = LengthUnits.convertValue(bottomPanel.unit, topPanel.unit, fromValue)
-                    topInput.text = valueForDisplay(toValue)
-                    lengthAdapter.setCurrentValue(bottomPanel.unit, fromValue)
-                    bottomInput.setSelection(bottomInput.text.length)
-                    preferencesEditor.putFloat("topPanelValue", toValue.toFloat())
-                    preferencesEditor.putFloat("bottomPanelValue", fromValue.toFloat())
-                    preferencesEditor.apply()
-                }
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-        })
-
-        topInput.setOnFocusChangeListener { view, hasFocus ->
-            if (view is EditText) {
-                if (hasFocus) {
-                    if (selectedPanel != topPanel) {
-                        selectPanel(topPanel, bottomPanel)
-                        lengthAdapter.swapSelection()
-                        lengthAdapter.notifyDataSetChanged()
-                    }
-                }
+        topInput.setOnClickListener{ view ->
+            if (selectedPanel != topPanel) {
+                selectPanel(topPanel, bottomPanel)
+                lengthAdapter.swapSelection()
+                lengthAdapter.notifyDataSetChanged()
             }
         }
 
         val mainLayout: ConstraintLayout = findViewById<ConstraintLayout>(R.id.motion_layout)
-        topInput.addTextChangedListener(object: TextWatcher {
+        bottomInput.addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                if (!topInput.isFocused)
+                if (selectedPanel?.input != bottomInput)
                     return
 
+                if (mainLayout is MotionLayout && mainLayout.progress.equals(1.0))
+                    return
+
+                s?.let {
+                    val inputValue = BasicCalculator(s.toString()).eval()
+                    val convertedValue = LengthUnits.convertValue(bottomPanel.unit, topPanel.unit, inputValue)
+                    topInput.text = valueForDisplay(convertedValue)
+                    lengthAdapter.setCurrentValue(bottomPanel.unit, inputValue)
+                    bottomInput.setSelection(bottomInput.text.length)
+                    preferencesEditor.putFloat("topPanelValue", convertedValue.toFloat())
+                    preferencesEditor.putFloat("bottomPanelValue", inputValue.toFloat())
+                    preferencesEditor.apply()
+                }
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
+
+        topInput.addTextChangedListener(object: TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
                 if (selectedPanel?.input != topInput)
                     return
 
@@ -311,23 +296,45 @@ class MeasuringActivity : Activity() {
                     return
 
                 s?.let {
-                    val toValue = BasicCalculator(s.toString()).eval()
-                    val fromValue = LengthUnits.convertValue(topPanel.unit, bottomPanel.unit, toValue)
-                    bottomInput.text = valueForDisplay(fromValue)
-                    lengthAdapter.setCurrentValue(bottomPanel.unit, fromValue)
+                    val inputValue = BasicCalculator(s.toString()).eval()
+                    val convertedValue = LengthUnits.convertValue(topPanel.unit, bottomPanel.unit, inputValue)
+                    bottomInput.text = valueForDisplay(convertedValue)
+                    lengthAdapter.setCurrentValue(topPanel.unit, inputValue)
                     topInput.setSelection(topInput.text.length)
-                    preferencesEditor.putFloat("topPanelValue", toValue.toFloat())
-                    preferencesEditor.putFloat("bottomPanelValue", fromValue.toFloat())
+                    preferencesEditor.putFloat("topPanelValue", inputValue.toFloat())
+                    preferencesEditor.putFloat("bottomPanelValue", convertedValue.toFloat())
                     preferencesEditor.apply()
                 }
             }
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
+
+        // restore
+        val topPanelUnit = preferences.getString("topPanelUnit", "") ?: ""
+        if (topPanelUnit != "") {
+            val unitName = ImperialUnitName.valueOf(topPanelUnit)
+            val unit = LengthUnits.imperialUnits[unitName]
+            val topPanelValue = preferences.getFloat("topPanelValue", 0.0f)
+            unit?.let {
+                setTopPanel(unit, topPanelValue.toDouble())
+            }
+            selectPanel(topPanel, bottomPanel)
+            lengthAdapter.setCurrentValue(topPanel.unit, topPanelValue.toDouble())
+        }
+        val bottomPanelUnit = preferences.getString("bottomPanelUnit", "") ?: ""
+        if (bottomPanelUnit != "") {
+            val unitName = ImperialUnitName.valueOf(bottomPanelUnit)
+            val unit = LengthUnits.imperialUnits[unitName]
+            unit?.let {
+//                val bottomPanelValue = preferences.getFloat("bottomPanelValue", 0.0f)
+                setBottomPanel(unit, null)
+            }
+            // selectPanel(bottomPanel, topPanel)
+
+        }
 
         val key_1 = DigitButton(findViewById(R.id.digit_1), 1)
         val key_2 = DigitButton(findViewById(R.id.digit_2), 2)
