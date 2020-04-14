@@ -314,15 +314,14 @@ class MeasuringActivity : Activity() {
 
         // restore
         val topPanelUnit = preferences.getString("topPanelUnit", "") ?: ""
+        val topPanelValue = preferences.getFloat("topPanelValue", 0.0f).toDouble()
         if (topPanelUnit != "") {
             val unitName = ImperialUnitName.valueOf(topPanelUnit)
             val unit = LengthUnits.imperialUnits[unitName]
-            val topPanelValue = preferences.getFloat("topPanelValue", 0.0f)
             unit?.let {
-                setTopPanel(unit, topPanelValue.toDouble())
+                setTopPanel(unit, topPanelValue)
             }
-            selectPanel(topPanel, bottomPanel)
-            lengthAdapter.setCurrentValue(topPanel.unit, topPanelValue.toDouble())
+
         }
         val bottomPanelUnit = preferences.getString("bottomPanelUnit", "") ?: ""
         if (bottomPanelUnit != "") {
@@ -335,6 +334,9 @@ class MeasuringActivity : Activity() {
             // selectPanel(bottomPanel, topPanel)
 
         }
+        selectPanel(topPanel, bottomPanel)
+        lengthAdapter.selectToUnit(topPanel.unit)
+        lengthAdapter.setCurrentValue(topPanel.unit, topPanelValue)
 
         val key_1 = DigitButton(findViewById(R.id.digit_1), 1)
         val key_2 = DigitButton(findViewById(R.id.digit_2), 2)

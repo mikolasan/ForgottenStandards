@@ -50,9 +50,9 @@ class LengthAdapter(context: Context, private val units: Array<ImperialUnit>) : 
         ViewState.TO to R.color.inputSelected,
         ViewState.OTHER to R.color.colorPrimary
     )
-    val valueColors = mapOf(
+    private val valueColors = mapOf(
         ViewState.FROM to R.color.keyboardDigit,
-        ViewState.TO to R.color.keyboardDigit,
+        ViewState.TO to R.color.colorPrimaryDark,
         ViewState.OTHER to R.color.keyboardDigit
     )
 
@@ -101,6 +101,7 @@ class LengthAdapter(context: Context, private val units: Array<ImperialUnit>) : 
     private fun updateViewColors(layout: ConstraintLayout, dataPosition: Int) {
         val data: ImperialUnit = getItem(dataPosition) as ImperialUnit
         val nameTextView: TextView = layout.findViewById(R.id.unit_name)
+        val valueTextView: TextView = layout.findViewById(R.id.unit_value)
         val panelLock: ImageView = layout.findViewById(R.id.panel_lock)
         val valueLock: ImageView = layout.findViewById(R.id.value_lock)
         val unitLock: ImageView = layout.findViewById(R.id.unit_lock)
@@ -109,6 +110,7 @@ class LengthAdapter(context: Context, private val units: Array<ImperialUnit>) : 
             secondUnit -> {
                 layout.setBackgroundResource(backgrounds.getValue(ViewState.FROM))
                 nameTextView.setTextColor(getColorFromRsourceId(nameColors.getValue(ViewState.FROM)))
+                valueTextView.setTextColor(getColorFromRsourceId(valueColors.getValue(ViewState.FROM)))
 //                if (secondUnit == fromUnit) {
 //                    panelLock.visibility = View.VISIBLE
 //                    valueLock.visibility = View.INVISIBLE
@@ -127,6 +129,7 @@ class LengthAdapter(context: Context, private val units: Array<ImperialUnit>) : 
             selectedUnit -> {
                 layout.setBackgroundResource(backgrounds.getValue(ViewState.TO))
                 nameTextView.setTextColor(getColorFromRsourceId(nameColors.getValue(ViewState.TO)))
+                valueTextView.setTextColor(getColorFromRsourceId(valueColors.getValue(ViewState.TO)))
 //                if (selectedUnit == fromUnit) {
 //                    panelLock.visibility = View.INVISIBLE
 //                    valueLock.visibility = View.INVISIBLE
@@ -141,6 +144,7 @@ class LengthAdapter(context: Context, private val units: Array<ImperialUnit>) : 
             else -> {
                 layout.setBackgroundResource(backgrounds.getValue(ViewState.OTHER))
                 nameTextView.setTextColor(getColorFromRsourceId(nameColors.getValue(ViewState.OTHER)))
+                valueTextView.setTextColor(getColorFromRsourceId(valueColors.getValue(ViewState.OTHER)))
                 panelLock.visibility = View.INVISIBLE
                 valueLock.visibility = View.INVISIBLE
                 unitLock.visibility = View.INVISIBLE
