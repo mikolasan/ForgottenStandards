@@ -19,7 +19,6 @@
         android:layout_marginTop="16dp"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-
         app:layout_constraintTop_toTopOf="parent" />
 
     <include
@@ -31,8 +30,21 @@
         android:layout_marginTop="16dp"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-
         app:layout_constraintTop_toBottomOf="@+id/convert_to" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/units_title"
+        android:layout_width="240dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="Length"
+        android:textAppearance="@style/ImperialKeypad"
+        android:textColor="@color/colorPrimary"
+        android:textSize="45sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/keyboard_layout"
@@ -43,7 +55,7 @@
         android:background="@drawable/ic_keyboard_panel_back"
         android:minWidth="@dimen/min_panel_width"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/convert_from">
+        app:layout_constraintTop_toBottomOf="@+id/units_title">
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/digit_7"

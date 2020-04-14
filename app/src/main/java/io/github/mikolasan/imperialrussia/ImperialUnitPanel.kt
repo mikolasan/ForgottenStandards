@@ -50,6 +50,10 @@ class ImperialUnitPanel(private val layout: ConstraintLayout) {
         }
     }
 
+    fun setHintText(newText: String) {
+        hint.text = newText
+    }
+
     fun getNotNullUnit(): ImperialUnit {
         return unit!!
     }

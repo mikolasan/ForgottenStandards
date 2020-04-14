@@ -10,6 +10,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.ListView
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -85,6 +86,8 @@ class MeasuringActivity : Activity() {
         val convToInput = convToPanel.input
         val lengthUnits = LengthUnits.lengthUnits
         val lengthAdapter = LengthAdapter(this, lengthUnits)
+        convToPanel.setHintText(applicationContext.resources.getString(R.string.select_unit_hint))
+        convFromPanel.setHintText(applicationContext.resources.getString(R.string.select_unit_2_hint))
 
         fun setCursor(editText: EditText?) {
             editText?.isCursorVisible = true
@@ -181,9 +184,9 @@ class MeasuringActivity : Activity() {
             }
         }
 
-        val lengthList: ListView = findViewById<ListView>(R.id.units_list)
-        lengthList.adapter = lengthAdapter
-        lengthList.setOnItemClickListener{ parent, view, position, id ->
+        val unitsList: ListView = findViewById<ListView>(R.id.units_list)
+        unitsList.adapter = lengthAdapter
+        unitsList.setOnItemClickListener{ _, _, position, id ->
             val unit = lengthAdapter.getItem(position) as? ImperialUnit
             unit?.let {
                 if (!convFromPanel.isActivated()) {
@@ -289,7 +292,7 @@ class MeasuringActivity : Activity() {
             }
         }
 
-        val motionLayout = findViewById<MotionLayout>(R.id.motion_layout)
+        val mainLayout: ConstraintLayout = findViewById<ConstraintLayout>(R.id.motion_layout)
         convToInput.addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 if (!convToInput.isFocused)
@@ -298,7 +301,7 @@ class MeasuringActivity : Activity() {
                 if (selectedPanel?.input != convToInput)
                     return
 
-                if (motionLayout.progress.equals(1.0))
+                if (mainLayout is MotionLayout && mainLayout.progress.equals(1.0))
                     return
 
                 s?.let {

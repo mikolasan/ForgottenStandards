@@ -108,37 +108,39 @@ class LengthAdapter(context: Context, private val units: Array<ImperialUnit>) : 
         val panelLock: ImageView = layout.findViewById(R.id.panel_lock)
         val valueLock: ImageView = layout.findViewById(R.id.value_lock)
         val unitLock: ImageView = layout.findViewById(R.id.unit_lock)
+        val arrowUp: ImageView = layout.findViewById(R.id.arrow_up)
         when (data) {
             secondUnit -> {
                 layout.setBackgroundResource(backgrounds.getValue(ViewState.FROM))
                 nameTextView.setTextColor(getColorFromRsourceId(nameColors.getValue(ViewState.FROM)))
-                if (secondUnit == fromUnit) {
-                    panelLock.visibility = View.VISIBLE
-                    valueLock.visibility = View.INVISIBLE
-                    unitLock.visibility = View.INVISIBLE
-                } else if (secondUnit == toUnit) {
+//                if (secondUnit == fromUnit) {
+//                    panelLock.visibility = View.VISIBLE
+//                    valueLock.visibility = View.INVISIBLE
+//                    unitLock.visibility = View.INVISIBLE
+//                } else if (secondUnit == toUnit) {
+//                    panelLock.visibility = View.INVISIBLE
+//                    valueLock.visibility = View.INVISIBLE
+//                    unitLock.visibility = View.VISIBLE
+//                } else {
                     panelLock.visibility = View.INVISIBLE
                     valueLock.visibility = View.INVISIBLE
-                    unitLock.visibility = View.VISIBLE
-                } else {
-                    panelLock.visibility = View.INVISIBLE
-                    valueLock.visibility = View.INVISIBLE
                     unitLock.visibility = View.INVISIBLE
-                }
+//                }
+                arrowUp.visibility = View.VISIBLE
             }
             selectedUnit -> {
                 layout.setBackgroundResource(backgrounds.getValue(ViewState.TO))
                 nameTextView.setTextColor(getColorFromRsourceId(nameColors.getValue(ViewState.TO)))
-                if (selectedUnit == fromUnit) {
+//                if (selectedUnit == fromUnit) {
+//                    panelLock.visibility = View.INVISIBLE
+//                    valueLock.visibility = View.INVISIBLE
+//                    unitLock.visibility = View.INVISIBLE
+//                } else {
                     panelLock.visibility = View.INVISIBLE
-                    //valueLock.visibility = View.VISIBLE
                     valueLock.visibility = View.INVISIBLE
                     unitLock.visibility = View.INVISIBLE
-                } else {
-                    panelLock.visibility = View.INVISIBLE
-                    valueLock.visibility = View.INVISIBLE
-                    unitLock.visibility = View.INVISIBLE
-                }
+//                }
+                arrowUp.visibility = View.VISIBLE
             }
             else -> {
                 layout.setBackgroundResource(backgrounds.getValue(ViewState.OTHER))
@@ -146,6 +148,7 @@ class LengthAdapter(context: Context, private val units: Array<ImperialUnit>) : 
                 panelLock.visibility = View.INVISIBLE
                 valueLock.visibility = View.INVISIBLE
                 unitLock.visibility = View.INVISIBLE
+                arrowUp.visibility = View.INVISIBLE
             }
         }
     }
@@ -169,6 +172,24 @@ class LengthAdapter(context: Context, private val units: Array<ImperialUnit>) : 
             val view = inflater.inflate(R.layout.listview_item, parent, false) as ConstraintLayout
             updateViewData(view, position)
             updateViewColors(view, position)
+            val data: ImperialUnit = getItem(position) as ImperialUnit
+            val arrowUp: ImageView = view.findViewById(R.id.arrow_up)
+            arrowUp.setOnClickListener {
+                if (data == selectedUnit && position != 0) {
+                    // no swap function in Kotlin!
+                    val tmp = units[0]
+                    units[0] = units[position]
+                    units[position] = tmp
+                    notifyDataSetChanged()
+                } else if (data == secondUnit && position != 1) {
+                    // no swap function in Kotlin!
+                    val tmp = units[1]
+                    units[1] = units[position]
+                    units[position] = tmp
+                    notifyDataSetChanged()
+                }
+            }
+
             return view
         }
 
