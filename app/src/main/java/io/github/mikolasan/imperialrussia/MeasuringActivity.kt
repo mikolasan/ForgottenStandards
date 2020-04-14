@@ -2,15 +2,12 @@ package io.github.mikolasan.imperialrussia
 
 import android.app.Activity
 import android.content.Context
-import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.ListView
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -78,16 +75,16 @@ class MeasuringActivity : Activity() {
         val preferences = applicationContext.getSharedPreferences(preferencesFile, Context.MODE_PRIVATE)
         val preferencesEditor = preferences.edit()
 
-        val convFromLayout: ConstraintLayout = findViewById<ConstraintLayout>(R.id.convert_from)
-        val convToLayout: ConstraintLayout = findViewById<ConstraintLayout>(R.id.convert_to)
-        val convFromPanel = ImperialUnitPanel(convFromLayout)
-        val convToPanel = ImperialUnitPanel(convToLayout)
-        val convFromInput = convFromPanel.input
-        val convToInput = convToPanel.input
+        val bottomLayout: ConstraintLayout = findViewById<ConstraintLayout>(R.id.convert_from)
+        val topLayout: ConstraintLayout = findViewById<ConstraintLayout>(R.id.convert_to)
+        val bottomPanel = ImperialUnitPanel(bottomLayout)
+        val topPanel = ImperialUnitPanel(topLayout)
+        val bottomInput = bottomPanel.input
+        val topInput = topPanel.input
         val lengthUnits = LengthUnits.lengthUnits
         val lengthAdapter = LengthAdapter(this, lengthUnits)
-        convToPanel.setHintText(applicationContext.resources.getString(R.string.select_unit_hint))
-        convFromPanel.setHintText(applicationContext.resources.getString(R.string.select_unit_2_hint))
+        topPanel.setHintText(applicationContext.resources.getString(R.string.select_unit_hint))
+        bottomPanel.setHintText(applicationContext.resources.getString(R.string.select_unit_2_hint))
 
         fun setCursor(editText: EditText?) {
             editText?.isCursorVisible = true
@@ -108,13 +105,16 @@ class MeasuringActivity : Activity() {
         }
 
         fun setTopPanel(unit: ImperialUnit, value: Double?) {
-            convToPanel.changeUnit(unit)
+            topPanel.changeUnit(unit)
             val currentValue = value ?: 1.0
             if (value == null) {
-                convFromPanel.setValue(currentValue)
+//                bottomPanel.setValue(currentValue)
+                val topValue = LengthUnits.convertValue(bottomPanel.unit, unit, bottomPanel.getValue() ?: 1.0)
+                topPanel.setValue(topValue)
             } else {
-                val topValue = LengthUnits.convertValue(convFromPanel.unit, unit, currentValue)
-                convToPanel.setValue(topValue)
+//                val topValue = LengthUnits.convertValue(bottomPanel.unit, unit, currentValue)
+//                topPanel.setValue(topValue)
+                topPanel.setValue(value)
             }
             lengthAdapter.selectToUnit(unit)
             lengthAdapter.notifyDataSetChanged()
@@ -124,15 +124,19 @@ class MeasuringActivity : Activity() {
         }
 
         fun setBottomPanel(unit: ImperialUnit, value: Double? = null) {
-            convFromPanel.changeUnit(unit)
+            bottomPanel.changeUnit(unit)
             val currentValue = value ?: 1.0
             if (value == null) {
-                convFromPanel.setValue(currentValue)
+//                bottomPanel.setValue(currentValue)
+                val bottomValue = LengthUnits.convertValue(topPanel.unit, unit, topPanel.getValue() ?: 1.0)
+                bottomPanel.setValue(bottomValue)
             } else {
-                val topValue = LengthUnits.convertValue(unit, convToPanel.unit, value)
-                convToPanel.setValue(topValue)
+                val topValue = LengthUnits.convertValue(unit, topPanel.unit, value)
+                topPanel.setValue(topValue)
             }
-            lengthAdapter.setCurrentValue(unit, currentValue)
+            // lengthAdapter.setCurrentValue(unit, currentValue)
+            lengthAdapter.selectFromUnit(unit)
+            lengthAdapter.notifyDataSetChanged()
             preferencesEditor.putString("bottomPanelUnit", unit.unitName.name)
             preferencesEditor.putFloat("bottomPanelValue", currentValue.toFloat())
             preferencesEditor.apply()
@@ -141,10 +145,10 @@ class MeasuringActivity : Activity() {
         fun unsetTopPanel() {
             preferencesEditor.putString("topPanelUnit", "")
             preferencesEditor.apply()
-            convToPanel.unit = null
-            convToPanel.deactivate()
+            topPanel.unit = null
+            topPanel.deactivate()
             lengthAdapter.selectToUnit(null)
-            if (!convFromPanel.isActivated()) {
+            if (!bottomPanel.isActivated()) {
                 lengthAdapter.resetValues()
             } else {
                 lengthAdapter.notifyDataSetChanged()
@@ -154,10 +158,10 @@ class MeasuringActivity : Activity() {
         fun unsetBottomPanel() {
             preferencesEditor.putString("bottomPanelUnit", "")
             preferencesEditor.apply()
-            convFromPanel.unit = null
-            convFromPanel.deactivate()
+            bottomPanel.unit = null
+            bottomPanel.deactivate()
             lengthAdapter.selectFromUnit(null)
-            if (!convToPanel.isActivated()) {
+            if (!topPanel.isActivated()) {
                 lengthAdapter.resetValues()
             } else {
                 lengthAdapter.notifyDataSetChanged()
@@ -189,42 +193,44 @@ class MeasuringActivity : Activity() {
         unitsList.setOnItemClickListener{ _, _, position, id ->
             val unit = lengthAdapter.getItem(position) as? ImperialUnit
             unit?.let {
-                if (!convFromPanel.isActivated()) {
-                    if (convToPanel.unit != unit) {
-                        selectPanel(convFromPanel, convToPanel)
-                        setBottomPanel(unit, convFromPanel.getValue())
+                // top == to
+                // bottom = from
+                if (!topPanel.isActivated()) {
+                    if (bottomPanel.unit != unit) {
+                        selectPanel(topPanel, bottomPanel)
+                        setTopPanel(unit, 1.0)
                     } else {
-                        selectPanel(null, convToPanel)
-                        unsetTopPanel()
+//                        selectPanel(null, bottomPanel)
+//                        unsetBottomPanel()
                     }
-                } else if (!convToPanel.isActivated()) {
-                    if (convFromPanel.unit != unit) {
-                        selectPanel(convToPanel, convFromPanel)
-                        setTopPanel(unit, convFromPanel.getValue())
+                } else if (!bottomPanel.isActivated()) {
+                    if (topPanel.unit != unit) {
+                        selectPanel(bottomPanel, topPanel)
+                        setBottomPanel(unit, null)
                     } else {
-                        selectPanel(null, convFromPanel)
-                        unsetBottomPanel()
+//                        selectPanel(null, topPanel)
+//                        unsetTopPanel()
                     }
                 } else {
-                    if (selectedPanel == convToPanel) {
-                        if (convToPanel.unit == unit) {
-                            selectPanel(convFromPanel, convToPanel)
-                            unsetTopPanel()
-                        } else if (convFromPanel.unit != unit) {
-                            setTopPanel(unit, convFromPanel.getValue())
+                    if (selectedPanel == topPanel) {
+                        if (topPanel.unit == unit) {
+//                            selectPanel(bottomPanel, topPanel)
+//                            unsetTopPanel()
+                        } else if (bottomPanel.unit != unit) {
+                            setTopPanel(unit, null)
                         } else {
-                            selectPanel(convFromPanel, convToPanel)
+                            selectPanel(bottomPanel, topPanel)
                             lengthAdapter.swapSelection()
                             lengthAdapter.notifyDataSetChanged()
                         }
-                    } else if (selectedPanel == convFromPanel) {
-                        if (convFromPanel.unit == unit) {
-                            selectPanel(convToPanel, convFromPanel)
-                            unsetBottomPanel()
-                        } else if (convToPanel.unit != unit) {
-                            setBottomPanel(unit, convFromPanel.getValue())
+                    } else if (selectedPanel == bottomPanel) {
+                        if (bottomPanel.unit == unit) {
+//                            selectPanel(topPanel, bottomPanel)
+//                            unsetBottomPanel()
+                        } else if (topPanel.unit != unit) {
+                            setBottomPanel(unit, null)
                         } else {
-                            selectPanel(convToPanel, convFromPanel)
+                            selectPanel(topPanel, bottomPanel)
                             lengthAdapter.swapSelection()
                             lengthAdapter.notifyDataSetChanged()
                         }
@@ -233,19 +239,19 @@ class MeasuringActivity : Activity() {
             }
         }
 
-        convFromLayout.setOnClickListener { view ->
-            convFromInput.requestFocus()
+        bottomLayout.setOnClickListener { view ->
+            bottomInput.requestFocus()
         }
 
-        convToLayout.setOnClickListener{ view ->
-            convToInput.requestFocus()
+        topLayout.setOnClickListener{ view ->
+            topInput.requestFocus()
         }
 
-        convFromInput.setOnFocusChangeListener { view, hasFocus ->
+        bottomInput.setOnFocusChangeListener { view, hasFocus ->
             if (view is EditText) {
                 if (hasFocus) {
-                    if (selectedPanel != convFromPanel) {
-                        selectPanel(convFromPanel, convToPanel)
+                    if (selectedPanel != bottomPanel) {
+                        selectPanel(bottomPanel, topPanel)
                         lengthAdapter.swapSelection()
                         lengthAdapter.notifyDataSetChanged()
                     }
@@ -253,20 +259,20 @@ class MeasuringActivity : Activity() {
             }
         }
 
-        convFromInput.addTextChangedListener(object: TextWatcher {
+        bottomInput.addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                if (!convFromInput.isFocused)
+                if (!bottomInput.isFocused)
                     return
 
-                if (selectedPanel?.input != convFromInput)
+                if (selectedPanel?.input != bottomInput)
                     return
 
                 s?.let {
                     val fromValue = BasicCalculator(s.toString()).eval()
-                    val toValue = LengthUnits.convertValue(convFromPanel.unit, convToPanel.unit, fromValue)
-                    convToInput.text = valueForDisplay(toValue)
-                    lengthAdapter.setCurrentValue(convFromPanel.unit, fromValue)
-                    convFromInput.setSelection(convFromInput.text.length)
+                    val toValue = LengthUnits.convertValue(bottomPanel.unit, topPanel.unit, fromValue)
+                    topInput.text = valueForDisplay(toValue)
+                    lengthAdapter.setCurrentValue(bottomPanel.unit, fromValue)
+                    bottomInput.setSelection(bottomInput.text.length)
                     preferencesEditor.putFloat("topPanelValue", toValue.toFloat())
                     preferencesEditor.putFloat("bottomPanelValue", fromValue.toFloat())
                     preferencesEditor.apply()
@@ -280,11 +286,11 @@ class MeasuringActivity : Activity() {
             }
         })
 
-        convToInput.setOnFocusChangeListener { view, hasFocus ->
+        topInput.setOnFocusChangeListener { view, hasFocus ->
             if (view is EditText) {
                 if (hasFocus) {
-                    if (selectedPanel != convToPanel) {
-                        selectPanel(convToPanel, convFromPanel)
+                    if (selectedPanel != topPanel) {
+                        selectPanel(topPanel, bottomPanel)
                         lengthAdapter.swapSelection()
                         lengthAdapter.notifyDataSetChanged()
                     }
@@ -293,12 +299,12 @@ class MeasuringActivity : Activity() {
         }
 
         val mainLayout: ConstraintLayout = findViewById<ConstraintLayout>(R.id.motion_layout)
-        convToInput.addTextChangedListener(object: TextWatcher {
+        topInput.addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                if (!convToInput.isFocused)
+                if (!topInput.isFocused)
                     return
 
-                if (selectedPanel?.input != convToInput)
+                if (selectedPanel?.input != topInput)
                     return
 
                 if (mainLayout is MotionLayout && mainLayout.progress.equals(1.0))
@@ -306,10 +312,10 @@ class MeasuringActivity : Activity() {
 
                 s?.let {
                     val toValue = BasicCalculator(s.toString()).eval()
-                    val fromValue = LengthUnits.convertValue(convToPanel.unit, convFromPanel.unit, toValue)
-                    convFromInput.text = valueForDisplay(fromValue)
-                    lengthAdapter.setCurrentValue(convFromPanel.unit, fromValue)
-                    convToInput.setSelection(convToInput.text.length)
+                    val fromValue = LengthUnits.convertValue(topPanel.unit, bottomPanel.unit, toValue)
+                    bottomInput.text = valueForDisplay(fromValue)
+                    lengthAdapter.setCurrentValue(bottomPanel.unit, fromValue)
+                    topInput.setSelection(topInput.text.length)
                     preferencesEditor.putFloat("topPanelValue", toValue.toFloat())
                     preferencesEditor.putFloat("bottomPanelValue", fromValue.toFloat())
                     preferencesEditor.apply()
@@ -370,8 +376,8 @@ class MeasuringActivity : Activity() {
 //
 //
 //            lengthAdapter.notifyDataSetChanged()
-//            convFromPanel.updateUnitText()
-//            convToPanel.updateUnitText()
+//            bottomPanel.updateUnitText()
+//            topPanel.updateUnitText()
 //        }
 
     }

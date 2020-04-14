@@ -10,7 +10,8 @@
     android:elevation="5dp"
     android:minWidth="@dimen/min_panel_width"
     android:paddingBottom="10dp"
-    tools:showIn="@layout/imperial_base">
+    >
+    <!--tools:showIn="@layout/imperial_base"-->
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/title"
@@ -58,12 +59,13 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginTop="24dp"
         android:layout_marginBottom="8dp"
+        android:gravity="center_vertical|fill_vertical"
         android:text="@string/select_unit_hint"
-        android:textAppearance="@style/ImperialPanel"
         android:textAlignment="center"
+        android:textAppearance="@style/ImperialPanel"
         android:textColor="@color/colorPrimary"
         android:textSize="34sp"
         android:visibility="visible"
