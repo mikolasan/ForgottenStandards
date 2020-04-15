@@ -91,3 +91,13 @@ fun parseDisplayString(string: String, locale: Locale? = null): Double {
     val number = decimalFormat.parse(string)
     return number?.toDouble() ?: 0.0
 }
+
+fun <T> MutableList<T>.moveToFrontFrom(index: Int) {
+    val tmp = this.removeAt(index)
+    this.add(0, tmp)
+}
+
+fun <T> MutableList<T>.moveToFront(element: T) {
+    this.remove(element)
+    this.add(0, element)
+}

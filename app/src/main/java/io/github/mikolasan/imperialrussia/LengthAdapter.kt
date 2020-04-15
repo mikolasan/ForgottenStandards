@@ -13,7 +13,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import java.text.ParsePosition
 
-class LengthAdapter(context: Context, private val units: Array<ImperialUnit>) : BaseAdapter() {
+class LengthAdapter(context: Context, private val units: MutableList<ImperialUnit>) : BaseAdapter() {
     private val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
     private val getStringFromResourceId: (Int) -> String = { i: Int -> context.resources.getString(i) }
 //    private val getDrawableFromResourceId: (Int) -> Drawable = { i: Int ->
@@ -61,6 +61,14 @@ class LengthAdapter(context: Context, private val units: Array<ImperialUnit>) : 
     private var selectedUnit: ImperialUnit? = null
     private var secondUnit: ImperialUnit? = null
     private var selectedUnits: List<ImperialUnit?> = mutableListOf()
+
+    private var arrowClickListener: (Int, View, ImperialUnit) -> Unit = { position, _, _ ->
+        System.out.println("arrowClickListener ${position}")
+    }
+
+    fun setOnArrowClickListener(listener: (Int, View, ImperialUnit) -> Unit) {
+        arrowClickListener = listener
+    }
 
     fun resetValues() {
         for (listUnit in units) {
@@ -124,7 +132,7 @@ class LengthAdapter(context: Context, private val units: Array<ImperialUnit>) : 
                     valueLock.visibility = View.INVISIBLE
                     unitLock.visibility = View.INVISIBLE
 //                }
-                arrowUp.visibility = View.VISIBLE
+                arrowUp.visibility = if (dataPosition == 0) View.INVISIBLE else View.VISIBLE
             }
             selectedUnit -> {
                 layout.setBackgroundResource(backgrounds.getValue(ViewState.TO))
@@ -139,7 +147,7 @@ class LengthAdapter(context: Context, private val units: Array<ImperialUnit>) : 
                     valueLock.visibility = View.INVISIBLE
                     unitLock.visibility = View.INVISIBLE
 //                }
-                arrowUp.visibility = View.VISIBLE
+                arrowUp.visibility = if (dataPosition == 0) View.INVISIBLE else View.VISIBLE
             }
             else -> {
                 layout.setBackgroundResource(backgrounds.getValue(ViewState.OTHER))
@@ -159,12 +167,22 @@ class LengthAdapter(context: Context, private val units: Array<ImperialUnit>) : 
         val valueTextView: TextView = layout.findViewById(R.id.unit_value)
         valueTextView.text = valueForDisplay(data.value)
     }
-
+    private fun updateArrowListener(layout: ConstraintLayout, dataPosition: Int) {
+        val arrowUp: ImageView = layout.findViewById(R.id.arrow_up)
+        arrowUp.setOnClickListener {
+            if (dataPosition != 0) {
+                units.moveToFrontFrom(dataPosition)
+                arrowClickListener(dataPosition, it, units[dataPosition])
+                notifyDataSetChanged()
+            }
+        }
+    }
     override fun getView(position: Int, contentView: View?, parent: ViewGroup?): View {
         if (contentView != null) {
             if (contentView is ConstraintLayout) {
                 updateViewData(contentView, position)
                 updateViewColors(contentView, position)
+                updateArrowListener(contentView, position)
                 return contentView
             }
             return contentView
@@ -172,24 +190,7 @@ class LengthAdapter(context: Context, private val units: Array<ImperialUnit>) : 
             val view = inflater.inflate(R.layout.listview_item, parent, false) as ConstraintLayout
             updateViewData(view, position)
             updateViewColors(view, position)
-            val data: ImperialUnit = getItem(position) as ImperialUnit
-            val arrowUp: ImageView = view.findViewById(R.id.arrow_up)
-            arrowUp.setOnClickListener {
-                if (data == selectedUnit && position != 0) {
-                    // no swap function in Kotlin!
-                    val tmp = units[0]
-                    units[0] = units[position]
-                    units[position] = tmp
-                    notifyDataSetChanged()
-                } else if (data == secondUnit && position != 1) {
-                    // no swap function in Kotlin!
-                    val tmp = units[1]
-                    units[1] = units[position]
-                    units[position] = tmp
-                    notifyDataSetChanged()
-                }
-            }
-
+            updateArrowListener(view, position)
             return view
         }
 

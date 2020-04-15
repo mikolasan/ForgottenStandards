@@ -6,18 +6,20 @@ import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
 import android.widget.EditText
 import android.widget.Button
 import android.widget.ListView
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.constraintlayout.widget.ConstraintLayout
+import kotlinx.android.synthetic.main.imperial_length_list.*
 import java.util.*
 
 
 class MeasuringActivity : Activity() {
 
     private val languageSetting = "language"
-    private val preferencesFile = "ImperialRussiaPreferences"
+    private val preferencesFile = "ImperialRussiaStore"
     private var newLocale: Locale? = null
     private var selectedPanel: ImperialUnitPanel? = null
 
@@ -66,7 +68,13 @@ class MeasuringActivity : Activity() {
         }
     }
 
-
+    private fun restoreUnit(storedName: String): ImperialUnit? {
+        if (storedName != "") {
+            val unitName = ImperialUnitName.valueOf(storedName)
+            return LengthUnits.imperialUnits[unitName]
+        }
+        return null
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,6 +82,8 @@ class MeasuringActivity : Activity() {
 
         val preferences = applicationContext.getSharedPreferences(preferencesFile, Context.MODE_PRIVATE)
         val preferencesEditor = preferences.edit()
+        val topPanelUnit = restoreUnit(preferences.getString("topPanelUnit", "") ?: "")
+        val bottomPanelUnit = restoreUnit(preferences.getString("bottomPanelUnit", "") ?: "")
 
         val bottomLayout: ConstraintLayout = findViewById<ConstraintLayout>(R.id.convert_from)
         val topLayout: ConstraintLayout = findViewById<ConstraintLayout>(R.id.convert_to)
@@ -81,8 +91,40 @@ class MeasuringActivity : Activity() {
         val topPanel = ImperialUnitPanel(topLayout)
         val bottomInput = bottomPanel.input
         val topInput = topPanel.input
-        val lengthUnits = LengthUnits.lengthUnits
-        val lengthAdapter = LengthAdapter(this, lengthUnits)
+
+        val orderedUnits = LengthUnits.lengthUnits.toMutableList()
+        LengthUnits.lengthUnits.forEachIndexed { i, u ->
+            val unitName = u.unitName.name
+            val settingName = "unit${unitName}Position"
+            val p = preferences.getInt(settingName, i)
+            if (preferences.contains(settingName)) {
+                preferencesEditor.putInt(settingName, i)
+            }
+            orderedUnits[p] = u
+        }
+        preferencesEditor.apply()
+        bottomPanelUnit?.let {
+            if (!orderedUnits.take(2).contains(it)) {
+                orderedUnits.moveToFront(it)
+            }
+        }
+        topPanelUnit?.let {
+            if (!orderedUnits.take(2).contains(it)) {
+                orderedUnits.moveToFront(it)
+            }
+        }
+        val lengthAdapter = LengthAdapter(this, orderedUnits)
+        lengthAdapter.setOnArrowClickListener { position: Int, view: View, unit: ImperialUnit ->
+            view.visibility = View.INVISIBLE // hide the arrow
+            System.out.println(position)
+            LengthUnits.lengthUnits.forEachIndexed { i, u ->
+                val unitName = u.unitName.name
+                val settingName = "unit${unitName}Position"
+                preferencesEditor.putInt(settingName, orderedUnits.indexOf(u))
+            }
+//            preferencesEditor.putInt("unit${unit.unitName.name}Position", position)
+            preferencesEditor.apply()
+        }
         topPanel.setHintText(applicationContext.resources.getString(R.string.select_unit_hint))
         bottomPanel.setHintText(applicationContext.resources.getString(R.string.select_unit_2_hint))
 
@@ -178,7 +220,7 @@ class MeasuringActivity : Activity() {
             }
         }
 
-        val unitsList: ListView = findViewById<ListView>(R.id.units_list)
+        val unitsList = findViewById<ListView>(R.id.units_list)
         unitsList.adapter = lengthAdapter
         unitsList.setOnItemClickListener{ _, _, position, id ->
             val unit = lengthAdapter.getItem(position) as? ImperialUnit
@@ -313,26 +355,12 @@ class MeasuringActivity : Activity() {
         })
 
         // restore
-        val topPanelUnit = preferences.getString("topPanelUnit", "") ?: ""
         val topPanelValue = preferences.getFloat("topPanelValue", 0.0f).toDouble()
-        if (topPanelUnit != "") {
-            val unitName = ImperialUnitName.valueOf(topPanelUnit)
-            val unit = LengthUnits.imperialUnits[unitName]
-            unit?.let {
-                setTopPanel(unit, topPanelValue)
-            }
-
+        topPanelUnit?.let {
+            setTopPanel(it, topPanelValue)
         }
-        val bottomPanelUnit = preferences.getString("bottomPanelUnit", "") ?: ""
-        if (bottomPanelUnit != "") {
-            val unitName = ImperialUnitName.valueOf(bottomPanelUnit)
-            val unit = LengthUnits.imperialUnits[unitName]
-            unit?.let {
-//                val bottomPanelValue = preferences.getFloat("bottomPanelValue", 0.0f)
-                setBottomPanel(unit, null)
-            }
-            // selectPanel(bottomPanel, topPanel)
-
+        bottomPanelUnit?.let {
+            setBottomPanel(it, null)
         }
         selectPanel(topPanel, bottomPanel)
         lengthAdapter.selectToUnit(topPanel.unit)
