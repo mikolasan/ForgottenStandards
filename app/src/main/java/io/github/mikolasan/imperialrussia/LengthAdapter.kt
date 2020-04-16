@@ -1,19 +1,18 @@
 package io.github.mikolasan.imperialrussia
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Build
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import java.text.ParsePosition
 
-class LengthAdapter(context: Context, private val units: MutableList<ImperialUnit>) : BaseAdapter() {
+class LengthAdapter(private val context: Context, private val units: MutableList<ImperialUnit>) : BaseAdapter() {
     private val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
     private val getStringFromResourceId: (Int) -> String = { i: Int -> context.resources.getString(i) }
 //    private val getDrawableFromResourceId: (Int) -> Drawable = { i: Int ->
@@ -35,39 +34,43 @@ class LengthAdapter(context: Context, private val units: MutableList<ImperialUni
     }
 
     enum class ViewState {
-        FROM,
-        TO,
-        OTHER
+        SECOND,
+        SELECTED,
+        NORMAL
     }
 
     private val backgrounds = mapOf(
-        ViewState.FROM to R.drawable.ic_side_from_back,
-        ViewState.TO to R.drawable.ic_side_to_back,
-        ViewState.OTHER to R.drawable.ic_side_panel_back
+        ViewState.SECOND to R.drawable.ic_side_from_back,
+        ViewState.SELECTED to R.drawable.ic_side_to_back,
+        ViewState.NORMAL to R.drawable.ic_side_panel_back
     )
     private val nameColors = mapOf(
-        ViewState.FROM to R.color.inputNormal,
-        ViewState.TO to R.color.inputSelected,
-        ViewState.OTHER to R.color.colorPrimary
+        ViewState.SECOND to R.color.inputNormal,
+        ViewState.SELECTED to R.color.inputSelected,
+        ViewState.NORMAL to R.color.colorPrimary
     )
     private val valueColors = mapOf(
-        ViewState.FROM to R.color.keyboardDigit,
-        ViewState.TO to R.color.colorPrimaryDark,
-        ViewState.OTHER to R.color.keyboardDigit
+        ViewState.SECOND to R.color.keyboardDigit,
+        ViewState.SELECTED to R.color.colorPrimaryDark,
+        ViewState.NORMAL to R.color.keyboardDigit
     )
 
-    private var fromUnit: ImperialUnit? = null
-    private var toUnit: ImperialUnit? = null
     private var selectedUnit: ImperialUnit? = null
     private var secondUnit: ImperialUnit? = null
-    private var selectedUnits: List<ImperialUnit?> = mutableListOf()
 
     private var arrowClickListener: (Int, View, ImperialUnit) -> Unit = { position, _, _ ->
         System.out.println("arrowClickListener ${position}")
     }
+    private var arrowLongClickListener: (Int, View, ImperialUnit) -> Unit = { position, _, _ ->
+        System.out.println("arrowLongClickListener ${position}")
+    }
 
     fun setOnArrowClickListener(listener: (Int, View, ImperialUnit) -> Unit) {
         arrowClickListener = listener
+    }
+
+    fun setOnArrowLongClickListener(listener: (Int, View, ImperialUnit) -> Unit) {
+        arrowLongClickListener = listener
     }
 
     fun resetValues() {
@@ -84,20 +87,12 @@ class LengthAdapter(context: Context, private val units: MutableList<ImperialUni
         notifyDataSetChanged()
     }
 
-    fun selectFromUnit(unit: ImperialUnit?) {
-        fromUnit = unit
-        selectedUnit = fromUnit
-        secondUnit = toUnit
-    }
-
-    fun selectToUnit(unit: ImperialUnit?) {
-        toUnit = unit
-        selectedUnit = toUnit
-        secondUnit = fromUnit
-    }
-
     fun setSelectedUnit(unit: ImperialUnit?) {
         selectedUnit = unit
+    }
+
+    fun setSecondUnit(unit: ImperialUnit?) {
+        secondUnit = unit
     }
 
     fun swapSelection() {
@@ -115,44 +110,28 @@ class LengthAdapter(context: Context, private val units: MutableList<ImperialUni
         val unitLock: ImageView = layout.findViewById(R.id.unit_lock)
         val arrowUp: ImageView = layout.findViewById(R.id.arrow_up)
         when (data) {
-            secondUnit -> {
-                layout.setBackgroundResource(backgrounds.getValue(ViewState.FROM))
-                nameTextView.setTextColor(getColorFromRsourceId(nameColors.getValue(ViewState.FROM)))
-                valueTextView.setTextColor(getColorFromRsourceId(valueColors.getValue(ViewState.FROM)))
-//                if (secondUnit == fromUnit) {
-//                    panelLock.visibility = View.VISIBLE
-//                    valueLock.visibility = View.INVISIBLE
-//                    unitLock.visibility = View.INVISIBLE
-//                } else if (secondUnit == toUnit) {
-//                    panelLock.visibility = View.INVISIBLE
-//                    valueLock.visibility = View.INVISIBLE
-//                    unitLock.visibility = View.VISIBLE
-//                } else {
-                    panelLock.visibility = View.INVISIBLE
-                    valueLock.visibility = View.INVISIBLE
-                    unitLock.visibility = View.INVISIBLE
-//                }
+            selectedUnit -> {
+                layout.setBackgroundResource(backgrounds.getValue(ViewState.SELECTED))
+                nameTextView.setTextColor(getColorFromRsourceId(nameColors.getValue(ViewState.SELECTED)))
+                valueTextView.setTextColor(getColorFromRsourceId(valueColors.getValue(ViewState.SELECTED)))
+                panelLock.visibility = View.INVISIBLE
+                valueLock.visibility = View.INVISIBLE
+                unitLock.visibility = View.INVISIBLE
                 arrowUp.visibility = if (dataPosition == 0) View.INVISIBLE else View.VISIBLE
             }
-            selectedUnit -> {
-                layout.setBackgroundResource(backgrounds.getValue(ViewState.TO))
-                nameTextView.setTextColor(getColorFromRsourceId(nameColors.getValue(ViewState.TO)))
-                valueTextView.setTextColor(getColorFromRsourceId(valueColors.getValue(ViewState.TO)))
-//                if (selectedUnit == fromUnit) {
-//                    panelLock.visibility = View.INVISIBLE
-//                    valueLock.visibility = View.INVISIBLE
-//                    unitLock.visibility = View.INVISIBLE
-//                } else {
-                    panelLock.visibility = View.INVISIBLE
-                    valueLock.visibility = View.INVISIBLE
-                    unitLock.visibility = View.INVISIBLE
-//                }
+            secondUnit -> {
+                layout.setBackgroundResource(backgrounds.getValue(ViewState.SECOND))
+                nameTextView.setTextColor(getColorFromRsourceId(nameColors.getValue(ViewState.SECOND)))
+                valueTextView.setTextColor(getColorFromRsourceId(valueColors.getValue(ViewState.SECOND)))
+                panelLock.visibility = View.INVISIBLE
+                valueLock.visibility = View.INVISIBLE
+                unitLock.visibility = View.INVISIBLE
                 arrowUp.visibility = if (dataPosition == 0) View.INVISIBLE else View.VISIBLE
             }
             else -> {
-                layout.setBackgroundResource(backgrounds.getValue(ViewState.OTHER))
-                nameTextView.setTextColor(getColorFromRsourceId(nameColors.getValue(ViewState.OTHER)))
-                valueTextView.setTextColor(getColorFromRsourceId(valueColors.getValue(ViewState.OTHER)))
+                layout.setBackgroundResource(backgrounds.getValue(ViewState.NORMAL))
+                nameTextView.setTextColor(getColorFromRsourceId(nameColors.getValue(ViewState.NORMAL)))
+                valueTextView.setTextColor(getColorFromRsourceId(valueColors.getValue(ViewState.NORMAL)))
                 panelLock.visibility = View.INVISIBLE
                 valueLock.visibility = View.INVISIBLE
                 unitLock.visibility = View.INVISIBLE
@@ -160,6 +139,7 @@ class LengthAdapter(context: Context, private val units: MutableList<ImperialUni
             }
         }
     }
+
     private fun updateViewData(layout: ConstraintLayout, dataPosition: Int) {
         val data: ImperialUnit = getItem(dataPosition) as ImperialUnit
         val nameTextView: TextView = layout.findViewById(R.id.unit_name)
@@ -167,16 +147,27 @@ class LengthAdapter(context: Context, private val units: MutableList<ImperialUni
         val valueTextView: TextView = layout.findViewById(R.id.unit_value)
         valueTextView.text = valueForDisplay(data.value)
     }
+
     private fun updateArrowListener(layout: ConstraintLayout, dataPosition: Int) {
         val arrowUp: ImageView = layout.findViewById(R.id.arrow_up)
+        val unit = units[dataPosition]
         arrowUp.setOnClickListener {
             if (dataPosition != 0) {
                 units.moveToFrontFrom(dataPosition)
-                arrowClickListener(dataPosition, it, units[dataPosition])
+                arrowClickListener(dataPosition, it, unit)
                 notifyDataSetChanged()
             }
         }
+        arrowUp.setOnLongClickListener {
+            if (dataPosition != 0) {
+                units.moveToFrontFrom(dataPosition)
+                notifyDataSetChanged()
+                arrowLongClickListener(dataPosition, it, unit)
+            }
+            dataPosition != 0
+        }
     }
+
     override fun getView(position: Int, contentView: View?, parent: ViewGroup?): View {
         if (contentView != null) {
             if (contentView is ConstraintLayout) {

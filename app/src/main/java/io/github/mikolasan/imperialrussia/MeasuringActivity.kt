@@ -114,17 +114,7 @@ class MeasuringActivity : Activity() {
             }
         }
         val lengthAdapter = LengthAdapter(this, orderedUnits)
-        lengthAdapter.setOnArrowClickListener { position: Int, view: View, unit: ImperialUnit ->
-            view.visibility = View.INVISIBLE // hide the arrow
-            System.out.println(position)
-            LengthUnits.lengthUnits.forEachIndexed { i, u ->
-                val unitName = u.unitName.name
-                val settingName = "unit${unitName}Position"
-                preferencesEditor.putInt(settingName, orderedUnits.indexOf(u))
-            }
-//            preferencesEditor.putInt("unit${unit.unitName.name}Position", position)
-            preferencesEditor.apply()
-        }
+
         topPanel.setHintText(applicationContext.resources.getString(R.string.select_unit_hint))
         bottomPanel.setHintText(applicationContext.resources.getString(R.string.select_unit_2_hint))
 
@@ -156,6 +146,25 @@ class MeasuringActivity : Activity() {
             }
         }
 
+        fun swapPanels() {
+            val topUnit = topPanel.unit ?: return
+            val bottomUnit = bottomPanel.unit ?: return
+            val topValue = topPanel.getValue() ?: return
+            val bottomValue = bottomPanel.getValue() ?: return
+            val topString = topPanel.getString()
+            val bottomString = bottomPanel.getString()
+            topPanel.changeUnit(bottomUnit)
+            bottomPanel.changeUnit(topUnit)
+
+            topPanel.setValue(bottomValue)
+            bottomPanel.setValue(topValue)
+
+            topPanel.setString(bottomString)
+            bottomPanel.setString(topString)
+
+            lengthAdapter.swapSelection()
+        }
+
         fun setTopPanel(unit: ImperialUnit, value: Double?) {
             topPanel.changeUnit(unit)
             val currentValue = value ?: 1.0
@@ -168,7 +177,8 @@ class MeasuringActivity : Activity() {
 //                topPanel.setValue(topValue)
                 topPanel.setValue(value)
             }
-            lengthAdapter.selectToUnit(unit)
+            lengthAdapter.setSelectedUnit(unit)
+            lengthAdapter.setSecondUnit(bottomPanel.unit)
             lengthAdapter.notifyDataSetChanged()
             preferencesEditor.putString("topPanelUnit", unit.unitName.name)
             preferencesEditor.putFloat("topPanelValue", currentValue.toFloat())
@@ -187,7 +197,8 @@ class MeasuringActivity : Activity() {
                 topPanel.setValue(topValue)
             }
             // lengthAdapter.setCurrentValue(unit, currentValue)
-            lengthAdapter.selectFromUnit(unit)
+            lengthAdapter.setSelectedUnit(unit)
+            lengthAdapter.setSecondUnit(topPanel.unit)
             lengthAdapter.notifyDataSetChanged()
             preferencesEditor.putString("bottomPanelUnit", unit.unitName.name)
             preferencesEditor.putFloat("bottomPanelValue", currentValue.toFloat())
@@ -199,7 +210,7 @@ class MeasuringActivity : Activity() {
             preferencesEditor.apply()
             topPanel.unit = null
             topPanel.deactivate()
-            lengthAdapter.selectToUnit(null)
+            lengthAdapter.setSelectedUnit(null)
             if (!bottomPanel.isActivated()) {
                 lengthAdapter.resetValues()
             } else {
@@ -212,7 +223,7 @@ class MeasuringActivity : Activity() {
             preferencesEditor.apply()
             bottomPanel.unit = null
             bottomPanel.deactivate()
-            lengthAdapter.selectFromUnit(null)
+            lengthAdapter.setSelectedUnit(null)
             if (!topPanel.isActivated()) {
                 lengthAdapter.resetValues()
             } else {
@@ -221,6 +232,31 @@ class MeasuringActivity : Activity() {
         }
 
         val unitsList = findViewById<ListView>(R.id.units_list)
+        lengthAdapter.setOnArrowClickListener { position: Int, arrow: View, unit: ImperialUnit ->
+            arrow.visibility = View.INVISIBLE // hide the arrow
+            if (topPanel.unit != unit) {
+                swapPanels()
+            }
+            LengthUnits.lengthUnits.forEachIndexed { i, u ->
+                val unitName = u.unitName.name
+                val settingName = "unit${unitName}Position"
+                preferencesEditor.putInt(settingName, orderedUnits.indexOf(u))
+            }
+            preferencesEditor.apply()
+        }
+        lengthAdapter.setOnArrowLongClickListener { position: Int, arrow: View, unit: ImperialUnit ->
+            arrow.visibility = View.INVISIBLE // hide the arrow
+            if (topPanel.unit != unit) {
+                swapPanels()
+            }
+            LengthUnits.lengthUnits.forEachIndexed { i, u ->
+                val unitName = u.unitName.name
+                val settingName = "unit${unitName}Position"
+                preferencesEditor.putInt(settingName, orderedUnits.indexOf(u))
+            }
+            preferencesEditor.apply()
+            unitsList.setSelectionAfterHeaderView()
+        }
         unitsList.adapter = lengthAdapter
         unitsList.setOnItemClickListener{ _, _, position, id ->
             val unit = lengthAdapter.getItem(position) as? ImperialUnit
@@ -363,7 +399,7 @@ class MeasuringActivity : Activity() {
             setBottomPanel(it, null)
         }
         selectPanel(topPanel, bottomPanel)
-        lengthAdapter.selectToUnit(topPanel.unit)
+        lengthAdapter.swapSelection()
         lengthAdapter.setCurrentValue(topPanel.unit, topPanelValue)
 
         val key_1 = DigitButton(findViewById(R.id.digit_1), 1)
