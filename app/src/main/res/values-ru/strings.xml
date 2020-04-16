@@ -23,4 +23,5 @@
     <string name="unit_meter">Метр</string>
     <string name="unit_micrometer">Микрометр</string>
     <string name="unit_millimeter">Миллиметр</string>
+    <string name="toast_arrow_up">This unit has moved to the top position in the list</string>
 </resources>

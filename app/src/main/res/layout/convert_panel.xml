@@ -14,7 +14,7 @@
     <!--tools:showIn="@layout/imperial_base"-->
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/title"
+        android:id="@+id/panel_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -28,7 +28,7 @@
         tools:visibility="invisible" />
 
     <androidx.appcompat.widget.AppCompatEditText
-        android:id="@+id/input"
+        android:id="@+id/panel_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -53,11 +53,11 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title"
+        app:layout_constraintTop_toBottomOf="@+id/panel_title"
         tools:visibility="invisible" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/hint"
+        android:id="@+id/panel_hint"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_marginStart="16dp"

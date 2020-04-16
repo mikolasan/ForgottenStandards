@@ -10,18 +10,28 @@ import android.view.View
 import android.widget.EditText
 import android.widget.Button
 import android.widget.ListView
+import android.widget.Toast
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.constraintlayout.widget.ConstraintLayout
-import kotlinx.android.synthetic.main.imperial_length_list.*
 import java.util.*
 
 
 class MeasuringActivity : Activity() {
 
     private val languageSetting = "language"
-    private val preferencesFile = "ImperialRussiaStore"
+    private val preferencesFile = "ImperialRussiaPref.1"
+
     private var newLocale: Locale? = null
     private var selectedPanel: ImperialUnitPanel? = null
+
+    val bottomPanel by lazy {
+        val bottomLayout: ConstraintLayout = findViewById<ConstraintLayout>(R.id.convert_from)
+        ImperialUnitPanel(bottomLayout)
+    }
+    val topPanel by lazy {
+        val topLayout: ConstraintLayout = findViewById<ConstraintLayout>(R.id.convert_to)
+        ImperialUnitPanel(topLayout)
+    }
 
     inner class DigitButton(button: Button, digit: Int) {
         private val digitSym: Char = digit.toString()[0]
@@ -82,13 +92,10 @@ class MeasuringActivity : Activity() {
 
         val preferences = applicationContext.getSharedPreferences(preferencesFile, Context.MODE_PRIVATE)
         val preferencesEditor = preferences.edit()
+
         val topPanelUnit = restoreUnit(preferences.getString("topPanelUnit", "") ?: "")
         val bottomPanelUnit = restoreUnit(preferences.getString("bottomPanelUnit", "") ?: "")
 
-        val bottomLayout: ConstraintLayout = findViewById<ConstraintLayout>(R.id.convert_from)
-        val topLayout: ConstraintLayout = findViewById<ConstraintLayout>(R.id.convert_to)
-        val bottomPanel = ImperialUnitPanel(bottomLayout)
-        val topPanel = ImperialUnitPanel(topLayout)
         val bottomInput = bottomPanel.input
         val topInput = topPanel.input
 
@@ -104,12 +111,12 @@ class MeasuringActivity : Activity() {
         }
         preferencesEditor.apply()
         bottomPanelUnit?.let {
-            if (!orderedUnits.take(2).contains(it)) {
+            if (orderedUnits[1] != it) {
                 orderedUnits.moveToFront(it)
             }
         }
         topPanelUnit?.let {
-            if (!orderedUnits.take(2).contains(it)) {
+            if (orderedUnits[1] != it) {
                 orderedUnits.moveToFront(it)
             }
         }
@@ -181,7 +188,7 @@ class MeasuringActivity : Activity() {
             lengthAdapter.setSecondUnit(bottomPanel.unit)
             lengthAdapter.notifyDataSetChanged()
             preferencesEditor.putString("topPanelUnit", unit.unitName.name)
-            preferencesEditor.putFloat("topPanelValue", currentValue.toFloat())
+            //preferencesEditor.putFloat("topPanelValue", currentValue.toFloat())
             preferencesEditor.apply()
         }
 
@@ -201,34 +208,8 @@ class MeasuringActivity : Activity() {
             lengthAdapter.setSecondUnit(topPanel.unit)
             lengthAdapter.notifyDataSetChanged()
             preferencesEditor.putString("bottomPanelUnit", unit.unitName.name)
-            preferencesEditor.putFloat("bottomPanelValue", currentValue.toFloat())
+            //preferencesEditor.putFloat("bottomPanelValue", currentValue.toFloat())
             preferencesEditor.apply()
-        }
-
-        fun unsetTopPanel() {
-            preferencesEditor.putString("topPanelUnit", "")
-            preferencesEditor.apply()
-            topPanel.unit = null
-            topPanel.deactivate()
-            lengthAdapter.setSelectedUnit(null)
-            if (!bottomPanel.isActivated()) {
-                lengthAdapter.resetValues()
-            } else {
-                lengthAdapter.notifyDataSetChanged()
-            }
-        }
-
-        fun unsetBottomPanel() {
-            preferencesEditor.putString("bottomPanelUnit", "")
-            preferencesEditor.apply()
-            bottomPanel.unit = null
-            bottomPanel.deactivate()
-            lengthAdapter.setSelectedUnit(null)
-            if (!topPanel.isActivated()) {
-                lengthAdapter.resetValues()
-            } else {
-                lengthAdapter.notifyDataSetChanged()
-            }
         }
 
         val unitsList = findViewById<ListView>(R.id.units_list)
@@ -307,6 +288,7 @@ class MeasuringActivity : Activity() {
             }
         }
 
+        val bottomLayout: ConstraintLayout = findViewById<ConstraintLayout>(R.id.convert_from)
         bottomLayout.setOnClickListener{ view ->
             if (selectedPanel != bottomPanel) {
                 selectPanel(bottomPanel, topPanel)
@@ -323,6 +305,7 @@ class MeasuringActivity : Activity() {
             }
         }
 
+        val topLayout: ConstraintLayout = findViewById<ConstraintLayout>(R.id.convert_to)
         topLayout.setOnClickListener{ view ->
             if (selectedPanel != topPanel) {
                 selectPanel(topPanel, bottomPanel)
@@ -354,8 +337,8 @@ class MeasuringActivity : Activity() {
                     topInput.text = valueForDisplay(convertedValue)
                     lengthAdapter.setCurrentValue(bottomPanel.unit, inputValue)
                     bottomInput.setSelection(bottomInput.text.length)
-                    preferencesEditor.putFloat("topPanelValue", convertedValue.toFloat())
-                    preferencesEditor.putFloat("bottomPanelValue", inputValue.toFloat())
+                    preferencesEditor.putString("topPanelValue", topPanel.getString())
+                    preferencesEditor.putString("bottomPanelValue", bottomPanel.getString())
                     preferencesEditor.apply()
                 }
             }
@@ -379,8 +362,8 @@ class MeasuringActivity : Activity() {
                     bottomInput.text = valueForDisplay(convertedValue)
                     lengthAdapter.setCurrentValue(topPanel.unit, inputValue)
                     topInput.setSelection(topInput.text.length)
-                    preferencesEditor.putFloat("topPanelValue", inputValue.toFloat())
-                    preferencesEditor.putFloat("bottomPanelValue", convertedValue.toFloat())
+                    preferencesEditor.putString("topPanelValue", topPanel.getString())
+                    preferencesEditor.putString("bottomPanelValue", bottomPanel.getString())
                     preferencesEditor.apply()
                 }
             }
@@ -391,7 +374,7 @@ class MeasuringActivity : Activity() {
         })
 
         // restore
-        val topPanelValue = preferences.getFloat("topPanelValue", 0.0f).toDouble()
+        val topPanelValue = BasicCalculator(preferences.getString("topPanelValue", "") ?: "").eval()
         topPanelUnit?.let {
             setTopPanel(it, topPanelValue)
         }
@@ -454,6 +437,34 @@ class MeasuringActivity : Activity() {
 //        }
 
     }
+
+    override fun onResume() {
+        super.onResume()
+        val preferences = applicationContext.getSharedPreferences(preferencesFile, Context.MODE_PRIVATE)
+        val topPanelValue = preferences.getString("topPanelValue", "") ?: ""
+        val bottomPanelValue = preferences.getString("bottomPanelValue", "") ?: ""
+        Toast.makeText(applicationContext, "on resume ${topPanelValue} / ${bottomPanelValue}", Toast.LENGTH_SHORT).show()
+        topPanel.setString(topPanelValue)
+        bottomPanel.setString(bottomPanelValue)
+    }
+//
+//    override fun onStart() {
+//        super.onStart()
+//    }
+//
+//    // --- Running ---
+//
+//    // foreground -> visible process
+//    override fun onPause() {
+//        super.onPause()
+//    }
+//
+//    // visible -> cached
+//    override fun onStop() {
+//        super.onStop()
+//    }
+
+
 
     override fun attachBaseContext(newBase: Context) {
 

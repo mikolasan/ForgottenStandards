@@ -13,9 +13,9 @@ import androidx.constraintlayout.widget.ConstraintLayout
 class ImperialUnitPanel(private val layout: ConstraintLayout) {
     var unit: ImperialUnit? = null
     var isSelected = false
-    private val title: TextView = layout.findViewById(R.id.title)
-    val input: EditText = layout.findViewById(R.id.input)
-    private val hint: TextView = layout.findViewById(R.id.hint)
+    private val title: TextView = layout.findViewById(R.id.panel_title)
+    val input: EditText = layout.findViewById(R.id.panel_input)
+    private val hint: TextView = layout.findViewById(R.id.panel_hint)
 
     private fun getColor(resourceId: Int): Int {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // >= (API 23) Android 6.0 Marshmallow

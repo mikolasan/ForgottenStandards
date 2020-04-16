@@ -16,6 +16,7 @@
         android:src="@drawable/ic_background_damask" />
 
     <include
+        android:id="@+id/incBase"
         layout="@layout/imperial_base"
         android:layout_width="360dp"
         android:layout_height="786dp"
@@ -23,6 +24,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <include
+        android:id="@+id/incList"
         layout="@layout/imperial_length_list"
         android:layout_width="0dp"
         android:layout_height="wrap_content" />
