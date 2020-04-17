@@ -56,7 +56,7 @@ class MeasuringActivity : Activity() {
     }
 
     inner class OperationButton(button: Button, operation: Operation) {
-        private val operations = setOf('/', '*', '+', '-')
+        private val operations = setOf('÷', '×', '+', '-')
 
         private fun addSymbol(sym: Char) {
             selectedPanel?.appendString(sym, operations)
@@ -65,8 +65,8 @@ class MeasuringActivity : Activity() {
         init {
             button.setOnClickListener {
                 when (operation) {
-                    Operation.MULT -> addSymbol('*')
-                    Operation.DIV -> addSymbol('/')
+                    Operation.MULT -> addSymbol('×')
+                    Operation.DIV -> addSymbol('÷')
                     Operation.PLUS -> addSymbol('+')
                     Operation.MINUS -> addSymbol('-')
                     Operation.CLEAR -> selectedPanel?.setString("")

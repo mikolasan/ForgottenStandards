@@ -55,10 +55,10 @@ class BasicCalculator(val expression: String) {
         var x = parseFactor() ?: 0.0
         while (true) {
             when {
-                eat('*') -> {
+                eat('×') -> {
                     x *= parseFactor() ?: 1.0
                 }
-                eat('/') -> {
+                eat('÷') -> {
                     x /= parseFactor() ?: 1.0
                 }
                 else -> return x
