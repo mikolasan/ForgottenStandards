@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/motion_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layoutDescription="@xml/unit_list_motion">
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/imageView"
+        android:id="@+id/wallpaper"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:adjustViewBounds="true"
@@ -16,16 +15,14 @@
         android:src="@drawable/ic_background_damask" />
 
     <include
-        android:id="@+id/incBase"
-        layout="@layout/imperial_base"
+        layout="@layout/converting_area"
         android:layout_width="360dp"
         android:layout_height="786dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <include
-        android:id="@+id/incList"
-        layout="@layout/imperial_length_list"
+        layout="@layout/unit_list"
         android:layout_width="0dp"
         android:layout_height="wrap_content" />
 

@@ -1,16 +1,12 @@
 package io.github.mikolasan.imperialrussia
 
-import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.view.*
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import java.text.ParsePosition
 
 class LengthAdapter(private val context: Context, private val units: MutableList<ImperialUnit>) : BaseAdapter() {
     private val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -178,7 +174,7 @@ class LengthAdapter(private val context: Context, private val units: MutableList
             }
             return contentView
         } else {
-            val view = inflater.inflate(R.layout.listview_item, parent, false) as ConstraintLayout
+            val view = inflater.inflate(R.layout.unit_space, parent, false) as ConstraintLayout
             updateViewData(view, position)
             updateViewColors(view, position)
             updateArrowListener(view, position)
