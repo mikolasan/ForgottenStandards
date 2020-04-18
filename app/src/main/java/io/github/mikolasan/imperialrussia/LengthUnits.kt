@@ -81,47 +81,4 @@ object LengthUnits {
     }
 
     val imperialUnits = makeUnitByNameMap(lengthUnits)
-
-    fun findConversionRatio(inputUnit: ImperialUnit, outputUnit: ImperialUnit): Double {
-        val inputMap = inputUnit.ratioMap
-        val outputMap = outputUnit.ratioMap
-        val ratio = outputMap.get(inputUnit.unitName)
-        if (ratio != null) return ratio
-
-        val inverse = inputMap.get(outputUnit.unitName)
-        if (inverse != null) return 1.0/inverse
-
-        for ((unitName,k) in inputMap) {
-            val commonUnitRatio = outputMap.get(unitName)
-            commonUnitRatio?.let {
-                val newRatio = commonUnitRatio / k
-                //outputMap[inputUnit.unitName] = newRatio
-                return newRatio
-            }
-
-            val inverseCommonUnit = imperialUnits[unitName]
-            inverseCommonUnit?.let {
-                val newRatio = inverseCommonUnit.ratioMap.get(outputUnit.unitName)
-                if (newRatio != null)
-                    return 1.0 / (k * newRatio)
-            }
-        }
-
-        for ((unitName,k) in outputMap) {
-            try {
-                val unit = imperialUnits[unitName]
-                if (unit != null) return findConversionRatio(inputUnit, unit) * k
-            } catch (e: Exception) {
-
-            }
-        }
-
-        throw Exception("no ratio")
-    }
-
-    fun convertValue(inputUnit: ImperialUnit?, outputUnit: ImperialUnit?, inputValue: Double): Double {
-        val input = inputUnit ?: return 0.0
-        val output = outputUnit ?: return 0.0
-        return inputValue * findConversionRatio(input, output)
-    }
 }
