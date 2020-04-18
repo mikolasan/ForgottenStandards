@@ -91,6 +91,9 @@ class ImperialUnitPanel(private val layout: ConstraintLayout) {
     fun setValue(v: Double) {
         unit?.value = v
         input.text = valueForDisplay(v)
+        if (isSelected && input.text.toString() == "0") {
+            input.setText("")
+        }
     }
 
     fun getString(): String {
@@ -98,7 +101,11 @@ class ImperialUnitPanel(private val layout: ConstraintLayout) {
     }
 
     fun setString(s: String) {
-        input.setText(s)
+        if (isSelected && s == "0") {
+            input.setText("")
+        } else {
+            input.setText(s)
+        }
     }
 
     fun appendString(c: Char, replaceable: Set<Char>? = null) {
