@@ -385,6 +385,11 @@ class MeasuringActivity : Activity() {
         lengthAdapter.swapSelection()
         lengthAdapter.setCurrentValue(topPanel.unit, topPanelValue)
 
+        if (mainLayout is MotionLayout && topPanel.isActivated() && bottomPanel.isActivated()) {
+            mainLayout.transitionToEnd()
+        }
+
+
         val key_1 = DigitButton(findViewById(R.id.digit_1), 1)
         val key_2 = DigitButton(findViewById(R.id.digit_2), 2)
         val key_3 = DigitButton(findViewById(R.id.digit_3), 3)
