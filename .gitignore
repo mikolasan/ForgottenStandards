@@ -12,6 +12,7 @@
 /build
 /captures
 .externalNativeBuild
+/assets
 *.svg
 *.ai
 *.eps
