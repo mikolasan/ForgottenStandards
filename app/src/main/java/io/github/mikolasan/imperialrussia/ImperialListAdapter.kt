@@ -114,7 +114,7 @@ class ImperialListAdapter(private val context: Context, private val units: Mutab
                 panelLock.visibility = View.INVISIBLE
                 valueLock.visibility = View.INVISIBLE
                 unitLock.visibility = View.INVISIBLE
-                arrowUp.visibility = if (dataPosition == 0) View.INVISIBLE else View.VISIBLE
+                arrowUp.visibility = View.INVISIBLE
             }
             else -> {
                 layout.setBackgroundResource(backgrounds.getValue(ViewState.NORMAL))

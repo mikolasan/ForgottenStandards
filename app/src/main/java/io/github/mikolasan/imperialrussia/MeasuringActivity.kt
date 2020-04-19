@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.EditText
 import android.widget.Button
 import android.widget.ListView
+import android.widget.Toast
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import java.util.*
@@ -51,6 +52,7 @@ class MeasuringActivity : Activity() {
         val adapter = ImperialListAdapter(context, orderedUnits)
         adapter.setOnArrowClickListener { position: Int, arrow: View, unit: ImperialUnit ->
             arrow.visibility = View.INVISIBLE // hide the arrow
+            Toast.makeText(context, "'${unit.unitName.name}' has been moved to the top", Toast.LENGTH_SHORT).show()
             if (topPanel.unit != unit) {
                 swapPanels()
             }
@@ -63,6 +65,7 @@ class MeasuringActivity : Activity() {
         }
         adapter.setOnArrowLongClickListener { position: Int, arrow: View, unit: ImperialUnit ->
             arrow.visibility = View.INVISIBLE // hide the arrow
+            Toast.makeText(context, "'${unit.unitName.name}' has been moved to the top + scroll", Toast.LENGTH_SHORT).show()
             if (topPanel.unit != unit) {
                 swapPanels()
             }
@@ -292,7 +295,9 @@ class MeasuringActivity : Activity() {
                     }
                 } else {
                     if (selectedPanel == topPanel) {
-                        if (topPanel.unit != unit){
+                        if (bottomPanel.unit != unit) {
+                            setTopPanel(unit, null)
+                        } else if (topPanel.unit != unit) {
                             selectPanel(bottomPanel, topPanel)
                             listAdapter.swapSelection()
                             listAdapter.notifyDataSetChanged()
@@ -436,11 +441,9 @@ class MeasuringActivity : Activity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-
-
-    }
+//    override fun onResume() {
+//        super.onResume()
+//    }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         // onRestoreInstanceState works against me. I include layouts and included layouts do not have
