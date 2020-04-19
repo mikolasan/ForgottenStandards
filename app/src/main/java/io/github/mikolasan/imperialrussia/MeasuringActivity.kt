@@ -8,10 +8,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.widget.EditText
-import android.widget.Button
-import android.widget.ListView
-import android.widget.Toast
+import android.widget.*
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import java.util.*
@@ -175,8 +172,7 @@ class MeasuringActivity : Activity() {
         }
         selectPanel(topPanel, bottomPanel)
         listAdapter.swapSelection()
-
-//        listAdapter.setCurrentValue(topPanel.unit, topPanelValue)
+        listAdapter.setCurrentValue(topPanel.unit, topPanelValue)
     }
 
     private fun restorePanelSelection() {
@@ -203,6 +199,18 @@ class MeasuringActivity : Activity() {
         bottomPanel.setString(bottomPanelValue)
     }
 
+    private fun updateRatioLabel() {
+        val ratioLabel = findViewById<TextView>(R.id.ratio_label)
+        val fromUnit = selectedPanel?.unit
+        val toUnit = if (fromUnit == topPanel.unit) bottomPanel.unit else topPanel.unit
+        if (fromUnit == null || toUnit == null) {
+            ratioLabel.text = ""
+        } else {
+            val ratio = findConversionRatio(fromUnit, toUnit)
+            ratioLabel.text = "1 ${fromUnit.unitName.name} = ${ratio} ${toUnit.unitName.name}"
+        }
+    }
+
     private fun setTopPanel(unit: ImperialUnit, value: Double?) {
         topPanel.changeUnit(unit)
         if (value == null) {
@@ -218,6 +226,7 @@ class MeasuringActivity : Activity() {
         preferencesEditor.putString("topPanelUnit", unit.unitName.name)
         preferencesEditor.putString("topPanelValue", topPanel.getString())
         preferencesEditor.apply()
+        updateRatioLabel()
     }
 
     private fun setBottomPanel(unit: ImperialUnit, value: Double? = null) {
@@ -236,6 +245,7 @@ class MeasuringActivity : Activity() {
         preferencesEditor.putString("bottomPanelUnit", unit.unitName.name)
         preferencesEditor.putString("bottomPanelValue", bottomPanel.getString())
         preferencesEditor.apply()
+        updateRatioLabel()
     }
 
     private fun swapPanels() {
@@ -255,6 +265,7 @@ class MeasuringActivity : Activity() {
         bottomPanel.setString(topString)
 
         listAdapter.swapSelection()
+        updateRatioLabel()
     }
 
     fun setCursor(editText: EditText?) {
@@ -281,39 +292,38 @@ class MeasuringActivity : Activity() {
             old.setHighlight(false)
             old.input.isCursorVisible = false
         }
+        updateRatioLabel()
     }
 
     private fun setListeners() {
         unitsList.setOnItemClickListener { _, _, position, id ->
-            val unit = listAdapter.getItem(position) as? ImperialUnit
-            unit?.let {
-                if (!topPanel.isActivated()) {
+            val unit = listAdapter.getItem(position) as ImperialUnit
+            if (!topPanel.isActivated()) {
+                if (bottomPanel.unit != unit) {
+                    selectPanel(topPanel, bottomPanel)
+                    setTopPanel(unit, 1.0)
+                }
+            } else if (!bottomPanel.isActivated()) {
+                if (topPanel.unit != unit) {
+                    selectPanel(bottomPanel, topPanel)
+                    setBottomPanel(unit, null)
+                }
+            } else {
+                if (selectedPanel == topPanel) {
                     if (bottomPanel.unit != unit) {
-                        selectPanel(topPanel, bottomPanel)
-                        setTopPanel(unit, 1.0)
-                    }
-                } else if (!bottomPanel.isActivated()) {
-                    if (topPanel.unit != unit) {
+                        setTopPanel(unit, null)
+                    } else if (topPanel.unit != unit) {
                         selectPanel(bottomPanel, topPanel)
-                        setBottomPanel(unit, null)
+                        listAdapter.swapSelection()
+                        listAdapter.notifyDataSetChanged()
                     }
-                } else {
-                    if (selectedPanel == topPanel) {
-                        if (bottomPanel.unit != unit) {
-                            setTopPanel(unit, null)
-                        } else if (topPanel.unit != unit) {
-                            selectPanel(bottomPanel, topPanel)
-                            listAdapter.swapSelection()
-                            listAdapter.notifyDataSetChanged()
-                        }
-                    } else if (selectedPanel == bottomPanel) {
-                        if (topPanel.unit != unit) {
-                            setBottomPanel(unit, null)
-                        } else if (bottomPanel.unit != unit){
-                            selectPanel(topPanel, bottomPanel)
-                            listAdapter.swapSelection()
-                            listAdapter.notifyDataSetChanged()
-                        }
+                } else if (selectedPanel == bottomPanel) {
+                    if (topPanel.unit != unit) {
+                        setBottomPanel(unit, null)
+                    } else if (bottomPanel.unit != unit){
+                        selectPanel(topPanel, bottomPanel)
+                        listAdapter.swapSelection()
+                        listAdapter.notifyDataSetChanged()
                     }
                 }
             }
