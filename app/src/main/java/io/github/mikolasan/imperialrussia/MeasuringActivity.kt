@@ -439,11 +439,7 @@ class MeasuringActivity : Activity() {
     override fun onResume() {
         super.onResume()
 
-        restorePanelValues()
 
-        //        if (mainLayout is MotionLayout && topPanel.isActivated() && bottomPanel.isActivated()) {
-//            mainLayout.transitionToEnd()
-//        }
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
@@ -453,9 +449,15 @@ class MeasuringActivity : Activity() {
         restorePanelValues()
     }
 
-//    override fun onStart() {
-//        super.onStart()
-//    }
+    override fun onStart() {
+        super.onStart()
+
+        val mainLayout: ConstraintLayout = findViewById<ConstraintLayout>(R.id.motion_layout)
+        if (mainLayout is MotionLayout && topPanel.isActivated() && bottomPanel.isActivated()
+                && mainLayout.startState == R.id.show_list_constraint) {
+            mainLayout.progress = 1.0f
+        }
+    }
 //
 //    // --- Running ---
 //
