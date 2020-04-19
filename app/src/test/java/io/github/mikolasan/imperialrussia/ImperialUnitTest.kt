@@ -1,6 +1,5 @@
 package io.github.mikolasan.imperialrussia
 
-import io.github.mikolasan.imperialrussia.LengthUnits.findConversionRatio
 import io.github.mikolasan.imperialrussia.LengthUnits.imperialUnits
 import io.github.mikolasan.imperialrussia.LengthUnits.lengthUnits
 import org.junit.Test
@@ -9,7 +8,7 @@ import org.junit.Assert.*
 
 class ImperialUnitTest {
     val defaultValue = ImperialUnit(0, ImperialUnitName.LENGTH_ZERO_NO_UNIT, mutableMapOf())
-    val arshin = imperialUnits.getOrDefault(ImperialUnitName.YARD, defaultValue)
+    val yard = imperialUnits.getOrDefault(ImperialUnitName.YARD, defaultValue)
     val point = imperialUnits.getOrDefault(ImperialUnitName.POINT, defaultValue)
     val line = imperialUnits.getOrDefault(ImperialUnitName.LINE, defaultValue)
     val inch = imperialUnits.getOrDefault(ImperialUnitName.INCH, defaultValue)
@@ -20,76 +19,125 @@ class ImperialUnitTest {
     val fathom = imperialUnits.getOrDefault(ImperialUnitName.FATHOM, defaultValue)
     val turn = imperialUnits.getOrDefault(ImperialUnitName.TURN, defaultValue)
     val mile = imperialUnits.getOrDefault(ImperialUnitName.MILE, defaultValue)
+    val elbow = imperialUnits.getOrDefault(ImperialUnitName.ELBOW, defaultValue)
+    val stride = imperialUnits.getOrDefault(ImperialUnitName.STRIDE, defaultValue)
+    val centimeter = imperialUnits.getOrDefault(ImperialUnitName.CENTIMETER, defaultValue)
 
     @Test
-    fun findConversionRatio_arshinToPoint() {
-        val ratio = findConversionRatio(arshin, point)
+    fun findConversionRatio_yardToCentimeter() {
+        val ratio = findConversionRatio(yard, centimeter)
+        assertEquals(71.12, ratio, 1e-10)
+    }
+
+    @Test
+    fun findConversionRatio_elbowToCentimeter() {
+        val ratio = findConversionRatio(elbow, centimeter)
+        // TODO: 45.72 ?
+        assertEquals(45.0, ratio, 1e-10)
+    }
+
+    @Test
+    fun findConversionRatio_fathomToCentimeter() {
+        val ratio = findConversionRatio(fathom, centimeter)
+        assertEquals(213.36, ratio, 1e-10)
+    }
+
+    @Test
+    fun findConversionRatio_palmToCentimeter() {
+        val ratio = findConversionRatio(palm, centimeter)
+        // TODO: 7.46125 ?
+        assertEquals(7.5, ratio, 1e-10)
+    }
+
+    @Test
+    fun findConversionRatio_footToCentimeter() {
+        val ratio = findConversionRatio(foot, centimeter)
+        assertEquals(30.48, ratio, 1e-10)
+    }
+
+    @Test
+    fun findConversionRatio_quarterToCentimeter() {
+        val ratio = findConversionRatio(quarter, centimeter)
+        assertEquals(17.78, ratio, 1e-10)
+    }
+
+    @Test
+    fun findConversionRatio_strideToCentimeter() {
+        val ratio = findConversionRatio(stride, centimeter)
+        assertEquals(71.0, ratio, 1e-10)
+    }
+
+    @Test
+    fun findConversionRatio_yardToPoint() {
+        // 1 yard = 2800 points
+        val ratio = findConversionRatio(yard, point)
         assertEquals(2800.0, ratio, 1e-10)
     }
 
     @Test
-    fun findConversionRatio_arshinToLine() {
-        val ratio = findConversionRatio(arshin, line)
+    fun findConversionRatio_yardToLine() {
+        val ratio = findConversionRatio(yard, line)
         assertEquals(280.0, ratio, 1e-10)
     }
 
     @Test
-    fun findConversionRatio_arshinToInch() {
-        val ratio = findConversionRatio(arshin, inch)
+    fun findConversionRatio_yardToInch() {
+        val ratio = findConversionRatio(yard, inch)
         assertEquals(28.0, ratio, 1e-10)
     }
 
     @Test
-    fun findConversionRatio_arshinToTip() {
-        val ratio = findConversionRatio(arshin, tip)
+    fun findConversionRatio_yardToTip() {
+        val ratio = findConversionRatio(yard, tip)
         assertEquals(16.0, ratio, 1e-10)
     }
 
     @Test
-    fun findConversionRatio_arshinToPalm() {
-        val ratio = findConversionRatio(arshin, palm)
-        assertEquals(9.53191489361702, ratio, 1e-10)
+    fun findConversionRatio_yardToPalm() {
+        val ratio = findConversionRatio(yard, palm)
+        val expected = 28.0 * 16.0 / 47.0
+        assertEquals(expected, ratio, 1e-10)
     }
 
     @Test
-    fun findConversionRatio_arshinToQuarter() {
-        val ratio = findConversionRatio(arshin, quarter)
+    fun findConversionRatio_yardToQuarter() {
+        val ratio = findConversionRatio(yard, quarter)
         assertEquals(4.0, ratio, 1e-10)
     }
 
     @Test
-    fun findConversionRatio_arshinToFoot() {
-        val ratio = findConversionRatio(arshin, foot)
+    fun findConversionRatio_yardToFoot() {
+        val ratio = findConversionRatio(yard, foot)
         assertEquals(7.0/3.0, ratio, 1e-10)
     }
 
     @Test
-    fun findConversionRatio_arshinToArshin() {
-        val ratio = findConversionRatio(arshin, arshin)
+    fun findConversionRatio_yardToYard() {
+        val ratio = findConversionRatio(yard, yard)
         assertEquals(1.0, ratio, 1e-10)
     }
 
     @Test
-    fun findConversionRatio_arshinToFathom() {
-        val ratio = findConversionRatio(arshin, fathom)
+    fun findConversionRatio_yardToFathom() {
+        val ratio = findConversionRatio(yard, fathom)
         assertEquals(1.0/3.0, ratio, 1e-10)
     }
 
     @Test
-    fun findConversionRatio_arshinToTurn() {
-        val ratio = findConversionRatio(arshin, turn)
+    fun findConversionRatio_yardToTurn() {
+        val ratio = findConversionRatio(yard, turn)
         assertEquals(1.0/1500.0, ratio, 1e-10)
     }
 
     @Test
-    fun findConversionRatio_arshinToMile() {
-        val ratio = findConversionRatio(arshin, mile)
+    fun findConversionRatio_yardToMile() {
+        val ratio = findConversionRatio(yard, mile)
         assertEquals(1.0/10500.0, ratio, 1e-10)
     }
 
     @Test
     fun findConversionRatio_checkRatioForImperialUnits() {
-        val units = arrayOf(point, line, inch, tip, palm, quarter, foot, arshin, fathom, turn, mile)
+        val units = arrayOf(point, line, inch, tip, palm, quarter, foot, yard, fathom, turn, mile)
         for (fromUnit in units) {
             for (toUnit in units) {
                 println("Find ratio for ${fromUnit.unitName} -> ${toUnit.unitName}")
@@ -113,18 +161,10 @@ class ImperialUnitTest {
 
     // inverse
     @Test
-    fun findConversionRatio_inchToArshin() {
-        val ratio = findConversionRatio(inch, arshin)
+    fun findConversionRatio_inchToYard() {
+        val ratio = findConversionRatio(inch, yard)
         assertEquals(0.03571428571428571428571428571429, ratio, 1e-10)
     }
 
-    @Test
-    fun conversion_zeroOnEmptyInput() {
-        val s = ""
-        val inch = imperialUnits[ImperialUnitName.YARD] ?: error("Inch unit is not defined")
-        val arshin = imperialUnits[ImperialUnitName.YARD] ?: error("Yard unit is not defined")
-        val inchValue = BasicCalculator(s).eval()
-        val arshinValue = LengthUnits.convertValue(inch, arshin, inchValue)
-        assertEquals("0.0", valueForDisplay(arshinValue))
-    }
+
 }

@@ -12,12 +12,12 @@ import org.junit.Assert.*
 class CalculatorUnitTest {
     @Test
     fun eval_parsesMultiplication() {
-        assertEquals(4.0, BasicCalculator("2*2").eval(), 1e-10)
+        assertEquals(4.0, BasicCalculator("2×2").eval(), 1e-10)
     }
 
     @Test
     fun eval_parsesDivision() {
-        assertEquals(4.0, BasicCalculator("8/2").eval(), 1e-10)
+        assertEquals(4.0, BasicCalculator("8÷2").eval(), 1e-10)
     }
 
     @Test
@@ -32,12 +32,12 @@ class CalculatorUnitTest {
 
     @Test
     fun eval_ignoresStar() {
-        assertEquals(4.0, BasicCalculator("4*").eval(), 1e-10)
+        assertEquals(4.0, BasicCalculator("4×").eval(), 1e-10)
     }
 
     @Test
     fun eval_ignoresSlash() {
-        assertEquals(4.0, BasicCalculator("4/").eval(), 1e-10)
+        assertEquals(4.0, BasicCalculator("4÷").eval(), 1e-10)
     }
 
     @Test
@@ -72,12 +72,12 @@ class CalculatorUnitTest {
 
     @Test
     fun eval_ignoresDoubleSlash() {
-        assertEquals(-10.0, BasicCalculator("-10//").eval(), 1e-10)
+        assertEquals(-10.0, BasicCalculator("-10÷÷").eval(), 1e-10)
     }
 
     @Test
     fun eval_ignoresDoubleStar() {
-        assertEquals(-10.0, BasicCalculator("-10**").eval(), 1e-10)
+        assertEquals(-10.0, BasicCalculator("-10××").eval(), 1e-10)
     }
 
     @Test
@@ -96,12 +96,7 @@ class CalculatorUnitTest {
     }
 
     @Test
-    fun eval_parsesScientificFormat() {
-        assertEquals(10.0, BasicCalculator("1E10").eval(), 1e-10)
-    }
-
-    @Test
     fun eval_operationPriority() {
-        assertEquals(7.0, BasicCalculator("1+2*3").eval(), 1e-10)
+        assertEquals(7.0, BasicCalculator("1+2×3").eval(), 1e-10)
     }
 }

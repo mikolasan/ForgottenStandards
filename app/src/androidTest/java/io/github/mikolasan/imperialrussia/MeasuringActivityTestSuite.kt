@@ -12,6 +12,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import androidx.test.rule.ActivityTestRule
 import org.hamcrest.Matchers.allOf
+import org.junit.Assert
 import org.junit.Rule
 
 @RunWith(AndroidJUnit4::class)
@@ -22,22 +23,18 @@ class MeasuringActivityTestSuite {
 
     @Test
     fun values_panelsAndListAfterDeviceRotation() {
-//        val scenario = activityScenarioRule.scenario
-//        scenario.onActivity { activity ->
-//            //activity.topPanel.setString("1.0")
-//            activity.topPanel.changeUnit(LengthUnits.lengthUnits[0]) // kilometer
-//            activity.topPanel.setValue(1.0)
-//        }
-//        val view = allOf(withId(R.id.panel_input), withText("1.0"))
-//
-//        scenario.moveToState(Lifecycle.State.RESUMED)
-
-        onView(withId(R.id.incBase))
+        // TODO:
+        onView(withId(R.id.converting_area))
                 .check(isPartiallyLeftOf(withId(R.id.motion_layout)))
-
-
-
-
     }
 
+    @Test
+    fun conversion_zeroOnEmptyInput() {
+        val s = ""
+        val inch = LengthUnits.imperialUnits[ImperialUnitName.YARD] ?: error("Inch unit is not defined")
+        val yard = LengthUnits.imperialUnits[ImperialUnitName.YARD] ?: error("Yard unit is not defined")
+        val inchValue = BasicCalculator(s).eval()
+        val yardValue = convertValue(inch, yard, inchValue)
+        Assert.assertEquals("0", valueForDisplay(yardValue).toString())
+    }
 }

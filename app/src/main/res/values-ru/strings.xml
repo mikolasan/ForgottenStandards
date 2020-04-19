@@ -2,9 +2,11 @@
 <resources>
     <string name="app_name">Imperial Russia</string>
     <string name="lang_ru">рус</string>
-    <string name="unit_arshin">Аршин</string>
+    <string name="unit_yard">Аршин</string>
     <string name="unit_fathom">Сажень</string>
     <string name="unit_foot">Фут</string>
+    <string name="unit_elbow">Локоть</string>
+    <string name="unit_stride">Шаг</string>
     <string name="unit_quarter">Пядь</string>
     <string name="unit_tip">Вершок</string>
     <string name="unit_line">Линия</string>

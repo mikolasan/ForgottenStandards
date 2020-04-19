@@ -8,15 +8,17 @@ enum class ImperialUnitName {
     CENTIMETER,
     MILLIMETER,
     MICROMETER,
-    POINT,
-    LINE,
-    INCH,
+    POINT, // tochka
+    LINE, // liniya
+    INCH, // dyuym
     TIP, // vershok
     PALM, // ladon
     QUARTER, // pyad
     FOOT,
+    ELBOW, // lokot
+    STRIDE, // shag
     YARD, // arshin
     FATHOM, // sazhen
     TURN, // versta
-    MILE,
+    MILE, // milya
 }

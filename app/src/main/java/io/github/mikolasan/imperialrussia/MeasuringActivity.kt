@@ -21,7 +21,7 @@ import java.util.*
 class MeasuringActivity : Activity() {
 
     private val languageSetting = "language"
-    private val preferencesFile = "ImperialRussiaPref.1"
+    private val preferencesFile = "ImperialRussiaPref.2"
     private var newLocale: Locale? = null
 
     private var selectedPanel: ImperialUnitPanel? = null
@@ -137,8 +137,12 @@ class MeasuringActivity : Activity() {
         LengthUnits.lengthUnits.forEachIndexed { i, u ->
             val unitName = u.unitName.name
             val settingName = "unit${unitName}Position"
-            val p = preferences.getInt(settingName, i)
-            if (preferences.contains(settingName)) {
+            var p = preferences.getInt(settingName, i)
+            if (p < 0) {
+                System.err.println("Shit: pos ${i}, unit ${unitName} got ${p}")
+                p = i
+            }
+            if (!preferences.contains(settingName)) {
                 preferencesEditor.putInt(settingName, i)
             }
             orderedUnits[p] = u
