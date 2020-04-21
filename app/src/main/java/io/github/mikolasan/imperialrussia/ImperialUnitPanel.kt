@@ -130,8 +130,9 @@ class ImperialUnitPanel(private val layout: ConstraintLayout) {
     }
 
     fun evaluateString() {
-        val value = getString()
-        val calculator = BasicCalculator(value)
-        setString(calculator.eval().toString())
+        val expression = getString()
+        val value = BasicCalculator(expression).eval()
+        setUnitValue(value)
+        updateDisplayValue()
     }
 }
