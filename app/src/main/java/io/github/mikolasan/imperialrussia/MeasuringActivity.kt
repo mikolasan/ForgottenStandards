@@ -47,26 +47,26 @@ class MeasuringActivity : Activity() {
     private fun createListAdapter(context: Context): ImperialListAdapter {
         val orderedUnits = restoreOrderedUnits()
         val adapter = ImperialListAdapter(context, orderedUnits)
-        adapter.setOnArrowClickListener { position: Int, arrow: View, unit: ImperialUnit ->
+        adapter.setOnArrowClickListener { _: Int, arrow: View, unit: ImperialUnit ->
             arrow.visibility = View.INVISIBLE // hide the arrow
             Toast.makeText(context, "'${unit.unitName.name}' has been moved to the top", Toast.LENGTH_SHORT).show()
             if (topPanel.unit != unit) {
                 swapPanels()
             }
-            LengthUnits.lengthUnits.forEachIndexed { i, u ->
+            LengthUnits.lengthUnits.forEachIndexed { _, u ->
                 val unitName = u.unitName.name
                 val settingName = "unit${unitName}Position"
                 preferencesEditor.putInt(settingName, orderedUnits.indexOf(u))
             }
             preferencesEditor.apply()
         }
-        adapter.setOnArrowLongClickListener { position: Int, arrow: View, unit: ImperialUnit ->
+        adapter.setOnArrowLongClickListener { _: Int, arrow: View, unit: ImperialUnit ->
             arrow.visibility = View.INVISIBLE // hide the arrow
             Toast.makeText(context, "'${unit.unitName.name}' has been moved to the top + scroll", Toast.LENGTH_SHORT).show()
             if (topPanel.unit != unit) {
                 swapPanels()
             }
-            LengthUnits.lengthUnits.forEachIndexed { i, u ->
+            LengthUnits.lengthUnits.forEachIndexed { _, u ->
                 val unitName = u.unitName.name
                 val settingName = "unit${unitName}Position"
                 preferencesEditor.putInt(settingName, orderedUnits.indexOf(u))
@@ -268,35 +268,15 @@ class MeasuringActivity : Activity() {
         updateRatioLabel()
     }
 
-    fun setCursor(editText: EditText?) {
-        editText?.isCursorVisible = true
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            editText?.textCursorDrawable = resources.getDrawable(R.drawable.ic_cursor)
-        }
-        editText?.setSelection(editText.text.length)
-    }
-
     private fun selectPanel(new: ImperialUnitPanel?, old: ImperialUnitPanel?) {
         selectedPanel = new
-        new?.let {
-            if (new.unit?.value?.compareTo(0.0) == 0) {
-                new.setString("")
-            }
-            new.setHighlight(true)
-            setCursor(new.input)
-        }
-        old?.let {
-            if (old.getString() == "") {
-                old.setValue(0.0)
-            }
-            old.setHighlight(false)
-            old.input.isCursorVisible = false
-        }
+        new?.setHighlight(true)
+        old?.setHighlight(false)
         updateRatioLabel()
     }
 
     private fun setListeners() {
-        unitsList.setOnItemClickListener { _, _, position, id ->
+        unitsList.setOnItemClickListener { _, _, position, _ ->
             val unit = listAdapter.getItem(position) as ImperialUnit
             if (!topPanel.isActivated()) {
                 if (bottomPanel.unit != unit) {
@@ -363,13 +343,15 @@ class MeasuringActivity : Activity() {
 
                 s?.let {
                     val inputValue = BasicCalculator(s.toString()).eval()
-                    val convertedValue = convertValue(topPanel.unit, bottomPanel.unit, inputValue)
-                    bottomInput.text = valueForDisplay(convertedValue)
+                    if (bottomPanel.isActivated()) {
+                        val convertedValue= convertValue(topPanel.unit, bottomPanel.unit, inputValue)
+                        bottomInput.text = valueForDisplay(convertedValue)
+                        preferencesEditor.putString("bottomPanelValue", bottomPanel.getString())
+                    }
                     listAdapter.setCurrentValue(topPanel.unit, inputValue)
-                    topInput.setSelection(topInput.text.length)
                     preferencesEditor.putString("topPanelValue", topPanel.getString())
-                    preferencesEditor.putString("bottomPanelValue", bottomPanel.getString())
                     preferencesEditor.apply()
+                    topInput.setSelection(topInput.text.length)
                 }
             }
 
@@ -388,13 +370,15 @@ class MeasuringActivity : Activity() {
 
                 s?.let {
                     val inputValue = BasicCalculator(s.toString()).eval()
-                    val convertedValue = convertValue(bottomPanel.unit, topPanel.unit, inputValue)
-                    topInput.text = valueForDisplay(convertedValue)
+                    if (topPanel.isActivated()) {
+                        val convertedValue = convertValue(bottomPanel.unit, topPanel.unit, inputValue)
+                        topInput.text = valueForDisplay(convertedValue)
+                        preferencesEditor.putString("topPanelValue", topPanel.getString())
+                    }
                     listAdapter.setCurrentValue(bottomPanel.unit, inputValue)
-                    bottomInput.setSelection(bottomInput.text.length)
-                    preferencesEditor.putString("topPanelValue", topPanel.getString())
                     preferencesEditor.putString("bottomPanelValue", bottomPanel.getString())
                     preferencesEditor.apply()
+                    bottomInput.setSelection(bottomInput.text.length)
                 }
             }
 
@@ -405,9 +389,14 @@ class MeasuringActivity : Activity() {
 
         val digitButtonOnClickListener: (View) -> Unit = { view ->
             val button = view as Button
-            val text = selectedPanel?.getString() ?: ""
-            if (text.length <= maxDisplayLength)
-                selectedPanel?.appendString(button.text[0])
+
+            selectedPanel?.let { panel ->
+                if (!panel.isActivated()) return@let
+                val text = panel.getString() ?: ""
+                if (text.length <= maxDisplayLength) {
+                    panel.appendString(button.text[0])
+                }
+            }
         }
         findViewById<DigitButton>(R.id.digit_1).setOnClickListener(digitButtonOnClickListener)
         findViewById<DigitButton>(R.id.digit_2).setOnClickListener(digitButtonOnClickListener)

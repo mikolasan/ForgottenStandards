@@ -41,7 +41,7 @@ class ImperialUnitPanel(private val layout: ConstraintLayout) {
         activate()
     }
 
-    fun updateUnitText() {
+    private fun updateUnitText() {
         val resourceId = unit?.resourceId
         if (resourceId != null) {
             val underlineText = SpannableString(title.context.resources.getString(resourceId))
@@ -54,24 +54,27 @@ class ImperialUnitPanel(private val layout: ConstraintLayout) {
         hint.text = newText
     }
 
-    fun getNotNullUnit(): ImperialUnit {
-        return unit!!
-    }
-
     fun setHighlight(highlight: Boolean) {
         isSelected = highlight
         layout.setBackgroundResource(if (highlight) R.drawable.ic_selected_panel_back else R.drawable.ic_input_panel_back)
         input.setTextColor(if (highlight) colorInputSelected else colorInputNormal)
+        if (!isSelected && isActivated() && getString() == "") {
+            setValue(0.0)
+        } else if (isSelected && unit?.value?.compareTo(0.0) == 0) {
+            setString("")
+        }
     }
 
     fun activate() {
         title.visibility = View.VISIBLE
+        input.isEnabled = true
         input.visibility = View.VISIBLE
         hint.visibility = View.INVISIBLE
     }
 
     fun deactivate() {
         title.visibility = View.INVISIBLE
+        input.isEnabled = false
         input.visibility = View.INVISIBLE
         hint.visibility = View.VISIBLE
     }

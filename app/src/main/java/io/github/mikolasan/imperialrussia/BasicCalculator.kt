@@ -32,7 +32,7 @@ class BasicCalculator(val expression: String) {
 
     fun parse(): Double{
         nextChar()
-        return parseExpression() ?: throw RuntimeException("Unexpected ${char}")
+        return parseExpression()
     }
 
     // Grammar:
