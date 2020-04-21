@@ -6,15 +6,14 @@ import android.widget.EditText
 import android.widget.TextView
 import android.text.SpannableString
 import android.view.View
-import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 
 
 class ImperialUnitPanel(private val layout: ConstraintLayout) {
     var unit: ImperialUnit? = null
     var isSelected = false
-    private val title: TextView = layout.findViewById(R.id.panel_title)
     val input: EditText = layout.findViewById(R.id.panel_input)
+    private val title: TextView = layout.findViewById(R.id.panel_title)
     private val hint: TextView = layout.findViewById(R.id.panel_hint)
 
     private fun getColor(resourceId: Int): Int {
@@ -38,7 +37,6 @@ class ImperialUnitPanel(private val layout: ConstraintLayout) {
     fun changeUnit(newUnit: ImperialUnit) {
         unit = newUnit
         updateUnitText()
-        activate()
     }
 
     private fun updateUnitText() {
@@ -59,7 +57,8 @@ class ImperialUnitPanel(private val layout: ConstraintLayout) {
         layout.setBackgroundResource(if (highlight) R.drawable.ic_selected_panel_back else R.drawable.ic_input_panel_back)
         input.setTextColor(if (highlight) colorInputSelected else colorInputNormal)
         if (!isSelected && isActivated() && getString() == "") {
-            setValue(0.0)
+            setUnitValue(0.0)
+            updateDisplayValue()
         } else if (isSelected && unit?.value?.compareTo(0.0) == 0) {
             setString("")
         }
@@ -83,18 +82,16 @@ class ImperialUnitPanel(private val layout: ConstraintLayout) {
         return title.visibility == View.VISIBLE
     }
 
-    fun getValue(): Double? {
-        val s = input.text.toString()
-        return if (s.isNotEmpty())
-            parseDisplayString(s)
-        else
-            null
+    fun getValue(): Double? = unit?.value
+
+    fun setUnitValue(v: Double?) {
+        unit?.value = v
     }
 
-    fun setValue(v: Double) {
-        unit?.value = v
+    fun updateDisplayValue() {
+        val v = unit?.value
         input.text = valueForDisplay(v)
-        if (isSelected && input.text.toString() == "0") {
+        if (isSelected && getString() == "0") {
             input.setText("")
         }
     }

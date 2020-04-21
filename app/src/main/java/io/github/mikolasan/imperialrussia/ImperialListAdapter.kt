@@ -61,17 +61,13 @@ class ImperialListAdapter(private val context: Context, private val units: Mutab
         arrowLongClickListener = listener
     }
 
-    fun resetValues() {
-        for (listUnit in units) {
-            listUnit.value = null
-        }
+    fun resetAllValues() {
+        units.forEach { u -> u.value = null }
         notifyDataSetChanged()
     }
 
-    fun setCurrentValue(unit: ImperialUnit?, value: Double) {
-        for (listUnit in units) {
-            listUnit.value = convertValue(unit, listUnit, value)
-        }
+    fun updateAllValues(unit: ImperialUnit?, value: Double) {
+        units.forEach { u -> u.value = convertValue(unit, u, value) }
         notifyDataSetChanged()
     }
 

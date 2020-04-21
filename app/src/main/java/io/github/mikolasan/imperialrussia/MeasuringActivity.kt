@@ -3,7 +3,6 @@ package io.github.mikolasan.imperialrussia
 import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
-import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -18,7 +17,7 @@ import java.util.*
 class MeasuringActivity : Activity() {
 
     private val languageSetting = "language"
-    private val preferencesFile = "ImperialRussiaPref.2"
+    private val preferencesFile = "ImperialRussiaPref.3"
     private var newLocale: Locale? = null
 
     private var selectedPanel: ImperialUnitPanel? = null
@@ -160,38 +159,46 @@ class MeasuringActivity : Activity() {
     }
 
     private fun restorePanels() {
+        restoreSelectedUnits()
+
         val preferences = getPreferences()
-        val topPanelValue = BasicCalculator(preferences.getString("topPanelValue", "") ?: "").eval()
         val topPanelUnit = restoreUnit(preferences.getString("topPanelUnit", "") ?: "")
         val bottomPanelUnit = restoreUnit(preferences.getString("bottomPanelUnit", "") ?: "")
-        topPanelUnit?.let {
-            setTopPanel(it, topPanelValue)
+        val topPanelValue = BasicCalculator(preferences.getString("topPanelValue", "") ?: "").eval()
+        val bottomPanelValue = preferences.getString("bottomPanelValue", "") ?: ""
+        topPanel.setUnitValue(topPanelValue)
+        topPanel.updateDisplayValue()
+        listAdapter.updateAllValues(topPanel.unit, topPanelValue)
+        bottomPanelUnit?.let { unit ->
+            val bottomValue = convertValue(topPanelUnit, unit, topPanelValue)
+            bottomPanel.updateDisplayValue()
+            val displayValue = bottomPanel.getString()
+            if (bottomPanelValue != displayValue) {
+                preferencesEditor.putString("bottomPanelValue", displayValue)
+                preferencesEditor.apply()
+            }
         }
-        bottomPanelUnit?.let {
-            setBottomPanel(it, null)
-        }
+
         selectPanel(topPanel, bottomPanel)
-        listAdapter.swapSelection()
-        listAdapter.setCurrentValue(topPanel.unit, topPanelValue)
     }
 
-    private fun restorePanelSelection() {
+    private fun restoreSelectedUnits() {
         val preferences = getPreferences()
         val topPanelUnit = restoreUnit(preferences.getString("topPanelUnit", "") ?: "")
         val bottomPanelUnit = restoreUnit(preferences.getString("bottomPanelUnit", "") ?: "")
         topPanelUnit?.let {
+            topPanel.activate()
             topPanel.changeUnit(it)
             listAdapter.setSelectedUnit(it)
         }
         bottomPanelUnit?.let {
+            bottomPanel.activate()
             bottomPanel.changeUnit(it)
             listAdapter.setSecondUnit(it)
         }
-        listAdapter.notifyDataSetChanged()
-        selectPanel(topPanel, bottomPanel)
     }
 
-    private fun restorePanelValues() {
+    private fun restoreInputValues() {
         val preferences = getPreferences()
         val topPanelValue = preferences.getString("topPanelValue", "") ?: ""
         val bottomPanelValue = preferences.getString("bottomPanelValue", "") ?: ""
@@ -216,32 +223,33 @@ class MeasuringActivity : Activity() {
         if (value == null) {
             val topValue = convertValue(bottomPanel.unit, unit, bottomPanel.getValue()
                     ?: 1.0)
-            topPanel.setValue(topValue)
+            topPanel.setUnitValue(topValue)
         } else {
-            topPanel.setValue(value)
+            topPanel.setUnitValue(value)
         }
+        topPanel.updateDisplayValue()
+
         listAdapter.setSelectedUnit(unit)
         listAdapter.setSecondUnit(bottomPanel.unit)
         listAdapter.notifyDataSetChanged()
+
         preferencesEditor.putString("topPanelUnit", unit.unitName.name)
         preferencesEditor.putString("topPanelValue", topPanel.getString())
         preferencesEditor.apply()
         updateRatioLabel()
     }
 
-    private fun setBottomPanel(unit: ImperialUnit, value: Double? = null) {
+    private fun setBottomPanel(unit: ImperialUnit) {
         bottomPanel.changeUnit(unit)
-        if (value == null) {
-            val bottomValue = convertValue(topPanel.unit, unit, topPanel.getValue()
-                    ?: 1.0)
-            bottomPanel.setValue(bottomValue)
-        } else {
-            val topValue = convertValue(unit, topPanel.unit, value)
-            topPanel.setValue(topValue)
-        }
+        val bottomValue = convertValue(topPanel.unit, unit, topPanel.getValue()
+                ?: 1.0)
+        bottomPanel.setUnitValue(bottomValue)
+        bottomPanel.updateDisplayValue()
+
         listAdapter.setSelectedUnit(unit)
         listAdapter.setSecondUnit(topPanel.unit)
         listAdapter.notifyDataSetChanged()
+
         preferencesEditor.putString("bottomPanelUnit", unit.unitName.name)
         preferencesEditor.putString("bottomPanelValue", bottomPanel.getString())
         preferencesEditor.apply()
@@ -258,8 +266,8 @@ class MeasuringActivity : Activity() {
         topPanel.changeUnit(bottomUnit)
         bottomPanel.changeUnit(topUnit)
 
-        topPanel.setValue(bottomValue)
-        bottomPanel.setValue(topValue)
+        topPanel.setUnitValue(bottomValue)
+        bottomPanel.setUnitValue(topValue)
 
         topPanel.setString(bottomString)
         bottomPanel.setString(topString)
@@ -279,15 +287,13 @@ class MeasuringActivity : Activity() {
         unitsList.setOnItemClickListener { _, _, position, _ ->
             val unit = listAdapter.getItem(position) as ImperialUnit
             if (!topPanel.isActivated()) {
-                if (bottomPanel.unit != unit) {
-                    selectPanel(topPanel, bottomPanel)
-                    setTopPanel(unit, 1.0)
-                }
-            } else if (!bottomPanel.isActivated()) {
-                if (topPanel.unit != unit) {
-                    selectPanel(bottomPanel, topPanel)
-                    setBottomPanel(unit, null)
-                }
+                topPanel.activate()
+                setTopPanel(unit, 1.0)
+                selectPanel(topPanel, bottomPanel)
+            } else if (!bottomPanel.isActivated() && topPanel.unit != unit) {
+                bottomPanel.activate()
+                setBottomPanel(unit)
+                selectPanel(bottomPanel, topPanel)
             } else {
                 if (selectedPanel == topPanel) {
                     if (bottomPanel.unit != unit) {
@@ -299,7 +305,7 @@ class MeasuringActivity : Activity() {
                     }
                 } else if (selectedPanel == bottomPanel) {
                     if (topPanel.unit != unit) {
-                        setBottomPanel(unit, null)
+                        setBottomPanel(unit)
                     } else if (bottomPanel.unit != unit){
                         selectPanel(topPanel, bottomPanel)
                         listAdapter.swapSelection()
@@ -335,6 +341,7 @@ class MeasuringActivity : Activity() {
         bottomInput.setOnClickListener(bottomPanelOnClickListener)
         topInput.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
+                println("[topInput] afterTextChanged ${s.toString()}")
                 if (selectedPanel?.input != topInput)
                     return
 
@@ -342,26 +349,31 @@ class MeasuringActivity : Activity() {
                     return
 
                 s?.let {
+                    topInput.setSelection(topInput.text.length)
                     val inputValue = BasicCalculator(s.toString()).eval()
+                    topPanel.setUnitValue(inputValue)
+                    listAdapter.updateAllValues(topPanel.unit, inputValue)
                     if (bottomPanel.isActivated()) {
-                        val convertedValue= convertValue(topPanel.unit, bottomPanel.unit, inputValue)
-                        bottomInput.text = valueForDisplay(convertedValue)
+                        bottomPanel.updateDisplayValue()
                         preferencesEditor.putString("bottomPanelValue", bottomPanel.getString())
                     }
-                    listAdapter.setCurrentValue(topPanel.unit, inputValue)
                     preferencesEditor.putString("topPanelValue", topPanel.getString())
                     preferencesEditor.apply()
-                    topInput.setSelection(topInput.text.length)
                 }
             }
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                println("[topInput] beforeTextChanged $s")
+            }
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                println("[topInput] onTextChanged $s")
+            }
         })
 
         bottomInput.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
+                println("[bottomInput] afterTextChanged ${s.toString()}")
                 if (selectedPanel?.input != bottomInput)
                     return
 
@@ -369,22 +381,26 @@ class MeasuringActivity : Activity() {
                     return
 
                 s?.let {
+                    bottomInput.setSelection(bottomInput.text.length)
                     val inputValue = BasicCalculator(s.toString()).eval()
+                    bottomPanel.setUnitValue(inputValue)
+                    listAdapter.updateAllValues(bottomPanel.unit, inputValue)
                     if (topPanel.isActivated()) {
-                        val convertedValue = convertValue(bottomPanel.unit, topPanel.unit, inputValue)
-                        topInput.text = valueForDisplay(convertedValue)
+                        topPanel.updateDisplayValue()
                         preferencesEditor.putString("topPanelValue", topPanel.getString())
                     }
-                    listAdapter.setCurrentValue(bottomPanel.unit, inputValue)
                     preferencesEditor.putString("bottomPanelValue", bottomPanel.getString())
                     preferencesEditor.apply()
-                    bottomInput.setSelection(bottomInput.text.length)
                 }
             }
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                println("[bottomInput] beforeTextChanged $s")
+            }
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                println("[bottomInput] onTextChanged $s")
+            }
         })
 
         val digitButtonOnClickListener: (View) -> Unit = { view ->
@@ -425,7 +441,10 @@ class MeasuringActivity : Activity() {
 
     private fun recreatePreviousActivity(savedInstanceState: Bundle) {
         setListeners()
-        restorePanelSelection()
+        restoreSelectedUnits()
+
+        listAdapter.notifyDataSetChanged()
+        selectPanel(topPanel, bottomPanel)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -452,7 +471,7 @@ class MeasuringActivity : Activity() {
         // onRestoreInstanceState works against me. I include layouts and included layouts do not have
         // unique ids. And it calls TextChangedListener on my inputs with wrong values.
         //super.onRestoreInstanceState(savedInstanceState)
-        restorePanelValues()
+        restoreInputValues()
     }
 
     override fun onStart() {
