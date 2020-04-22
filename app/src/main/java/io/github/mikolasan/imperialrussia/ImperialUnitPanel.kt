@@ -5,6 +5,7 @@ import android.text.InputType
 import android.widget.EditText
 import android.widget.TextView
 import android.text.SpannableString
+import android.text.style.SubscriptSpan
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 
@@ -134,5 +135,10 @@ class ImperialUnitPanel(private val layout: ConstraintLayout) {
         val value = BasicCalculator(expression).eval()
         setUnitValue(value)
         updateDisplayValue()
+    }
+
+    fun makeSerializedString(): String {
+//        val spans = input.text.getSpans(0, input.text.length, SubscriptSpan::class.java))
+        return getString()
     }
 }

@@ -174,7 +174,7 @@ class MeasuringActivity : Activity() {
             bottomPanel.updateDisplayValue()
             val displayValue = bottomPanel.getString()
             if (bottomPanelValue != displayValue) {
-                preferencesEditor.putString("bottomPanelValue", displayValue)
+                preferencesEditor.putString("bottomPanelValue", bottomPanel.makeSerializedString())
                 preferencesEditor.apply()
             }
         }
@@ -234,7 +234,7 @@ class MeasuringActivity : Activity() {
         listAdapter.notifyDataSetChanged()
 
         preferencesEditor.putString("topPanelUnit", unit.unitName.name)
-        preferencesEditor.putString("topPanelValue", topPanel.getString())
+        preferencesEditor.putString("topPanelValue", topPanel.makeSerializedString())
         preferencesEditor.apply()
         updateRatioLabel()
     }
@@ -251,7 +251,7 @@ class MeasuringActivity : Activity() {
         listAdapter.notifyDataSetChanged()
 
         preferencesEditor.putString("bottomPanelUnit", unit.unitName.name)
-        preferencesEditor.putString("bottomPanelValue", bottomPanel.getString())
+        preferencesEditor.putString("bottomPanelValue", bottomPanel.makeSerializedString())
         preferencesEditor.apply()
         updateRatioLabel()
     }
@@ -345,7 +345,7 @@ class MeasuringActivity : Activity() {
                 if (selectedPanel?.input != topInput)
                     return
 
-                if (mainLayout is MotionLayout && mainLayout.progress.equals(1.0))
+                if (mainLayout is MotionLayout && !(mainLayout.progress.equals(1.0f) || mainLayout.progress.equals(0.0f)))
                     return
 
                 s?.let {
@@ -355,9 +355,9 @@ class MeasuringActivity : Activity() {
                     listAdapter.updateAllValues(topPanel.unit, inputValue)
                     if (bottomPanel.isActivated()) {
                         bottomPanel.updateDisplayValue()
-                        preferencesEditor.putString("bottomPanelValue", bottomPanel.getString())
+                        preferencesEditor.putString("bottomPanelValue", bottomPanel.makeSerializedString())
                     }
-                    preferencesEditor.putString("topPanelValue", topPanel.getString())
+                    preferencesEditor.putString("topPanelValue", topPanel.makeSerializedString())
                     preferencesEditor.apply()
                 }
             }
@@ -377,7 +377,7 @@ class MeasuringActivity : Activity() {
                 if (selectedPanel?.input != bottomInput)
                     return
 
-                if (mainLayout is MotionLayout && mainLayout.progress.equals(1.0))
+                if (mainLayout is MotionLayout && !(mainLayout.progress.equals(1.0f) || mainLayout.progress.equals(0.0f)))
                     return
 
                 s?.let {
@@ -387,9 +387,9 @@ class MeasuringActivity : Activity() {
                     listAdapter.updateAllValues(bottomPanel.unit, inputValue)
                     if (topPanel.isActivated()) {
                         topPanel.updateDisplayValue()
-                        preferencesEditor.putString("topPanelValue", topPanel.getString())
+                        preferencesEditor.putString("topPanelValue", topPanel.makeSerializedString())
                     }
-                    preferencesEditor.putString("bottomPanelValue", bottomPanel.getString())
+                    preferencesEditor.putString("bottomPanelValue", bottomPanel.makeSerializedString())
                     preferencesEditor.apply()
                 }
             }
