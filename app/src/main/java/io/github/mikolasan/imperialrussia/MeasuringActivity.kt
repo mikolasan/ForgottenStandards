@@ -214,7 +214,8 @@ class MeasuringActivity : Activity() {
             ratioLabel.text = ""
         } else {
             val ratio = findConversionRatio(fromUnit, toUnit)
-            ratioLabel.text = "1 ${fromUnit.unitName.name} = ${ratio} ${toUnit.unitName.name}"
+            val format = "1 ${fromUnit.unitName.name} = [value] ${toUnit.unitName.name}"
+            ratioLabel.text = formatForDisplay(format, ratio)
         }
     }
 

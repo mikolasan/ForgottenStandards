@@ -26,6 +26,7 @@
         android:layout_marginStart="8dp"
         android:fontFamily="@font/gotham_pro_reg"
         android:textColor="@color/colorPrimary"
+        android:textSize="12sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/convert_to" />
 
