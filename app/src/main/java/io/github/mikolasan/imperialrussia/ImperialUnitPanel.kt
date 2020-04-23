@@ -10,6 +10,7 @@ import android.text.style.SuperscriptSpan
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import kotlinx.android.synthetic.main.slide_area.view.*
+import java.text.DecimalFormat
 
 
 class ImperialUnitPanel(private val layout: ConstraintLayout) {
@@ -155,11 +156,27 @@ class ImperialUnitPanel(private val layout: ConstraintLayout) {
     }
 
     fun makeSerializedString(): String {
-//        val spans = input.text.getSpans(0, input.text.length, SubscriptSpan::class.java))
-        return getString()
+        val sep = (DecimalFormat.getInstance() as DecimalFormat).decimalFormatSymbols.groupingSeparator.toString()
+        val s = input.text.toString().replace(sep, "")
+        val span = input.text.getSpans(0, input.text.length, SuperscriptSpan::class.java).singleOrNull()
+        return if (span == null) {
+            s
+        } else {
+            StringBuilder(s).insert(input.text.getSpanStart(span), '^').toString()
+        }
     }
 
     fun hasExponent(): Boolean {
         return input.text.getSpans(0, input.text.length, SuperscriptSpan::class.java).isNotEmpty()
+    }
+
+    fun formatStringAndSet(s: String) {
+        val expression = s ?: getString()
+        val value = BasicCalculator(expression).eval()
+        setUnitValue(value)
+        input.text = stringForDisplay(expression)
+        if (isSelected && getString() == "0") {
+            input.setText("")
+        }
     }
 }

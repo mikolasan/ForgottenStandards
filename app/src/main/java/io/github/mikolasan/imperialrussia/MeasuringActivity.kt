@@ -6,7 +6,6 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.transition.Transition
 import android.view.View
 import android.widget.*
 import androidx.constraintlayout.motion.widget.MotionLayout
@@ -210,8 +209,8 @@ class MeasuringActivity : Activity() {
         val preferences = getPreferences()
         val topPanelValue = preferences.getString("topPanelValue", "") ?: ""
         val bottomPanelValue = preferences.getString("bottomPanelValue", "") ?: ""
-        topPanel.setString(topPanelValue)
-        bottomPanel.setString(bottomPanelValue)
+        topPanel.formatStringAndSet(topPanelValue)
+        bottomPanel.formatStringAndSet(bottomPanelValue)
     }
 
     private fun updateRatioLabel() {
@@ -223,7 +222,7 @@ class MeasuringActivity : Activity() {
         } else {
             val ratio = findConversionRatio(fromUnit, toUnit)
             val format = "1 ${fromUnit.unitName.name} = [value] ${toUnit.unitName.name}"
-            ratioLabel.text = formatForDisplay(format, ratio)
+            ratioLabel.text = patternForDisplay(format, ratio)
         }
     }
 
@@ -522,7 +521,7 @@ class MeasuringActivity : Activity() {
         restoreSelectedUnits()
 
         listAdapter.notifyDataSetChanged()
-        selectPanel(topPanel, bottomPanel)
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -550,6 +549,7 @@ class MeasuringActivity : Activity() {
         // unique ids. And it calls TextChangedListener on my inputs with wrong values.
         //super.onRestoreInstanceState(savedInstanceState)
         restoreInputValues()
+        selectPanel(topPanel, bottomPanel)
     }
 
     override fun onStart() {

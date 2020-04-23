@@ -61,23 +61,23 @@ class CalculatorUnitTest {
     }
 
     @Test
-    fun eval_ignoresDoubleDot() {
-        assertEquals(-10.0, BasicCalculator("-10..").eval(), 1e-10)
-    }
-
-    @Test
     fun eval_ignoresSingleDot() {
         assertEquals(0.0, BasicCalculator(".").eval(), 1e-10)
     }
 
     @Test
-    fun eval_ignoresDoubleSlash() {
-        assertEquals(-10.0, BasicCalculator("-10÷÷").eval(), 1e-10)
+    fun eval_safeToInputMinus() {
+        assertEquals(0.0, BasicCalculator("-").eval(), 1e-10)
     }
 
     @Test
-    fun eval_ignoresDoubleStar() {
-        assertEquals(-10.0, BasicCalculator("-10××").eval(), 1e-10)
+    fun eval_safeToInputMinusAndDot() {
+        assertEquals(0.0, BasicCalculator("-.").eval(), 1e-10)
+    }
+
+    @Test
+    fun eval_parsesUnaryMinus() {
+        assertEquals(-0.5, BasicCalculator("-.5").eval(), 1e-10)
     }
 
     @Test
@@ -91,12 +91,26 @@ class CalculatorUnitTest {
     }
 
     @Test
-    fun eval_emptyStringIsZero() {
-        assertEquals(0.0, BasicCalculator("").eval(), 1e-10)
+    fun eval_operationPriority() {
+        assertEquals(7.0, BasicCalculator("1+2×3").eval(), 1e-10)
+        assertEquals(7.0, BasicCalculator("2×3+1").eval(), 1e-10)
+        assertEquals(7.0, BasicCalculator("1+3×2").eval(), 1e-10)
+        assertEquals(7.0, BasicCalculator("3×2+1").eval(), 1e-10)
     }
 
     @Test
-    fun eval_operationPriority() {
-        assertEquals(7.0, BasicCalculator("1+2×3").eval(), 1e-10)
+    fun eval_parsesPower() {
+        assertEquals(-4.0, BasicCalculator("-2^2").eval(), 1e-10)
+    }
+
+    @Test
+    fun eval_parsesSequentialPower() {
+        assertEquals(81.0, BasicCalculator("3^2^2").eval(), 1e-10)
+        assertEquals(512.0, BasicCalculator("2^3^2").eval(), 1e-10)
+    }
+
+    @Test
+    fun eval_powerOperationPriority() {
+        assertEquals(18.0, BasicCalculator("2×3^2").eval(), 1e-10)
     }
 }

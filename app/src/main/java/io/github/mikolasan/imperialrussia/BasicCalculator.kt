@@ -1,6 +1,8 @@
 package io.github.mikolasan.imperialrussia
 
+import java.lang.RuntimeException
 import java.text.DecimalFormatSymbols
+import kotlin.math.pow
 
 /*
  It does addition, subtraction, multiplication, division
@@ -16,6 +18,7 @@ class BasicCalculator(val expression: String) {
     var char: Char? = null
     var pos = -1
     fun eval(): Double {
+        if (expression.isEmpty()) return 0.0
         return parse()
     }
 
@@ -41,7 +44,7 @@ class BasicCalculator(val expression: String) {
     // Grammar:
     // expression = term | expression `+` term | expression `-` term
     // term = factor | term `*` factor | term `/` factor
-    // factor = `+` factor | `-` factor | number
+    // factor = `+` factor | `-` factor | number | factor `^` factor
 
     fun parseExpression(): Double {
         var x = parseTerm()
@@ -59,10 +62,12 @@ class BasicCalculator(val expression: String) {
         while (true) {
             when {
                 eat('×') -> {
-                    x *= parseFactor() ?: 1.0
+                    val y = parseFactor() ?: 1.0
+                    x *= y
                 }
                 eat('÷') -> {
-                    x /= parseFactor() ?: 1.0
+                    val y = parseFactor() ?: 1.0
+                    x /= y
                 }
                 else -> return x
             }
@@ -70,29 +75,28 @@ class BasicCalculator(val expression: String) {
     }
 
     fun parseNumber(factor: String): Double {
-        var x = .0
-        try {
-            x = factor.toDouble()
+        return try {
+            factor.toDouble()
         } catch (e: NumberFormatException) {
-            if (e.message?.compareTo("multiple points") == 0) { // TODO
-                x = parseNumber(factor.dropLast(1))
-            }
+            0.0
         }
-        return x
     }
 
-    fun parseFactor(): Double? {
+    fun parseFactor(): Double {
         if (eat('+')) return parseFactor() // unary plus
-        if (eat('-')) return -parseFactor()!! // unary minus
+        if (eat('-')) return -parseFactor() // unary minus
         val startPos = pos
         while (char in '0'..'9' || char == decimal || char == grouping) {
             nextChar()
         }
         val factor = expression.substring(startPos, pos).replace(grouping.toString(), "")
-        return when {
-            factor.isEmpty() -> null
-            factor == "." -> 0.0
-            else -> parseNumber(factor)
+        if (factor.isEmpty() || factor == ".") {
+            return 0.0
         }
+        val x = parseNumber(factor)
+        if (eat('^')) {
+            return x.pow(parseFactor())
+        }
+        return x
     }
 }
