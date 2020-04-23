@@ -113,16 +113,31 @@ class ImperialUnitPanel(private val layout: ConstraintLayout) {
 
     fun appendString(c: Char, replaceable: Set<Char>? = null) {
         if (replaceable != null) {
-            var value = getString()
-
+            val value = getString()
             if (value.isNotEmpty()) {
-                if (replaceable.contains(value.last())) {
-                    value = value.dropLast(1)
-                } else if (c == '.' && value.contains('.')) {
-                    return
+                if (replaceable.containsAll(listOf(value.last(), c))) {
+                    setString(value.dropLast(1) + c.toString())
+                } else if (c == '.') {
+                    val factor = value.takeLastWhile { char ->
+                        char in '0'..'9' || char == '.'
+                    }
+                    if (factor.isEmpty()) {
+                        setString(value + c.toString())
+                        return
+                    }
+                    if (factor.contains('.')) return
+                    try {
+                        val x = factor.toDouble()
+                    } catch (e: NumberFormatException) {
+                        return
+                    }
+                    setString(value + c.toString())
+                } else {
+                    setString(value + c.toString())
                 }
+            } else {
+                setString(c.toString())
             }
-            setString(value + c.toString())
         } else {
             setString(getString() + c.toString())
         }
