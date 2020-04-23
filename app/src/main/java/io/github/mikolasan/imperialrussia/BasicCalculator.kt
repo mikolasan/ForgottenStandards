@@ -1,6 +1,6 @@
 package io.github.mikolasan.imperialrussia
 
-import java.lang.RuntimeException
+import java.text.DecimalFormatSymbols
 
 /*
  It does addition, subtraction, multiplication, division
@@ -10,6 +10,9 @@ import java.lang.RuntimeException
  */
 
 class BasicCalculator(val expression: String) {
+    val grouping = DecimalFormatSymbols.getInstance().groupingSeparator
+    val decimal = DecimalFormatSymbols.getInstance().decimalSeparator
+
     var char: Char? = null
     var pos = -1
     fun eval(): Double {
@@ -82,10 +85,10 @@ class BasicCalculator(val expression: String) {
         if (eat('+')) return parseFactor() // unary plus
         if (eat('-')) return -parseFactor()!! // unary minus
         val startPos = pos
-        while (char in '0'..'9' || char == '.') {
+        while (char in '0'..'9' || char == decimal || char == grouping) {
             nextChar()
         }
-        val factor = expression.substring(startPos, pos)
+        val factor = expression.substring(startPos, pos).replace(grouping.toString(), "")
         return when {
             factor.isEmpty() -> null
             factor == "." -> 0.0

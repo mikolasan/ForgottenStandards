@@ -376,6 +376,8 @@ class MeasuringActivity : Activity() {
         topInput.setOnClickListener(topPanelOnClickListener)
         bottomInput.setOnClickListener(bottomPanelOnClickListener)
         topInput.addTextChangedListener(object : TextWatcher {
+            var selfEditing = false
+
             override fun afterTextChanged(s: Editable?) {
                 println("[topInput] afterTextChanged ${s.toString()}")
                 if (selectedPanel?.input != topInput)
@@ -384,11 +386,17 @@ class MeasuringActivity : Activity() {
                 if (mainLayout is MotionLayout && uiSide == UISide.list)
                     return
 
+                if (selfEditing)
+                    return
+
                 s?.let {
                     topInput.setSelection(topInput.text.length)
                     val inputValue = BasicCalculator(s.toString()).eval()
                     topPanel.setUnitValue(inputValue)
-                    listAdapter.updateAllValues(topPanel.unit, inputValue)
+//                    selfEditing = true
+//                    topPanel.evaluateString(s.toString())
+//                    selfEditing = false
+                    listAdapter.updateAllValues(topPanel.unit, topPanel.unit?.value ?: 0.0)
                     if (bottomPanel.isActivated()) {
                         bottomPanel.updateDisplayValue()
                         preferencesEditor.putString("bottomPanelValue", bottomPanel.makeSerializedString())
@@ -408,6 +416,8 @@ class MeasuringActivity : Activity() {
         })
 
         bottomInput.addTextChangedListener(object : TextWatcher {
+            var selfEditing = false
+            
             override fun afterTextChanged(s: Editable?) {
                 println("[bottomInput] afterTextChanged ${s.toString()}")
                 if (selectedPanel?.input != bottomInput)
@@ -415,12 +425,18 @@ class MeasuringActivity : Activity() {
 
                 if (mainLayout is MotionLayout && uiSide == UISide.list)
                     return
-
+                
+                if (selfEditing)
+                    return
+                
                 s?.let {
                     bottomInput.setSelection(bottomInput.text.length)
                     val inputValue = BasicCalculator(s.toString()).eval()
                     bottomPanel.setUnitValue(inputValue)
-                    listAdapter.updateAllValues(bottomPanel.unit, inputValue)
+//                    selfEditing = true
+//                    topPanel.evaluateString(s.toString())
+//                    selfEditing = false
+                    listAdapter.updateAllValues(bottomPanel.unit, bottomPanel.unit?.value ?: 0.0)
                     if (topPanel.isActivated()) {
                         topPanel.updateDisplayValue()
                         preferencesEditor.putString("topPanelValue", topPanel.makeSerializedString())

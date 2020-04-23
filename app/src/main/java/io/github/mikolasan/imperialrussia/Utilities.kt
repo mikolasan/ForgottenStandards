@@ -101,8 +101,8 @@ fun valueForDisplay(value: Double?, locale: Locale? = null): SpannableStringBuil
 
     val absValue = abs(value)
     val integerPart = floor(absValue)
-    val integerLength = if (integerPart > 0.0) (floor(log10(integerPart)) + 1).toInt() + 1 else 1
-    val maxIntegerLength = 7
+    val integerLength = if (integerPart > 0.0) (floor(log10(integerPart)) + 1).toInt() else 1
+    val maxIntegerLength = 8
 
     val numberFormat = if (locale == null) DecimalFormat.getInstance() else DecimalFormat.getInstance(locale)
     val decimalFormat = numberFormat as DecimalFormat
@@ -159,8 +159,8 @@ fun formatForDisplay(format: String, value: Double?, locale: Locale? = null): Sp
 
     val absValue = abs(value)
     val integerPart = floor(absValue)
-    val integerLength = if (integerPart > 0) (floor(log10(integerPart)) + 1).toInt() + 1 else 1
-    val maxIntegerLength = 7
+    val integerLength = if (integerPart > 0) (floor(log10(integerPart)) + 1).toInt() else 1
+    val maxIntegerLength = 5
 
     val numberFormat = if (locale == null) DecimalFormat.getInstance() else DecimalFormat.getInstance(locale)
     val decimalFormat = numberFormat as DecimalFormat

@@ -147,8 +147,8 @@ class ImperialUnitPanel(private val layout: ConstraintLayout) {
         setString(getString().dropLast(1))
     }
 
-    fun evaluateString() {
-        val expression = getString()
+    fun evaluateString(s: String? = null) {
+        val expression = s ?: getString()
         val value = BasicCalculator(expression).eval()
         setUnitValue(value)
         updateDisplayValue()
