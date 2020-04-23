@@ -32,8 +32,7 @@ class ImperialUnitTest {
     @Test
     fun findConversionRatio_elbowToCentimeter() {
         val ratio = findConversionRatio(elbow, centimeter)
-        // TODO: 45.72 ?
-        assertEquals(45.0, ratio, 1e-10)
+        assertEquals(47.41333, ratio, 1e-10)
     }
 
     @Test
@@ -43,16 +42,27 @@ class ImperialUnitTest {
     }
 
     @Test
+    fun findConversionRatio_fathomToFoot() {
+        val ratio = findConversionRatio(fathom, foot)
+        assertEquals(7.0, ratio, 1e-10)
+    }
+
+    @Test
     fun findConversionRatio_palmToCentimeter() {
         val ratio = findConversionRatio(palm, centimeter)
-        // TODO: 7.46125 ?
-        assertEquals(7.5, ratio, 1e-10)
+        assertEquals(7.902222222222222, ratio, 1e-10)
     }
 
     @Test
     fun findConversionRatio_footToCentimeter() {
         val ratio = findConversionRatio(foot, centimeter)
         assertEquals(30.48, ratio, 1e-10)
+    }
+
+    @Test
+    fun findConversionRatio_footToFathom() {
+        val ratio = findConversionRatio(foot, fathom)
+        assertEquals(1.0/7.0, ratio, 1e-10)
     }
 
     @Test
@@ -64,7 +74,7 @@ class ImperialUnitTest {
     @Test
     fun findConversionRatio_strideToCentimeter() {
         val ratio = findConversionRatio(stride, centimeter)
-        assertEquals(71.0, ratio, 1e-10)
+        assertEquals(71.12, ratio, 1e-10)
     }
 
     @Test
@@ -95,8 +105,7 @@ class ImperialUnitTest {
     @Test
     fun findConversionRatio_yardToPalm() {
         val ratio = findConversionRatio(yard, palm)
-        val expected = 28.0 * 16.0 / 47.0
-        assertEquals(expected, ratio, 1e-10)
+        assertEquals(9.0, ratio, 1e-10)
     }
 
     @Test
