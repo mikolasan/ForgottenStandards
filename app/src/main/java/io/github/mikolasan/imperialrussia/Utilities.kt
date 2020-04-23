@@ -76,18 +76,23 @@ fun doScientificNotation(decimalFormat: DecimalFormat, value: Double): Spannable
     val exponent = decimalFormat.decimalFormatSymbols.exponentSeparator
     val minus = decimalFormat.decimalFormatSymbols.minusSign
     val pattern = "0" + separator + "###" + exponent + "0"
+    val x10 = "×10"
 
     decimalFormat.applyLocalizedPattern(pattern)
     var formattedValue = decimalFormat.format(value)
     //val minusPosition = formattedValue.indexOf(minus)
     val exponentPosition = formattedValue.indexOf(exponent)
     if (exponentPosition < 0) {
+        // something went wrong, just smile and pretend that it is OK
         return SpannableStringBuilder("^.^")
     }
-    formattedValue = formattedValue.replace(exponent, "x10")
+
+    formattedValue = formattedValue.replace(exponent, x10)
+    val spanStart = exponentPosition + 3
+    val spanEnd = formattedValue.length
     val spannable = SpannableStringBuilder(formattedValue)
-    spannable.setSpan(SuperscriptSpan(), exponentPosition + 3, formattedValue.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-    spannable.setSpan(RelativeSizeSpan(0.75f), exponentPosition + 3, formattedValue.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+    spannable.setSpan(SuperscriptSpan(), spanStart, spanEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+    spannable.setSpan(RelativeSizeSpan(0.75f), spanStart, spanEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
     return spannable
 }
 
@@ -96,7 +101,7 @@ fun valueForDisplay(value: Double?, locale: Locale? = null): SpannableStringBuil
 
     val absValue = abs(value)
     val integerPart = floor(absValue)
-    val integerLength = if (integerPart > 0) (floor(log10(integerPart)) + 1).toInt() + 1 else 1
+    val integerLength = if (integerPart > 0.0) (floor(log10(integerPart)) + 1).toInt() + 1 else 1
     val maxIntegerLength = 7
 
     val numberFormat = if (locale == null) DecimalFormat.getInstance() else DecimalFormat.getInstance(locale)
@@ -105,14 +110,19 @@ fun valueForDisplay(value: Double?, locale: Locale? = null): SpannableStringBuil
     if (integerLength > maxIntegerLength) {
         return doScientificNotation(decimalFormat, value)
     }
+
     decimalFormat.maximumIntegerDigits = integerLength
     decimalFormat.maximumFractionDigits = maxDisplayLength - integerLength
     decimalFormat.isDecimalSeparatorAlwaysShown = false
 
     val formattedValue = decimalFormat.format(value)
     val formattedLength = formattedValue.length
+    val scientificNumber = doScientificNotation(decimalFormat, value)
+    val exponentPosition = scientificNumber.toString().indexOf("×10")
     if (formattedLength > maxDisplayLength + 1) {
-        return doScientificNotation(decimalFormat, value)
+        return scientificNumber
+    } else if (exponentPosition > 0 && scientificNumber.toString().substring(exponentPosition + 3).toInt() < -7) {
+        return scientificNumber
     }
 
     return SpannableStringBuilder(formattedValue)
@@ -155,9 +165,8 @@ fun formatForDisplay(format: String, value: Double?, locale: Locale? = null): Sp
     val numberFormat = if (locale == null) DecimalFormat.getInstance() else DecimalFormat.getInstance(locale)
     val decimalFormat = numberFormat as DecimalFormat
 
-    val scientificNumber = doScientificNotationFormat(format, decimalFormat, value)
     if (integerLength > maxIntegerLength) {
-        return scientificNumber
+        return doScientificNotationFormat(format, decimalFormat, value)
     }
 
     decimalFormat.maximumIntegerDigits = integerLength
@@ -166,7 +175,11 @@ fun formatForDisplay(format: String, value: Double?, locale: Locale? = null): Sp
 
     val formattedValue = decimalFormat.format(value)
     val formattedLength = formattedValue.length
+    val scientificNumber = doScientificNotation(decimalFormat, value)
+    val exponentPosition = scientificNumber.toString().indexOf("×10")
     if (formattedLength > maxDisplayLength + 1) {
+        return doScientificNotationFormat(format, decimalFormat, value)
+    } else if (exponentPosition > 0 && scientificNumber.toString().substring(exponentPosition + 3).toInt() < -7) {
         return doScientificNotationFormat(format, decimalFormat, value)
     }
 

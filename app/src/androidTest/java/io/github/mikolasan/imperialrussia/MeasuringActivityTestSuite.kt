@@ -59,13 +59,13 @@ class MeasuringActivityTestSuite {
     }
 
     @Test
-    fun valueForDisplay_closeToZero() {
-        Assert.assertEquals(valueForDisplay(0.000000001, enLocale).toString(), "0")
+    fun valueForDisplay_scientificMinusNine() {
+        Assert.assertEquals(valueForDisplay(0.000000001, enLocale).toString(), "1×10-9")
     }
 
     @Test
     fun valueForDisplay_closeToZeroRoundUp() {
-        Assert.assertEquals(valueForDisplay(0.000000009, enLocale).toString(), "0.00000001")
+        Assert.assertEquals(valueForDisplay(0.000000009, enLocale).toString(), "9×10-9")
     }
 
     @Test
@@ -80,13 +80,13 @@ class MeasuringActivityTestSuite {
 
     @Test
     fun valueForDisplay_sevenDigitsInteger() {
-        Assert.assertEquals(valueForDisplay(1234567.0, enLocale).toString(), "1.235x106")
+        Assert.assertEquals(valueForDisplay(1234567.0, enLocale).toString(), "1.235×106")
     }
 
     @Test
     fun valueForDisplay_spannable() {
         val spannable = valueForDisplay(1234567.0, enLocale)
-        // 1.235x10^6
+        // 1.235×10^6
         val superscriptSpans = spannable.getSpans(8, 9, SuperscriptSpan::class.java)
         val sizeSpans = spannable.getSpans(8, 9, RelativeSizeSpan::class.java)
         Assert.assertEquals(superscriptSpans.size, 1)
@@ -95,12 +95,12 @@ class MeasuringActivityTestSuite {
 
     @Test
     fun valueForDisplay_tenDigitsInteger() {
-        Assert.assertEquals(valueForDisplay(1234567890.0, enLocale).toString(), "1.235x109")
+        Assert.assertEquals(valueForDisplay(1234567890.0, enLocale).toString(), "1.235×109")
     }
 
     @Test
     fun valueForDisplay_negativeNineDigitsInteger() {
-        Assert.assertEquals(valueForDisplay(-123456789.0, enLocale).toString(), "-1.235x108")
+        Assert.assertEquals(valueForDisplay(-123456789.0, enLocale).toString(), "-1.235×108")
     }
 
     @Test

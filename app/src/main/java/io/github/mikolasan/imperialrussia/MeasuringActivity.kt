@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.transition.Transition
 import android.view.View
 import android.widget.*
 import androidx.constraintlayout.motion.widget.MotionLayout
@@ -22,6 +23,13 @@ class MeasuringActivity : Activity() {
 
     private var selectedPanel: ImperialUnitPanel? = null
     private lateinit var unitsList: ListView
+
+    enum class UISide {
+        floating,
+        list,
+        input
+    }
+    var uiSide = UISide.list
 
     val bottomPanel by lazy {
         val bottomLayout: ConstraintLayout = findViewById<ConstraintLayout>(R.id.convert_from)
@@ -284,6 +292,7 @@ class MeasuringActivity : Activity() {
         updateRatioLabel()
     }
 
+
     private fun setListeners() {
         unitsList.setOnItemClickListener { _, _, position, _ ->
             val unit = listAdapter.getItem(position) as ImperialUnit
@@ -331,6 +340,32 @@ class MeasuringActivity : Activity() {
             }
         }
         val mainLayout: ConstraintLayout = findViewById<ConstraintLayout>(R.id.motion_layout)
+
+
+        (mainLayout as? MotionLayout)?.setTransitionListener(object : MotionLayout.TransitionListener {
+            override fun onTransitionTrigger(p0: MotionLayout?, triggerId: Int, positive: Boolean, progress: Float) {}
+
+            override fun onTransitionStarted(motionLayout: MotionLayout?, startId: Int, endId: Int) {
+//                uiSide = UISide.floating
+//                println("onTransitionCompleted ${uiSide.name}")
+            }
+
+            override fun onTransitionChange(motionLayout: MotionLayout?, startId: Int, endId: Int, progress: Float) {
+//                println("onTransitionChange")
+//                if (progress == 0.0f) {
+//                    uiSide = if (startId == R.id.show_input_constraint) UISide.input else UISide.list
+//                } else if (progress == 1.0f) {
+//                    uiSide = if (startId == R.id.show_input_constraint) UISide.list else UISide.input
+//                }
+            }
+
+            override fun onTransitionCompleted(motionLayout: MotionLayout?, currentId: Int) {
+                uiSide = if (currentId == R.id.show_input_constraint) UISide.input else UISide.list
+                println("onTransitionCompleted ${uiSide.name}")
+            }
+
+        })
+
         val topLayout: ConstraintLayout = findViewById<ConstraintLayout>(R.id.convert_to)
         val bottomLayout: ConstraintLayout = findViewById<ConstraintLayout>(R.id.convert_from)
 
@@ -346,7 +381,7 @@ class MeasuringActivity : Activity() {
                 if (selectedPanel?.input != topInput)
                     return
 
-                if (mainLayout is MotionLayout && !(mainLayout.progress.equals(1.0f) || mainLayout.progress.equals(0.0f)))
+                if (mainLayout is MotionLayout && uiSide == UISide.list)
                     return
 
                 s?.let {
@@ -378,7 +413,7 @@ class MeasuringActivity : Activity() {
                 if (selectedPanel?.input != bottomInput)
                     return
 
-                if (mainLayout is MotionLayout && !(mainLayout.progress.equals(1.0f) || mainLayout.progress.equals(0.0f)))
+                if (mainLayout is MotionLayout && uiSide == UISide.list)
                     return
 
                 s?.let {
@@ -409,6 +444,10 @@ class MeasuringActivity : Activity() {
 
             selectedPanel?.let { panel ->
                 if (!panel.isActivated()) return@let
+                if (panel.hasExponent()) {
+                    panel.setUnitValue(0.0)
+                    panel.setString("")
+                }
                 val text = panel.getString() ?: ""
                 if (text.length <= maxDisplayLength) {
                     panel.appendString(button.text[0])
@@ -427,17 +466,39 @@ class MeasuringActivity : Activity() {
         findViewById<DigitButton>(R.id.digit_0).setOnClickListener(digitButtonOnClickListener)
 
         val operations = setOf('÷', '×', '+', '-')
-        fun addSymbol(sym: Char) {
-            selectedPanel?.appendString(sym, operations)
+        val operationButtonOnClickListener: (View) -> Unit = { button ->
+            selectedPanel?.let { panel ->
+                if (panel.hasExponent()) {
+                    if (button.id != R.id.op_eval) {
+                        panel.setUnitValue(0.0)
+                        panel.setString("")
+                    } else {
+                        return@let
+                    }
+                }
+                when (button.id) {
+                    R.id.op_back -> panel.dropLastChar()
+                    R.id.op_clear -> {
+                        panel.setUnitValue(0.0)
+                        panel.setString("")
+                    }
+                    R.id.op_mult -> panel.appendString('×', operations)
+                    R.id.op_div -> panel.appendString('÷', operations)
+                    R.id.op_plus -> panel.appendString('+', operations)
+                    R.id.op_minus -> panel.appendString('-', operations)
+                    R.id.op_dot -> panel.appendString('.', operations)
+                    R.id.op_eval -> panel.evaluateString()
+                }
+            }
         }
-        findViewById<OperationButton>(R.id.op_back).setOnClickListener { selectedPanel?.dropLastChar() }
-        findViewById<OperationButton>(R.id.op_clear).setOnClickListener { selectedPanel?.setString("") }
-        findViewById<OperationButton>(R.id.op_mult).setOnClickListener { addSymbol('×') }
-        findViewById<OperationButton>(R.id.op_div).setOnClickListener { addSymbol('÷') }
-        findViewById<OperationButton>(R.id.op_plus).setOnClickListener { addSymbol('+') }
-        findViewById<OperationButton>(R.id.op_minus).setOnClickListener { addSymbol('-') }
-        findViewById<OperationButton>(R.id.op_dot).setOnClickListener { addSymbol('.') }
-        findViewById<OperationButton>(R.id.op_eval).setOnClickListener { selectedPanel?.evaluateString() }
+        findViewById<OperationButton>(R.id.op_back).setOnClickListener(operationButtonOnClickListener)
+        findViewById<OperationButton>(R.id.op_clear).setOnClickListener(operationButtonOnClickListener)
+        findViewById<OperationButton>(R.id.op_mult).setOnClickListener(operationButtonOnClickListener)
+        findViewById<OperationButton>(R.id.op_div).setOnClickListener(operationButtonOnClickListener)
+        findViewById<OperationButton>(R.id.op_plus).setOnClickListener(operationButtonOnClickListener)
+        findViewById<OperationButton>(R.id.op_minus).setOnClickListener(operationButtonOnClickListener)
+        findViewById<OperationButton>(R.id.op_dot).setOnClickListener(operationButtonOnClickListener)
+        findViewById<OperationButton>(R.id.op_eval).setOnClickListener(operationButtonOnClickListener)
     }
 
     private fun recreatePreviousActivity(savedInstanceState: Bundle) {
@@ -482,6 +543,7 @@ class MeasuringActivity : Activity() {
         if (mainLayout is MotionLayout && topPanel.isActivated() && bottomPanel.isActivated()
                 && mainLayout.startState == R.id.show_list_constraint) {
             mainLayout.progress = 1.0f
+            uiSide = UISide.input
         }
     }
 //

@@ -6,8 +6,10 @@ import android.widget.EditText
 import android.widget.TextView
 import android.text.SpannableString
 import android.text.style.SubscriptSpan
+import android.text.style.SuperscriptSpan
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import kotlinx.android.synthetic.main.slide_area.view.*
 
 
 class ImperialUnitPanel(private val layout: ConstraintLayout) {
@@ -140,5 +142,9 @@ class ImperialUnitPanel(private val layout: ConstraintLayout) {
     fun makeSerializedString(): String {
 //        val spans = input.text.getSpans(0, input.text.length, SubscriptSpan::class.java))
         return getString()
+    }
+
+    fun hasExponent(): Boolean {
+        return input.text.getSpans(0, input.text.length, SuperscriptSpan::class.java).isNotEmpty()
     }
 }
