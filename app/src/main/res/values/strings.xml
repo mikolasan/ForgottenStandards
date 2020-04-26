@@ -18,21 +18,21 @@
     <string name="key_2" translatable="false">2</string>
     <string name="key_1" translatable="false">1</string>
     <string name="key_0" translatable="false">0</string>
-    <string name="unit_from"><u>Yard</u></string>
-    <string name="unit_to"><u>Inch</u></string>
+    <string name="unit_from">Arshin</string>
+    <string name="unit_to">Inch</string>
     <string name="lang_ru">ru</string>
-    <string name="unit_yard">Yard</string>
+    <string name="unit_arshin">Arshin</string>
     <string name="unit_inch">Inch</string>
     <string name="unit_point">Point</string>
     <string name="unit_line">Line</string>
-    <string name="unit_tip">Tip</string>
+    <string name="unit_vershok">Vershok</string>
     <string name="unit_palm">Palm</string>
-    <string name="unit_quarter">Quarter</string>
+    <string name="unit_span">Span</string>
     <string name="unit_foot">Foot</string>
-    <string name="unit_elbow">Elbow</string>
-    <string name="unit_stride">Stride</string>
-    <string name="unit_fathom">Fathom</string>
-    <string name="unit_turn">Turn</string>
+    <string name="unit_ell">Ell</string>
+    <string name="unit_step">Step</string>
+    <string name="unit_sazhen">Sazhen</string>
+    <string name="unit_verst">Verst</string>
     <string name="unit_mile">Mile</string>
     <string name="unit_kilometer">Kilometer</string>
     <string name="unit_meter">Meter</string>

@@ -11,14 +11,14 @@ enum class ImperialUnitName {
     POINT, // tochka
     LINE, // liniya
     INCH, // dyuym
-    TIP, // vershok
+    VERSHOK,
     PALM, // ladon
-    QUARTER, // pyad
+    SPAN, // pyad
     FOOT,
-    ELBOW, // lokot
-    STRIDE, // shag
-    YARD, // arshin
-    FATHOM, // sazhen
-    TURN, // versta
-    MILE, // milya
+    ELL, // lokot
+    STEP,
+    ARSHIN,
+    SAZHEN,
+    VERST,
+    MILE,
 }
