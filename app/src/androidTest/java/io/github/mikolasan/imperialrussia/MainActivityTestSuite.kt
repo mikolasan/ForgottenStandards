@@ -19,7 +19,7 @@ import org.junit.Rule
 import java.util.*
 
 @RunWith(AndroidJUnit4::class)
-class MeasuringActivityTestSuite {
+class MainActivityTestSuite {
 
 //    @get:Rule
 //    var activityScenarioRule = ActivityScenarioRule<MeasuringActivity>(MeasuringActivity::class.java)

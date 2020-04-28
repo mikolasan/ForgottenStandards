@@ -2,61 +2,64 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/converting_area"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:layout_alignParentStart="true"
     android:layout_alignParentTop="true"
     android:layout_alignParentEnd="true"
     android:layout_alignParentBottom="true">
-
-    <include
-        android:id="@+id/convert_to"
-        layout="@layout/big_unit_space"
-        android:layout_width="@dimen/min_panel_width"
-        android:layout_height="133dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/ratio_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="4dp"
         android:fontFamily="@font/gotham_pro_reg"
         android:textColor="@color/colorPrimary"
-        android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/convert_to" />
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@id/keyboard_layout"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <include
         android:id="@+id/convert_from"
         layout="@layout/big_unit_space"
-        android:layout_width="@dimen/min_panel_width"
+        android:layout_width="0dp"
+        android:layout_height="133dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:minWidth="@dimen/min_panel_width"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/convert_to" />
+
+    <include
+        android:id="@+id/convert_to"
+        layout="@layout/big_unit_space"
+        android:layout_width="0dp"
         android:layout_height="133dp"
         android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginTop="16dp"
+        android:minWidth="@dimen/min_panel_width"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/convert_to"  />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <include
         layout="@layout/keyboard_panel"
-        android:layout_width="312dp"
+        android:layout_width="0dp"
         android:layout_height="255dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:minWidth="@dimen/min_panel_width"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/convert_from" />
-
-    <include
-        layout="@layout/slide_area"
-        android:layout_width="24dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/keyboard_layout"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

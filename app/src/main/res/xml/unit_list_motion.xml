@@ -7,17 +7,27 @@
     <ConstraintSet android:id="@+id/show_input_constraint">
         <Constraint android:id="@id/converting_area">
             <Layout
-                android:layout_width="360dp"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 motion:layout_constraintStart_toStartOf="parent"
+                motion:layout_constraintEnd_toStartOf="@id/slide_area"
                 motion:layout_constraintTop_toTopOf="parent"
-                motion:layout_constraintBottom_toBottomOf="parent"/>
+                motion:layout_constraintBottom_toBottomOf="parent" />
+        </Constraint>
+        <Constraint android:id="@id/slide_area">
+            <Layout
+                android:layout_width="24dp"
+                android:layout_height="match_parent"
+                motion:layout_constraintStart_toEndOf="@id/converting_area"
+                motion:layout_constraintEnd_toEndOf="parent"
+                motion:layout_constraintTop_toTopOf="parent"
+                motion:layout_constraintBottom_toBottomOf="parent" />
         </Constraint>
         <Constraint android:id="@id/unit_list">
             <Layout
-                android:layout_width="250dp"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
-                motion:layout_constraintStart_toEndOf="@id/converting_area"
+                motion:layout_constraintStart_toEndOf="@id/slide_area"
                 motion:layout_constraintTop_toTopOf="parent"
                 motion:layout_constraintBottom_toBottomOf="parent"/>
         </Constraint>
@@ -26,29 +36,38 @@
     <ConstraintSet android:id="@+id/show_list_constraint">
         <Constraint android:id="@id/converting_area">
             <Layout
-                android:layout_width="360dp"
+                android:layout_width="350dp"
                 android:layout_height="match_parent"
-                motion:layout_constraintEnd_toStartOf="@id/unit_list"
+                motion:layout_constraintEnd_toStartOf="@id/slide_area"
                 motion:layout_constraintTop_toTopOf="parent"
                 motion:layout_constraintBottom_toBottomOf="parent"/>
         </Constraint>
+        <Constraint android:id="@id/slide_area">
+            <Layout
+                android:layout_width="24dp"
+                android:layout_height="match_parent"
+                motion:layout_constraintStart_toStartOf="parent"
+                motion:layout_constraintTop_toTopOf="parent"
+                motion:layout_constraintBottom_toBottomOf="parent" />
+        </Constraint>
         <Constraint android:id="@id/unit_list">
             <Layout
-                android:layout_width="250dp"
+                motion:layout_constrainedWidth="true"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                motion:layout_constraintEnd_toEndOf="parent"
+                motion:layout_constraintStart_toEndOf="@id/slide_area"
+
                 motion:layout_constraintTop_toTopOf="parent"
                 motion:layout_constraintBottom_toBottomOf="parent"/>
         </Constraint>
     </ConstraintSet>
 
     <Transition
-        motion:constraintSetStart="@id/show_list_constraint"
-        motion:constraintSetEnd="@id/show_input_constraint"
+        motion:constraintSetStart="@id/show_input_constraint"
+        motion:constraintSetEnd="@id/show_list_constraint"
         motion:duration="150"
         motion:motionInterpolator="linear">
         <OnSwipe
-            motion:touchAnchorId="@id/unit_list"
             motion:touchAnchorSide="left"
             motion:dragDirection="dragLeft" />
     </Transition>
