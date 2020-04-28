@@ -62,7 +62,7 @@ class ImperialListAdapter(private val context: Context, private val units: Mutab
     }
 
     fun resetAllValues() {
-        units.forEach { u -> u.value = null }
+        units.forEach { u -> u.value = 0.0 }
         notifyDataSetChanged()
     }
 
@@ -127,7 +127,7 @@ class ImperialListAdapter(private val context: Context, private val units: Mutab
     private fun updateViewData(layout: ConstraintLayout, dataPosition: Int) {
         val data: ImperialUnit = getItem(dataPosition) as ImperialUnit
         val nameTextView: TextView = layout.findViewById(R.id.unit_name)
-        nameTextView.text = getStringFromResourceId(data.resourceId)
+        nameTextView.text = getStringFromResourceId(data.displayNameResource)
         val valueTextView: TextView = layout.findViewById(R.id.unit_value)
         valueTextView.text = valueForDisplay(data.value)
     }

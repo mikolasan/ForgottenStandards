@@ -9,51 +9,34 @@
     android:layout_alignParentEnd="true"
     android:layout_alignParentBottom="true">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/units_title"
-        android:layout_width="240dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="Length"
-        android:textAppearance="@style/ImperialKeypad"
-        android:textColor="@color/colorPrimary"
-        android:textSize="45sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed" />
-
-    <include
+    <io.github.mikolasan.imperialrussia.ImperialUnitPanel
         android:id="@+id/convert_to"
-        layout="@layout/big_unit_space"
         android:layout_width="@dimen/min_panel_width"
         android:layout_height="133dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/units_title" />
-
-    <include
-        android:id="@+id/convert_from"
-        layout="@layout/big_unit_space"
-        android:layout_width="@dimen/min_panel_width"
-        android:layout_height="133dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/convert_to"  />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/ratio_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginBottom="4dp"
         android:fontFamily="@font/gotham_pro_reg"
         android:textColor="@color/colorPrimary"
-        android:textSize="14sp"
+        android:textSize="12sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/keyboard_layout" />
+        app:layout_constraintTop_toBottomOf="@+id/convert_to" />
+
+    <io.github.mikolasan.imperialrussia.ImperialUnitPanel
+        android:id="@+id/convert_from"
+        android:layout_width="@dimen/min_panel_width"
+        android:layout_height="133dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/convert_to" />
 
     <include
         layout="@layout/keyboard_panel"
@@ -61,10 +44,9 @@
         android:layout_height="255dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
         android:minWidth="@dimen/min_panel_width"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/convert_from" />
 
     <include
         layout="@layout/slide_area"

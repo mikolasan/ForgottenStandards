@@ -35,9 +35,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/units_title" />
 
-    <include
+    <io.github.mikolasan.imperialrussia.ImperialUnitPanel
         android:id="@+id/convert_to"
-        layout="@layout/big_unit_space"
         android:layout_width="@dimen/min_panel_width"
         android:layout_height="133dp"
         android:layout_marginStart="8dp"
@@ -46,9 +45,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <include
+    <io.github.mikolasan.imperialrussia.ImperialUnitPanel
         android:id="@+id/convert_from"
-        layout="@layout/big_unit_space"
         android:layout_width="@dimen/min_panel_width"
         android:layout_height="133dp"
         android:layout_marginStart="8dp"

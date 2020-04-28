@@ -1,32 +1,36 @@
 package io.github.mikolasan.imperialrussia
 
+import android.content.Context
 import android.os.Build
 import android.text.InputType
 import android.widget.EditText
 import android.widget.TextView
 import android.text.SpannableString
-import android.text.style.SubscriptSpan
 import android.text.style.SuperscriptSpan
+import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
-import kotlinx.android.synthetic.main.slide_area.view.*
 import java.text.DecimalFormat
 
 
-class ImperialUnitPanel(private val layout: ConstraintLayout) {
+class ImperialUnitPanel(context: Context, attributeSet: AttributeSet) : ConstraintLayout(context, attributeSet) {
+    init {
+        View.inflate(context, R.layout.big_unit_space, this)
+    }
+    
     var unit: ImperialUnit? = null
-    var isSelected = false
-    val input: EditText = layout.findViewById(R.id.panel_input)
-    private val title: TextView = layout.findViewById(R.id.panel_title)
-    private val hint: TextView = layout.findViewById(R.id.panel_hint)
+    var isActive = false
+    val input: EditText = findViewById(R.id.panel_input)
+    private val title: TextView = findViewById(R.id.panel_title)
+    private val hint: TextView = findViewById(R.id.panel_hint)
 
     private fun getColor(resourceId: Int): Int {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // >= (API 23) Android 6.0 Marshmallow
             val theme = null
-            layout.context.resources.getColor(resourceId, theme)
+            context.resources.getColor(resourceId, theme)
         } else {
             @Suppress("DEPRECATION")
-            layout.context.resources.getColor(resourceId)
+            context.resources.getColor(resourceId)
         }
     }
     private val colorInputSelected = getColor(R.color.inputSelected)
@@ -44,8 +48,7 @@ class ImperialUnitPanel(private val layout: ConstraintLayout) {
     }
 
     private fun updateUnitText() {
-        val resourceId = unit?.resourceId
-        if (resourceId != null) {
+        unit?.displayNameResource?.let { resourceId ->
             val underlineText = SpannableString(title.context.resources.getString(resourceId))
             //underlineText.setSpan(UnderlineSpan(), 0, underlineText.length, 0)
             title.text = underlineText
@@ -57,13 +60,13 @@ class ImperialUnitPanel(private val layout: ConstraintLayout) {
     }
 
     fun setHighlight(highlight: Boolean) {
-        isSelected = highlight
-        layout.setBackgroundResource(if (highlight) R.drawable.ic_selected_panel_back else R.drawable.ic_input_panel_back)
+        isActive = highlight
+        setBackgroundResource(if (highlight) R.drawable.ic_selected_panel_back else R.drawable.ic_input_panel_back)
         input.setTextColor(if (highlight) colorInputSelected else colorInputNormal)
-        if (!isSelected && isActivated() && getString() == "") {
+        if (!isActive && isActivated() && getString() == "") {
             setUnitValue(0.0)
             updateDisplayValue()
-        } else if (isSelected && unit?.value?.compareTo(0.0) == 0) {
+        } else if (isActive && unit?.value?.compareTo(0.0) == 0) {
             setString("")
         }
     }
@@ -82,20 +85,20 @@ class ImperialUnitPanel(private val layout: ConstraintLayout) {
         hint.visibility = View.VISIBLE
     }
 
-    fun isActivated(): Boolean {
+    fun hasUnitAssigned(): Boolean {
         return title.visibility == View.VISIBLE
     }
 
     fun getValue(): Double? = unit?.value
 
-    fun setUnitValue(v: Double?) {
+    fun setUnitValue(v: Double) {
         unit?.value = v
     }
 
     fun updateDisplayValue() {
         val v = unit?.value
         input.text = valueForDisplay(v)
-        if (isSelected && getString() == "0") {
+        if (isActive && getString() == "0") {
             input.setText("")
         }
     }
@@ -105,7 +108,7 @@ class ImperialUnitPanel(private val layout: ConstraintLayout) {
     }
 
     fun setString(s: String) {
-        if (isSelected && s == "0") {
+        if (isActive && s == "0") {
             input.setText("")
         } else {
             input.setText(s)
@@ -175,7 +178,7 @@ class ImperialUnitPanel(private val layout: ConstraintLayout) {
         val value = BasicCalculator(expression).eval()
         setUnitValue(value)
         input.text = stringForDisplay(expression)
-        if (isSelected && getString() == "0") {
+        if (isActive && getString() == "0") {
             input.setText("")
         }
     }
