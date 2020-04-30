@@ -22,10 +22,7 @@ class ImperialSettings(private val context: Context) {
         return null
     }
 
-    private fun restoreOrderedUnits(): MutableList<ImperialUnit> {
-        val topPanelUnit = restoreUnit(preferences.getString("topPanelUnit", "") ?: "")
-        val bottomPanelUnit = restoreUnit(preferences.getString("bottomPanelUnit", "") ?: "")
-
+    fun restoreWorkingUnits(): WorkingUnits {
         val orderedUnits = LengthUnits.lengthUnits.toMutableList()
         LengthUnits.lengthUnits.forEachIndexed { i, u ->
             val unitName = u.unitName.name
@@ -41,26 +38,25 @@ class ImperialSettings(private val context: Context) {
             orderedUnits[p] = u
         }
         preferencesEditor.apply()
-        bottomPanelUnit?.let {
-            if (orderedUnits[1] != it) {
-                orderedUnits.moveToFront(it)
-            }
+
+        val topPanelUnit = restoreTopUnit(orderedUnits[0])
+        val bottomPanelUnit = restoreBottomUnit(orderedUnits[1])
+        if (orderedUnits[1] != bottomPanelUnit) {
+            orderedUnits.moveToFront(bottomPanelUnit)
         }
-        topPanelUnit?.let {
-            if (orderedUnits[1] != it) {
-                orderedUnits.moveToFront(it)
-            }
+        if (orderedUnits[0] != topPanelUnit) {
+            orderedUnits.moveToFront(topPanelUnit)
         }
 
-        return orderedUnits
+        return WorkingUnits(orderedUnits, topPanelUnit, bottomPanelUnit)
     }
 
-    fun restoreTopUnit(): ImperialUnit? {
-        return restoreUnit(preferences.getString("topPanelUnit", "") ?: "")
+    fun restoreTopUnit(defaultUnit: ImperialUnit): ImperialUnit {
+        return restoreUnit(preferences.getString("topPanelUnit", "") ?: "") ?: defaultUnit
     }
 
-    fun restoreBottomUnit(): ImperialUnit? {
-        return restoreUnit(preferences.getString("bottomPanelUnit", "") ?: "")
+    fun restoreBottomUnit(defaultUnit: ImperialUnit): ImperialUnit {
+        return restoreUnit(preferences.getString("bottomPanelUnit", "") ?: "") ?: defaultUnit
     }
 
     fun restoreTopString(): String {
@@ -69,5 +65,36 @@ class ImperialSettings(private val context: Context) {
 
     fun restoreBottomString(): String {
         return preferences.getString("bottomPanelValue", "") ?: ""
+    }
+
+    fun saveNewOrder(orderedUnits: MutableList<ImperialUnit>) {
+        LengthUnits.lengthUnits.forEachIndexed { _, u ->
+            val unitName = u.unitName.name
+            val settingName = "unit${unitName}Position"
+            preferencesEditor.putInt(settingName, orderedUnits.indexOf(u))
+        }
+        preferencesEditor.apply()
+    }
+
+    fun saveTopString(serializedString: String) {
+        preferencesEditor.putString("topPanelValue", serializedString)
+        preferencesEditor.apply()
+    }
+
+    fun saveBottomString(serializedString: String) {
+        preferencesEditor.putString("bottomPanelValue", serializedString)
+        preferencesEditor.apply()
+    }
+
+    fun saveTopUnit(unit: ImperialUnit, serializedString: String) {
+        preferencesEditor.putString("topPanelUnit", unit.unitName.name)
+        preferencesEditor.putString("topPanelValue", serializedString)
+        preferencesEditor.apply()
+    }
+
+    fun saveBottomUnit(unit: ImperialUnit, serializedString: String) {
+        preferencesEditor.putString("bottomPanelUnit", unit.unitName.name)
+        preferencesEditor.putString("bottomPanelValue", serializedString)
+        preferencesEditor.apply()
     }
 }

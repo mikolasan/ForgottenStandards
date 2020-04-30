@@ -12,8 +12,8 @@ import androidx.fragment.app.Fragment
 
 class ConverterFragment : Fragment() {
 
-    private lateinit var bottomPanel: ImperialUnitPanel
-    private lateinit var topPanel: ImperialUnitPanel
+    lateinit var bottomPanel: ImperialUnitPanel
+    lateinit var topPanel: ImperialUnitPanel
     private lateinit var selectedPanel: ImperialUnitPanel
     private lateinit var ratioLabel: TextView
 
@@ -22,24 +22,24 @@ class ConverterFragment : Fragment() {
         val topPanelOnClickListener: (View) -> Unit = {
             if (selectedPanel != topPanel) {
                 selectPanel(topPanel, bottomPanel)
-                listAdapter.swapSelection()
-                listAdapter.notifyDataSetChanged()
+                (activity as MainActivity).onPanelsSwapped()
             }
         }
         val bottomPanelOnClickListener: (View) -> Unit = {
             if (selectedPanel != bottomPanel) {
                 selectPanel(bottomPanel, topPanel)
-                listAdapter.swapSelection()
-                listAdapter.notifyDataSetChanged()
+                (activity as MainActivity).onPanelsSwapped()
             }
         }
 
-        val topInput = topPanel.input
-        val bottomInput = bottomPanel.input
         topPanel.setOnClickListener(topPanelOnClickListener)
         bottomPanel.setOnClickListener(bottomPanelOnClickListener)
+
+        val topInput = topPanel.input
+        val bottomInput = bottomPanel.input
         topInput.setOnClickListener(topPanelOnClickListener)
         bottomInput.setOnClickListener(bottomPanelOnClickListener)
+
         topInput.addTextChangedListener(object : TextWatcher {
             var selfEditing = false
 
@@ -47,10 +47,6 @@ class ConverterFragment : Fragment() {
                 println("[topInput] afterTextChanged ${s.toString()}")
                 if (selectedPanel?.input != topInput)
                     return
-
-                if (uiSide == MainActivity.UISide.list)
-                    return
-
                 if (selfEditing)
                     return
 
@@ -58,19 +54,9 @@ class ConverterFragment : Fragment() {
                     topInput.setSelection(topInput.text.length)
                     val inputValue = BasicCalculator(s.toString()).eval()
                     topPanel.setUnitValue(inputValue)
-//                    selfEditing = true
-//                    topPanel.evaluateString(s.toString())
-//                    selfEditing = false
-                    listAdapter.updateAllValues(topPanel.unit, topPanel.unit?.value ?: 0.0)
-                    if (bottomPanel.hasUnitAssigned()) {
-                        bottomPanel.updateDisplayValue()
-                        preferencesEditor.putString("bottomPanelValue", bottomPanel.makeSerializedString())
-                    }
-                    preferencesEditor.putString("topPanelValue", topPanel.makeSerializedString())
-                    preferencesEditor.apply()
-
-                    (activity as MainActivity).onTopPanelTextChanged(s)
-
+                    selfEditing = true
+                    (activity as MainActivity).onPanelTextChanged(topPanel, s)
+                    selfEditing = false
                 }
             }
 
@@ -90,10 +76,6 @@ class ConverterFragment : Fragment() {
                 println("[bottomInput] afterTextChanged ${s.toString()}")
                 if (selectedPanel?.input != bottomInput)
                     return
-
-                if (uiSide == MainActivity.UISide.list)
-                    return
-
                 if (selfEditing)
                     return
 
@@ -101,18 +83,9 @@ class ConverterFragment : Fragment() {
                     bottomInput.setSelection(bottomInput.text.length)
                     val inputValue = BasicCalculator(s.toString()).eval()
                     bottomPanel.setUnitValue(inputValue)
-//                    selfEditing = true
-//                    topPanel.evaluateString(s.toString())
-//                    selfEditing = false
-                    listAdapter.updateAllValues(bottomPanel.unit, bottomPanel.unit?.value ?: 0.0)
-                    if (topPanel.hasUnitAssigned()) {
-                        topPanel.updateDisplayValue()
-                        preferencesEditor.putString("topPanelValue", topPanel.makeSerializedString())
-                    }
-                    preferencesEditor.putString("bottomPanelValue", bottomPanel.makeSerializedString())
-                    preferencesEditor.apply()
-
-                    (activity as MainActivity).onTopPanelTextChanged(s)
+                    selfEditing = true
+                    (activity as MainActivity).onPanelTextChanged(bottomPanel, s)
+                    selfEditing = false
                 }
             }
 
@@ -202,7 +175,7 @@ class ConverterFragment : Fragment() {
         }
     }
 
-    private fun selectPanel(new: ImperialUnitPanel?, old: ImperialUnitPanel?) {
+    fun selectPanel(new: ImperialUnitPanel, old: ImperialUnitPanel) {
         selectedPanel = new
         new?.setHighlight(true)
         old?.setHighlight(false)
@@ -220,13 +193,8 @@ class ConverterFragment : Fragment() {
         }
         topPanel.updateDisplayValue()
 
-        listAdapter.setSelectedUnit(unit)
-        listAdapter.setSecondUnit(bottomPanel.unit)
-        listAdapter.notifyDataSetChanged()
+        (activity as MainActivity).onTopPanelUnitChanged(unit)
 
-        preferencesEditor.putString("topPanelUnit", unit.unitName.name)
-        preferencesEditor.putString("topPanelValue", topPanel.makeSerializedString())
-        preferencesEditor.apply()
         updateRatioLabel()
     }
 
@@ -237,13 +205,8 @@ class ConverterFragment : Fragment() {
         bottomPanel.setUnitValue(bottomValue)
         bottomPanel.updateDisplayValue()
 
-        listAdapter.setSelectedUnit(unit)
-        listAdapter.setSecondUnit(topPanel.unit)
-        listAdapter.notifyDataSetChanged()
+        (activity as MainActivity).onBottomPanelUnitChanged(unit)
 
-        preferencesEditor.putString("bottomPanelUnit", unit.unitName.name)
-        preferencesEditor.putString("bottomPanelValue", bottomPanel.makeSerializedString())
-        preferencesEditor.apply()
         updateRatioLabel()
     }
 
@@ -256,6 +219,11 @@ class ConverterFragment : Fragment() {
         ratioLabel = view.findViewById<TextView>(R.id.ratio_label)
         setListeners(view)
         return view
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        (activity as MainActivity).restoreAllValues(this)
     }
 
     fun restoreTopPanel(unit: ImperialUnit) {
@@ -271,6 +239,11 @@ class ConverterFragment : Fragment() {
     fun restoreInputValues(topPanelValue: String, bottomPanelValue: String) {
         topPanel.formatStringAndSet(topPanelValue)
         bottomPanel.formatStringAndSet(bottomPanelValue)
+    }
+
+    fun displayUnitValues() {
+        topPanel.updateDisplayValue()
+        bottomPanel.updateDisplayValue()
     }
 
     fun onTopPanelClicked() {
@@ -300,18 +273,35 @@ class ConverterFragment : Fragment() {
                     setTopPanel(unit, null)
                 } else if (topPanel.unit != unit) {
                     selectPanel(bottomPanel, topPanel)
-                    listAdapter.swapSelection()
-                    listAdapter.notifyDataSetChanged()
+                    (activity as MainActivity).onPanelsSwapped()
                 }
             } else if (selectedPanel == bottomPanel) {
                 if (topPanel.unit != unit) {
                     setBottomPanel(unit)
                 } else if (bottomPanel.unit != unit){
                     selectPanel(topPanel, bottomPanel)
-                    listAdapter.swapSelection()
-                    listAdapter.notifyDataSetChanged()
+                    (activity as MainActivity).onPanelsSwapped()
                 }
             }
         }
+    }
+
+    fun swapPanels() {
+        val topUnit = topPanel.unit ?: return
+        val bottomUnit = bottomPanel.unit ?: return
+        val topValue = topPanel.getValue() ?: return
+        val bottomValue = bottomPanel.getValue() ?: return
+        val topString = topPanel.getString()
+        val bottomString = bottomPanel.getString()
+        topPanel.changeUnit(bottomUnit)
+        bottomPanel.changeUnit(topUnit)
+
+        topPanel.setUnitValue(bottomValue)
+        bottomPanel.setUnitValue(topValue)
+
+        topPanel.setString(bottomString)
+        bottomPanel.setString(topString)
+
+        updateRatioLabel()
     }
 }

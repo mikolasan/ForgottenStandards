@@ -3,6 +3,8 @@ package io.github.mikolasan.imperialrussia
 import android.content.Context
 import android.os.Bundle
 import android.text.Editable
+import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.widget.ViewPager2
 
@@ -12,25 +14,14 @@ import java.util.*
 class MainActivity : FragmentActivity() {
 
     private val languageSetting = "language"
-
     private var newLocale: Locale? = null
 
     //private var selectedPanel: ImperialUnitPanel? = null
-    private lateinit var converterFragment: ConverterFragment
-    private lateinit var unitListFragment: UnitListFragment
+    private var converterFragment: ConverterFragment? = null
+    private var unitListFragment: UnitListFragment? = null
 
-    val settings: ImperialSettings by lazy {
-        ImperialSettings(applicationContext)
-    }
-
-    enum class UISide {
-        floating,
-        list,
-        input
-    }
-    var uiSide = UISide.list
-
-
+    private lateinit var settings: ImperialSettings
+    lateinit var workingUnits: WorkingUnits
 
     private fun applyLanguageSettings() {
 //        val prefs = getPreferences()
@@ -65,126 +56,68 @@ class MainActivity : FragmentActivity() {
 //        }
     }
 
-    private fun restoreSelectedUnits() {
-        val topPanelUnit = settings.restoreTopUnit()
-        val bottomPanelUnit = settings.restoreBottomUnit()
-        topPanelUnit?.let {
-            converterFragment.restoreTopPanel(it)
-            unitListFragment.restoreSelectedUnit(it)
-        }
-        bottomPanelUnit?.let {
-            converterFragment.restoreBottomPanel(it)
-            unitListFragment.restoreSecondUnit(it)
-        }
+    private fun restoreMainUnits() {
+        workingUnits = settings.restoreWorkingUnits()
+
+        workingUnits.selectedUnit.inputString = settings.restoreTopString()
+        workingUnits.selectedUnit.value = BasicCalculator(workingUnits.selectedUnit.inputString).eval()
+        workingUnits.secondUnit.inputString = settings.restoreBottomString()
+        workingUnits.secondUnit.value = BasicCalculator(workingUnits.secondUnit.inputString).eval()
     }
 
-    private fun restorePanels() {
-        restoreSelectedUnits()
-
-        val preferences = getPreferences()
-        val topPanelUnit = settings.restoreTopUnit()
-        val bottomPanelUnit = settings.restoreBottomUnit()
-        val topPanelValue = BasicCalculator(preferences.getString("topPanelValue", "") ?: "").eval()
-        val bottomPanelValue = preferences.getString("bottomPanelValue", "") ?: ""
-        topPanel.setUnitValue(topPanelValue)
-        topPanel.updateDisplayValue()
-        listAdapter.updateAllValues(topPanel.unit, topPanelValue)
-        bottomPanelUnit?.let { unit ->
-            val bottomValue = convertValue(topPanelUnit, unit, topPanelValue)
-            bottomPanel.updateDisplayValue()
-            val displayValue = bottomPanel.getString()
-            if (bottomPanelValue != displayValue) {
-                preferencesEditor.putString("bottomPanelValue", bottomPanel.makeSerializedString())
-                preferencesEditor.apply()
+    fun restoreAllValues(fragment: Fragment) {
+        when (fragment) {
+            is ConverterFragment -> {
+                converterFragment = fragment
+                converterFragment?.let {
+                    it.restoreTopPanel(workingUnits.selectedUnit)
+                    it.restoreBottomPanel(workingUnits.secondUnit)
+                    it.selectPanel(it.topPanel, it.bottomPanel)
+                    it.displayUnitValues()
+                }
+            }
+            is UnitListFragment -> {
+                unitListFragment = fragment
+                unitListFragment?.restoreSelectedUnit(workingUnits.selectedUnit)
+                unitListFragment?.restoreSecondUnit(workingUnits.secondUnit)
+                unitListFragment?.updateAllValues(workingUnits.selectedUnit)
             }
         }
 
-        selectPanel(topPanel, bottomPanel)
-    }
-
-    private fun restoreInputValues() {
-        val topPanelValue = settings.restoreTopString()
-        val bottomPanelValue = settings.restoreBottomString()
-        converterFragment.restoreInputValues(topPanelValue, bottomPanelValue)
-    }
-
-
-
-    private fun setTopPanel(unit: ImperialUnit, value: Double?) {
-        topPanel.changeUnit(unit)
-        if (value == null) {
-            val topValue = convertValue(bottomPanel.unit, unit, bottomPanel.getValue()
-                    ?: 1.0)
-            topPanel.setUnitValue(topValue)
-        } else {
-            topPanel.setUnitValue(value)
-        }
-        topPanel.updateDisplayValue()
-
-        listAdapter.setSelectedUnit(unit)
-        listAdapter.setSecondUnit(bottomPanel.unit)
-        listAdapter.notifyDataSetChanged()
-
-        preferencesEditor.putString("topPanelUnit", unit.unitName.name)
-        preferencesEditor.putString("topPanelValue", topPanel.makeSerializedString())
-        preferencesEditor.apply()
-        updateRatioLabel()
-    }
-
-    private fun setBottomPanel(unit: ImperialUnit) {
-        bottomPanel.changeUnit(unit)
-        val bottomValue = convertValue(topPanel.unit, unit, topPanel.getValue()
-                ?: 1.0)
-        bottomPanel.setUnitValue(bottomValue)
-        bottomPanel.updateDisplayValue()
-
-        listAdapter.setSelectedUnit(unit)
-        listAdapter.setSecondUnit(topPanel.unit)
-        listAdapter.notifyDataSetChanged()
-
-        preferencesEditor.putString("bottomPanelUnit", unit.unitName.name)
-        preferencesEditor.putString("bottomPanelValue", bottomPanel.makeSerializedString())
-        preferencesEditor.apply()
-        updateRatioLabel()
+//        bottomPanelUnit?.let { unit ->
+//            val bottomValue = convertValue(topPanelUnit, unit, topPanelValue)
+//            bottomPanel.updateDisplayValue()
+//            val displayValue = bottomPanel.getString()
+//            if (bottomPanelValue != displayValue) {
+//                preferencesEditor.putString("bottomPanelValue", bottomPanel.makeSerializedString())
+//                preferencesEditor.apply()
+//            }
+//        }
+//        selectPanel(topPanel, bottomPanel)
     }
 
     private fun swapPanels() {
-        val topUnit = topPanel.unit ?: return
-        val bottomUnit = bottomPanel.unit ?: return
-        val topValue = topPanel.getValue() ?: return
-        val bottomValue = bottomPanel.getValue() ?: return
-        val topString = topPanel.getString()
-        val bottomString = bottomPanel.getString()
-        topPanel.changeUnit(bottomUnit)
-        bottomPanel.changeUnit(topUnit)
-
-        topPanel.setUnitValue(bottomValue)
-        bottomPanel.setUnitValue(topValue)
-
-        topPanel.setString(bottomString)
-        bottomPanel.setString(topString)
-
-        listAdapter.swapSelection()
-        updateRatioLabel()
+        converterFragment?.swapPanels()
+        unitListFragment?.swapPanels()
     }
 
-    private fun setListeners() {}
-
     private fun createNewActivity() {
-        setListeners()
-        restorePanels()
+        restoreMainUnits()
+//        restoreAllValues()
         //applyLanguageSettings()
     }
 
     private fun recreatePreviousActivity(savedInstanceState: Bundle) {
-        setListeners()
-        restoreSelectedUnits()
-        listAdapter.notifyDataSetChanged()
+        restoreMainUnits()
+//        restoreAllValues()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        settings = ImperialSettings(applicationContext)
+
         val viewPager = findViewById<ViewPager2>(R.id.pager)
         viewPager.adapter = ImperialPagerAdapter(this)
 
@@ -203,8 +136,9 @@ class MainActivity : FragmentActivity() {
         // onRestoreInstanceState works against me. I include layouts and included layouts do not have
         // unique ids. And it calls TextChangedListener on my inputs with wrong values.
         //super.onRestoreInstanceState(savedInstanceState)
-        restoreInputValues()
-        selectPanel(topPanel, bottomPanel)
+
+//        restoreInputValues()
+//        selectPanel(topPanel, bottomPanel)
     }
 
     override fun onStart() {
@@ -232,41 +166,87 @@ class MainActivity : FragmentActivity() {
 
 
 
-    override fun attachBaseContext(newBase: Context) {
+//    override fun attachBaseContext(newBase: Context) {
+//
+//        val prefs = newBase.getSharedPreferences(preferencesFile, Context.MODE_PRIVATE)
+//        val currentLang = prefs.getString(languageSetting, "en") ?: "en" // just want a safe call
+//        newLocale = Locale(currentLang)
+//
+//        val context = ImperialContextWrapper.wrap(newBase, newLocale!!)
+//        super.attachBaseContext(context)
+//    }
 
-        val prefs = newBase.getSharedPreferences(preferencesFile, Context.MODE_PRIVATE)
-        val currentLang = prefs.getString(languageSetting, "en") ?: "en" // just want a safe call
-        newLocale = Locale(currentLang)
-
-        val context = ImperialContextWrapper.wrap(newBase, newLocale!!)
-        super.attachBaseContext(context)
+    fun onPanelsSwapped() {
+        unitListFragment?.onPanelsSwapped()
     }
 
-    fun onTopPanelTextChanged(s: Editable) {
-        if (bottomPanel.hasUnitAssigned()) {
-            bottomPanel.updateDisplayValue()
-            preferencesEditor.putString("bottomPanelValue", bottomPanel.makeSerializedString())
+    fun onPanelTextChanged(panel: ImperialUnitPanel, s: Editable) {
+        if (panel.hasUnitAssigned()) {
+            panel.updateDisplayValue()
         }
-        preferencesEditor.putString("topPanelValue", topPanel.makeSerializedString())
-        preferencesEditor.apply()
-
-        unitListFragment.onTopPanelTextChanged(s)
-    }
-
-    fun onBottomPanelTextChanged(s: Editable) {
-        if (topPanel.hasUnitAssigned()) {
-            topPanel.updateDisplayValue()
-            preferencesEditor.putString("topPanelValue", topPanel.makeSerializedString())
+        converterFragment?.let {
+            settings.saveTopString(it.topPanel.makeSerializedString())
+            settings.saveBottomString(it.bottomPanel.makeSerializedString())
         }
-        preferencesEditor.putString("bottomPanelValue", bottomPanel.makeSerializedString())
-        preferencesEditor.apply()
-
-        unitListFragment.onBottomPanelTextChanged(s)
-
+        unitListFragment?.onPanelTextChanged(panel, s)
     }
+
+//    fun onTopPanelTextChanged(s: Editable) {
+//        if (bottomPanel.hasUnitAssigned()) {
+//            bottomPanel.updateDisplayValue()
+//            settings.saveBottomString()
+//            preferencesEditor.putString("bottomPanelValue", bottomPanel.makeSerializedString())
+//        }
+//        preferencesEditor.putString("topPanelValue", topPanel.makeSerializedString())
+//        preferencesEditor.apply()
+//
+//        unitListFragment.onTopPanelTextChanged(s)
+//    }
+//
+//    fun onBottomPanelTextChanged(s: Editable) {
+//        if (topPanel.hasUnitAssigned()) {
+//            topPanel.updateDisplayValue()
+//            preferencesEditor.putString("topPanelValue", topPanel.makeSerializedString())
+//        }
+//        preferencesEditor.putString("bottomPanelValue", bottomPanel.makeSerializedString())
+//        preferencesEditor.apply()
+//
+//        unitListFragment.onBottomPanelTextChanged(s)
+//
+//    }
 
     fun onUnitSelected(unit: ImperialUnit) {
-        converterFragment.onUnitSelected(unit)
+        converterFragment?.onUnitSelected(unit)
+    }
+
+    fun onArrowClicked(unit: ImperialUnit) {
+        Toast.makeText(applicationContext, "'${unit.unitName.name}' has been moved to the top", Toast.LENGTH_SHORT).show()
+        if (workingUnits.selectedUnit != unit) {
+            swapPanels()
+        }
+        settings.saveNewOrder(workingUnits.orderedUnits)
+    }
+
+    fun onArrowLongClicked(unit: ImperialUnit) {
+        Toast.makeText(applicationContext, "'${unit.unitName.name}' has been moved to the top", Toast.LENGTH_SHORT).show()
+        if (workingUnits.selectedUnit != unit) {
+            swapPanels()
+        }
+        settings.saveNewOrder(workingUnits.orderedUnits)
+    }
+
+    fun onTopPanelUnitChanged(unit: ImperialUnit) {
+        converterFragment?.let {
+            unitListFragment?.onUnitSelected(unit, it.bottomPanel.unit)
+            settings.saveTopUnit(unit, it.topPanel.makeSerializedString())
+        }
+    }
+
+    fun onBottomPanelUnitChanged(unit: ImperialUnit) {
+        converterFragment?.let {
+            unitListFragment?.onUnitSelected(unit, it.topPanel.unit)
+            settings.saveBottomUnit(unit, it.bottomPanel.makeSerializedString())
+        }
     }
 }
 

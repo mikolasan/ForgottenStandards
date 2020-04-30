@@ -19,68 +19,23 @@ class UnitListFragment : Fragment() {
         unitsList.setOnItemClickListener { _, _, position, _ ->
             val unit = listAdapter.getItem(position) as ImperialUnit
             (activity as MainActivity).onUnitSelected(unit)
-            if (!topPanel.hasUnitAssigned()) {
-                topPanel.activate()
-                setTopPanel(unit, 1.0)
-                selectPanel(topPanel, bottomPanel)
-            } else if (!bottomPanel.hasUnitAssigned() && topPanel.unit != unit) {
-                bottomPanel.activate()
-                setBottomPanel(unit)
-                selectPanel(bottomPanel, topPanel)
-            } else {
-                if (selectedPanel == topPanel) {
-                    if (bottomPanel.unit != unit) {
-                        setTopPanel(unit, null)
-                    } else if (topPanel.unit != unit) {
-                        selectPanel(bottomPanel, topPanel)
-                        listAdapter.swapSelection()
-                        listAdapter.notifyDataSetChanged()
-                    }
-                } else if (selectedPanel == bottomPanel) {
-                    if (topPanel.unit != unit) {
-                        setBottomPanel(unit)
-                    } else if (bottomPanel.unit != unit){
-                        selectPanel(topPanel, bottomPanel)
-                        listAdapter.swapSelection()
-                        listAdapter.notifyDataSetChanged()
-                    }
-                }
-            }
         }
 
         view.run {
 
         }
     }
-    // TODO:
+
     private fun createListAdapter(context: Context): ImperialListAdapter {
-        val orderedUnits = settings.restoreOrderedUnits()
+        val orderedUnits = (activity as MainActivity).workingUnits.orderedUnits
         val adapter = ImperialListAdapter(context, orderedUnits)
         adapter.setOnArrowClickListener { _: Int, arrow: View, unit: ImperialUnit ->
             arrow.visibility = View.INVISIBLE // hide the arrow
-            Toast.makeText(context, "'${unit.unitName.name}' has been moved to the top", Toast.LENGTH_SHORT).show()
-            if (topPanel.unit != unit) {
-                swapPanels()
-            }
-            LengthUnits.lengthUnits.forEachIndexed { _, u ->
-                val unitName = u.unitName.name
-                val settingName = "unit${unitName}Position"
-                preferencesEditor.putInt(settingName, orderedUnits.indexOf(u))
-            }
-            preferencesEditor.apply()
+            (activity as MainActivity).onArrowClicked(unit)
         }
         adapter.setOnArrowLongClickListener { _: Int, arrow: View, unit: ImperialUnit ->
             arrow.visibility = View.INVISIBLE // hide the arrow
-            Toast.makeText(context, "'${unit.unitName.name}' has been moved to the top + scroll", Toast.LENGTH_SHORT).show()
-            if (topPanel.unit != unit) {
-                swapPanels()
-            }
-            LengthUnits.lengthUnits.forEachIndexed { _, u ->
-                val unitName = u.unitName.name
-                val settingName = "unit${unitName}Position"
-                preferencesEditor.putInt(settingName, orderedUnits.indexOf(u))
-            }
-            preferencesEditor.apply()
+            (activity as MainActivity).onArrowLongClicked(unit)
             unitsList.setSelectionAfterHeaderView()
         }
         return adapter
@@ -89,11 +44,16 @@ class UnitListFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_unit_list, container, false)
 
-        val listAdapter = createListAdapter(view.context)
+        listAdapter = createListAdapter(view.context)
         unitsList = view.findViewById(R.id.units_list)
         unitsList.adapter = listAdapter
         setListeners(view)
         return view
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        (activity as MainActivity).restoreAllValues(this)
     }
 
     fun restoreSelectedUnit(unit: ImperialUnit) {
@@ -104,11 +64,37 @@ class UnitListFragment : Fragment() {
         listAdapter.setSelectedUnit(unit)
     }
 
-    fun onTopPanelTextChanged(s: Editable) {
-        listAdapter.updateAllValues(topPanel.unit, topPanel.unit?.value ?: 0.0)
+    fun onPanelsSwapped() {
+        listAdapter.swapSelection()
+        listAdapter.notifyDataSetChanged()
     }
 
-    fun onBottomPanelTextChanged(s: Editable) {
-        listAdapter.updateAllValues(topPanel.unit, topPanel.unit?.value ?: 0.0)
+    fun onPanelTextChanged(panel: ImperialUnitPanel, s: Editable) {
+        listAdapter.updateAllValues(panel.unit, panel.unit?.value ?: 0.0)
+    }
+
+//    fun onTopPanelTextChanged(s: Editable) {
+//        listAdapter.updateAllValues(topPanel.unit, topPanel.unit?.value ?: 0.0)
+//    }
+//
+//
+//    fun onBottomPanelTextChanged(s: Editable) {
+//        listAdapter.updateAllValues(topPanel.unit, topPanel.unit?.value ?: 0.0)
+//    }
+
+    fun updateAllValues(masterUnit: ImperialUnit) {
+        listAdapter.updateAllValues(masterUnit, masterUnit.value)
+    }
+
+    // TODO: remove '?'
+    fun onUnitSelected(selectedUnit: ImperialUnit, secondUnit: ImperialUnit?) {
+        listAdapter.setSelectedUnit(selectedUnit)
+        listAdapter.setSecondUnit(secondUnit)
+        listAdapter.notifyDataSetChanged()
+
+    }
+
+    fun swapPanels() {
+        listAdapter.swapSelection()
     }
 }
