@@ -17,12 +17,13 @@ class ImperialUnitPanel(context: Context, attributeSet: AttributeSet) : Constrai
     init {
         View.inflate(context, R.layout.big_unit_space, this)
     }
-    
+
     var unit: ImperialUnit? = null
-    var isActive = false
+    private var isActive = false
     val input: EditText = findViewById(R.id.panel_input)
     private val title: TextView = findViewById(R.id.panel_title)
     private val hint: TextView = findViewById(R.id.panel_hint)
+    private val layout: ConstraintLayout = findViewById(R.id.big_unit_space)
 
     private fun getColor(resourceId: Int): Int {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // >= (API 23) Android 6.0 Marshmallow
@@ -61,9 +62,9 @@ class ImperialUnitPanel(context: Context, attributeSet: AttributeSet) : Constrai
 
     fun setHighlight(highlight: Boolean) {
         isActive = highlight
-        setBackgroundResource(if (highlight) R.drawable.ic_selected_panel_back else R.drawable.ic_input_panel_back)
+        layout.setBackgroundResource(if (highlight) R.drawable.ic_selected_panel_back else R.drawable.ic_input_panel_back)
         input.setTextColor(if (highlight) colorInputSelected else colorInputNormal)
-        if (!isActive && isActivated() && getString() == "") {
+        if (!isActive && hasUnitAssigned() && getString() == "") {
             setUnitValue(0.0)
             updateDisplayValue()
         } else if (isActive && unit?.value?.compareTo(0.0) == 0) {

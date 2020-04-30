@@ -177,8 +177,8 @@ class ConverterFragment : Fragment() {
 
     fun selectPanel(new: ImperialUnitPanel, old: ImperialUnitPanel) {
         selectedPanel = new
-        new?.setHighlight(true)
-        old?.setHighlight(false)
+        new.setHighlight(true)
+        old.setHighlight(false)
         updateRatioLabel()
     }
 
