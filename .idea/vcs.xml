@@ -2,5 +2,8 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/graphstream/core" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/graphstream/deps" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/graphstream/ui-swing" vcs="Git" />
   </component>
 </project>

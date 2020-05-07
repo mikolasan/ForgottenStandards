@@ -1,0 +1,60 @@
+
+version = '1.0.0'
+
+subprojects {
+    apply plugin: 'java'
+    sourceSets {
+        main {
+            java {
+                srcDirs = ['src']
+            }
+        }
+    }
+    group = 'org.graphstream'
+    repositories {
+        mavenLocal()
+        maven {
+            url = uri('https://repo.maven.apache.org/maven2')
+        }
+        maven {
+            url = uri('https://jitpack.io')
+        }
+    }
+
+    sourceCompatibility = '1.8'
+    dependencies {
+        testImplementation 'junit:junit:4.12'
+    }
+}
+
+project('deps:mbox2') {
+    version = '1.0'
+    description = 'mbox2'
+}
+
+project('deps:pherd') {
+    version = '1.0'
+    description = 'pherd'
+    dependencies {
+        implementation project(':graphstream:deps:mbox2')
+    }
+}
+
+project('core') {
+    version = '2.0.0-beta'
+    description = 'gs-core'
+    dependencies {
+        implementation project(':graphstream:deps:pherd')
+        implementation project(':graphstream:deps:mbox2')
+    }
+}
+
+project('ui-swing') {
+    version = '0.0.1-SNAPSHOT'
+    description = 'gs-ui-swing'
+    dependencies {
+        implementation project(':graphstream:core')
+        implementation project(':graphstream:deps:pherd')
+        implementation project(':graphstream:deps:mbox2')
+    }
+}

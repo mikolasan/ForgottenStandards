@@ -1,0 +1,9 @@
+[submodule "graphstream-deps"]
+	path = graphstream/deps
+	url = https://github.com/graphstream/gs-deps.git
+[submodule "graphstream-ui-swing"]
+	path = graphstream/ui-swing
+	url = https://github.com/graphstream/gs-ui-swing.git
+[submodule "graphstream/core"]
+	path = graphstream/core
+	url = https://github.com/graphstream/gs-core.git
