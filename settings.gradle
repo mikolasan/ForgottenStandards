@@ -3,3 +3,4 @@ include 'app',
         'graphstream:deps:pherd',
         'graphstream:deps:mbox2',
         'graphstream:ui-swing'
+include ':graphtheory'

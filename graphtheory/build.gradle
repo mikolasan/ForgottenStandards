@@ -1,0 +1,23 @@
+version = '0.0.1'
+
+apply plugin: 'java-library'
+apply plugin: 'kotlin'
+
+repositories {
+    mavenLocal()
+    maven {
+        url = uri('https://repo.maven.apache.org/maven2')
+    }
+    maven {
+        url = uri('https://jitpack.io')
+    }
+}
+
+sourceCompatibility = '1.8'
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation project(':graphstream:core')
+    implementation project(':graphstream:ui-swing')
+}
