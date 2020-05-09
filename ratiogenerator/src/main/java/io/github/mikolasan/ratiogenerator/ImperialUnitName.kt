@@ -1,4 +1,4 @@
-package io.github.mikolasan.graphtheory
+package io.github.mikolasan.ratiogenerator
 
 enum class ImperialUnitName {
     LENGTH_ZERO_NO_UNIT,

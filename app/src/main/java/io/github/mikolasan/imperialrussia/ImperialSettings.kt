@@ -2,6 +2,8 @@ package io.github.mikolasan.imperialrussia
 
 import android.content.Context
 import android.content.SharedPreferences
+import io.github.mikolasan.ratiogenerator.ImperialUnitName
+import io.github.mikolasan.ratiogenerator.LengthUnits
 
 class ImperialSettings(private val context: Context) {
     private val preferencesFile = "ImperialRussiaPref.4"

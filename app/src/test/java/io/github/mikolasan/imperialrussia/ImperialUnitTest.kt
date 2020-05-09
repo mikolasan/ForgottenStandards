@@ -1,7 +1,8 @@
 package io.github.mikolasan.imperialrussia
 
-import io.github.mikolasan.imperialrussia.LengthUnits.imperialUnits
-import io.github.mikolasan.imperialrussia.LengthUnits.lengthUnits
+import io.github.mikolasan.ratiogenerator.LengthUnits.imperialUnits
+import io.github.mikolasan.ratiogenerator.LengthUnits.lengthUnits
+import io.github.mikolasan.ratiogenerator.ImperialUnitName
 import org.junit.Test
 import org.junit.Assert.*
 

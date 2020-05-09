@@ -1,4 +1,4 @@
-package io.github.mikolasan.graphtheory
+package io.github.mikolasan.ratiogenerator
 
 object LengthUnits {
     private val arshinRatio = mutableMapOf(
@@ -49,54 +49,54 @@ object LengthUnits {
     )
 
     val lengthUnits = arrayOf(
-            ImperialUnit("arshin", ImperialUnitName.ARSHIN, arshinRatio),
-            ImperialUnit("inch", ImperialUnitName.INCH, inchRatio),
-            ImperialUnit("vershok", ImperialUnitName.VERSHOK, mutableMapOf(
+            ImperialUnit(R.string.unit_arshin, ImperialUnitName.ARSHIN, arshinRatio),
+            ImperialUnit(R.string.unit_inch, ImperialUnitName.INCH, inchRatio),
+            ImperialUnit(R.string.unit_vershok, ImperialUnitName.VERSHOK, mutableMapOf(
                     ImperialUnitName.ELL to 8.0, //// 1 ell = 8 vershoks
                     ImperialUnitName.SPAN to 4.0, // 1 quarter = 4 vershoks
                     ImperialUnitName.SAZHEN to 48.0, // 1 sazhen = 48 vershoks
                     ImperialUnitName.ARSHIN to 16.0)), // 1 arshin = 16 vershoks
-            ImperialUnit("palm", ImperialUnitName.PALM, mutableMapOf(
-                    ImperialUnitName.FOOT to 27.0/7.0, //// 1 foot = 3/7 arshins = 3/7 * 3/2 ells = 9/14 * 6 palms
+            ImperialUnit(R.string.unit_palm, ImperialUnitName.PALM, mutableMapOf(
+                    ImperialUnitName.FOOT to 27.0 / 7.0, //// 1 foot = 3/7 arshins = 3/7 * 3/2 ells = 9/14 * 6 palms
                     ImperialUnitName.VERST to 13500.0, //// 1 verst = 500 sazhens = 3500 feet = 3500 * 27 / 7 palms
                     ImperialUnitName.ELL to 6.0)), // 1 ell = 6 palms
-            ImperialUnit("span", ImperialUnitName.SPAN, mutableMapOf(
+            ImperialUnit(R.string.unit_span, ImperialUnitName.SPAN, mutableMapOf(
                     ImperialUnitName.ELL to 2.0, // 1 ell = 2 quarters
                     ImperialUnitName.SAZHEN to 12.0, // 1 sazhen = 12 quarters
                     ImperialUnitName.VERSHOK to 0.25, // 1 vershok = 1/4 quarters
                     ImperialUnitName.ARSHIN to 4.0)), // 1 arshin = 4 quarters
-            ImperialUnit("ell", ImperialUnitName.ELL, mutableMapOf(
-                    ImperialUnitName.ARSHIN to 3.0/2.0)), // 1 arshin = 3/2 ells
-            ImperialUnit("step", ImperialUnitName.STEP, mutableMapOf(ImperialUnitName.ARSHIN to 1.0)),
-            ImperialUnit("foot", ImperialUnitName.FOOT, mutableMapOf(
+            ImperialUnit(R.string.unit_ell, ImperialUnitName.ELL, mutableMapOf(
+                    ImperialUnitName.ARSHIN to 3.0 / 2.0)), // 1 arshin = 3/2 ells
+            ImperialUnit(R.string.unit_step, ImperialUnitName.STEP, mutableMapOf(ImperialUnitName.ARSHIN to 1.0)),
+            ImperialUnit(R.string.unit_foot, ImperialUnitName.FOOT, mutableMapOf(
                     ImperialUnitName.SAZHEN to 7.0, // 1 sazhen = 7 feet
-                    ImperialUnitName.ARSHIN to 7.0/3.0)), //// 1 arshin = 7/3 feet
-            ImperialUnit("sazhen", ImperialUnitName.SAZHEN, mutableMapOf(
+                    ImperialUnitName.ARSHIN to 7.0 / 3.0)), //// 1 arshin = 7/3 feet
+            ImperialUnit(R.string.unit_sazhen, ImperialUnitName.SAZHEN, mutableMapOf(
                     ImperialUnitName.VERST to 500.0, // 1 verst = 500 sazhens
-                    ImperialUnitName.FOOT to 1.0/7.0, // 1 foot = 1/7 sazhens
-                    ImperialUnitName.SPAN to 1.0/12.0, // 1 quarter = 1/12 sazhens
-                    ImperialUnitName.ARSHIN to 1.0/3.0)), // 1 arshin = 1/3 sazhens
+                    ImperialUnitName.FOOT to 1.0 / 7.0, // 1 foot = 1/7 sazhens
+                    ImperialUnitName.SPAN to 1.0 / 12.0, // 1 quarter = 1/12 sazhens
+                    ImperialUnitName.ARSHIN to 1.0 / 3.0)), // 1 arshin = 1/3 sazhens
 
-            ImperialUnit("point", ImperialUnitName.POINT, mutableMapOf(ImperialUnitName.INCH to 100.0)),
-            ImperialUnit("line", ImperialUnitName.LINE, mutableMapOf(ImperialUnitName.INCH to 10.0)),
+            ImperialUnit(R.string.unit_point, ImperialUnitName.POINT, mutableMapOf(ImperialUnitName.INCH to 100.0)),
+            ImperialUnit(R.string.unit_line, ImperialUnitName.LINE, mutableMapOf(ImperialUnitName.INCH to 10.0)),
 
-            ImperialUnit("verst", ImperialUnitName.VERST, mutableMapOf(
+            ImperialUnit(R.string.unit_verst, ImperialUnitName.VERST, mutableMapOf(
                     ImperialUnitName.MILE to 7.0, // 1 mile = 7 versts
-                    ImperialUnitName.SAZHEN to 1.0/500.0, // 1 sazhen = 1/500 versts
-                    ImperialUnitName.ARSHIN to 1.0/1500.0)),
-            ImperialUnit("mile", ImperialUnitName.MILE, mutableMapOf(
-                    ImperialUnitName.VERST to 1.0/7.0, // 1 verst = 1/7 miles
-                    ImperialUnitName.ARSHIN to 1.0/10500.0)),
-            ImperialUnit("kilometer", ImperialUnitName.KILOMETER, kilometerRatio),
-            ImperialUnit("meter", ImperialUnitName.METER, mutableMapOf(
+                    ImperialUnitName.SAZHEN to 1.0 / 500.0, // 1 sazhen = 1/500 versts
+                    ImperialUnitName.ARSHIN to 1.0 / 1500.0)),
+            ImperialUnit(R.string.unit_mile, ImperialUnitName.MILE, mutableMapOf(
+                    ImperialUnitName.VERST to 1.0 / 7.0, // 1 verst = 1/7 miles
+                    ImperialUnitName.ARSHIN to 1.0 / 10500.0)),
+            ImperialUnit(R.string.unit_kilometer, ImperialUnitName.KILOMETER, kilometerRatio),
+            ImperialUnit(R.string.unit_meter, ImperialUnitName.METER, mutableMapOf(
                     ImperialUnitName.VERST to 1066.8, // 1 verst ≈ 1066.8 m
                     ImperialUnitName.CENTIMETER to 0.01)),
-            ImperialUnit("decimeter", ImperialUnitName.DECIMETER, mutableMapOf(
+            ImperialUnit(R.string.unit_decimeter, ImperialUnitName.DECIMETER, mutableMapOf(
                     ImperialUnitName.METER to 10.0,
                     ImperialUnitName.ARSHIN to 7.112)),
-            ImperialUnit("centimeter", ImperialUnitName.CENTIMETER, centimeterRatio),
-            ImperialUnit("millimeter", ImperialUnitName.MILLIMETER, millimeterRatio),
-            ImperialUnit("micrometer", ImperialUnitName.MICROMETER, mutableMapOf(
+            ImperialUnit(R.string.unit_centimeter, ImperialUnitName.CENTIMETER, centimeterRatio),
+            ImperialUnit(R.string.unit_millimeter, ImperialUnitName.MILLIMETER, millimeterRatio),
+            ImperialUnit(R.string.unit_micrometer, ImperialUnitName.MICROMETER, mutableMapOf(
                     ImperialUnitName.MILLIMETER to 1000.0,
                     ImperialUnitName.CENTIMETER to 10000.0,
                     ImperialUnitName.DECIMETER to 100000.0,

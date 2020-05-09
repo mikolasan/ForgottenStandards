@@ -1,6 +1,8 @@
-include 'app',
-        'graphstream:core',
-        'graphstream:deps:pherd',
-        'graphstream:deps:mbox2',
-        'graphstream:ui-swing',
-        'graphtheory'
+rootProject.name = 'imperialrussia'
+include ':ratiogenerator',
+        ':graphstream:core',
+        ':graphstream:deps:pherd',
+        ':graphstream:deps:mbox2',
+        ':graphstream:ui-swing',
+        ':graphtheory',
+        ':app'

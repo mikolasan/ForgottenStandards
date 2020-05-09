@@ -1,4 +1,5 @@
 version = '0.0.1'
+description = 'graph-theory'
 
 apply plugin: 'java-library'
 apply plugin: 'kotlin'
@@ -16,7 +17,7 @@ repositories {
 sourceCompatibility = '1.8'
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(':ratiogenerator')
     //noinspection DifferentStdlibGradleVersion
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation project(':graphstream:core')

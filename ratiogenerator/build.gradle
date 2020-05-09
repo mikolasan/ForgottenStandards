@@ -1,0 +1,13 @@
+version = '0.0.1'
+description = 'ratio-generator'
+
+apply plugin: 'java-library'
+apply plugin: 'kotlin'
+
+dependencies {
+    //noinspection DifferentStdlibGradleVersion
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'com.squareup:kotlinpoet:1.5.0'
+}
+
+sourceCompatibility = '1.8'
