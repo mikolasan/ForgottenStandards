@@ -7,6 +7,7 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import io.github.mikolasan.ratiogenerator.ImperialUnit
 
 class ImperialListAdapter(private val context: Context, private val units: MutableList<ImperialUnit>) : BaseAdapter() {
     private val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -127,7 +128,7 @@ class ImperialListAdapter(private val context: Context, private val units: Mutab
     private fun updateViewData(layout: ConstraintLayout, dataPosition: Int) {
         val data: ImperialUnit = getItem(dataPosition) as ImperialUnit
         val nameTextView: TextView = layout.findViewById(R.id.unit_name)
-        nameTextView.text = getStringFromResourceId(data.displayNameResource)
+        nameTextView.text = data.unitName.name
         val valueTextView: TextView = layout.findViewById(R.id.unit_value)
         valueTextView.text = valueForDisplay(data.value)
     }

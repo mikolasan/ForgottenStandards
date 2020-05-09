@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.widget.ViewPager2
+import io.github.mikolasan.ratiogenerator.ImperialUnit
 
 import java.util.*
 

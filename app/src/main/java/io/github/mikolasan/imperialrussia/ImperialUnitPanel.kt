@@ -10,6 +10,7 @@ import android.text.style.SuperscriptSpan
 import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import io.github.mikolasan.ratiogenerator.ImperialUnit
 import java.text.DecimalFormat
 
 
@@ -49,8 +50,8 @@ class ImperialUnitPanel(context: Context, attributeSet: AttributeSet) : Constrai
     }
 
     private fun updateUnitText() {
-        unit?.displayNameResource?.let { resourceId ->
-            val underlineText = SpannableString(title.context.resources.getString(resourceId))
+        unit?.unitName?.name?.let { s ->
+            val underlineText = SpannableString(s)
             //underlineText.setSpan(UnderlineSpan(), 0, underlineText.length, 0)
             title.text = underlineText
         }

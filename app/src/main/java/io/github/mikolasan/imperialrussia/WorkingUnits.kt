@@ -1,5 +1,7 @@
 package io.github.mikolasan.imperialrussia
 
+import io.github.mikolasan.ratiogenerator.ImperialUnit
+
 class WorkingUnits(var orderedUnits: MutableList<ImperialUnit>, var selectedUnit: ImperialUnit, var secondUnit: ImperialUnit) {
 
     fun getTopUnit(): ImperialUnit {
