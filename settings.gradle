@@ -2,5 +2,5 @@ include 'app',
         'graphstream:core',
         'graphstream:deps:pherd',
         'graphstream:deps:mbox2',
-        'graphstream:ui-swing'
-include ':graphtheory'
+        'graphstream:ui-swing',
+        'graphtheory'
