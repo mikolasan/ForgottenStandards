@@ -17,7 +17,10 @@ sourceCompatibility = '1.8'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    //noinspection DifferentStdlibGradleVersion
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation project(':graphstream:core')
+    implementation project(':graphstream:deps:pherd')
+    implementation project(':graphstream:deps:mbox2')
     implementation project(':graphstream:ui-swing')
 }

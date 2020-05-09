@@ -1,6 +1,5 @@
 package io.github.mikolasan.imperialrussia
 
-import java.lang.RuntimeException
 import java.text.DecimalFormatSymbols
 import kotlin.math.pow
 
