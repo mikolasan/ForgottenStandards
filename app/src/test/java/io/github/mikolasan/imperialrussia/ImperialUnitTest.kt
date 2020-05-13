@@ -2,13 +2,14 @@ package io.github.mikolasan.imperialrussia
 
 import io.github.mikolasan.ratiogenerator.LengthUnits.imperialUnits
 import io.github.mikolasan.ratiogenerator.LengthUnits.lengthUnits
+import io.github.mikolasan.ratiogenerator.ImperialUnit
 import io.github.mikolasan.ratiogenerator.ImperialUnitName
 import org.junit.Test
 import org.junit.Assert.*
 
 
 class ImperialUnitTest {
-    val defaultValue = ImperialUnit(0, ImperialUnitName.LENGTH_ZERO_NO_UNIT, mutableMapOf())
+    val defaultValue = ImperialUnit(ImperialUnitName.LENGTH_ZERO_NO_UNIT, mutableMapOf())
     val arshin = imperialUnits.getOrDefault(ImperialUnitName.ARSHIN, defaultValue)
     val point = imperialUnits.getOrDefault(ImperialUnitName.POINT, defaultValue)
     val line = imperialUnits.getOrDefault(ImperialUnitName.LINE, defaultValue)

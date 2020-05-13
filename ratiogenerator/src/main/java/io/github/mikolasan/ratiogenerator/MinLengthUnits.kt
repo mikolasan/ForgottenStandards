@@ -1,6 +1,6 @@
 package io.github.mikolasan.ratiogenerator
 
-object LengthUnits {
+object MinLengthUnits {
     private val arshinRatio = mutableMapOf(
             ImperialUnitName.INCH to 1.0/28.0, // 1 inch = 1/28 arshins
             ImperialUnitName.VERSHOK to 0.0625, // 1 vershok = 1/16 arshins

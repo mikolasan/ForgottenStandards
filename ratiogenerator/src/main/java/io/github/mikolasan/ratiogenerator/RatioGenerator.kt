@@ -4,8 +4,9 @@ import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import java.lang.Exception
 
+
 fun findUnitByName(name: ImperialUnitName): ImperialUnit? {
-    return LengthUnits.imperialUnits[name]
+    return MinLengthUnits.imperialUnits[name]
 }
 
 fun findConversionRatio(inputUnit: ImperialUnit, outputUnit: ImperialUnit): Double {
@@ -51,12 +52,12 @@ fun convertValue(inputUnit: ImperialUnit?, outputUnit: ImperialUnit?, inputValue
     return inputValue * findConversionRatio(input, output)
 }
 
-fun main() {
+fun doLength() {
     val imperialunit = ClassName("io.github.mikolasan.imperialrussia", "ImperialUnit")
     val array = ClassName("kotlin", "Array")
             .parameterizedBy(imperialunit)
 
-    val units = LengthUnits.lengthUnits
+    val units = MinLengthUnits.lengthUnits
 
     val arrayUnits = units.map { unitFrom ->
         val mapUnits = units.map { unitTo ->
@@ -81,4 +82,8 @@ fun main() {
             .build()
 
     kotlinFile.writeTo(System.out)
+}
+
+fun main() {
+    doLength()
 }

@@ -4,6 +4,7 @@ description = 'ratio-generator'
 apply plugin: 'java-library'
 apply plugin: 'kotlin'
 
+
 dependencies {
     //noinspection DifferentStdlibGradleVersion
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
@@ -11,3 +12,33 @@ dependencies {
 }
 
 sourceCompatibility = '1.8'
+
+task runRatioGenerator(type: JavaExec) {
+    group = 'units'
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'io.github.mikolasan.ratiogenerator.RatioGeneratorKt'
+    //store the output instead of printing to the console:
+    standardOutput = new ByteArrayOutputStream()
+    //extension method genSource.output() can be used to obtain the output:
+    doLast {
+        ext.generated = standardOutput.toString()
+    }
+}
+
+task saveGeneratedSources(dependsOn: runRatioGenerator) {
+    group = 'units'
+//    def outputDir = new File("/${buildDir}/generated-sources")
+    def outputDir = new File(sourceSets.main.java.srcDirs.first(), "io/github/mikolasan/ratiogenerator")
+    def outputFile = new File(outputDir, "LengthUnits.kt")
+    doLast {
+        if(!outputDir.exists()) {
+            outputDir.mkdirs()
+        }
+        outputFile.text = tasks.runRatioGenerator.generated
+    }
+}
+
+// References:
+// https://stackoverflow.com/questions/38275583/create-version-txt-file-in-project-dir-via-build-gradle-task
+// https://docs.gradle.org/current/dsl/org.gradle.api.tasks.Exec.html
+// https://discuss.gradle.org/t/gradle-exec-first-task-output-to-second-task-commandline/19719/12

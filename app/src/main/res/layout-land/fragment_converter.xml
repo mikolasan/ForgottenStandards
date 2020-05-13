@@ -56,7 +56,7 @@
         app:layout_constraintTop_toBottomOf="@+id/convert_to" />
 
     <include
-        layout="@layout/simple_keyboard_panel"
+        layout="@layout/keyboard_panel"
         android:layout_width="312dp"
         android:layout_height="255dp"
         android:layout_marginStart="8dp"
