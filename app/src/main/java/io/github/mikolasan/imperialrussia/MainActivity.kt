@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.widget.ViewPager2
 import io.github.mikolasan.ratiogenerator.ImperialUnit
+import java.lang.Exception
 
 import java.util.*
 
@@ -20,6 +21,7 @@ class MainActivity : FragmentActivity() {
     private var converterFragment: ConverterFragment? = null
     private var unitListFragment: UnitListFragment? = null
 
+    lateinit var listAdapter: ImperialListAdapter
     private lateinit var settings: ImperialSettings
     lateinit var workingUnits: WorkingUnits
 
@@ -114,17 +116,21 @@ class MainActivity : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
         settings = ImperialSettings(applicationContext)
-
-        val viewPager = findViewById<ViewPager2>(R.id.pager)
-        viewPager.adapter = ImperialPagerAdapter(this)
-
         if (savedInstanceState == null) {
             createNewActivity()
         } else {
             recreatePreviousActivity(savedInstanceState)
+        }
+        listAdapter = ImperialListAdapter(workingUnits.orderedUnits)
+
+        setContentView(R.layout.activity_main)
+        try {
+            val viewPager = findViewById<ViewPager2>(R.id.pager)
+            viewPager.adapter = ImperialPagerAdapter(this)
+        } catch (e: Exception) {
+            // layout without view pager
         }
     }
 
@@ -181,14 +187,17 @@ class MainActivity : FragmentActivity() {
     }
 
     fun onPanelTextChanged(panel: ImperialUnitPanel, s: Editable) {
-        if (panel.hasUnitAssigned()) {
-            panel.updateDisplayValue()
-        }
+        //unitListFragment?.onPanelTextChanged(panel, s)
+        listAdapter.updateAllValues(panel.unit, panel.unit?.value ?: 0.0)
+
         converterFragment?.let {
+            val oppositePanel = if (it.bottomPanel == panel) it.topPanel else it.bottomPanel
+            if (oppositePanel.hasUnitAssigned()) {
+                oppositePanel.updateDisplayValue()
+            }
             settings.saveTopString(it.topPanel.makeSerializedString())
             settings.saveBottomString(it.bottomPanel.makeSerializedString())
         }
-        unitListFragment?.onPanelTextChanged(panel, s)
     }
 
 //    fun onTopPanelTextChanged(s: Editable) {

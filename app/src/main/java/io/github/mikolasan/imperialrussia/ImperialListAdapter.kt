@@ -9,19 +9,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import io.github.mikolasan.ratiogenerator.ImperialUnit
 
-class ImperialListAdapter(private val context: Context, private val units: MutableList<ImperialUnit>) : BaseAdapter() {
-    private val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-    private val getStringFromResourceId: (Int) -> String = { i: Int -> context.resources.getString(i) }
-    private val getColorFromResourceId: (Int) -> Int = { i: Int ->
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // >= (API 23) Android 6.0 Marshmallow
-            val theme = null
-            context.resources.getColor(i, theme)
-        } else {
-            @Suppress("DEPRECATION")
-            context.resources.getColor(i)
-        }
-    }
-
+class ImperialListAdapter(private val units: Array<ImperialUnit>) : BaseAdapter() {
     enum class ViewState {
         SECOND,
         SELECTED,
@@ -97,8 +85,8 @@ class ImperialListAdapter(private val context: Context, private val units: Mutab
         when (data) {
             selectedUnit -> {
                 layout.setBackgroundResource(backgrounds.getValue(ViewState.SELECTED))
-                nameTextView.setTextColor(getColorFromResourceId(nameColors.getValue(ViewState.SELECTED)))
-                valueTextView.setTextColor(getColorFromResourceId(valueColors.getValue(ViewState.SELECTED)))
+                nameTextView.setTextColorId(nameColors.getValue(ViewState.SELECTED))
+                valueTextView.setTextColorId(valueColors.getValue(ViewState.SELECTED))
                 panelLock.visibility = View.INVISIBLE
                 valueLock.visibility = View.INVISIBLE
                 unitLock.visibility = View.INVISIBLE
@@ -106,8 +94,8 @@ class ImperialListAdapter(private val context: Context, private val units: Mutab
             }
             secondUnit -> {
                 layout.setBackgroundResource(backgrounds.getValue(ViewState.SECOND))
-                nameTextView.setTextColor(getColorFromResourceId(nameColors.getValue(ViewState.SECOND)))
-                valueTextView.setTextColor(getColorFromResourceId(valueColors.getValue(ViewState.SECOND)))
+                nameTextView.setTextColorId(nameColors.getValue(ViewState.SECOND))
+                valueTextView.setTextColorId(valueColors.getValue(ViewState.SECOND))
                 panelLock.visibility = View.INVISIBLE
                 valueLock.visibility = View.INVISIBLE
                 unitLock.visibility = View.INVISIBLE
@@ -115,8 +103,8 @@ class ImperialListAdapter(private val context: Context, private val units: Mutab
             }
             else -> {
                 layout.setBackgroundResource(backgrounds.getValue(ViewState.NORMAL))
-                nameTextView.setTextColor(getColorFromResourceId(nameColors.getValue(ViewState.NORMAL)))
-                valueTextView.setTextColor(getColorFromResourceId(valueColors.getValue(ViewState.NORMAL)))
+                nameTextView.setTextColorId(nameColors.getValue(ViewState.NORMAL))
+                valueTextView.setTextColorId(valueColors.getValue(ViewState.NORMAL))
                 panelLock.visibility = View.INVISIBLE
                 valueLock.visibility = View.INVISIBLE
                 unitLock.visibility = View.INVISIBLE
@@ -163,6 +151,8 @@ class ImperialListAdapter(private val context: Context, private val units: Mutab
             }
             return contentView
         } else {
+            val context = parent?.context
+            val inflater = context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             val view = inflater.inflate(R.layout.unit_space, parent, false) as ConstraintLayout
             updateViewData(view, position)
             updateViewColors(view, position)

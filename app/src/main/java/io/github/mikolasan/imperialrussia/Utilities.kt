@@ -4,6 +4,7 @@ import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.RelativeSizeSpan
 import android.text.style.SuperscriptSpan
+import android.view.View
 import io.github.mikolasan.ratiogenerator.ImperialUnit
 import io.github.mikolasan.ratiogenerator.ImperialUnitName
 import io.github.mikolasan.ratiogenerator.LengthUnits
@@ -219,4 +220,20 @@ fun <T> MutableList<T>.moveToFrontFrom(index: Int) {
 fun <T> MutableList<T>.moveToFront(element: T) {
     this.remove(element)
     this.add(0, element)
+}
+
+fun <T> Array<T>.moveToFrontFrom(index: Int) {
+    val tmp = this[index]
+    System.arraycopy(this, 0, this, 1, index)
+    this[0] = tmp
+}
+
+// Option to change it not in place
+//val shifted = this.copyInto(this, 1, 0, index)
+//shifted[0] = tmp
+
+fun <T> Array<T>.moveToFront(element: T) {
+    val i = this.indexOf(element)
+    if (i < 0) return
+    this.moveToFrontFrom(i)
 }

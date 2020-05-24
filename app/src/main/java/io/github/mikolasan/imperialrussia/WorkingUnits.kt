@@ -2,7 +2,7 @@ package io.github.mikolasan.imperialrussia
 
 import io.github.mikolasan.ratiogenerator.ImperialUnit
 
-class WorkingUnits(var orderedUnits: MutableList<ImperialUnit>, var selectedUnit: ImperialUnit, var secondUnit: ImperialUnit) {
+class WorkingUnits(var orderedUnits: Array<ImperialUnit>, var selectedUnit: ImperialUnit, var secondUnit: ImperialUnit) {
 
     fun getTopUnit(): ImperialUnit {
         val selectedPos = orderedUnits.indexOf(selectedUnit)

@@ -11,7 +11,11 @@ const val UNIT_LIST_PAGE_ID = 1
 class ImperialPagerAdapter(fragmentActivity: FragmentActivity) : FragmentStateAdapter(fragmentActivity) {
     private val pagesCreators: Map<Int, () -> Fragment> = mapOf(
             CONVERTER_PAGE_ID to { ConverterFragment() },
-            UNIT_LIST_PAGE_ID to { UnitListFragment() }
+            UNIT_LIST_PAGE_ID to {
+                val f = UnitListFragment()
+                f.listAdapter = (fragmentActivity as MainActivity).listAdapter
+                f
+            }
     )
 
     override fun getItemCount(): Int = pagesCreators.size

@@ -26,7 +26,7 @@ class ImperialSettings(private val context: Context) {
     }
 
     fun restoreWorkingUnits(): WorkingUnits {
-        val orderedUnits = LengthUnits.lengthUnits.toMutableList()
+        val orderedUnits = LengthUnits.lengthUnits
         LengthUnits.lengthUnits.forEachIndexed { i, u ->
             val unitName = u.unitName.name
             val settingName = "unit${unitName}Position"
@@ -70,7 +70,7 @@ class ImperialSettings(private val context: Context) {
         return preferences.getString("bottomPanelValue", "") ?: ""
     }
 
-    fun saveNewOrder(orderedUnits: MutableList<ImperialUnit>) {
+    fun saveNewOrder(orderedUnits: Array<ImperialUnit>) {
         LengthUnits.lengthUnits.forEachIndexed { _, u ->
             val unitName = u.unitName.name
             val settingName = "unit${unitName}Position"
