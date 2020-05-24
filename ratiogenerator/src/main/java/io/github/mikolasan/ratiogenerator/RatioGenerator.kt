@@ -3,6 +3,8 @@ package io.github.mikolasan.ratiogenerator
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import java.lang.Exception
+import java.util.*
+import kotlin.system.measureTimeMillis
 
 
 fun findUnitByName(name: ImperialUnitName): ImperialUnit? {
@@ -46,6 +48,78 @@ fun findConversionRatio(inputUnit: ImperialUnit, outputUnit: ImperialUnit): Doub
     throw Exception("no ratio")
 }
 
+fun printWholeRatios() {
+    MinLengthUnits.lengthUnits.forEach { u ->
+        u.ratioMap.forEach { (unitName, ratio) ->
+            if (ratio.toInt().compareTo(ratio) == 0) {
+                println("${u.unitName.name} $ratio -> ${unitName.name}")
+            }
+        }
+    }
+}
+
+fun printFullRoutes() {
+    var fullRoutes: List<List<ImperialUnit>> = Collections.emptyList()
+
+    fun makeFullRoute(list: List<ImperialUnit>): Unit {
+        if (list.size == MinLengthUnits.lengthUnits.size) {
+            fullRoutes = fullRoutes.plus<List<ImperialUnit>>(list)
+            println(list.map { it.unitName.name }.toString())
+        } else {
+            val unit = list.last()
+            unit.ratioMap.forEach { (unitName, _) ->
+                val nextUnit = MinLengthUnits.imperialUnits[unitName]
+                nextUnit?.let {
+                    if (!list.contains(it)) {
+                        makeFullRoute(list.plus(it))
+                    }
+                }
+            }
+            MinLengthUnits.lengthUnits.forEach { nextUnit ->
+                if (!list.contains(nextUnit)) {
+                    if (nextUnit.ratioMap.containsKey(unit.unitName)) {
+                        makeFullRoute(list.plus(nextUnit))
+                    }
+                }
+            }
+        }
+    }
+
+    MinLengthUnits.lengthUnits.forEach { u ->
+        val l: List<ImperialUnit> = listOf(u)
+        makeFullRoute(l)
+    }
+}
+
+fun printFullRoutes2() {
+    var fullRoutes: List<List<ImperialUnit>> = Collections.emptyList()
+
+    fun makeFullRoute2(list: List<ImperialUnit>, remainingUnits: List<ImperialUnit>): Unit {
+        if (list.size == MinLengthUnits.lengthUnits.size) {
+            fullRoutes = fullRoutes.plus<List<ImperialUnit>>(list)
+            println(list.map { it.unitName.name }.toString())
+        } else {
+            val unit = list.last()
+            unit.ratioMap
+                    .filterKeys { !list.contains(MinLengthUnits.imperialUnits[it]) }
+                    .forEach { (unitName, _) ->
+                        val nextUnit = MinLengthUnits.imperialUnits.getValue(unitName)
+                        makeFullRoute2(list.plus(nextUnit), remainingUnits.minus(nextUnit))
+                    }
+            remainingUnits.forEach { nextUnit ->
+                if (nextUnit.ratioMap.containsKey(unit.unitName)) {
+                    makeFullRoute2(list.plus(nextUnit), remainingUnits.minus(nextUnit))
+                }
+            }
+        }
+    }
+
+    MinLengthUnits.lengthUnits.forEach { u ->
+        val l: List<ImperialUnit> = listOf(u)
+        makeFullRoute2(l, MinLengthUnits.lengthUnits.toList().minus(u))
+    }
+}
+
 fun convertValue(inputUnit: ImperialUnit?, outputUnit: ImperialUnit?, inputValue: Double): Double {
     val input = inputUnit ?: return 0.0
     val output = outputUnit ?: return 0.0
@@ -53,7 +127,7 @@ fun convertValue(inputUnit: ImperialUnit?, outputUnit: ImperialUnit?, inputValue
 }
 
 fun doLength() {
-    val imperialunit = ClassName("io.github.mikolasan.imperialrussia", "ImperialUnit")
+    val imperialunit = ClassName("io.github.mikolasan.ratiogenerator", "ImperialUnit")
     val array = ClassName("kotlin", "Array")
             .parameterizedBy(imperialunit)
 
@@ -85,5 +159,17 @@ fun doLength() {
 }
 
 fun main() {
-    doLength()
+//    printWholeRatios()
+
+    val time1 = measureTimeMillis {
+        printFullRoutes()
+    }
+    println("printFullRoutes time: $time1")
+
+    val time2 = measureTimeMillis {
+        printFullRoutes2()
+    }
+    println("printFullRoutes2 time: $time2")
+
+//    doLength()
 }

@@ -14,9 +14,13 @@ fun main() {
     }
     MinLengthUnits.lengthUnits.forEach { u ->
         u.ratioMap.forEach { (unitName, ratio) ->
-            val e = graph.addEdge("${u.unitName.name}->${unitName.name}", u.unitName.name, unitName.name, true)
-            e.setAttribute("ui.label", ratio.toString())
+            if (ratio.toInt().compareTo(ratio) == 0) {
+                val e = graph.addEdge("${u.unitName.name}->${unitName.name}", u.unitName.name, unitName.name, true)
+                e.setAttribute("ui.label", ratio.toString())
+            }
         }
     }
+    val e = graph.addEdge("CENTIMETER->INCH", "CENTIMETER", "INCH", true)
+    e.setAttribute("ui.label", "2.54")
     graph.display()
 }

@@ -91,6 +91,7 @@ object MinLengthUnits {
             ImperialUnit(ImperialUnitName.KILOMETER, kilometerRatio),
             ImperialUnit(ImperialUnitName.METER, mutableMapOf(
                     ImperialUnitName.VERST to 1066.8, // 1 verst ≈ 1066.8 m
+                    ImperialUnitName.KILOMETER to 1000.0, // 1 km = 1000 m
                     ImperialUnitName.CENTIMETER to 0.01)),
             ImperialUnit(ImperialUnitName.DECIMETER, mutableMapOf(
                     ImperialUnitName.METER to 10.0,

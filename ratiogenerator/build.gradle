@@ -17,9 +17,9 @@ task runRatioGenerator(type: JavaExec) {
     group = 'units'
     classpath = sourceSets.main.runtimeClasspath
     main = 'io.github.mikolasan.ratiogenerator.RatioGeneratorKt'
-    //store the output instead of printing to the console:
+    // store the output instead of printing to the console:
     standardOutput = new ByteArrayOutputStream()
-    //extension method genSource.output() can be used to obtain the output:
+    // extension method genSource.output() can be used to obtain the output:
     doLast {
         ext.generated = standardOutput.toString()
     }
@@ -27,9 +27,11 @@ task runRatioGenerator(type: JavaExec) {
 
 task saveGeneratedSources(dependsOn: runRatioGenerator) {
     group = 'units'
-//    def outputDir = new File("/${buildDir}/generated-sources")
-    def outputDir = new File(sourceSets.main.java.srcDirs.first(), "io/github/mikolasan/ratiogenerator")
-    def outputFile = new File(outputDir, "LengthUnits.kt")
+
+//    def outputDir = new File(sourceSets.main.java.srcDirs.first(), "io/github/mikolasan/ratiogenerator")
+//    def outputFile = new File(outputDir, "LengthUnits.kt")
+    def outputDir = new File("/${buildDir}/output")
+    def outputFile = new File(outputDir, "full-routes.txt")
     doLast {
         if(!outputDir.exists()) {
             outputDir.mkdirs()
