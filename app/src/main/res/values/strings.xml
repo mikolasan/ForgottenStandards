@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Imperial Russia</string>
-    <string name="key_back" translatable="false">BS</string>
-    <string name="key_clear" translatable="false">CL</string>
+    <string name="key_back" translatable="false">⌫</string>
+    <string name="key_clear" translatable="false">C</string>
     <string name="key_mult" translatable="false">×</string>
     <string name="key_div" translatable="false">÷</string>
     <string name="key_plus" translatable="false">+</string>
