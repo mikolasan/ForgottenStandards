@@ -8,14 +8,10 @@ import java.lang.IndexOutOfBoundsException
 const val CONVERTER_PAGE_ID = 0
 const val UNIT_LIST_PAGE_ID = 1
 
-class ImperialPagerAdapter(fragmentActivity: FragmentActivity) : FragmentStateAdapter(fragmentActivity) {
+class ImperialPagerAdapter(fragmentActivity: FragmentActivity, private val workingUnits: WorkingUnits) : FragmentStateAdapter(fragmentActivity) {
     private val pagesCreators: Map<Int, () -> Fragment> = mapOf(
             CONVERTER_PAGE_ID to { ConverterFragment() },
-            UNIT_LIST_PAGE_ID to {
-                val f = UnitListFragment()
-                f.listAdapter = (fragmentActivity as MainActivity).listAdapter
-                f
-            }
+            UNIT_LIST_PAGE_ID to { UnitListFragment() }
     )
 
     override fun getItemCount(): Int = pagesCreators.size

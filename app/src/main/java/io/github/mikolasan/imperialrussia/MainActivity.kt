@@ -17,11 +17,9 @@ class MainActivity : FragmentActivity() {
     private val languageSetting = "language"
     private var newLocale: Locale? = null
 
-    //private var selectedPanel: ImperialUnitPanel? = null
     private var converterFragment: ConverterFragment? = null
     private var unitListFragment: UnitListFragment? = null
 
-    lateinit var listAdapter: ImperialListAdapter
     private lateinit var settings: ImperialSettings
     lateinit var workingUnits: WorkingUnits
 
@@ -85,17 +83,6 @@ class MainActivity : FragmentActivity() {
                 unitListFragment?.updateAllValues(workingUnits.selectedUnit)
             }
         }
-
-//        bottomPanelUnit?.let { unit ->
-//            val bottomValue = convertValue(topPanelUnit, unit, topPanelValue)
-//            bottomPanel.updateDisplayValue()
-//            val displayValue = bottomPanel.getString()
-//            if (bottomPanelValue != displayValue) {
-//                preferencesEditor.putString("bottomPanelValue", bottomPanel.makeSerializedString())
-//                preferencesEditor.apply()
-//            }
-//        }
-//        selectPanel(topPanel, bottomPanel)
     }
 
     private fun swapPanels() {
@@ -123,64 +110,21 @@ class MainActivity : FragmentActivity() {
         } else {
             recreatePreviousActivity(savedInstanceState)
         }
-        listAdapter = ImperialListAdapter(workingUnits.orderedUnits)
 
         setContentView(R.layout.activity_main)
         try {
             val viewPager = findViewById<ViewPager2>(R.id.pager)
-            viewPager.adapter = ImperialPagerAdapter(this)
+            viewPager.adapter = ImperialPagerAdapter(this, workingUnits)
         } catch (e: Exception) {
             // layout without view pager
         }
     }
 
-//    override fun onResume() {
-//        super.onResume()
-//    }
-
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         // onRestoreInstanceState works against me. I include layouts and included layouts do not have
         // unique ids. And it calls TextChangedListener on my inputs with wrong values.
         //super.onRestoreInstanceState(savedInstanceState)
-
-//        restoreInputValues()
-//        selectPanel(topPanel, bottomPanel)
     }
-
-    override fun onStart() {
-        super.onStart()
-//
-//        val mainLayout: ConstraintLayout = findViewById<ConstraintLayout>(R.id.motion_layout)
-//        if (mainLayout is MotionLayout && topPanel.hasUnitAssigned() && bottomPanel.hasUnitAssigned()
-//                && mainLayout.startState == R.id.show_list_constraint) {
-//            mainLayout.progress = 1.0f
-//            uiSide = UISide.input
-//        }
-    }
-//
-//    // --- Running ---
-//
-//    // foreground -> visible process
-//    override fun onPause() {
-//        super.onPause()
-//    }
-//
-//    // visible -> cached
-//    override fun onStop() {
-//        super.onStop()
-//    }
-
-
-
-//    override fun attachBaseContext(newBase: Context) {
-//
-//        val prefs = newBase.getSharedPreferences(preferencesFile, Context.MODE_PRIVATE)
-//        val currentLang = prefs.getString(languageSetting, "en") ?: "en" // just want a safe call
-//        newLocale = Locale(currentLang)
-//
-//        val context = ImperialContextWrapper.wrap(newBase, newLocale!!)
-//        super.attachBaseContext(context)
-//    }
 
     fun onPanelsSwapped() {
         unitListFragment?.onPanelsSwapped()
@@ -188,7 +132,7 @@ class MainActivity : FragmentActivity() {
 
     fun onPanelTextChanged(panel: ImperialUnitPanel, s: Editable) {
         //unitListFragment?.onPanelTextChanged(panel, s)
-        listAdapter.updateAllValues(panel.unit, panel.unit?.value ?: 0.0)
+        workingUnits.listAdapter.updateAllValues(panel.unit, panel.unit?.value ?: 0.0)
 
         converterFragment?.let {
             val oppositePanel = if (it.bottomPanel == panel) it.topPanel else it.bottomPanel
@@ -199,30 +143,6 @@ class MainActivity : FragmentActivity() {
             settings.saveBottomString(it.bottomPanel.makeSerializedString())
         }
     }
-
-//    fun onTopPanelTextChanged(s: Editable) {
-//        if (bottomPanel.hasUnitAssigned()) {
-//            bottomPanel.updateDisplayValue()
-//            settings.saveBottomString()
-//            preferencesEditor.putString("bottomPanelValue", bottomPanel.makeSerializedString())
-//        }
-//        preferencesEditor.putString("topPanelValue", topPanel.makeSerializedString())
-//        preferencesEditor.apply()
-//
-//        unitListFragment.onTopPanelTextChanged(s)
-//    }
-//
-//    fun onBottomPanelTextChanged(s: Editable) {
-//        if (topPanel.hasUnitAssigned()) {
-//            topPanel.updateDisplayValue()
-//            preferencesEditor.putString("topPanelValue", topPanel.makeSerializedString())
-//        }
-//        preferencesEditor.putString("bottomPanelValue", bottomPanel.makeSerializedString())
-//        preferencesEditor.apply()
-//
-//        unitListFragment.onBottomPanelTextChanged(s)
-//
-//    }
 
     fun onUnitSelected(unit: ImperialUnit) {
         converterFragment?.onUnitSelected(unit)

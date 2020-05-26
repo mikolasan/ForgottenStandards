@@ -26,7 +26,7 @@ class ImperialSettings(private val context: Context) {
     }
 
     fun restoreWorkingUnits(): WorkingUnits {
-        val orderedUnits = LengthUnits.lengthUnits
+        val units = LengthUnits.lengthUnits
         LengthUnits.lengthUnits.forEachIndexed { i, u ->
             val unitName = u.unitName.name
             val settingName = "unit${unitName}Position"
@@ -38,20 +38,25 @@ class ImperialSettings(private val context: Context) {
             if (!preferences.contains(settingName)) {
                 preferencesEditor.putInt(settingName, i)
             }
-            orderedUnits[p] = u
+            units[p] = u
         }
         preferencesEditor.apply()
 
-        val topPanelUnit = restoreTopUnit(orderedUnits[0])
-        val bottomPanelUnit = restoreBottomUnit(orderedUnits[1])
-        if (orderedUnits[1] != bottomPanelUnit) {
-            orderedUnits.moveToFront(bottomPanelUnit)
+        val topPanelUnit = restoreTopUnit(units[0])
+        val bottomPanelUnit = restoreBottomUnit(units[1])
+        if (units[1] != bottomPanelUnit) {
+            units.moveToFront(bottomPanelUnit)
         }
-        if (orderedUnits[0] != topPanelUnit) {
-            orderedUnits.moveToFront(topPanelUnit)
+        if (units[0] != topPanelUnit) {
+            units.moveToFront(topPanelUnit)
         }
 
-        return WorkingUnits(orderedUnits, topPanelUnit, bottomPanelUnit)
+        return WorkingUnits().apply {
+                orderedUnits = units
+                selectedUnit = topPanelUnit
+                secondUnit = bottomPanelUnit
+                listAdapter = ImperialListAdapter(units)
+        }
     }
 
     fun restoreTopUnit(defaultUnit: ImperialUnit): ImperialUnit {

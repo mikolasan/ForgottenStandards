@@ -9,7 +9,7 @@ import android.widget.ListView
 import androidx.fragment.app.Fragment
 import io.github.mikolasan.ratiogenerator.ImperialUnit
 
-class UnitListFragment() : Fragment() {
+class UnitListFragment : Fragment() {
 
     private lateinit var unitsList: ListView
     lateinit var listAdapter: ImperialListAdapter
@@ -35,6 +35,8 @@ class UnitListFragment() : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        listAdapter = (activity as MainActivity).workingUnits.listAdapter
+        unitsList.adapter = listAdapter
         listAdapter.setOnArrowClickListener { _: Int, arrow: View, unit: ImperialUnit ->
             arrow.visibility = View.INVISIBLE // hide the arrow
             (activity as MainActivity).onArrowClicked(unit)
@@ -44,8 +46,6 @@ class UnitListFragment() : Fragment() {
             (activity as MainActivity).onArrowLongClicked(unit)
             unitsList.setSelectionAfterHeaderView()
         }
-
-        unitsList.adapter = listAdapter
         (activity as MainActivity).restoreAllValues(this)
     }
 
@@ -65,15 +65,6 @@ class UnitListFragment() : Fragment() {
     fun onPanelTextChanged(panel: ImperialUnitPanel, s: Editable) {
 
     }
-
-//    fun onTopPanelTextChanged(s: Editable) {
-//        listAdapter.updateAllValues(topPanel.unit, topPanel.unit?.value ?: 0.0)
-//    }
-//
-//
-//    fun onBottomPanelTextChanged(s: Editable) {
-//        listAdapter.updateAllValues(topPanel.unit, topPanel.unit?.value ?: 0.0)
-//    }
 
     fun updateAllValues(masterUnit: ImperialUnit) {
         listAdapter.updateAllValues(masterUnit, masterUnit.value)
