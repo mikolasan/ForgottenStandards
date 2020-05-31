@@ -49,16 +49,36 @@ class UnitListFragment : Fragment() {
         (activity as MainActivity).restoreAllValues(this)
     }
 
+    override fun onResume() {
+        super.onResume()
+        listAdapter.notifyDataSetChanged()
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+            listAdapter.notifyDataSetChanged()
+
+    }
+
+    override fun onStart() {
+        super.onStart()
+    }
+
     fun restoreSelectedUnit(unit: ImperialUnit) {
-        listAdapter.setSelectedUnit(unit)
+        (activity as MainActivity).workingUnits.selectedUnit = unit
+        //listAdapter.setSelectedUnit(unit)
     }
 
     fun restoreSecondUnit(unit: ImperialUnit) {
-        listAdapter.setSelectedUnit(unit)
+        (activity as MainActivity).workingUnits.secondUnit = unit
+        //listAdapter.setSelectedUnit(unit)
     }
 
     fun onPanelsSwapped() {
-        listAdapter.swapSelection()
+        val mainActivity = activity as MainActivity
+        val temp = mainActivity.workingUnits.selectedUnit
+        mainActivity.workingUnits.selectedUnit = mainActivity.workingUnits.secondUnit
+        mainActivity.workingUnits.secondUnit = temp
         listAdapter.notifyDataSetChanged()
     }
 
@@ -72,13 +92,15 @@ class UnitListFragment : Fragment() {
 
     // TODO: remove '?'
     fun onUnitSelected(selectedUnit: ImperialUnit, secondUnit: ImperialUnit?) {
-        listAdapter.setSelectedUnit(selectedUnit)
-        listAdapter.setSecondUnit(secondUnit)
+        (activity as MainActivity).workingUnits.selectedUnit = selectedUnit
+        (activity as MainActivity).workingUnits.secondUnit = secondUnit!!
+//        listAdapter.setSelectedUnit(selectedUnit)
+//        listAdapter.setSecondUnit(secondUnit)
         listAdapter.notifyDataSetChanged()
 
     }
 
     fun swapPanels() {
-        listAdapter.swapSelection()
+//        listAdapter.swapSelection()
     }
 }

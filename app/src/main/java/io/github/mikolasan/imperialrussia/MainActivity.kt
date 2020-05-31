@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.widget.ViewPager2
 import io.github.mikolasan.ratiogenerator.ImperialUnit
+
 import java.lang.Exception
 
 import java.util.*
@@ -22,6 +23,7 @@ class MainActivity : FragmentActivity() {
 
     private lateinit var settings: ImperialSettings
     lateinit var workingUnits: WorkingUnits
+    lateinit var pagerAdapter: ImperialPagerAdapter
 
     private fun applyLanguageSettings() {
 //        val prefs = getPreferences()
@@ -59,10 +61,14 @@ class MainActivity : FragmentActivity() {
     private fun restoreMainUnits() {
         workingUnits = settings.restoreWorkingUnits()
 
-        workingUnits.selectedUnit.inputString = settings.restoreTopString()
-        workingUnits.selectedUnit.value = BasicCalculator(workingUnits.selectedUnit.inputString).eval()
-        workingUnits.secondUnit.inputString = settings.restoreBottomString()
-        workingUnits.secondUnit.value = BasicCalculator(workingUnits.secondUnit.inputString).eval()
+        pagerAdapter = ImperialPagerAdapter(this, workingUnits)
+        val topString = settings.restoreTopString()
+        workingUnits.selectedUnit.restoreValue(topString, BasicCalculator(topString).eval())
+        val bottomString = settings.restoreBottomString()
+        workingUnits.secondUnit.restoreValue(bottomString, BasicCalculator(bottomString).eval())
+
+        workingUnits.topUnit.restoreValue(topString, BasicCalculator(topString).eval())
+        workingUnits.bottomUnit.restoreValue(bottomString, BasicCalculator(bottomString).eval())
     }
 
     fun restoreAllValues(fragment: Fragment) {
@@ -70,8 +76,8 @@ class MainActivity : FragmentActivity() {
             is ConverterFragment -> {
                 converterFragment = fragment
                 converterFragment?.let {
-                    it.restoreTopPanel(workingUnits.selectedUnit)
-                    it.restoreBottomPanel(workingUnits.secondUnit)
+                    it.restoreTopPanel(workingUnits.topUnit)
+                    it.restoreBottomPanel(workingUnits.bottomUnit)
                     it.selectPanel(it.topPanel, it.bottomPanel)
                     it.displayUnitValues()
                 }
@@ -114,7 +120,9 @@ class MainActivity : FragmentActivity() {
         setContentView(R.layout.activity_main)
         try {
             val viewPager = findViewById<ViewPager2>(R.id.pager)
-            viewPager.adapter = ImperialPagerAdapter(this, workingUnits)
+            viewPager.adapter = pagerAdapter
+
+
         } catch (e: Exception) {
             // layout without view pager
         }
@@ -128,6 +136,8 @@ class MainActivity : FragmentActivity() {
 
     fun onPanelsSwapped() {
         unitListFragment?.onPanelsSwapped()
+        pagerAdapter.notifyItemChanged(UNIT_LIST_PAGE_ID)
+        //pagerAdapter.notifyDataSetChanged()
     }
 
     fun onPanelTextChanged(panel: ImperialUnitPanel, s: Editable) {
@@ -145,12 +155,12 @@ class MainActivity : FragmentActivity() {
     }
 
     fun onUnitSelected(unit: ImperialUnit) {
-        converterFragment?.onUnitSelected(unit)
+        converterFragment?.onUnitSelected(workingUnits.selectedUnit, unit)
     }
 
     fun onArrowClicked(unit: ImperialUnit) {
         Toast.makeText(applicationContext, "'${unit.unitName.name}' has been moved to the top", Toast.LENGTH_SHORT).show()
-        if (workingUnits.selectedUnit != unit) {
+        if (workingUnits.topUnit != unit) {
             swapPanels()
         }
         settings.saveNewOrder(workingUnits.orderedUnits)
@@ -158,7 +168,7 @@ class MainActivity : FragmentActivity() {
 
     fun onArrowLongClicked(unit: ImperialUnit) {
         Toast.makeText(applicationContext, "'${unit.unitName.name}' has been moved to the top", Toast.LENGTH_SHORT).show()
-        if (workingUnits.selectedUnit != unit) {
+        if (workingUnits.topUnit != unit) {
             swapPanels()
         }
         settings.saveNewOrder(workingUnits.orderedUnits)

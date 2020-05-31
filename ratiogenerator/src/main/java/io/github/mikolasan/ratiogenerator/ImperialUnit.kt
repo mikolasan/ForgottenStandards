@@ -6,6 +6,11 @@ class ImperialUnit(val unitName: ImperialUnitName, val ratioMap: Map<ImperialUni
     var inputString: String = ""
     var formattedString: String = ""
 
+    fun restoreValue(s: String, v: Double) {
+        inputString = s
+        value = v
+    }
+
 //    fun inputStringToValue() {
 //        value = BasicCalculator(inputString).eval()
 //    }

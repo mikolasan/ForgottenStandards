@@ -1,7 +1,6 @@
 package io.github.mikolasan.imperialrussia
 
 import android.content.Context
-import android.os.Build
 import android.view.*
 import android.widget.BaseAdapter
 import android.widget.ImageView
@@ -9,7 +8,9 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import io.github.mikolasan.ratiogenerator.ImperialUnit
 
-class ImperialListAdapter(private val units: Array<ImperialUnit>) : BaseAdapter() {
+class ImperialListAdapter(private val workingUnits: WorkingUnits) : BaseAdapter() {
+    val units: Array<ImperialUnit> = workingUnits.orderedUnits
+
     enum class ViewState {
         SECOND,
         SELECTED,
@@ -32,8 +33,7 @@ class ImperialListAdapter(private val units: Array<ImperialUnit>) : BaseAdapter(
         ViewState.NORMAL to R.color.keyboardDigit
     )
 
-    private var selectedUnit: ImperialUnit? = null
-    private var secondUnit: ImperialUnit? = null
+
 
     private var arrowClickListener: (Int, View, ImperialUnit) -> Unit = { position, _, _ ->
         System.out.println("arrowClickListener ${position}")
@@ -59,20 +59,20 @@ class ImperialListAdapter(private val units: Array<ImperialUnit>) : BaseAdapter(
         units.forEach { u -> u.value = convertValue(unit, u, value) }
         notifyDataSetChanged()
     }
-
-    fun setSelectedUnit(unit: ImperialUnit?) {
-        selectedUnit = unit
-    }
-
-    fun setSecondUnit(unit: ImperialUnit?) {
-        secondUnit = unit
-    }
-
-    fun swapSelection() {
-        val temp = selectedUnit
-        selectedUnit = secondUnit
-        secondUnit = temp
-    }
+//
+//    fun setSelectedUnit(unit: ImperialUnit?) {
+//        selectedUnit = unit
+//    }
+//
+//    fun setSecondUnit(unit: ImperialUnit?) {
+//        secondUnit = unit
+//    }
+//
+//    fun swapSelection() {
+//        val temp = selectedUnit
+//        selectedUnit = secondUnit
+//        secondUnit = temp
+//    }
 
     private fun updateViewColors(layout: ConstraintLayout, dataPosition: Int) {
         val data: ImperialUnit = getItem(dataPosition) as ImperialUnit
@@ -83,7 +83,7 @@ class ImperialListAdapter(private val units: Array<ImperialUnit>) : BaseAdapter(
         val unitLock: ImageView = layout.findViewById(R.id.unit_lock)
         val arrowUp: ImageView = layout.findViewById(R.id.arrow_up)
         when (data) {
-            selectedUnit -> {
+            workingUnits.selectedUnit -> {
                 layout.setBackgroundResource(backgrounds.getValue(ViewState.SELECTED))
                 nameTextView.setTextColorId(nameColors.getValue(ViewState.SELECTED))
                 valueTextView.setTextColorId(valueColors.getValue(ViewState.SELECTED))
@@ -92,7 +92,7 @@ class ImperialListAdapter(private val units: Array<ImperialUnit>) : BaseAdapter(
                 unitLock.visibility = View.INVISIBLE
                 arrowUp.visibility = if (dataPosition == 0) View.INVISIBLE else View.VISIBLE
             }
-            secondUnit -> {
+            workingUnits.secondUnit -> {
                 layout.setBackgroundResource(backgrounds.getValue(ViewState.SECOND))
                 nameTextView.setTextColorId(nameColors.getValue(ViewState.SECOND))
                 valueTextView.setTextColorId(valueColors.getValue(ViewState.SECOND))

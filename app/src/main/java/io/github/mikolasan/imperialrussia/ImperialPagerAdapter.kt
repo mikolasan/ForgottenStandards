@@ -19,4 +19,5 @@ class ImperialPagerAdapter(fragmentActivity: FragmentActivity, private val worki
     override fun createFragment(position: Int): Fragment {
         return pagesCreators[position]?.invoke() ?: throw IndexOutOfBoundsException()
     }
+
 }

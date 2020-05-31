@@ -5,9 +5,10 @@ import android.content.SharedPreferences
 import io.github.mikolasan.ratiogenerator.ImperialUnit
 import io.github.mikolasan.ratiogenerator.ImperialUnitName
 import io.github.mikolasan.ratiogenerator.LengthUnits
+import java.lang.ClassCastException
 
 class ImperialSettings(private val context: Context) {
-    private val preferencesFile = "ImperialRussiaPref.4"
+    private val preferencesFile = "ImperialRussiaPref.7"
 
     private val preferencesEditor: SharedPreferences.Editor by lazy {
         return@lazy preferences.edit()
@@ -17,12 +18,19 @@ class ImperialSettings(private val context: Context) {
         context.getSharedPreferences(preferencesFile, Context.MODE_PRIVATE)
     }
 
-    private fun restoreUnit(storedName: String): ImperialUnit? {
-        if (storedName != "") {
-            val unitName = ImperialUnitName.valueOf(storedName)
-            return LengthUnits.imperialUnits[unitName]
+    private fun restoreUnit(settingName: String, defaultUnit: ImperialUnit): ImperialUnit {
+        return if (preferences.contains(settingName)) {
+            try {
+                val unitName = preferences.getString(settingName, defaultUnit.unitName.name)
+                val imperialUnitName = ImperialUnitName.valueOf(unitName!!)
+                LengthUnits.imperialUnits.getValue(imperialUnitName)
+            } catch (e: ClassCastException) {
+                System.err.println(e.message)
+                defaultUnit
+            }
+        } else {
+            defaultUnit
         }
-        return null
     }
 
     fun restoreWorkingUnits(): WorkingUnits {
@@ -36,35 +44,24 @@ class ImperialSettings(private val context: Context) {
                 p = i
             }
             if (!preferences.contains(settingName)) {
+                System.err.println("First time loading ${settingName}")
                 preferencesEditor.putInt(settingName, i)
             }
             units[p] = u
         }
         preferencesEditor.apply()
 
-        val topPanelUnit = restoreTopUnit(units[0])
-        val bottomPanelUnit = restoreBottomUnit(units[1])
-        if (units[1] != bottomPanelUnit) {
-            units.moveToFront(bottomPanelUnit)
-        }
-        if (units[0] != topPanelUnit) {
-            units.moveToFront(topPanelUnit)
-        }
+        val topPanelUnit: ImperialUnit = restoreUnit("topPanelUnit", units[0])
+        val bottomPanelUnit: ImperialUnit = restoreUnit("bottomPanelUnit", units[1])
 
         return WorkingUnits().apply {
-                orderedUnits = units
-                selectedUnit = topPanelUnit
-                secondUnit = bottomPanelUnit
-                listAdapter = ImperialListAdapter(units)
+            orderedUnits = units
+            selectedUnit = topPanelUnit
+            secondUnit = bottomPanelUnit
+            topUnit = topPanelUnit
+            bottomUnit = bottomPanelUnit
+            listAdapter = ImperialListAdapter(this)
         }
-    }
-
-    fun restoreTopUnit(defaultUnit: ImperialUnit): ImperialUnit {
-        return restoreUnit(preferences.getString("topPanelUnit", "") ?: "") ?: defaultUnit
-    }
-
-    fun restoreBottomUnit(defaultUnit: ImperialUnit): ImperialUnit {
-        return restoreUnit(preferences.getString("bottomPanelUnit", "") ?: "") ?: defaultUnit
     }
 
     fun restoreTopString(): String {

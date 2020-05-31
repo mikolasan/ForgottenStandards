@@ -259,32 +259,34 @@ class ConverterFragment : Fragment() {
         }
     }
 
-    fun onUnitSelected(unit: ImperialUnit) {
-        if (!topPanel.hasUnitAssigned()) {
-            topPanel.activate()
-            setTopPanel(unit, 1.0)
-            selectPanel(topPanel, bottomPanel)
-        } else if (!bottomPanel.hasUnitAssigned() && topPanel.unit != unit) {
-            bottomPanel.activate()
-            setBottomPanel(unit)
-            selectPanel(bottomPanel, topPanel)
-        } else {
-            if (selectedPanel == topPanel) {
-                if (bottomPanel.unit != unit) {
-                    setTopPanel(unit, null)
-                } else if (topPanel.unit != unit) {
+    fun onUnitSelected(oldUnit: ImperialUnit, newUnit: ImperialUnit) {
+//        if (!topPanel.hasUnitAssigned()) {
+//            topPanel.activate()
+//            setTopPanel(unit, 1.0)
+//            selectPanel(topPanel, bottomPanel)
+//        } else if (!bottomPanel.hasUnitAssigned() && topPanel.unit != unit) {
+//            bottomPanel.activate()
+//            setBottomPanel(unit)
+//            selectPanel(bottomPanel, topPanel)
+//        } else {
+
+            if (oldUnit == topPanel.unit) {
+                if (bottomPanel.unit != newUnit) {
+                    setTopPanel(newUnit, null)
+                } else if (topPanel.unit != newUnit) {
                     selectPanel(bottomPanel, topPanel)
                     (activity as MainActivity).onPanelsSwapped()
                 }
-            } else if (selectedPanel == bottomPanel) {
-                if (topPanel.unit != unit) {
-                    setBottomPanel(unit)
-                } else if (bottomPanel.unit != unit){
+            } else if (oldUnit == bottomPanel.unit) {
+                if (topPanel.unit != newUnit) {
+                    setBottomPanel(newUnit)
+                } else if (bottomPanel.unit != newUnit){
                     selectPanel(topPanel, bottomPanel)
                     (activity as MainActivity).onPanelsSwapped()
                 }
             }
-        }
+
+//        }
     }
 
     fun swapPanels() {
