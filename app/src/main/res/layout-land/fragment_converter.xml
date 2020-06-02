@@ -19,7 +19,7 @@
         android:text="Length"
         android:textAppearance="@style/ImperialKeypad"
         android:textColor="@color/colorPrimary"
-        android:textSize="45sp"
+        android:textSize="40sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed" />
@@ -37,8 +37,8 @@
 
     <io.github.mikolasan.imperialrussia.ImperialUnitPanel
         android:id="@+id/convert_to"
-        android:layout_width="@dimen/min_panel_width"
-        android:layout_height="133dp"
+        android:layout_width="@dimen/min_imperial_panel_width"
+        android:layout_height="@dimen/imperial_panel_height"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:visibility="gone"
@@ -47,8 +47,8 @@
 
     <io.github.mikolasan.imperialrussia.ImperialUnitPanel
         android:id="@+id/convert_from"
-        android:layout_width="@dimen/min_panel_width"
-        android:layout_height="133dp"
+        android:layout_width="@dimen/min_imperial_panel_width"
+        android:layout_height="@dimen/imperial_panel_height"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:visibility="gone"
@@ -62,7 +62,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:minWidth="@dimen/min_panel_width"
+        android:minWidth="@dimen/min_imperial_panel_width"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

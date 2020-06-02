@@ -6,9 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/ic_input_panel_back"
-    android:elevation="5dp"
-    android:minWidth="@dimen/min_panel_width"
-    android:paddingBottom="10dp" >
+    android:elevation="@dimen/elevation"
+    android:minWidth="@dimen/min_imperial_panel_width"
+    android:paddingBottom="10dp">
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/panel_title"
@@ -18,7 +18,7 @@
         android:text="@string/unit_to"
         android:textAppearance="@style/ImperialPanel"
         android:textColor="@color/colorPrimary"
-        android:textSize="34sp"
+        android:textSize="@dimen/imperial_panel_text_size"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -26,7 +26,7 @@
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/panel_input"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
@@ -35,11 +35,10 @@
         android:background="@drawable/ic_input_text_back"
         android:clickable="false"
         android:cursorVisible="true"
-        android:ems="10"
         android:focusable="false"
         android:gravity="end|fill_vertical"
-        android:paddingTop="3dp"
         android:paddingStart="12dp"
+        android:paddingTop="3dp"
         android:paddingEnd="12dp"
         android:paddingBottom="3dp"
         android:singleLine="true"
@@ -47,7 +46,7 @@
         android:textColor="@color/inputNormal"
         android:textCursorDrawable="@drawable/ic_cursor"
         android:textIsSelectable="true"
-        android:textSize="34sp"
+        android:textSize="@dimen/imperial_panel_text_size"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -67,7 +66,7 @@
         android:textAlignment="center"
         android:textAppearance="@style/ImperialPanel"
         android:textColor="@color/colorPrimary"
-        android:textSize="34sp"
+        android:textSize="@dimen/imperial_panel_text_size"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

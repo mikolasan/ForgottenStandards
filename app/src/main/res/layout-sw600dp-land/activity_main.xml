@@ -19,31 +19,18 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <fragment
-        android:id="@+id/description"
-        android:name="io.github.mikolasan.imperialrussia.DescriptionFragment"
+        android:id="@+id/converter"
+        android:name="io.github.mikolasan.imperialrussia.ConverterFragment"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintHeight_max="@dimen/max_description_height"
-        app:layout_constraintBottom_toTopOf="@id/converter"
+        android:layout_height="match_parent"
+        app:layout_constraintHeight_min="@dimen/min_converter_height"
+        app:layout_constraintWidth_max="@dimen/max_converter_width"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/list"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_default="percent"
-        app:layout_constraintWidth_percent="0.5"
-        tools:layout="@layout/fragment_description" />
-
-    <fragment
-        android:id="@+id/converter"
-        android:name="io.github.mikolasan.imperialrussia.ConverterFragment"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintHeight_min="@dimen/min_converter_height"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/list"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/description"
-        app:layout_constraintWidth_default="percent"
-        app:layout_constraintWidth_percent="0.5"
+        app:layout_constraintWidth_percent="0.3"
         tools:layout="@layout/fragment_converter" />
 
     <fragment
@@ -52,12 +39,25 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/description"
         app:layout_constraintStart_toEndOf="@id/converter"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_default="percent"
-        app:layout_constraintWidth_percent="0.5"
+        app:layout_constraintWidth_percent="0.4"
         tools:layout="@layout/fragment_unit_list" />
+
+    <fragment
+        android:id="@+id/description"
+        android:name="io.github.mikolasan.imperialrussia.DescriptionFragment"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_default="percent"
+        app:layout_constraintWidth_percent="0.3"
+        tools:layout="@layout/fragment_description" />
 
     <!--<androidx.appcompat.widget.AppCompatButton-->
     <!--android:id="@+id/language"-->

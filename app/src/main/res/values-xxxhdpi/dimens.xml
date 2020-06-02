@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="keypad_margin">5dp</dimen>
+    <dimen name="digit_key_side">50dp</dimen>
+    <dimen name="digit_font_size">38sp</dimen>
+    <dimen name="op_key_side">46dp</dimen>
+    <dimen name="min_imperial_panel_width">140dp</dimen>
+    <dimen name="max_description_height">500dp</dimen>
+    <dimen name="min_converter_height">600dp</dimen>
+    <dimen name="max_converter_width">400dp</dimen>
+    <dimen name="imperial_panel_text_size">30sp</dimen>
+    <dimen name="elevation">5dp</dimen>
+    <dimen name="imperial_panel_height">120dp</dimen>
+    <dimen name="unit_list_divider">6dp</dimen>
+    <dimen name="unit_list_name_size">16sp</dimen>
+    <dimen name="unit_list_value_size">22sp</dimen>
+    <dimen name="unit_list_height">74dp</dimen>
+    <dimen name="unit_list_margin_start">12dp</dimen>
+    <dimen name="unit_list_name_margin_top">12dp</dimen>
+    <dimen name="unit_list_value_margin_bottom">2dp</dimen>
+</resources>

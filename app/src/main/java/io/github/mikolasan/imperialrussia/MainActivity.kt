@@ -61,7 +61,7 @@ class MainActivity : FragmentActivity() {
     private fun restoreMainUnits() {
         workingUnits = settings.restoreWorkingUnits()
 
-        pagerAdapter = ImperialPagerAdapter(this, workingUnits)
+        pagerAdapter = ImperialPagerAdapter(this)
         val topString = settings.restoreTopString()
         workingUnits.selectedUnit.restoreValue(topString, BasicCalculator(topString).eval())
         val bottomString = settings.restoreBottomString()
