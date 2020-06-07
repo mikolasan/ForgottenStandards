@@ -183,6 +183,14 @@ class ConverterFragment : Fragment() {
         updateRatioLabel()
     }
 
+    fun selectTopPanel() {
+        selectPanel(topPanel, bottomPanel)
+    }
+
+    fun selectBottomPanel() {
+        selectPanel(bottomPanel, topPanel)
+    }
+
     private fun setTopPanel(unit: ImperialUnit, value: Double?) {
         topPanel.changeUnit(unit)
         if (value == null) {

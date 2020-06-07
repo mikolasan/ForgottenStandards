@@ -6,6 +6,7 @@ import io.github.mikolasan.ratiogenerator.ImperialUnit
 import io.github.mikolasan.ratiogenerator.ImperialUnitName
 import io.github.mikolasan.ratiogenerator.LengthUnits
 import java.lang.ClassCastException
+import java.lang.RuntimeException
 
 class ImperialSettings(private val context: Context) {
     private val preferencesFile = "ImperialRussiaPref.7"
@@ -34,20 +35,25 @@ class ImperialSettings(private val context: Context) {
     }
 
     fun restoreWorkingUnits(): WorkingUnits {
-        val units = LengthUnits.lengthUnits
+        val units = LengthUnits.lengthUnits.copyOf()
+        println("== restoreWorkingUnits ==")
         LengthUnits.lengthUnits.forEachIndexed { i, u ->
             val unitName = u.unitName.name
             val settingName = "unit${unitName}Position"
-            var p = preferences.getInt(settingName, i)
+            val p = preferences.getInt(settingName, i)
+            println("${settingName} - ${p}")
             if (p < 0) {
-                System.err.println("Shit: pos ${i}, unit ${unitName} got ${p}")
-                p = i
+                throw RuntimeException("Shit: pos ${i}, unit ${unitName} got ${p}")
             }
             if (!preferences.contains(settingName)) {
                 System.err.println("First time loading ${settingName}")
                 preferencesEditor.putInt(settingName, i)
             }
             units[p] = u
+        }
+        println("== END ==")
+        if (units.distinct().size != units.size) {
+            LengthUnits.lengthUnits.copyInto(units)
         }
         preferencesEditor.apply()
 
@@ -73,11 +79,14 @@ class ImperialSettings(private val context: Context) {
     }
 
     fun saveNewOrder(orderedUnits: Array<ImperialUnit>) {
-        LengthUnits.lengthUnits.forEachIndexed { _, u ->
+        println("== saveNewOrder ==")
+        orderedUnits.forEachIndexed { i, u ->
             val unitName = u.unitName.name
             val settingName = "unit${unitName}Position"
-            preferencesEditor.putInt(settingName, orderedUnits.indexOf(u))
+            println("${settingName} - ${i}")
+            preferencesEditor.putInt(settingName, i)
         }
+        println("== END ==")
         preferencesEditor.apply()
     }
 

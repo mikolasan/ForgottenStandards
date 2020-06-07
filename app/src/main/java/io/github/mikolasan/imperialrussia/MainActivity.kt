@@ -92,6 +92,9 @@ class MainActivity : FragmentActivity() {
     }
 
     private fun swapPanels() {
+        val savedUnit = workingUnits.topUnit
+        workingUnits.topUnit = workingUnits.bottomUnit
+        workingUnits.bottomUnit = savedUnit
         converterFragment?.swapPanels()
         unitListFragment?.swapPanels()
     }
@@ -155,13 +158,16 @@ class MainActivity : FragmentActivity() {
     }
 
     fun onUnitSelected(unit: ImperialUnit) {
-        converterFragment?.onUnitSelected(workingUnits.selectedUnit, unit)
+        converterFragment?.let {
+            it.onUnitSelected(workingUnits.selectedUnit, unit)
+        }
     }
 
     fun onArrowClicked(unit: ImperialUnit) {
         Toast.makeText(applicationContext, "'${unit.unitName.name}' has been moved to the top", Toast.LENGTH_SHORT).show()
         if (workingUnits.topUnit != unit) {
             swapPanels()
+            converterFragment?.selectTopPanel()
         }
         settings.saveNewOrder(workingUnits.orderedUnits)
     }
@@ -170,12 +176,14 @@ class MainActivity : FragmentActivity() {
         Toast.makeText(applicationContext, "'${unit.unitName.name}' has been moved to the top", Toast.LENGTH_SHORT).show()
         if (workingUnits.topUnit != unit) {
             swapPanels()
+            converterFragment?.selectTopPanel()
         }
         settings.saveNewOrder(workingUnits.orderedUnits)
     }
 
     fun onTopPanelUnitChanged(unit: ImperialUnit) {
         converterFragment?.let {
+            workingUnits.topUnit = it.topPanel.unit!!
             unitListFragment?.onUnitSelected(unit, it.bottomPanel.unit)
             settings.saveTopUnit(unit, it.topPanel.makeSerializedString())
         }
@@ -183,6 +191,7 @@ class MainActivity : FragmentActivity() {
 
     fun onBottomPanelUnitChanged(unit: ImperialUnit) {
         converterFragment?.let {
+            workingUnits.bottomUnit = it.bottomPanel.unit!!
             unitListFragment?.onUnitSelected(unit, it.topPanel.unit)
             settings.saveBottomUnit(unit, it.bottomPanel.makeSerializedString())
         }

@@ -116,7 +116,7 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits) : BaseAdapter(
     private fun updateViewData(layout: ConstraintLayout, dataPosition: Int) {
         val data: ImperialUnit = getItem(dataPosition) as ImperialUnit
         val nameTextView: TextView = layout.findViewById(R.id.unit_name)
-        nameTextView.text = data.unitName.name
+        nameTextView.text = data.unitName.name.toLowerCase().capitalize()
         val valueTextView: TextView = layout.findViewById(R.id.unit_value)
         valueTextView.text = valueForDisplay(data.value)
     }

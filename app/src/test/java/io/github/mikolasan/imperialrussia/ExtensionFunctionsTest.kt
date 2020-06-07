@@ -9,6 +9,10 @@ class ExtensionFunctionsTest {
         a.moveToFrontFrom(3)
 //        println(a.joinToString())
         assert(a contentEquals arrayOf(3, 0, 1, 2, 4))
+        a.moveToFrontFrom(3)
+        assert(a contentEquals arrayOf(2, 3, 0, 1, 4))
+        a.moveToFrontFrom(3)
+        assert(a contentEquals arrayOf(1, 2, 3, 0, 4))
     }
 
     @Test

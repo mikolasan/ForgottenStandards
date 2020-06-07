@@ -51,7 +51,7 @@ class ImperialUnitPanel(context: Context, attributeSet: AttributeSet) : Constrai
 
     private fun updateUnitText() {
         unit?.unitName?.name?.let { s ->
-            val underlineText = SpannableString(s)
+            val underlineText = SpannableString(s.toLowerCase().capitalize())
             //underlineText.setSpan(UnderlineSpan(), 0, underlineText.length, 0)
             title.text = underlineText
         }
