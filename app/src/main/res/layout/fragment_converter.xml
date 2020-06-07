@@ -50,7 +50,7 @@
     <include
         layout="@layout/keyboard_panel"
         android:layout_width="0dp"
-        android:layout_height="255dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
