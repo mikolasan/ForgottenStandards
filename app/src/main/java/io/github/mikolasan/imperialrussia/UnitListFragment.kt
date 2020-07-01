@@ -46,7 +46,13 @@ class UnitListFragment : Fragment() {
             (activity as MainActivity).onArrowLongClicked(unit)
             unitsList.setSelectionAfterHeaderView()
         }
-        (activity as MainActivity).restoreAllValues(this)
+
+        (activity as MainActivity).let {
+            val workingUnits = it.workingUnits
+            restoreSelectedUnit(workingUnits.selectedUnit)
+            restoreSecondUnit(workingUnits.secondUnit)
+            updateAllValues(workingUnits.selectedUnit)
+        }
     }
 
     override fun onResume() {

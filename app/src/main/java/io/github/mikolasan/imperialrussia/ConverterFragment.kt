@@ -232,7 +232,12 @@ class ConverterFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        (activity as MainActivity).restoreAllValues(this)
+
+        val workingUnits = (activity as MainActivity).workingUnits
+        restoreTopPanel(workingUnits.topUnit)
+        restoreBottomPanel(workingUnits.bottomUnit)
+        selectPanel(topPanel, bottomPanel)
+        displayUnitValues()
     }
 
     fun restoreTopPanel(unit: ImperialUnit) {

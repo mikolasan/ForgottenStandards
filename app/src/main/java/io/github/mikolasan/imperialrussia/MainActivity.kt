@@ -2,14 +2,11 @@ package io.github.mikolasan.imperialrussia
 
 import android.os.Bundle
 import android.text.Editable
+import android.widget.TextView
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.widget.ViewPager2
 import io.github.mikolasan.ratiogenerator.ImperialUnit
-
-import java.lang.Exception
-
 import java.util.*
 
 
@@ -24,6 +21,48 @@ class MainActivity : FragmentActivity() {
     private lateinit var settings: ImperialSettings
     lateinit var workingUnits: WorkingUnits
     lateinit var pagerAdapter: ImperialPagerAdapter
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        settings = ImperialSettings(applicationContext)
+        if (savedInstanceState == null) {
+            createNewActivity()
+        } else {
+            recreatePreviousActivity(savedInstanceState)
+        }
+
+        setContentView(R.layout.activity_main)
+        try {
+            val viewPager = findViewById<ViewPager2>(R.id.pager)
+            viewPager.adapter = pagerAdapter
+        } catch (e: Exception) {
+            // layout without view pager
+        }
+
+        try {
+            val descriptions = applicationContext.assets.open("descriptions.txt").bufferedReader().readLines()
+            val label = findViewById<TextView>(R.id.description_text)
+            label.setHtml(descriptions[0])
+        } catch (e: Exception) {
+            // layout without view pager
+        }
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        // onRestoreInstanceState works against me. I include layouts and included layouts do not have
+        // unique ids. And it calls TextChangedListener on my inputs with wrong values.
+        //super.onRestoreInstanceState(savedInstanceState)
+    }
+
+    private fun createNewActivity() {
+        restoreMainUnits()
+        //applyLanguageSettings()
+    }
+
+    private fun recreatePreviousActivity(savedInstanceState: Bundle) {
+        restoreMainUnits()
+    }
 
     private fun applyLanguageSettings() {
 //        val prefs = getPreferences()
@@ -71,70 +110,12 @@ class MainActivity : FragmentActivity() {
         workingUnits.bottomUnit.restoreValue(bottomString, BasicCalculator(bottomString).eval())
     }
 
-    fun restoreAllValues(fragment: Fragment) {
-        when (fragment) {
-            is ConverterFragment -> {
-                converterFragment = fragment
-                converterFragment?.let {
-                    it.restoreTopPanel(workingUnits.topUnit)
-                    it.restoreBottomPanel(workingUnits.bottomUnit)
-                    it.selectPanel(it.topPanel, it.bottomPanel)
-                    it.displayUnitValues()
-                }
-            }
-            is UnitListFragment -> {
-                unitListFragment = fragment
-                unitListFragment?.restoreSelectedUnit(workingUnits.selectedUnit)
-                unitListFragment?.restoreSecondUnit(workingUnits.secondUnit)
-                unitListFragment?.updateAllValues(workingUnits.selectedUnit)
-            }
-        }
-    }
-
     private fun swapPanels() {
         val savedUnit = workingUnits.topUnit
         workingUnits.topUnit = workingUnits.bottomUnit
         workingUnits.bottomUnit = savedUnit
         converterFragment?.swapPanels()
         unitListFragment?.swapPanels()
-    }
-
-    private fun createNewActivity() {
-        restoreMainUnits()
-//        restoreAllValues()
-        //applyLanguageSettings()
-    }
-
-    private fun recreatePreviousActivity(savedInstanceState: Bundle) {
-        restoreMainUnits()
-//        restoreAllValues()
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        settings = ImperialSettings(applicationContext)
-        if (savedInstanceState == null) {
-            createNewActivity()
-        } else {
-            recreatePreviousActivity(savedInstanceState)
-        }
-
-        setContentView(R.layout.activity_main)
-        try {
-            val viewPager = findViewById<ViewPager2>(R.id.pager)
-            viewPager.adapter = pagerAdapter
-
-
-        } catch (e: Exception) {
-            // layout without view pager
-        }
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        // onRestoreInstanceState works against me. I include layouts and included layouts do not have
-        // unique ids. And it calls TextChangedListener on my inputs with wrong values.
-        //super.onRestoreInstanceState(savedInstanceState)
     }
 
     fun onPanelsSwapped() {

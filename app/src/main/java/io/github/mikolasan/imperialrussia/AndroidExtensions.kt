@@ -1,6 +1,7 @@
 package io.github.mikolasan.imperialrussia
 
 import android.os.Build
+import android.text.Html
 import android.widget.TextView
 
 fun TextView.setTextColorId(res: Int) {
@@ -12,4 +13,12 @@ fun TextView.setTextColorId(res: Int) {
         context.resources.getColor(res)
     }
     this.setTextColor(colorInt)
+}
+
+fun TextView.setHtml(s: String) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        this.text = Html.fromHtml(s, Html.FROM_HTML_MODE_COMPACT);
+    } else {
+        this.text = Html.fromHtml(s);
+    }
 }
