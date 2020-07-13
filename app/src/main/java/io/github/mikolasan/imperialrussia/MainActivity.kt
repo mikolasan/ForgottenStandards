@@ -4,9 +4,13 @@ import android.os.Bundle
 import android.text.Editable
 import android.widget.TextView
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.widget.ViewPager2
 import io.github.mikolasan.ratiogenerator.ImperialUnit
+import io.github.mikolasan.ratiogenerator.ImperialUnitName
+import io.noties.markwon.Markwon
+import java.io.IOException
 import java.util.*
 
 
@@ -21,11 +25,24 @@ class MainActivity : FragmentActivity() {
     private lateinit var settings: ImperialSettings
     lateinit var workingUnits: WorkingUnits
     lateinit var pagerAdapter: ImperialPagerAdapter
+    lateinit var markwon: Markwon
+    private val descriptions by lazy {
+        ImperialUnitName.values().map {
+            try {
+                val inputReader = applicationContext.assets.open(it.name + ".txt")
+                return@map inputReader.bufferedReader().readLines().joinToString("\n")
+            } catch (e: IOException) {
+                return@map ""
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         settings = ImperialSettings(applicationContext)
+        markwon = Markwon.create(applicationContext)
+
         if (savedInstanceState == null) {
             createNewActivity()
         } else {
@@ -41,18 +58,18 @@ class MainActivity : FragmentActivity() {
         }
 
         try {
-            val descriptions = applicationContext.assets.open("descriptions.txt").bufferedReader().readLines()
             val label = findViewById<TextView>(R.id.description_text)
-            label.setHtml(descriptions[0])
+            val unit = workingUnits.selectedUnit
+            markwon.setMarkdown(label, descriptions[unit.unitName.ordinal])
         } catch (e: Exception) {
             // layout without view pager
         }
+
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         // onRestoreInstanceState works against me. I include layouts and included layouts do not have
         // unique ids. And it calls TextChangedListener on my inputs with wrong values.
-        //super.onRestoreInstanceState(savedInstanceState)
     }
 
     private fun createNewActivity() {
@@ -122,6 +139,14 @@ class MainActivity : FragmentActivity() {
         unitListFragment?.onPanelsSwapped()
         pagerAdapter.notifyItemChanged(UNIT_LIST_PAGE_ID)
         //pagerAdapter.notifyDataSetChanged()
+
+        try {
+            val label = findViewById<TextView>(R.id.description_text)
+            val unit = workingUnits.selectedUnit
+            markwon.setMarkdown(label, descriptions[unit.unitName.ordinal])
+        } catch (e: Exception) {
+            // layout without view pager
+        }
     }
 
     fun onPanelTextChanged(panel: ImperialUnitPanel, s: Editable) {
@@ -141,6 +166,12 @@ class MainActivity : FragmentActivity() {
     fun onUnitSelected(unit: ImperialUnit) {
         converterFragment?.let {
             it.onUnitSelected(workingUnits.selectedUnit, unit)
+        }
+        try {
+            val label = findViewById<TextView>(R.id.description_text)
+            markwon.setMarkdown(label, descriptions[unit.unitName.ordinal])
+        } catch (e: Exception) {
+            // layout without view pager
         }
     }
 
@@ -175,6 +206,13 @@ class MainActivity : FragmentActivity() {
             workingUnits.bottomUnit = it.bottomPanel.unit!!
             unitListFragment?.onUnitSelected(unit, it.topPanel.unit)
             settings.saveBottomUnit(unit, it.bottomPanel.makeSerializedString())
+        }
+    }
+
+    fun setSubscriber(fragment: Fragment) {
+        when (fragment) {
+            is ConverterFragment -> converterFragment = fragment
+            is UnitListFragment -> unitListFragment = fragment
         }
     }
 }

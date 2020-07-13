@@ -214,7 +214,7 @@ class ConverterFragment : Fragment() {
         bottomPanel.setUnitValue(bottomValue)
         bottomPanel.updateDisplayValue()
 
-        (activity as MainActivity).onBottomPanelUnitChanged(unit)
+        (activity as? MainActivity)?.onBottomPanelUnitChanged(unit)
 
         updateRatioLabel()
     }
@@ -233,11 +233,13 @@ class ConverterFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        val workingUnits = (activity as MainActivity).workingUnits
-        restoreTopPanel(workingUnits.topUnit)
-        restoreBottomPanel(workingUnits.bottomUnit)
-        selectPanel(topPanel, bottomPanel)
-        displayUnitValues()
+        (activity as? MainActivity)?.setSubscriber(this)
+        (activity as? MainActivity)?.workingUnits?.let { workingUnits ->
+            restoreTopPanel(workingUnits.topUnit)
+            restoreBottomPanel(workingUnits.bottomUnit)
+            selectPanel(topPanel, bottomPanel)
+            displayUnitValues()
+        }
     }
 
     fun restoreTopPanel(unit: ImperialUnit) {

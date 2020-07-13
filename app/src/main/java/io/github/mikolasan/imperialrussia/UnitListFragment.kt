@@ -47,11 +47,12 @@ class UnitListFragment : Fragment() {
             unitsList.setSelectionAfterHeaderView()
         }
 
-        (activity as MainActivity).let {
-            val workingUnits = it.workingUnits
+        (activity as? MainActivity)?.let { mainActivity ->
+            val workingUnits = mainActivity.workingUnits
             restoreSelectedUnit(workingUnits.selectedUnit)
             restoreSecondUnit(workingUnits.secondUnit)
             updateAllValues(workingUnits.selectedUnit)
+            mainActivity.setSubscriber(this)
         }
     }
 
@@ -62,7 +63,7 @@ class UnitListFragment : Fragment() {
 
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
-            listAdapter.notifyDataSetChanged()
+        listAdapter.notifyDataSetChanged()
 
     }
 
@@ -71,20 +72,25 @@ class UnitListFragment : Fragment() {
     }
 
     fun restoreSelectedUnit(unit: ImperialUnit) {
-        (activity as MainActivity).workingUnits.selectedUnit = unit
+        (activity as? MainActivity)?.let { mainActivity ->
+            mainActivity.workingUnits.selectedUnit = unit
+        }
         //listAdapter.setSelectedUnit(unit)
     }
 
     fun restoreSecondUnit(unit: ImperialUnit) {
-        (activity as MainActivity).workingUnits.secondUnit = unit
+        (activity as? MainActivity)?.let { mainActivity ->
+            mainActivity.workingUnits.secondUnit = unit
+        }
         //listAdapter.setSelectedUnit(unit)
     }
 
     fun onPanelsSwapped() {
-        val mainActivity = activity as MainActivity
-        val temp = mainActivity.workingUnits.selectedUnit
-        mainActivity.workingUnits.selectedUnit = mainActivity.workingUnits.secondUnit
-        mainActivity.workingUnits.secondUnit = temp
+        (activity as? MainActivity)?.let { mainActivity ->
+            val temp = mainActivity.workingUnits.selectedUnit
+            mainActivity.workingUnits.selectedUnit = mainActivity.workingUnits.secondUnit
+            mainActivity.workingUnits.secondUnit = temp
+        }
         listAdapter.notifyDataSetChanged()
     }
 
@@ -98,8 +104,10 @@ class UnitListFragment : Fragment() {
 
     // TODO: remove '?'
     fun onUnitSelected(selectedUnit: ImperialUnit, secondUnit: ImperialUnit?) {
-        (activity as MainActivity).workingUnits.selectedUnit = selectedUnit
-        (activity as MainActivity).workingUnits.secondUnit = secondUnit!!
+        (activity as? MainActivity)?.let { mainActivity ->
+            mainActivity.workingUnits.selectedUnit = selectedUnit
+            mainActivity.workingUnits.secondUnit = secondUnit!!
+        }
 //        listAdapter.setSelectedUnit(selectedUnit)
 //        listAdapter.setSecondUnit(secondUnit)
         listAdapter.notifyDataSetChanged()

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="elevation">5dp</dimen>
+    <dimen name="key_elevation">3dp</dimen>
+    <dimen name="keypad_margin">5dp</dimen>
+    <dimen name="digit_key_side">45dp</dimen>
+    <dimen name="digit_key_radius">14dp</dimen>
+    <dimen name="digit_font_size">34sp</dimen>
+    <dimen name="op_key_side">40dp</dimen>
+    <dimen name="op_key_radius">12dp</dimen>
+    <dimen name="op_special_key_radius">18dp</dimen>
+    <dimen name="op_font_size">38sp</dimen>
+    <dimen name="op_clear_font_size">30sp</dimen>
+    <dimen name="op_back_font_size">26sp</dimen>
+    <dimen name="min_imperial_panel_width">140dp</dimen>
+    <dimen name="max_description_height">500dp</dimen>
+    <dimen name="min_converter_height">600dp</dimen>
+    <dimen name="max_converter_width">400dp</dimen>
+    <dimen name="imperial_panel_height">120dp</dimen>
+    <dimen name="imperial_panel_text_size">28sp</dimen>
+    <dimen name="imperial_panel_hint_margin_start">12dp</dimen>
+    <dimen name="imperial_panel_hint_margin_top">12dp</dimen>
+    <dimen name="imperial_panel_hint_margin_end">12dp</dimen>
+    <dimen name="imperial_panel_hint_margin_bottom">4dp</dimen>
+    <dimen name="imperial_panel_input_margin_start">20dp</dimen>
+    <dimen name="imperial_panel_input_margin_top">8dp</dimen>
+    <dimen name="imperial_panel_input_margin_end">20dp</dimen>
+    <dimen name="imperial_panel_input_margin_bottom">8dp</dimen>
+    <dimen name="unit_list_divider">6dp</dimen>
+    <dimen name="unit_list_name_size">16sp</dimen>
+    <dimen name="unit_list_value_size">22sp</dimen>
+    <dimen name="unit_list_height">74dp</dimen>
+    <dimen name="unit_list_margin_start">12dp</dimen>
+    <dimen name="unit_list_name_margin_top">12dp</dimen>
+    <dimen name="unit_list_value_margin_bottom">2dp</dimen>
+    <dimen name="imperial_panel_input_padding_top">8dp</dimen>
+    <dimen name="imperial_panel_input_padding_bottom">8dp</dimen>
+    <dimen name="imperial_panel_input_padding_start">12dp</dimen>
+    <dimen name="imperial_panel_input_padding_end">12dp</dimen>
+    <dimen name="imperial_panel_input_radius">22dp</dimen>
+
+</resources>

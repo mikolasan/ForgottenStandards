@@ -5,6 +5,10 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="ImperialTales" parent="@android:style/TextAppearance">
+        <item name="android:textSize">18sp</item>
+    </style>
+
     <style name="ImperialKeypad" parent="@android:style/TextAppearance">
         <item name="android:fontFamily">@font/gotham_pro_bold</item>
     </style>

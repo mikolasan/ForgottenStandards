@@ -12,7 +12,7 @@
     <dimen name="op_font_size">40sp</dimen>
     <dimen name="op_clear_font_size">38sp</dimen>
     <dimen name="op_back_font_size">32sp</dimen>
-    <dimen name="min_imperial_panel_width">140dp</dimen>
+    <dimen name="min_imperial_panel_width">150dp</dimen>
     <dimen name="max_description_height">500dp</dimen>
     <dimen name="min_converter_height">600dp</dimen>
     <dimen name="max_converter_width">400dp</dimen>
