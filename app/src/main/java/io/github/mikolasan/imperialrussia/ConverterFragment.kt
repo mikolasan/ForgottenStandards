@@ -1,13 +1,10 @@
 package io.github.mikolasan.imperialrussia
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import io.github.mikolasan.ratiogenerator.ImperialUnit
@@ -45,66 +42,26 @@ class ConverterFragment : Fragment() {
         bottomInput.addTextChangedListener(object : ImperialTextWatcher(bottomPanel, selectedPanel, activity as MainActivity){})
 
         view.run {
-            val digitButtonOnClickListener: (View) -> Unit = { view ->
-                val button = view as Button
 
-                selectedPanel.let { panel ->
-                    if (!panel.hasUnitAssigned()) return@let
-                    if (panel.hasExponent()) {
-                        panel.setUnitValue(0.0)
-                        panel.setString("")
-                    }
-                    val text = panel.getString() ?: ""
-                    if (text.length <= maxDisplayLength) {
-                        panel.appendString(button.text[0])
-                    }
-                }
-            }
-            findViewById<DigitButton>(R.id.digit_1).setOnClickListener(digitButtonOnClickListener)
-            findViewById<DigitButton>(R.id.digit_2).setOnClickListener(digitButtonOnClickListener)
-            findViewById<DigitButton>(R.id.digit_3).setOnClickListener(digitButtonOnClickListener)
-            findViewById<DigitButton>(R.id.digit_4).setOnClickListener(digitButtonOnClickListener)
-            findViewById<DigitButton>(R.id.digit_5).setOnClickListener(digitButtonOnClickListener)
-            findViewById<DigitButton>(R.id.digit_6).setOnClickListener(digitButtonOnClickListener)
-            findViewById<DigitButton>(R.id.digit_7).setOnClickListener(digitButtonOnClickListener)
-            findViewById<DigitButton>(R.id.digit_8).setOnClickListener(digitButtonOnClickListener)
-            findViewById<DigitButton>(R.id.digit_9).setOnClickListener(digitButtonOnClickListener)
-            findViewById<DigitButton>(R.id.digit_0).setOnClickListener(digitButtonOnClickListener)
+            findViewById<DigitButton>(R.id.digit_1).setOnClickPanel(selectedPanel)
+            findViewById<DigitButton>(R.id.digit_2).setOnClickPanel(selectedPanel)
+            findViewById<DigitButton>(R.id.digit_3).setOnClickPanel(selectedPanel)
+            findViewById<DigitButton>(R.id.digit_4).setOnClickPanel(selectedPanel)
+            findViewById<DigitButton>(R.id.digit_5).setOnClickPanel(selectedPanel)
+            findViewById<DigitButton>(R.id.digit_6).setOnClickPanel(selectedPanel)
+            findViewById<DigitButton>(R.id.digit_7).setOnClickPanel(selectedPanel)
+            findViewById<DigitButton>(R.id.digit_8).setOnClickPanel(selectedPanel)
+            findViewById<DigitButton>(R.id.digit_9).setOnClickPanel(selectedPanel)
+            findViewById<DigitButton>(R.id.digit_0).setOnClickPanel(selectedPanel)
 
-            val operations = setOf('÷', '×', '+', '-')
-            val operationButtonOnClickListener: (View) -> Unit = { button ->
-                selectedPanel.let { panel ->
-                    if (panel.hasExponent()) {
-                        if (button.id != R.id.op_eval) {
-                            panel.setUnitValue(0.0)
-                            panel.setString("")
-                        } else {
-                            return@let
-                        }
-                    }
-                    when (button.id) {
-                        R.id.op_back -> panel.dropLastChar()
-                        R.id.op_clear -> {
-                            panel.setUnitValue(0.0)
-                            panel.setString("")
-                        }
-                        R.id.op_mult -> panel.appendString('×', operations)
-                        R.id.op_div -> panel.appendString('÷', operations)
-                        R.id.op_plus -> panel.appendString('+', operations)
-                        R.id.op_minus -> panel.appendString('-', operations)
-                        R.id.op_dot -> panel.appendString('.', operations)
-                        R.id.op_eval -> panel.evaluateString()
-                    }
-                }
-            }
-            findViewById<OperationButton>(R.id.op_back).setOnClickListener(operationButtonOnClickListener)
-            findViewById<OperationButton>(R.id.op_clear).setOnClickListener(operationButtonOnClickListener)
-            findViewById<OperationButton>(R.id.op_mult).setOnClickListener(operationButtonOnClickListener)
-            findViewById<OperationButton>(R.id.op_div).setOnClickListener(operationButtonOnClickListener)
-            findViewById<OperationButton>(R.id.op_plus).setOnClickListener(operationButtonOnClickListener)
-            findViewById<OperationButton>(R.id.op_minus).setOnClickListener(operationButtonOnClickListener)
-            findViewById<OperationButton>(R.id.op_dot).setOnClickListener(operationButtonOnClickListener)
-            findViewById<OperationButton>(R.id.op_eval).setOnClickListener(operationButtonOnClickListener)
+            findViewById<OperationButton>(R.id.op_back).setOnClickPanel(selectedPanel)
+            findViewById<OperationButton>(R.id.op_clear).setOnClickPanel(selectedPanel)
+            findViewById<OperationButton>(R.id.op_mult).setOnClickPanel(selectedPanel)
+            findViewById<OperationButton>(R.id.op_div).setOnClickPanel(selectedPanel)
+            findViewById<OperationButton>(R.id.op_plus).setOnClickPanel(selectedPanel)
+            findViewById<OperationButton>(R.id.op_minus).setOnClickPanel(selectedPanel)
+            findViewById<OperationButton>(R.id.op_dot).setOnClickPanel(selectedPanel)
+            findViewById<OperationButton>(R.id.op_eval).setOnClickPanel(selectedPanel)
         }
 
     }
