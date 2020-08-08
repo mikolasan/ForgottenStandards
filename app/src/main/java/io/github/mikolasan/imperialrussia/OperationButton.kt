@@ -25,11 +25,11 @@ class OperationButton(context: Context, attributeSet: AttributeSet) : AppCompatB
                         panel.setUnitValue(0.0)
                         panel.setString("")
                     }
-                    R.id.op_mult -> panel.appendString('×', operations)
-                    R.id.op_div -> panel.appendString('÷', operations)
-                    R.id.op_plus -> panel.appendString('+', operations)
-                    R.id.op_minus -> panel.appendString('-', operations)
-                    R.id.op_dot -> panel.appendString('.', operations)
+                    R.id.op_mult -> panel.appendStringOrReplace('×', operations)
+                    R.id.op_div -> panel.appendStringOrReplace('÷', operations)
+                    R.id.op_plus -> panel.appendStringOrReplace('+', operations)
+                    R.id.op_minus -> panel.appendStringOrReplace('-', operations)
+                    R.id.op_dot -> panel.appendStringOrReplace('.', operations)
                     R.id.op_eval -> panel.evaluateString()
                 }
             }

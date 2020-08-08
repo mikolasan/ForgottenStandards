@@ -117,35 +117,43 @@ class ImperialUnitPanel(context: Context, attributeSet: AttributeSet) : Constrai
         }
     }
 
-    fun appendString(c: Char, replaceable: Set<Char>? = null) {
-        if (replaceable != null) {
-            val value = getString()
-            if (value.isNotEmpty()) {
-                if (replaceable.containsAll(listOf(value.last(), c))) {
-                    setString(value.dropLast(1) + c.toString())
-                } else if (c == '.') {
-                    val factor = value.takeLastWhile { char ->
-                        char in '0'..'9' || char == '.'
-                    }
-                    if (factor.isEmpty()) {
-                        setString(value + c.toString())
-                        return
-                    }
-                    if (factor.contains('.')) return
-                    try {
-                        val x = factor.toDouble()
-                    } catch (e: NumberFormatException) {
-                        return
-                    }
-                    setString(value + c.toString())
-                } else {
-                    setString(value + c.toString())
-                }
-            } else {
+    fun appendString(c: Char) {
+        setString(getString() + c.toString())
+    }
+
+    private fun isValidNumber(s: String): Boolean {
+        return try {
+            val x = s.toDouble()
+            true
+        } catch (e: NumberFormatException) {
+            false
+        }
+    }
+
+    fun appendStringOrReplace(c: Char, replaceable: Set<Char>) {
+        val value = getString()
+        when {
+            value.isEmpty() -> {
                 setString(c.toString())
             }
-        } else {
-            setString(getString() + c.toString())
+            replaceable.containsAll(listOf(value.last(), c)) -> {
+                setString(value.dropLast(1) + c.toString())
+            }
+            c == '.' -> {
+                val factor = value.takeLastWhile { char ->
+                    char in '0'..'9' || char == '.'
+                }
+                if (factor.isEmpty()) {
+                    setString(value + c.toString())
+                    return
+                }
+                if (factor.contains('.')) return
+                if (!isValidNumber(factor)) return
+                setString(value + c.toString())
+            }
+            else -> {
+                setString(value + c.toString())
+            }
         }
     }
 
