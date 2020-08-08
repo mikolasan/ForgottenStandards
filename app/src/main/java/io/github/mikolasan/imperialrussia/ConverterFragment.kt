@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import io.github.mikolasan.ratiogenerator.ImperialUnit
@@ -40,64 +41,8 @@ class ConverterFragment : Fragment() {
         val bottomInput = bottomPanel.input
         topInput.setOnClickListener(topPanelOnClickListener)
         bottomInput.setOnClickListener(bottomPanelOnClickListener)
-
-        topInput.addTextChangedListener(object : TextWatcher {
-            var selfEditing = false
-
-            override fun afterTextChanged(s: Editable?) {
-                println("[topInput] afterTextChanged ${s.toString()}")
-                if (selectedPanel?.input != topInput)
-                    return
-                if (selfEditing)
-                    return
-
-                s?.let {
-                    topInput.setSelection(topInput.text.length)
-                    val inputValue = BasicCalculator(s.toString()).eval()
-                    topPanel.setUnitValue(inputValue)
-                    selfEditing = true
-                    (activity as MainActivity).onPanelTextChanged(topPanel, s)
-                    selfEditing = false
-                }
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                println("[topInput] beforeTextChanged $s")
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                println("[topInput] onTextChanged $s")
-            }
-        })
-
-        bottomInput.addTextChangedListener(object : TextWatcher {
-            var selfEditing = false
-
-            override fun afterTextChanged(s: Editable?) {
-                println("[bottomInput] afterTextChanged ${s.toString()}")
-                if (selectedPanel?.input != bottomInput)
-                    return
-                if (selfEditing)
-                    return
-
-                s?.let {
-                    bottomInput.setSelection(bottomInput.text.length)
-                    val inputValue = BasicCalculator(s.toString()).eval()
-                    bottomPanel.setUnitValue(inputValue)
-                    selfEditing = true
-                    (activity as MainActivity).onPanelTextChanged(bottomPanel, s)
-                    selfEditing = false
-                }
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                println("[bottomInput] beforeTextChanged $s")
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                println("[bottomInput] onTextChanged $s")
-            }
-        })
+        topInput.addTextChangedListener(object : ImperialTextWatcher(topPanel, selectedPanel, activity as MainActivity){})
+        bottomInput.addTextChangedListener(object : ImperialTextWatcher(bottomPanel, selectedPanel, activity as MainActivity){})
 
         view.run {
             val digitButtonOnClickListener: (View) -> Unit = { view ->
