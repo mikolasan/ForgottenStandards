@@ -78,36 +78,24 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits) : BaseAdapter(
         val data: ImperialUnit = getItem(dataPosition) as ImperialUnit
         val nameTextView: TextView = layout.findViewById(R.id.unit_name)
         val valueTextView: TextView = layout.findViewById(R.id.unit_value)
-        val panelLock: ImageView = layout.findViewById(R.id.panel_lock)
-        val valueLock: ImageView = layout.findViewById(R.id.value_lock)
-        val unitLock: ImageView = layout.findViewById(R.id.unit_lock)
         val arrowUp: ImageView = layout.findViewById(R.id.arrow_up)
         when (data) {
             workingUnits.selectedUnit -> {
                 layout.setBackgroundResource(backgrounds.getValue(ViewState.SELECTED))
                 nameTextView.setTextColorId(nameColors.getValue(ViewState.SELECTED))
                 valueTextView.setTextColorId(valueColors.getValue(ViewState.SELECTED))
-                panelLock.visibility = View.INVISIBLE
-                valueLock.visibility = View.INVISIBLE
-                unitLock.visibility = View.INVISIBLE
                 arrowUp.visibility = if (dataPosition == 0) View.INVISIBLE else View.VISIBLE
             }
             workingUnits.secondUnit -> {
                 layout.setBackgroundResource(backgrounds.getValue(ViewState.SECOND))
                 nameTextView.setTextColorId(nameColors.getValue(ViewState.SECOND))
                 valueTextView.setTextColorId(valueColors.getValue(ViewState.SECOND))
-                panelLock.visibility = View.INVISIBLE
-                valueLock.visibility = View.INVISIBLE
-                unitLock.visibility = View.INVISIBLE
                 arrowUp.visibility = View.INVISIBLE
             }
             else -> {
                 layout.setBackgroundResource(backgrounds.getValue(ViewState.NORMAL))
                 nameTextView.setTextColorId(nameColors.getValue(ViewState.NORMAL))
                 valueTextView.setTextColorId(valueColors.getValue(ViewState.NORMAL))
-                panelLock.visibility = View.INVISIBLE
-                valueLock.visibility = View.INVISIBLE
-                unitLock.visibility = View.INVISIBLE
                 arrowUp.visibility = View.INVISIBLE
             }
         }

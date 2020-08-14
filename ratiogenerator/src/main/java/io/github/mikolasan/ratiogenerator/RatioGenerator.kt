@@ -68,10 +68,9 @@ fun printFullRoutes() {
         } else {
             val unit = list.last()
             unit.ratioMap.forEach { (unitName, _) ->
-                val nextUnit = MinLengthUnits.imperialUnits[unitName]
-                nextUnit?.let {
-                    if (!list.contains(it)) {
-                        makeFullRoute(list.plus(it))
+                MinLengthUnits.imperialUnits[unitName]?.let { nextUnit ->
+                    if (!list.contains(nextUnit)) {
+                        makeFullRoute(list.plus(nextUnit))
                     }
                 }
             }
@@ -85,10 +84,7 @@ fun printFullRoutes() {
         }
     }
 
-    MinLengthUnits.lengthUnits.forEach { u ->
-        val l: List<ImperialUnit> = listOf(u)
-        makeFullRoute(l)
-    }
+    MinLengthUnits.lengthUnits.forEach { makeFullRoute(listOf(it)) }
 }
 
 fun printFullRoutes2() {
