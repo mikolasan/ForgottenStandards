@@ -16,7 +16,7 @@ class ConverterFragment : Fragment() {
     private lateinit var selectedPanel: ImperialUnitPanel
     private lateinit var ratioLabel: TextView
 
-    private fun setListeners(view: View) {
+    private fun setPanelListeners(view: View) {
 
         val topPanelOnClickListener: (View) -> Unit = {
             if (selectedPanel != topPanel) {
@@ -38,11 +38,13 @@ class ConverterFragment : Fragment() {
         val bottomInput = bottomPanel.input
         topInput.setOnClickListener(topPanelOnClickListener)
         bottomInput.setOnClickListener(bottomPanelOnClickListener)
-        topInput.addTextChangedListener(object : ImperialTextWatcher(topPanel, selectedPanel, activity as MainActivity){})
-        bottomInput.addTextChangedListener(object : ImperialTextWatcher(bottomPanel, selectedPanel, activity as MainActivity){})
+        topInput.addTextChangedListener(object : ImperialTextWatcher(topPanel, selectedPanel, activity as MainActivity) {})
+        bottomInput.addTextChangedListener(object : ImperialTextWatcher(bottomPanel, selectedPanel, activity as MainActivity) {})
+    }
+
+    private fun setButtonListeners(view: View) {
 
         view.run {
-
             findViewById<DigitButton>(R.id.digit_1).setOnClickPanel(selectedPanel)
             findViewById<DigitButton>(R.id.digit_2).setOnClickPanel(selectedPanel)
             findViewById<DigitButton>(R.id.digit_3).setOnClickPanel(selectedPanel)
@@ -63,7 +65,6 @@ class ConverterFragment : Fragment() {
             findViewById<OperationButton>(R.id.op_dot).setOnClickPanel(selectedPanel)
             findViewById<OperationButton>(R.id.op_eval).setOnClickPanel(selectedPanel)
         }
-
     }
 
     private fun updateRatioLabel() {
@@ -128,7 +129,8 @@ class ConverterFragment : Fragment() {
         topPanel.setHintText(view.context.resources.getString(R.string.select_unit_hint))
         bottomPanel.setHintText(view.context.resources.getString(R.string.select_unit_2_hint))
         ratioLabel = view.findViewById<TextView>(R.id.ratio_label)
-        setListeners(view)
+        setPanelListeners(view)
+        setButtonListeners(view)
         return view
     }
 
