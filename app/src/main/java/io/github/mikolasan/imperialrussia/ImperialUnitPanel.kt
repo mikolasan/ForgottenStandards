@@ -138,8 +138,7 @@ class ImperialUnitPanel(context: Context, attributeSet: AttributeSet) : Constrai
                     setString(value + c.toString())
                     return
                 }
-                if (factor.contains('.')) return
-                if (!isValidNumber(factor)) return
+                if (factor.contains('.') || !isValidNumber(factor)) return
                 setString(value + c.toString())
             }
             else -> {

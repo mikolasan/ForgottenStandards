@@ -75,11 +75,10 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits) : BaseAdapter(
 //    }
 
     private fun updateViewColors(layout: ConstraintLayout, dataPosition: Int) {
-        val data: ImperialUnit = getItem(dataPosition) as ImperialUnit
         val nameTextView: TextView = layout.findViewById(R.id.unit_name)
         val valueTextView: TextView = layout.findViewById(R.id.unit_value)
         val arrowUp: ImageView = layout.findViewById(R.id.arrow_up)
-        when (data) {
+        when (getItem(dataPosition) as ImperialUnit) {
             workingUnits.selectedUnit -> {
                 layout.setBackgroundResource(backgrounds.getValue(ViewState.SELECTED))
                 nameTextView.setTextColorId(nameColors.getValue(ViewState.SELECTED))

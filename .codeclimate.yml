@@ -1,0 +1,2 @@
+exclude_patterns:
+  - "ratiogenerator/src/main/java/io/github/mikolasan/ratiogenerator/LengthUnits.kt"
