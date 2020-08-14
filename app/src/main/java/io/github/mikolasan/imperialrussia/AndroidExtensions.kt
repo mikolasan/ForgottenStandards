@@ -2,6 +2,7 @@ package io.github.mikolasan.imperialrussia
 
 import android.os.Build
 import android.text.Html
+import android.view.View
 import android.widget.TextView
 
 fun TextView.setTextColorId(res: Int) {
@@ -20,5 +21,15 @@ fun TextView.setHtml(s: String) {
         this.text = Html.fromHtml(s, Html.FROM_HTML_MODE_COMPACT);
     } else {
         this.text = Html.fromHtml(s);
+    }
+}
+
+fun View.getColor(resourceId: Int): Int {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // >= (API 23) Android 6.0 Marshmallow
+        val theme = null
+        context.resources.getColor(resourceId, theme)
+    } else {
+        @Suppress("DEPRECATION")
+        context.resources.getColor(resourceId)
     }
 }

@@ -26,15 +26,6 @@ class ImperialUnitPanel(context: Context, attributeSet: AttributeSet) : Constrai
     private val hint: TextView = findViewById(R.id.panel_hint)
     private val layout: ConstraintLayout = findViewById(R.id.big_unit_space)
 
-    private fun getColor(resourceId: Int): Int {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // >= (API 23) Android 6.0 Marshmallow
-            val theme = null
-            context.resources.getColor(resourceId, theme)
-        } else {
-            @Suppress("DEPRECATION")
-            context.resources.getColor(resourceId)
-        }
-    }
     private val colorInputSelected = getColor(R.color.inputSelected)
     private val colorInputNormal = getColor(R.color.inputNormal)
 
