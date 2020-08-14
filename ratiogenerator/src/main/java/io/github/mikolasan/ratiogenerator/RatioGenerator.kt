@@ -14,7 +14,7 @@ fun findUnitByName(name: ImperialUnitName): ImperialUnit? {
 fun findConversionRatio(inputUnit: ImperialUnit, outputUnit: ImperialUnit): Double {
     val inputMap = inputUnit.ratioMap
     val outputMap = outputUnit.ratioMap
-    val ratio = outputMap.get(inputUnit.unitName)
+    val ratio = outputMap[inputUnit.unitName]
     if (ratio != null) return ratio
 
     val inverse = inputMap.get(outputUnit.unitName)

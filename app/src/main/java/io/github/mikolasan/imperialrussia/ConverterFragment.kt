@@ -73,7 +73,7 @@ class ConverterFragment : Fragment() {
         if (fromUnit == null || toUnit == null) {
             ratioLabel.text = ""
         } else {
-            val ratio = findConversionRatio(fromUnit, toUnit)
+            val ratio = getConversionRatio(fromUnit, toUnit)
             val format = "1 ${fromUnit.unitName.name} = [value] ${toUnit.unitName.name}"
             ratioLabel.text = patternForDisplay(format, ratio)
         }

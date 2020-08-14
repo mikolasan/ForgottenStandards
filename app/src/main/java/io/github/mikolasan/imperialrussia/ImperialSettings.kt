@@ -35,27 +35,7 @@ class ImperialSettings(private val context: Context) {
     }
 
     fun restoreWorkingUnits(): WorkingUnits {
-        val units = LengthUnits.lengthUnits.copyOf()
-        println("== restoreWorkingUnits ==")
-        LengthUnits.lengthUnits.forEachIndexed { i, u ->
-            val unitName = u.unitName.name
-            val settingName = "unit${unitName}Position"
-            val p = preferences.getInt(settingName, i)
-            println("${settingName} - ${p}")
-            if (p < 0) {
-                throw RuntimeException("Shit: pos ${i}, unit ${unitName} got ${p}")
-            }
-            if (!preferences.contains(settingName)) {
-                System.err.println("First time loading ${settingName}")
-                preferencesEditor.putInt(settingName, i)
-            }
-            units[p] = u
-        }
-        println("== END ==")
-        if (units.distinct().size != units.size) {
-            LengthUnits.lengthUnits.copyInto(units)
-        }
-        preferencesEditor.apply()
+        val units = loadOrderedUnits()
 
         val topPanelUnit: ImperialUnit = restoreUnit("topPanelUnit", units[0])
         val bottomPanelUnit: ImperialUnit = restoreUnit("bottomPanelUnit", units[1])
@@ -76,6 +56,28 @@ class ImperialSettings(private val context: Context) {
 
     fun restoreBottomString(): String {
         return preferences.getString("bottomPanelValue", "") ?: ""
+    }
+
+    private fun loadOrderedUnits(): Array<ImperialUnit> {
+        val units = LengthUnits.lengthUnits.copyOf()
+        LengthUnits.lengthUnits.forEachIndexed { i, u ->
+            val unitName = u.unitName.name
+            val settingName = "unit${unitName}Position"
+            val p = preferences.getInt(settingName, i)
+            if (p < 0) {
+                throw RuntimeException("Shit: pos ${i}, unit ${unitName} got ${p}")
+            }
+            if (!preferences.contains(settingName)) {
+                System.err.println("First time loading ${settingName}")
+                preferencesEditor.putInt(settingName, i)
+            }
+            units[p] = u
+        }
+        if (units.distinct().size != units.size) {
+            LengthUnits.lengthUnits.copyInto(units)
+        }
+        preferencesEditor.apply()
+        return units
     }
 
     fun saveNewOrder(orderedUnits: Array<ImperialUnit>) {
