@@ -5,6 +5,11 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.appcompat.widget.AppCompatButton
 
+/**
+ * Very simple extension to a standard button with very specific usage of ImperialUnitPanel
+ * when the button is pressed. The button adds an operation symbol or evaluates an expression.
+ * If value is already formatted in scientific notation, then it resets the value.
+ */
 class OperationButton(context: Context, attributeSet: AttributeSet) : AppCompatButton(context, attributeSet) {
     private val operations = setOf('÷', '×', '+', '-')
 

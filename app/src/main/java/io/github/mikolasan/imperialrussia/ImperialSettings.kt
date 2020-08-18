@@ -65,7 +65,7 @@ class ImperialSettings(private val context: Context) {
             val settingName = "unit${unitName}Position"
             val p = preferences.getInt(settingName, i)
             if (p < 0) {
-                throw RuntimeException("Shit: pos ${i}, unit ${unitName} got ${p}")
+                throw ImperialInsistentException("Shit: pos ${i}, unit ${unitName} got ${p}")
             }
             if (!preferences.contains(settingName)) {
                 System.err.println("First time loading ${settingName}")

@@ -19,7 +19,7 @@ fun findUnitByName(name: ImperialUnitName): ImperialUnit? {
 }
 
 fun getConversionRatio(inputUnit: ImperialUnit, outputUnit: ImperialUnit): Double {
-    return outputUnit.ratioMap[inputUnit.unitName] ?: throw Exception("no ratio")
+    return outputUnit.ratioMap[inputUnit.unitName] ?: throw ImperialConverterException("no ratio")
 }
 
 fun convertValue(inputUnit: ImperialUnit?, outputUnit: ImperialUnit?, inputValue: Double): Double {

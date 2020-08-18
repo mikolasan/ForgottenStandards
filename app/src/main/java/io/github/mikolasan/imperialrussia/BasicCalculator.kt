@@ -22,20 +22,20 @@ class BasicCalculator(val expression: String) {
     }
 
 
-    fun hasNextChar(): Boolean {
+    private fun hasNextChar(): Boolean {
         return pos + 1 < expression.length
     }
 
-    fun nextChar(): Char? {
+    private fun nextChar(): Char? {
         char = expression.elementAtOrNull(++pos)
         return char
     }
 
-    fun eat(charToEat: Char): Boolean {
+    private fun eat(charToEat: Char): Boolean {
         return (char == charToEat) && hasNextChar() && nextChar() != null
     }
 
-    fun parse(): Double{
+    private fun parse(): Double{
         nextChar()
         return parseExpression()
     }
@@ -45,7 +45,7 @@ class BasicCalculator(val expression: String) {
     // term = factor | term `*` factor | term `/` factor
     // factor = `+` factor | `-` factor | number | factor `^` factor
 
-    fun parseExpression(): Double {
+    private fun parseExpression(): Double {
         var x = parseTerm()
         while (true) {
             when {
@@ -56,7 +56,7 @@ class BasicCalculator(val expression: String) {
         }
     }
 
-    fun parseTerm(): Double {
+    private fun parseTerm(): Double {
         var x = parseFactor() ?: 0.0
         while (true) {
             when {
@@ -73,7 +73,7 @@ class BasicCalculator(val expression: String) {
         }
     }
 
-    fun parseNumber(factor: String): Double {
+    private fun parseNumber(factor: String): Double {
         return try {
             factor.toDouble()
         } catch (e: NumberFormatException) {
@@ -81,7 +81,7 @@ class BasicCalculator(val expression: String) {
         }
     }
 
-    fun parseFactor(): Double {
+    private fun parseFactor(): Double {
         if (eat('+')) return parseFactor() // unary plus
         if (eat('-')) return -parseFactor() // unary minus
         val startPos = pos
