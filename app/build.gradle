@@ -22,11 +22,11 @@ android {
         debug {
             // Enables code shrinking, obfuscation, and optimization for only
             // your project's release build type.
-            minifyEnabled true
+            minifyEnabled false
 
             // Enables resource shrinking, which is performed by the
             // Android Gradle plugin.
-            shrinkResources true
+            shrinkResources false
 
             // Includes the default ProGuard rules files that are packaged with
             // the Android Gradle plugin. To learn more, go to the section about
@@ -59,6 +59,8 @@ dependencies {
     // For @Nullable/@NonNull
     implementation 'androidx.annotation:annotation:1.1.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.1.0'
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     androidTestImplementation 'androidx.test:runner:1.2.0'

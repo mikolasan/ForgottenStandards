@@ -1,14 +1,15 @@
 package io.github.mikolasan.imperialrussia
 
+import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.lifecycle.AndroidViewModel
 import io.github.mikolasan.ratiogenerator.ImperialUnit
 import io.github.mikolasan.ratiogenerator.ImperialUnitName
 import io.github.mikolasan.ratiogenerator.LengthUnits
 import java.lang.ClassCastException
-import java.lang.RuntimeException
 
-class ImperialSettings(private val context: Context) {
+class ImperialSettings(application: Application) : AndroidViewModel(application) {
     private val preferencesFile = "ImperialRussiaPref.7"
 
     private val preferencesEditor: SharedPreferences.Editor by lazy {
@@ -16,7 +17,7 @@ class ImperialSettings(private val context: Context) {
     }
 
     private val preferences: SharedPreferences by lazy {
-        context.getSharedPreferences(preferencesFile, Context.MODE_PRIVATE)
+        application.applicationContext.getSharedPreferences(preferencesFile, Context.MODE_PRIVATE)
     }
 
     private fun restoreUnit(settingName: String, defaultUnit: ImperialUnit): ImperialUnit {

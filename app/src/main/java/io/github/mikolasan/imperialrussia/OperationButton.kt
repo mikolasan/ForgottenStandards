@@ -6,7 +6,7 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatButton
 
 /**
- * Very simple extension to a standard button with very specific usage of ImperialUnitPanel
+ * Yet another simple extension to a standard button with very specific usage of ImperialUnitPanel
  * when the button is pressed. The button adds an operation symbol or evaluates an expression.
  * If value is already formatted in scientific notation, then it resets the value.
  */

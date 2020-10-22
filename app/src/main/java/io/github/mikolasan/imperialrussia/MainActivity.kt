@@ -6,6 +6,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager2.widget.ViewPager2
 import io.github.mikolasan.ratiogenerator.ImperialUnit
 import io.github.mikolasan.ratiogenerator.ImperialUnitName
@@ -40,7 +42,7 @@ class MainActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        settings = ImperialSettings(applicationContext)
+        settings = ViewModelProviders.of(this).get(ImperialSettings::class.java)
         markwon = Markwon.create(applicationContext)
 
         if (savedInstanceState == null) {

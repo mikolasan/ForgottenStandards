@@ -9,37 +9,12 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import io.github.mikolasan.ratiogenerator.ImperialUnit
 
 class ImperialListAdapter(private val workingUnits: WorkingUnits) : BaseAdapter() {
-    val units: Array<ImperialUnit> = workingUnits.orderedUnits
-
-    enum class ViewState {
-        SECOND,
-        SELECTED,
-        NORMAL
-    }
-
-    private val backgrounds = mapOf(
-        ViewState.SECOND to R.drawable.ic_side_from_back,
-        ViewState.SELECTED to R.drawable.ic_side_to_back,
-        ViewState.NORMAL to R.drawable.ic_side_panel_back
-    )
-    private val nameColors = mapOf(
-        ViewState.SECOND to R.color.inputNormal,
-        ViewState.SELECTED to R.color.inputSelected,
-        ViewState.NORMAL to R.color.colorPrimary
-    )
-    private val valueColors = mapOf(
-        ViewState.SECOND to R.color.keyboardDigit,
-        ViewState.SELECTED to R.color.colorPrimaryDark,
-        ViewState.NORMAL to R.color.keyboardDigit
-    )
-
-
-
+    private val units: Array<ImperialUnit> = workingUnits.orderedUnits
     private var arrowClickListener: (Int, View, ImperialUnit) -> Unit = { position, _, _ ->
-        System.out.println("arrowClickListener ${position}")
+        println("arrowClickListener $position")
     }
     private var arrowLongClickListener: (Int, View, ImperialUnit) -> Unit = { position, _, _ ->
-        System.out.println("arrowLongClickListener ${position}")
+        println("arrowLongClickListener $position")
     }
 
     fun setOnArrowClickListener(listener: (Int, View, ImperialUnit) -> Unit) {
@@ -59,20 +34,61 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits) : BaseAdapter(
         units.forEach { u -> u.value = convertValue(unit, u, value) }
         notifyDataSetChanged()
     }
-//
-//    fun setSelectedUnit(unit: ImperialUnit?) {
-//        selectedUnit = unit
-//    }
-//
-//    fun setSecondUnit(unit: ImperialUnit?) {
-//        secondUnit = unit
-//    }
-//
-//    fun swapSelection() {
-//        val temp = selectedUnit
-//        selectedUnit = secondUnit
-//        secondUnit = temp
-//    }
+
+    override fun getView(position: Int, contentView: View?, parent: ViewGroup?): View {
+        if (contentView != null) {
+            if (contentView is ConstraintLayout) {
+                updateViewData(contentView, position)
+                updateViewColors(contentView, position)
+                updateArrowListener(contentView, position)
+                return contentView
+            }
+            return contentView
+        } else {
+            val context = parent?.context
+            val inflater = context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            val view = inflater.inflate(R.layout.unit_space, parent, false) as ConstraintLayout
+            updateViewData(view, position)
+            updateViewColors(view, position)
+            updateArrowListener(view, position)
+            return view
+        }
+
+    }
+
+    override fun getItem(position: Int): Any {
+        return units[position]
+    }
+
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
+
+    override fun getCount(): Int {
+        return units.size
+    }
+
+    enum class ViewState {
+        SECOND,
+        SELECTED,
+        NORMAL
+    }
+
+    private val backgrounds = mapOf(
+            ViewState.SECOND to R.drawable.ic_side_from_back,
+            ViewState.SELECTED to R.drawable.ic_side_to_back,
+            ViewState.NORMAL to R.drawable.ic_side_panel_back
+    )
+    private val nameColors = mapOf(
+            ViewState.SECOND to R.color.inputNormal,
+            ViewState.SELECTED to R.color.inputSelected,
+            ViewState.NORMAL to R.color.colorPrimary
+    )
+    private val valueColors = mapOf(
+            ViewState.SECOND to R.color.keyboardDigit,
+            ViewState.SELECTED to R.color.colorPrimaryDark,
+            ViewState.NORMAL to R.color.keyboardDigit
+    )
 
     private fun updateViewColors(layout: ConstraintLayout, dataPosition: Int) {
         val nameTextView: TextView = layout.findViewById(R.id.unit_name)
@@ -128,37 +144,5 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits) : BaseAdapter(
         }
     }
 
-    override fun getView(position: Int, contentView: View?, parent: ViewGroup?): View {
-        if (contentView != null) {
-            if (contentView is ConstraintLayout) {
-                updateViewData(contentView, position)
-                updateViewColors(contentView, position)
-                updateArrowListener(contentView, position)
-                return contentView
-            }
-            return contentView
-        } else {
-            val context = parent?.context
-            val inflater = context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            val view = inflater.inflate(R.layout.unit_space, parent, false) as ConstraintLayout
-            updateViewData(view, position)
-            updateViewColors(view, position)
-            updateArrowListener(view, position)
-            return view
-        }
-
-    }
-
-    override fun getItem(position: Int): Any {
-        return units[position]
-    }
-
-    override fun getItemId(position: Int): Long {
-        return position.toLong()
-    }
-
-    override fun getCount(): Int {
-        return units.size
-    }
 
 }
