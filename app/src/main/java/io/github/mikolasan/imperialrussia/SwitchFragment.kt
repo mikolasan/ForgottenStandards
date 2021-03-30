@@ -6,18 +6,23 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 
-class SwitchFragment : Fragment() {
+class SwitchFragment : Fragment(R.layout.fragment_switch) {
 
-    companion object {
-        fun newInstance() = SwitchFragment()
-    }
+//    companion object {
+//        fun newInstance() = SwitchFragment()
+//    }
 
     private lateinit var viewModel: SwitchViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.switch_fragment, container, false)
+        val view = inflater.inflate(R.layout.fragment_switch, container, false)
+        view.findViewById<TextView>(R.id.test_text).setOnClickListener{
+            (activity as MainActivity).hideTypeSwitcher()
+        }
+        return view
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

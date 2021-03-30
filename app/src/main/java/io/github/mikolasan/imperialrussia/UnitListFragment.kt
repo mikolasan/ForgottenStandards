@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ListView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import io.github.mikolasan.ratiogenerator.ImperialUnit
 
@@ -13,6 +14,7 @@ class UnitListFragment : Fragment() {
 
     private lateinit var unitsList: ListView
     lateinit var listAdapter: ImperialListAdapter
+    private var switchFragment: SwitchFragment? = null
 
     private fun setListeners(view: View) {
         unitsList.setOnItemClickListener { _, _, position, _ ->
@@ -21,7 +23,10 @@ class UnitListFragment : Fragment() {
         }
 
         view.run {
-
+            val typeSwitcher: ConstraintLayout = view.findViewById(R.id.unit_type)
+            typeSwitcher.setOnClickListener { v ->
+                (activity as MainActivity).showTypeSwitcher()
+            }
         }
     }
 

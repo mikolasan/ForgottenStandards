@@ -6,7 +6,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager2.widget.ViewPager2
 import io.github.mikolasan.ratiogenerator.ImperialUnit
@@ -23,6 +23,7 @@ class MainActivity : FragmentActivity() {
 
     private var converterFragment: ConverterFragment? = null
     private var unitListFragment: UnitListFragment? = null
+    private var switchFragment: SwitchFragment = SwitchFragment()
 
     private lateinit var settings: ImperialSettings
     lateinit var workingUnits: WorkingUnits
@@ -215,6 +216,21 @@ class MainActivity : FragmentActivity() {
         when (fragment) {
             is ConverterFragment -> converterFragment = fragment
             is UnitListFragment -> unitListFragment = fragment
+            is SwitchFragment -> switchFragment = fragment
+        }
+    }
+
+    fun showTypeSwitcher() {
+        supportFragmentManager.commit {
+            setReorderingAllowed(true)
+            add(R.id.fragment_container_view, switchFragment)
+        }
+    }
+
+    fun hideTypeSwitcher() {
+        supportFragmentManager.commit {
+            setReorderingAllowed(true)
+            remove(switchFragment)
         }
     }
 }
