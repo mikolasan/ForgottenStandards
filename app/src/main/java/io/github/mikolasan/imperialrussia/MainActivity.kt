@@ -233,5 +233,9 @@ class MainActivity : FragmentActivity() {
             remove(switchFragment)
         }
     }
+
+    fun onCategorySelected(category: ImperialUnitCategory) {
+        println("Category: ${category.name}")
+    }
 }
 
