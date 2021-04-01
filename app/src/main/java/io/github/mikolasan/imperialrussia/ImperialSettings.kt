@@ -4,18 +4,24 @@ import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.lifecycle.AndroidViewModel
-import io.github.mikolasan.ratiogenerator.ImperialUnit
-import io.github.mikolasan.ratiogenerator.ImperialUnitName
-import io.github.mikolasan.ratiogenerator.LengthUnits
+import io.github.mikolasan.ratiogenerator.*
 import java.lang.ClassCastException
 
 class ImperialSettings(application: Application) : AndroidViewModel(application) {
+    val allTypes: Array<ImperialUnitType> = arrayOf(
+            ImperialUnitType.LENGTH,
+            ImperialUnitType.VOLUME
+    )
+    private val unitObjects: Map<ImperialUnitType, ImperialUnits> = mapOf(
+            ImperialUnitType.LENGTH to LengthUnits,
+            ImperialUnitType.VOLUME to VolumeUnits
+    )
+
     private val preferencesFile = "ImperialRussiaPref.7"
 
     private val preferencesEditor: SharedPreferences.Editor by lazy {
         return@lazy preferences.edit()
     }
-
     private val preferences: SharedPreferences by lazy {
         application.applicationContext.getSharedPreferences(preferencesFile, Context.MODE_PRIVATE)
     }
@@ -36,13 +42,17 @@ class ImperialSettings(application: Application) : AndroidViewModel(application)
     }
 
     fun restoreWorkingUnits(): WorkingUnits {
-        val units = loadOrderedUnits()
+        val units: Map<ImperialUnitType, Array<ImperialUnit>> = allTypes.associate { unitType ->
+            Pair(unitType, loadOrderedUnits(unitType))
+        }
+        val currentUnits = loadOrderedUnits()
 
         val topPanelUnit: ImperialUnit = restoreUnit("topPanelUnit", units[0])
         val bottomPanelUnit: ImperialUnit = restoreUnit("bottomPanelUnit", units[1])
 
         return WorkingUnits().apply {
-            orderedUnits = units
+            allUnits = units
+            orderedUnits = currentUnits
             selectedUnit = topPanelUnit
             secondUnit = bottomPanelUnit
             topUnit = topPanelUnit
@@ -59,9 +69,9 @@ class ImperialSettings(application: Application) : AndroidViewModel(application)
         return preferences.getString("bottomPanelValue", "") ?: ""
     }
 
-    private fun loadOrderedUnits(): Array<ImperialUnit> {
-        val units = LengthUnits.lengthUnits.copyOf()
-        LengthUnits.lengthUnits.forEachIndexed { i, u ->
+    private fun loadOrderedUnits(type: ImperialUnitType): Array<ImperialUnit> {
+        val units = LengthUnits.units.copyOf()
+        LengthUnits.units.forEachIndexed { i, u ->
             val unitName = u.unitName.name
             val settingName = "unit${unitName}Position"
             val p = preferences.getInt(settingName, i)
@@ -75,7 +85,7 @@ class ImperialSettings(application: Application) : AndroidViewModel(application)
             units[p] = u
         }
         if (units.distinct().size != units.size) {
-            LengthUnits.lengthUnits.copyInto(units)
+            LengthUnits.units.copyInto(units)
         }
         preferencesEditor.apply()
         return units

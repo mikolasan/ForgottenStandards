@@ -21,4 +21,10 @@ enum class ImperialUnitName {
     SAZHEN,
     VERST,
     MILE,
+
+    VEDRO,
+    GARNETS,
+    OSMINA,
+    SHKALIK,
+    SHTOF,
 }

@@ -28,10 +28,10 @@ task runRatioGenerator(type: JavaExec) {
 task saveGeneratedSources(dependsOn: runRatioGenerator) {
     group = 'units'
 
-//    def outputDir = new File(sourceSets.main.java.srcDirs.first(), "io/github/mikolasan/ratiogenerator")
-//    def outputFile = new File(outputDir, "LengthUnits.kt")
-    def outputDir = new File("/${buildDir}/output")
-    def outputFile = new File(outputDir, "full-routes.txt")
+    def outputDir = new File(sourceSets.main.java.srcDirs.first(), "io/github/mikolasan/ratiogenerator")
+    def outputFile = new File(outputDir, "LengthUnits.kt")
+//    def outputDir = new File("/${buildDir}/output")
+//    def outputFile = new File(outputDir, "full-routes.txt")
     doLast {
         if(!outputDir.exists()) {
             outputDir.mkdirs()

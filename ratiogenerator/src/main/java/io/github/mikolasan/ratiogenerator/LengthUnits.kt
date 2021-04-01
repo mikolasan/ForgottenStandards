@@ -1,10 +1,14 @@
-package io.github.mikolasan.ratiogenerator
+package io.github.mikolasan.imperialrussia
 
+import io.github.mikolasan.ratiogenerator.ImperialUnit
+import io.github.mikolasan.ratiogenerator.ImperialUnitName
+import io.github.mikolasan.ratiogenerator.ImperialUnitType
+import io.github.mikolasan.ratiogenerator.ImperialUnits
 import kotlin.Array
 
-object LengthUnits {
-    val lengthUnits: Array<ImperialUnit> = arrayOf(
-            ImperialUnit(ImperialUnitName.ARSHIN, mapOf(
+object LengthUnits : ImperialUnits() {
+    override val units: Array<ImperialUnit> = arrayOf(
+            ImperialUnit(ImperialUnitType.LENGTH, ImperialUnitName.ARSHIN, mapOf(
                     ImperialUnitName.ARSHIN to 1.0,
                     ImperialUnitName.INCH to 0.03571428571428571,
                     ImperialUnitName.VERSHOK to 0.0625,
@@ -24,7 +28,7 @@ object LengthUnits {
                     ImperialUnitName.CENTIMETER to 0.014060742407199098,
                     ImperialUnitName.MILLIMETER to 0.00140607424071991,
                     ImperialUnitName.MICROMETER to 1.40607424071991E-6)),
-            ImperialUnit(ImperialUnitName.INCH, mapOf(
+            ImperialUnit(ImperialUnitType.LENGTH, ImperialUnitName.INCH, mapOf(
                     ImperialUnitName.ARSHIN to 28.0,
                     ImperialUnitName.INCH to 1.0,
                     ImperialUnitName.VERSHOK to 1.75,
@@ -44,7 +48,7 @@ object LengthUnits {
                     ImperialUnitName.CENTIMETER to 0.39370078740157477,
                     ImperialUnitName.MILLIMETER to 0.03937007874015748,
                     ImperialUnitName.MICROMETER to 3.937007874015748E-5)),
-            ImperialUnit(ImperialUnitName.VERSHOK, mapOf(
+            ImperialUnit(ImperialUnitType.LENGTH, ImperialUnitName.VERSHOK, mapOf(
                     ImperialUnitName.ARSHIN to 16.0,
                     ImperialUnitName.INCH to 0.5714285714285714,
                     ImperialUnitName.VERSHOK to 1.0,
@@ -64,7 +68,7 @@ object LengthUnits {
                     ImperialUnitName.CENTIMETER to 0.22497187851518557,
                     ImperialUnitName.MILLIMETER to 0.02249718785151856,
                     ImperialUnitName.MICROMETER to 2.249718785151856E-5)),
-            ImperialUnit(ImperialUnitName.PALM, mapOf(
+            ImperialUnit(ImperialUnitType.LENGTH, ImperialUnitName.PALM, mapOf(
                     ImperialUnitName.ARSHIN to 9.0,
                     ImperialUnitName.INCH to 0.32142857142857145,
                     ImperialUnitName.VERSHOK to 0.75,
@@ -84,7 +88,7 @@ object LengthUnits {
                     ImperialUnitName.CENTIMETER to 0.1265466816647919,
                     ImperialUnitName.MILLIMETER to 0.01265466816647919,
                     ImperialUnitName.MICROMETER to 1.2654668166479191E-5)),
-            ImperialUnit(ImperialUnitName.SPAN, mapOf(
+            ImperialUnit(ImperialUnitType.LENGTH, ImperialUnitName.SPAN, mapOf(
                     ImperialUnitName.ARSHIN to 4.0,
                     ImperialUnitName.INCH to 0.14285714285714285,
                     ImperialUnitName.VERSHOK to 0.25,
@@ -104,7 +108,7 @@ object LengthUnits {
                     ImperialUnitName.CENTIMETER to 0.056242969628796394,
                     ImperialUnitName.MILLIMETER to 0.00562429696287964,
                     ImperialUnitName.MICROMETER to 5.62429696287964E-6)),
-            ImperialUnit(ImperialUnitName.ELL, mapOf(
+            ImperialUnit(ImperialUnitType.LENGTH, ImperialUnitName.ELL, mapOf(
                     ImperialUnitName.ARSHIN to 1.5,
                     ImperialUnitName.INCH to 0.07142857142857142,
                     ImperialUnitName.VERSHOK to 0.125,
@@ -124,7 +128,7 @@ object LengthUnits {
                     ImperialUnitName.CENTIMETER to 0.02109111509358233,
                     ImperialUnitName.MILLIMETER to 0.0021091113610798647,
                     ImperialUnitName.MICROMETER to 2.109111509358233E-6)),
-            ImperialUnit(ImperialUnitName.STEP, mapOf(
+            ImperialUnit(ImperialUnitType.LENGTH, ImperialUnitName.STEP, mapOf(
                     ImperialUnitName.ARSHIN to 1.0,
                     ImperialUnitName.INCH to 0.03571428571428571,
                     ImperialUnitName.VERSHOK to 0.0625,
@@ -144,7 +148,7 @@ object LengthUnits {
                     ImperialUnitName.CENTIMETER to 0.014060742407199098,
                     ImperialUnitName.MILLIMETER to 0.00140607424071991,
                     ImperialUnitName.MICROMETER to 1.40607424071991E-6)),
-            ImperialUnit(ImperialUnitName.FOOT, mapOf(
+            ImperialUnit(ImperialUnitType.LENGTH, ImperialUnitName.FOOT, mapOf(
                     ImperialUnitName.ARSHIN to 2.3333333333333335,
                     ImperialUnitName.INCH to 0.08333333333333333,
                     ImperialUnitName.VERSHOK to 0.14583333333333334,
@@ -164,7 +168,7 @@ object LengthUnits {
                     ImperialUnitName.CENTIMETER to 0.03280839895013123,
                     ImperialUnitName.MILLIMETER to 0.0032808398950131233,
                     ImperialUnitName.MICROMETER to 3.2808398950131235E-6)),
-            ImperialUnit(ImperialUnitName.SAZHEN, mapOf(
+            ImperialUnit(ImperialUnitType.LENGTH, ImperialUnitName.SAZHEN, mapOf(
                     ImperialUnitName.ARSHIN to 0.3333333333333333,
                     ImperialUnitName.INCH to 0.011904761904761904,
                     ImperialUnitName.VERSHOK to 0.020833333333333332,
@@ -184,7 +188,7 @@ object LengthUnits {
                     ImperialUnitName.CENTIMETER to 0.004686914135733033,
                     ImperialUnitName.MILLIMETER to 4.686914135733033E-4,
                     ImperialUnitName.MICROMETER to 4.6869141357330333E-7)),
-            ImperialUnit(ImperialUnitName.POINT, mapOf(
+            ImperialUnit(ImperialUnitType.LENGTH, ImperialUnitName.POINT, mapOf(
                     ImperialUnitName.ARSHIN to 2800.0,
                     ImperialUnitName.INCH to 100.0,
                     ImperialUnitName.VERSHOK to 175.0,
@@ -204,7 +208,7 @@ object LengthUnits {
                     ImperialUnitName.CENTIMETER to 39.37007874015748,
                     ImperialUnitName.MILLIMETER to 3.937007874015748,
                     ImperialUnitName.MICROMETER to 0.003937007874015748)),
-            ImperialUnit(ImperialUnitName.LINE, mapOf(
+            ImperialUnit(ImperialUnitType.LENGTH, ImperialUnitName.LINE, mapOf(
                     ImperialUnitName.ARSHIN to 280.0,
                     ImperialUnitName.INCH to 10.0,
                     ImperialUnitName.VERSHOK to 17.5,
@@ -224,7 +228,7 @@ object LengthUnits {
                     ImperialUnitName.CENTIMETER to 3.937007874015748,
                     ImperialUnitName.MILLIMETER to 0.39370078740157477,
                     ImperialUnitName.MICROMETER to 3.937007874015748E-4)),
-            ImperialUnit(ImperialUnitName.VERST, mapOf(
+            ImperialUnit(ImperialUnitType.LENGTH, ImperialUnitName.VERST, mapOf(
                     ImperialUnitName.ARSHIN to 6.666666666666666E-4,
                     ImperialUnitName.INCH to 2.380952380952381E-5,
                     ImperialUnitName.VERSHOK to 4.1666666666666665E-5,
@@ -244,7 +248,7 @@ object LengthUnits {
                     ImperialUnitName.CENTIMETER to 9.373828271466067E-6,
                     ImperialUnitName.MILLIMETER to 9.373828271466067E-7,
                     ImperialUnitName.MICROMETER to 9.373828271466067E-10)),
-            ImperialUnit(ImperialUnitName.MILE, mapOf(
+            ImperialUnit(ImperialUnitType.LENGTH, ImperialUnitName.MILE, mapOf(
                     ImperialUnitName.ARSHIN to 9.523809523809524E-5,
                     ImperialUnitName.INCH to 3.4013605442176872E-6,
                     ImperialUnitName.VERSHOK to 5.9523809523809525E-6,
@@ -264,7 +268,7 @@ object LengthUnits {
                     ImperialUnitName.CENTIMETER to 1.3391183244951524E-6,
                     ImperialUnitName.MILLIMETER to 1.3391183244951524E-7,
                     ImperialUnitName.MICROMETER to 1.3391183244951523E-10)),
-            ImperialUnit(ImperialUnitName.KILOMETER, mapOf(
+            ImperialUnit(ImperialUnitType.LENGTH, ImperialUnitName.KILOMETER, mapOf(
                     ImperialUnitName.ARSHIN to 7.112E-4,
                     ImperialUnitName.INCH to 2.54E-5,
                     ImperialUnitName.VERSHOK to 4.445E-5,
@@ -284,7 +288,7 @@ object LengthUnits {
                     ImperialUnitName.CENTIMETER to 1.0E-5,
                     ImperialUnitName.MILLIMETER to 1.0E-6,
                     ImperialUnitName.MICROMETER to 1.0E-9)),
-            ImperialUnit(ImperialUnitName.METER, mapOf(
+            ImperialUnit(ImperialUnitType.LENGTH, ImperialUnitName.METER, mapOf(
                     ImperialUnitName.ARSHIN to 0.7111999999999999,
                     ImperialUnitName.INCH to 0.0254,
                     ImperialUnitName.VERSHOK to 0.044449999999999996,
@@ -304,7 +308,7 @@ object LengthUnits {
                     ImperialUnitName.CENTIMETER to 0.01,
                     ImperialUnitName.MILLIMETER to 0.001,
                     ImperialUnitName.MICROMETER to 1.0E-6)),
-            ImperialUnit(ImperialUnitName.DECIMETER, mapOf(
+            ImperialUnit(ImperialUnitType.LENGTH, ImperialUnitName.DECIMETER, mapOf(
                     ImperialUnitName.ARSHIN to 7.112,
                     ImperialUnitName.INCH to 0.254,
                     ImperialUnitName.VERSHOK to 0.4445,
@@ -324,7 +328,7 @@ object LengthUnits {
                     ImperialUnitName.CENTIMETER to 0.1,
                     ImperialUnitName.MILLIMETER to 0.01,
                     ImperialUnitName.MICROMETER to 1.0E-5)),
-            ImperialUnit(ImperialUnitName.CENTIMETER, mapOf(
+            ImperialUnit(ImperialUnitType.LENGTH, ImperialUnitName.CENTIMETER, mapOf(
                     ImperialUnitName.ARSHIN to 71.12,
                     ImperialUnitName.INCH to 2.54,
                     ImperialUnitName.VERSHOK to 4.445,
@@ -344,7 +348,7 @@ object LengthUnits {
                     ImperialUnitName.CENTIMETER to 1.0,
                     ImperialUnitName.MILLIMETER to 0.1,
                     ImperialUnitName.MICROMETER to 1.0E-4)),
-            ImperialUnit(ImperialUnitName.MILLIMETER, mapOf(
+            ImperialUnit(ImperialUnitType.LENGTH, ImperialUnitName.MILLIMETER, mapOf(
                     ImperialUnitName.ARSHIN to 711.2,
                     ImperialUnitName.INCH to 25.400000000000002,
                     ImperialUnitName.VERSHOK to 44.45,
@@ -364,7 +368,7 @@ object LengthUnits {
                     ImperialUnitName.CENTIMETER to 10.0,
                     ImperialUnitName.MILLIMETER to 1.0,
                     ImperialUnitName.MICROMETER to 0.001)),
-            ImperialUnit(ImperialUnitName.MICROMETER, mapOf(
+            ImperialUnit(ImperialUnitType.LENGTH, ImperialUnitName.MICROMETER, mapOf(
                     ImperialUnitName.ARSHIN to 711200.0,
                     ImperialUnitName.INCH to 25400.000000000004,
                     ImperialUnitName.VERSHOK to 44450.0,
@@ -385,13 +389,4 @@ object LengthUnits {
                     ImperialUnitName.MILLIMETER to 1000.0,
                     ImperialUnitName.MICROMETER to 1.0))
             )
-    private fun makeUnitByNameMap(units: Array<ImperialUnit>): Map<ImperialUnitName, ImperialUnit> {
-        val map: MutableMap<ImperialUnitName, ImperialUnit> = mutableMapOf()
-        units.forEach {
-            map[it.unitName] = it
-        }
-        return map.toMap()
-    }
-
-    val imperialUnits = makeUnitByNameMap(lengthUnits)
 }
