@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager2.widget.ViewPager2
 import io.github.mikolasan.ratiogenerator.ImperialUnit
 import io.github.mikolasan.ratiogenerator.ImperialUnitName
+import io.github.mikolasan.ratiogenerator.ImperialUnitType
 import io.noties.markwon.Markwon
 import java.io.IOException
 import java.util.*
@@ -235,7 +236,16 @@ class MainActivity : FragmentActivity() {
     }
 
     fun onCategorySelected(category: ImperialUnitCategory) {
-        println("Category: ${category.name}")
+        workingUnits.listAdapter.resetAllValues()
+        workingUnits.orderedUnits = workingUnits.allUnits.getValue(ImperialUnitType.valueOf(category.name.toUpperCase()))
+        workingUnits.listAdapter.units = workingUnits.orderedUnits
+        workingUnits.listAdapter.resetAllValues()
+        converterFragment?.let {
+            it.topPanel.changeUnit(workingUnits.orderedUnits[0])
+            it.bottomPanel.changeUnit(workingUnits.orderedUnits[1])
+            it.displayUnitValues()
+        }
+
     }
 }
 

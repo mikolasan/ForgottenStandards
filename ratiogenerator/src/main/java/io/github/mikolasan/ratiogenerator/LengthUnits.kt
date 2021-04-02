@@ -1,9 +1,6 @@
 package io.github.mikolasan.imperialrussia
 
-import io.github.mikolasan.ratiogenerator.ImperialUnit
-import io.github.mikolasan.ratiogenerator.ImperialUnitName
-import io.github.mikolasan.ratiogenerator.ImperialUnitType
-import io.github.mikolasan.ratiogenerator.ImperialUnits
+import io.github.mikolasan.ratiogenerator.*
 import kotlin.Array
 
 object LengthUnits : ImperialUnits() {
@@ -389,4 +386,6 @@ object LengthUnits : ImperialUnits() {
                     ImperialUnitName.MILLIMETER to 1000.0,
                     ImperialUnitName.MICROMETER to 1.0))
             )
+
+    override val nameMap = makeUnitByNameMap(units)
 }

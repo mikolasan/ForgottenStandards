@@ -9,7 +9,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import io.github.mikolasan.ratiogenerator.ImperialUnit
 
 class ImperialListAdapter(private val workingUnits: WorkingUnits) : BaseAdapter() {
-    private val units: Array<ImperialUnit> = workingUnits.orderedUnits
+    var units: Array<ImperialUnit> = workingUnits.orderedUnits
     private var arrowClickListener: (Int, View, ImperialUnit) -> Unit = { position, _, _ ->
         println("arrowClickListener $position")
     }

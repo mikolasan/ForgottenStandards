@@ -5,18 +5,11 @@ import android.text.SpannableStringBuilder
 import android.text.style.RelativeSizeSpan
 import android.text.style.SuperscriptSpan
 import io.github.mikolasan.ratiogenerator.ImperialUnit
-import io.github.mikolasan.ratiogenerator.ImperialUnitName
-import io.github.mikolasan.ratiogenerator.LengthUnits
-import java.lang.Exception
 import java.text.DecimalFormat
 import java.util.*
 import kotlin.math.abs
 import kotlin.math.floor
 import kotlin.math.log10
-
-fun findUnitByName(name: ImperialUnitName): ImperialUnit? {
-    return LengthUnits.imperialUnits[name]
-}
 
 fun getConversionRatio(inputUnit: ImperialUnit, outputUnit: ImperialUnit): Double {
     return outputUnit.ratioMap[inputUnit.unitName] ?: throw ImperialConverterException("no ratio")

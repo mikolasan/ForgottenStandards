@@ -1,9 +1,6 @@
 package io.github.mikolasan.imperialrussia
 
-import io.github.mikolasan.ratiogenerator.ImperialUnit
-import io.github.mikolasan.ratiogenerator.ImperialUnitName
-import io.github.mikolasan.ratiogenerator.ImperialUnitType
-import io.github.mikolasan.ratiogenerator.ImperialUnits
+import io.github.mikolasan.ratiogenerator.*
 import kotlin.Array
 
 object VolumeUnits : ImperialUnits() {
@@ -39,4 +36,6 @@ object VolumeUnits : ImperialUnits() {
                     ImperialUnitName.SHKALIK to 20.0,
                     ImperialUnitName.SHTOF to 1.0))
             )
+
+    override val nameMap = makeUnitByNameMap(units)
 }

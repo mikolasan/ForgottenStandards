@@ -119,9 +119,12 @@ fun convertValue(nameMap: Map<ImperialUnitName, ImperialUnit>, inputUnit: Imperi
 
 fun doUnits(name: String, imperialUnits: ImperialUnits) {
     val imperialunit = ClassName("io.github.mikolasan.ratiogenerator", "ImperialUnit")
+    val imperialunitname = ClassName("io.github.mikolasan.ratiogenerator", "ImperialUnitName")
     val imperialtype = ClassName("io.github.mikolasan.ratiogenerator", "ImperialUnitType")
     val array = ClassName("kotlin", "Array")
             .parameterizedBy(imperialunit)
+    val map = ClassName("kotlin", "Map")
+            .parameterizedBy(imperialunitname, imperialunit)
 
     val units = imperialUnits.units
 
@@ -139,10 +142,14 @@ fun doUnits(name: String, imperialUnits: ImperialUnits) {
             .addModifiers(KModifier.OVERRIDE)
             .initializer("arrayOf(\n%L\n)", arrayUnits.joinToCode(separator = ",\n"))
             .build()
-
+    val nameMap = PropertySpec.builder("nameMap", map)
+            .addModifiers(KModifier.OVERRIDE)
+            .initializer("makeUnitByNameMap(%N)", unitsArray)
+            .build()
     val unitsObject = TypeSpec.objectBuilder(name)
             .superclass(ImperialUnits::class)
             .addProperty(unitsArray)
+            .addProperty(nameMap)
             .build()
     val kotlinFile = FileSpec.builder("io.github.mikolasan.imperialrussia", name)
             .addType(unitsObject)
