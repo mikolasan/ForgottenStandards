@@ -81,6 +81,7 @@ object MinLengthUnits : ImperialUnits() {
             ImperialUnit(ImperialUnitType.LENGTH, ImperialUnitName.POINT, mutableMapOf(ImperialUnitName.INCH to 100.0)),
             ImperialUnit(ImperialUnitType.LENGTH, ImperialUnitName.LINE, mutableMapOf(ImperialUnitName.INCH to 10.0)),
 
+            ImperialUnit(ImperialUnitType.LENGTH, ImperialUnitName.POPRISCHE, mutableMapOf(ImperialUnitName.VERST to 0.05)),
             ImperialUnit(ImperialUnitType.LENGTH, ImperialUnitName.VERST, mutableMapOf(
                     ImperialUnitName.MILE to 7.0, // 1 mile = 7 versts
                     ImperialUnitName.SAZHEN to 1.0 / 500.0, // 1 sazhen = 1/500 versts

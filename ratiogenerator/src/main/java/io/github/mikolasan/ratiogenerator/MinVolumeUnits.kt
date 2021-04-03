@@ -16,8 +16,39 @@ object MinVolumeUnits : ImperialUnits() {
             )),
             ImperialUnit(ImperialUnitType.VOLUME, ImperialUnitName.SHTOF, mutableMapOf(
                     ImperialUnitName.VEDRO to 0.1
+            )),
+            ImperialUnit(ImperialUnitType.VOLUME, ImperialUnitName.CHARKA, mutableMapOf(
+                    ImperialUnitName.SHKALIK to 0.5
+            )),
+            ImperialUnit(ImperialUnitType.VOLUME, ImperialUnitName.SOROKOVKA, mutableMapOf(
+                    ImperialUnitName.SHTOF to 4.0
+            )),
+            ImperialUnit(ImperialUnitType.VOLUME, ImperialUnitName.LITR, mutableMapOf(
+                    ImperialUnitName.QUART to 1.13652,
+                    ImperialUnitName.SHTOF to 1.23
+            )),
+            ImperialUnit(ImperialUnitType.VOLUME, ImperialUnitName.MILLILITR, mutableMapOf(
+                    ImperialUnitName.PINT to 568.26125,
+                    ImperialUnitName.SHKALIK to 61.5,
+                    ImperialUnitName.CHARKA to 123.0
+            )),
+            ImperialUnit(ImperialUnitType.VOLUME, ImperialUnitName.GALLON, mutableMapOf(
+                    ImperialUnitName.PINT to 8.0,
+                    ImperialUnitName.VEDRO to 2.71
+            )),
+            ImperialUnit(ImperialUnitType.VOLUME, ImperialUnitName.FLOZ, mutableMapOf(
+                    ImperialUnitName.SHKALIK to 2.16,
+                    ImperialUnitName.CHARKA to 4.33
+            )),
+            ImperialUnit(ImperialUnitType.VOLUME, ImperialUnitName.PINT, mutableMapOf(
+                    ImperialUnitName.SHTOF to 2.16
+            )),
+            ImperialUnit(ImperialUnitType.VOLUME, ImperialUnitName.QUART, mutableMapOf(
+                    ImperialUnitName.PINT to 2.0
+            )),
+            ImperialUnit(ImperialUnitType.VOLUME, ImperialUnitName.BOCHKA, mutableMapOf(
+                    ImperialUnitName.VEDRO to 1.0/40.0
             ))
-
     )
 
     override val nameMap = makeUnitByNameMap(units)

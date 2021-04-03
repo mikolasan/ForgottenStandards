@@ -1,7 +1,9 @@
 package io.github.mikolasan.imperialrussia
 
-import io.github.mikolasan.ratiogenerator.*
-import kotlin.Array
+import io.github.mikolasan.ratiogenerator.ImperialUnit
+import io.github.mikolasan.ratiogenerator.ImperialUnitName
+import io.github.mikolasan.ratiogenerator.ImperialUnitType
+import io.github.mikolasan.ratiogenerator.ImperialUnits
 
 object LengthUnits : ImperialUnits() {
     override val units: Array<ImperialUnit> = arrayOf(
@@ -17,6 +19,7 @@ object LengthUnits : ImperialUnits() {
                     ImperialUnitName.SAZHEN to 3.0,
                     ImperialUnitName.POINT to 3.5714285714285714E-4,
                     ImperialUnitName.LINE to 0.0035714285714285713,
+                    ImperialUnitName.POPRISCHE to 30000.0,
                     ImperialUnitName.VERST to 1500.0,
                     ImperialUnitName.MILE to 10500.0,
                     ImperialUnitName.KILOMETER to 1406.07424071991,
@@ -37,6 +40,7 @@ object LengthUnits : ImperialUnits() {
                     ImperialUnitName.SAZHEN to 84.0,
                     ImperialUnitName.POINT to 0.01,
                     ImperialUnitName.LINE to 0.1,
+                    ImperialUnitName.POPRISCHE to 840000.0,
                     ImperialUnitName.VERST to 42000.0,
                     ImperialUnitName.MILE to 294000.0,
                     ImperialUnitName.KILOMETER to 39370.07874015748,
@@ -57,6 +61,7 @@ object LengthUnits : ImperialUnits() {
                     ImperialUnitName.SAZHEN to 48.0,
                     ImperialUnitName.POINT to 0.005714285714285714,
                     ImperialUnitName.LINE to 0.05714285714285714,
+                    ImperialUnitName.POPRISCHE to 360000.0,
                     ImperialUnitName.VERST to 24000.0,
                     ImperialUnitName.MILE to 168000.0,
                     ImperialUnitName.KILOMETER to 22497.18785151856,
@@ -77,6 +82,7 @@ object LengthUnits : ImperialUnits() {
                     ImperialUnitName.SAZHEN to 27.0,
                     ImperialUnitName.POINT to 0.0032142857142857147,
                     ImperialUnitName.LINE to 0.03214285714285714,
+                    ImperialUnitName.POPRISCHE to 270000.0,
                     ImperialUnitName.VERST to 13500.0,
                     ImperialUnitName.MILE to 94500.0,
                     ImperialUnitName.KILOMETER to 12654.66816647919,
@@ -97,6 +103,7 @@ object LengthUnits : ImperialUnits() {
                     ImperialUnitName.SAZHEN to 12.0,
                     ImperialUnitName.POINT to 0.0014285714285714286,
                     ImperialUnitName.LINE to 0.014285714285714285,
+                    ImperialUnitName.POPRISCHE to 90000.0,
                     ImperialUnitName.VERST to 6000.0,
                     ImperialUnitName.MILE to 42000.0,
                     ImperialUnitName.KILOMETER to 5624.29696287964,
@@ -117,6 +124,7 @@ object LengthUnits : ImperialUnits() {
                     ImperialUnitName.SAZHEN to 6.0,
                     ImperialUnitName.POINT to 5.357142857142857E-4,
                     ImperialUnitName.LINE to 0.005357142857142857,
+                    ImperialUnitName.POPRISCHE to 45000.0,
                     ImperialUnitName.VERST to 2250.0,
                     ImperialUnitName.MILE to 15750.0,
                     ImperialUnitName.KILOMETER to 2812.14848143982,
@@ -137,6 +145,7 @@ object LengthUnits : ImperialUnits() {
                     ImperialUnitName.SAZHEN to 3.0,
                     ImperialUnitName.POINT to 3.5714285714285714E-4,
                     ImperialUnitName.LINE to 0.0035714285714285713,
+                    ImperialUnitName.POPRISCHE to 30000.0,
                     ImperialUnitName.VERST to 1500.0,
                     ImperialUnitName.MILE to 10500.0,
                     ImperialUnitName.KILOMETER to 1406.07424071991,
@@ -157,6 +166,7 @@ object LengthUnits : ImperialUnits() {
                     ImperialUnitName.SAZHEN to 7.0,
                     ImperialUnitName.POINT to 8.333333333333334E-4,
                     ImperialUnitName.LINE to 0.008333333333333333,
+                    ImperialUnitName.POPRISCHE to 70000.0,
                     ImperialUnitName.VERST to 3500.0,
                     ImperialUnitName.MILE to 24500.0,
                     ImperialUnitName.KILOMETER to 3280.839895013123,
@@ -177,6 +187,7 @@ object LengthUnits : ImperialUnits() {
                     ImperialUnitName.SAZHEN to 1.0,
                     ImperialUnitName.POINT to 1.1904761904761905E-4,
                     ImperialUnitName.LINE to 0.0011904761904761906,
+                    ImperialUnitName.POPRISCHE to 10000.0,
                     ImperialUnitName.VERST to 500.0,
                     ImperialUnitName.MILE to 3500.0,
                     ImperialUnitName.KILOMETER to 468.6914135733033,
@@ -197,6 +208,7 @@ object LengthUnits : ImperialUnits() {
                     ImperialUnitName.SAZHEN to 8400.0,
                     ImperialUnitName.POINT to 1.0,
                     ImperialUnitName.LINE to 10.0,
+                    ImperialUnitName.POPRISCHE to 8.4E7,
                     ImperialUnitName.VERST to 4200000.0,
                     ImperialUnitName.MILE to 2.94E7,
                     ImperialUnitName.KILOMETER to 3937007.8740157476,
@@ -217,6 +229,7 @@ object LengthUnits : ImperialUnits() {
                     ImperialUnitName.SAZHEN to 840.0,
                     ImperialUnitName.POINT to 0.1,
                     ImperialUnitName.LINE to 1.0,
+                    ImperialUnitName.POPRISCHE to 8400000.0,
                     ImperialUnitName.VERST to 420000.0,
                     ImperialUnitName.MILE to 2940000.0,
                     ImperialUnitName.KILOMETER to 393700.7874015748,
@@ -225,6 +238,27 @@ object LengthUnits : ImperialUnits() {
                     ImperialUnitName.CENTIMETER to 3.937007874015748,
                     ImperialUnitName.MILLIMETER to 0.39370078740157477,
                     ImperialUnitName.MICROMETER to 3.937007874015748E-4)),
+            ImperialUnit(ImperialUnitType.LENGTH, ImperialUnitName.POPRISCHE, mapOf(
+                    ImperialUnitName.ARSHIN to 3.3333333333333335E-5,
+                    ImperialUnitName.INCH to 1.1904761904761906E-6,
+                    ImperialUnitName.VERSHOK to 2.0833333333333334E-6,
+                    ImperialUnitName.PALM to 3.7037037037037037E-6,
+                    ImperialUnitName.SPAN to 8.333333333333334E-6,
+                    ImperialUnitName.ELL to 2.2222222222222223E-5,
+                    ImperialUnitName.STEP to 3.3333333333333335E-5,
+                    ImperialUnitName.FOOT to 1.4285714285714287E-5,
+                    ImperialUnitName.SAZHEN to 1.0E-4,
+                    ImperialUnitName.POINT to 1.1904761904761905E-8,
+                    ImperialUnitName.LINE to 1.1904761904761904E-7,
+                    ImperialUnitName.POPRISCHE to 1.0,
+                    ImperialUnitName.VERST to 0.05,
+                    ImperialUnitName.MILE to 0.35000000000000003,
+                    ImperialUnitName.KILOMETER to 0.046869141357330335,
+                    ImperialUnitName.METER to 4.6869141357330336E-5,
+                    ImperialUnitName.DECIMETER to 4.686914135733034E-6,
+                    ImperialUnitName.CENTIMETER to 4.686914135733034E-7,
+                    ImperialUnitName.MILLIMETER to 4.6869141357330335E-8,
+                    ImperialUnitName.MICROMETER to 4.686914135733034E-11)),
             ImperialUnit(ImperialUnitType.LENGTH, ImperialUnitName.VERST, mapOf(
                     ImperialUnitName.ARSHIN to 6.666666666666666E-4,
                     ImperialUnitName.INCH to 2.380952380952381E-5,
@@ -237,6 +271,7 @@ object LengthUnits : ImperialUnits() {
                     ImperialUnitName.SAZHEN to 0.002,
                     ImperialUnitName.POINT to 2.380952380952381E-7,
                     ImperialUnitName.LINE to 2.3809523809523808E-6,
+                    ImperialUnitName.POPRISCHE to 20.0,
                     ImperialUnitName.VERST to 1.0,
                     ImperialUnitName.MILE to 7.0,
                     ImperialUnitName.KILOMETER to 0.9373828271466067,
@@ -257,6 +292,7 @@ object LengthUnits : ImperialUnits() {
                     ImperialUnitName.SAZHEN to 2.857142857142857E-4,
                     ImperialUnitName.POINT to 3.4013605442176873E-8,
                     ImperialUnitName.LINE to 3.4013605442176873E-7,
+                    ImperialUnitName.POPRISCHE to 2.8571428571428568,
                     ImperialUnitName.VERST to 0.14285714285714285,
                     ImperialUnitName.MILE to 1.0,
                     ImperialUnitName.KILOMETER to 0.13391183244951524,
@@ -277,6 +313,7 @@ object LengthUnits : ImperialUnits() {
                     ImperialUnitName.SAZHEN to 0.0021336,
                     ImperialUnitName.POINT to 2.54E-7,
                     ImperialUnitName.LINE to 2.5400000000000002E-6,
+                    ImperialUnitName.POPRISCHE to 21.336,
                     ImperialUnitName.VERST to 1.0668,
                     ImperialUnitName.MILE to 7.4676,
                     ImperialUnitName.KILOMETER to 1.0,
@@ -297,6 +334,7 @@ object LengthUnits : ImperialUnits() {
                     ImperialUnitName.SAZHEN to 2.1336,
                     ImperialUnitName.POINT to 2.54E-4,
                     ImperialUnitName.LINE to 0.0025399999999999997,
+                    ImperialUnitName.POPRISCHE to 21335.999999999996,
                     ImperialUnitName.VERST to 1066.8,
                     ImperialUnitName.MILE to 7467.6,
                     ImperialUnitName.KILOMETER to 1000.0,
@@ -317,6 +355,7 @@ object LengthUnits : ImperialUnits() {
                     ImperialUnitName.SAZHEN to 21.336000000000002,
                     ImperialUnitName.POINT to 0.0025399999999999997,
                     ImperialUnitName.LINE to 0.0254,
+                    ImperialUnitName.POPRISCHE to 213359.99999999997,
                     ImperialUnitName.VERST to 10668.0,
                     ImperialUnitName.MILE to 74676.0,
                     ImperialUnitName.KILOMETER to 10000.0,
@@ -337,6 +376,7 @@ object LengthUnits : ImperialUnits() {
                     ImperialUnitName.SAZHEN to 213.36,
                     ImperialUnitName.POINT to 0.0254,
                     ImperialUnitName.LINE to 0.254,
+                    ImperialUnitName.POPRISCHE to 2133599.9999999995,
                     ImperialUnitName.VERST to 106680.0,
                     ImperialUnitName.MILE to 746760.0,
                     ImperialUnitName.KILOMETER to 100000.0,
@@ -357,6 +397,7 @@ object LengthUnits : ImperialUnits() {
                     ImperialUnitName.SAZHEN to 2133.6000000000004,
                     ImperialUnitName.POINT to 0.254,
                     ImperialUnitName.LINE to 2.54,
+                    ImperialUnitName.POPRISCHE to 2.1336E7,
                     ImperialUnitName.VERST to 1066800.0,
                     ImperialUnitName.MILE to 7467600.0,
                     ImperialUnitName.KILOMETER to 1000000.0,
@@ -377,6 +418,7 @@ object LengthUnits : ImperialUnits() {
                     ImperialUnitName.SAZHEN to 2133600.0000000005,
                     ImperialUnitName.POINT to 254.0,
                     ImperialUnitName.LINE to 2540.0,
+                    ImperialUnitName.POPRISCHE to 2.1336E10,
                     ImperialUnitName.VERST to 1.0668E9,
                     ImperialUnitName.MILE to 7.4676E9,
                     ImperialUnitName.KILOMETER to 1.0E9,
@@ -387,5 +429,5 @@ object LengthUnits : ImperialUnits() {
                     ImperialUnitName.MICROMETER to 1.0))
             )
 
-    override val nameMap = makeUnitByNameMap(units)
+    override val nameMap: Map<ImperialUnitName, ImperialUnit> = makeUnitByNameMap(units)
 }

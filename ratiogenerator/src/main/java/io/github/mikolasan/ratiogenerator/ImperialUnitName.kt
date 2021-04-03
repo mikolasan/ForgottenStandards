@@ -21,10 +21,20 @@ enum class ImperialUnitName {
     SAZHEN,
     VERST,
     MILE,
+    POPRISCHE,
 
+    BOCHKA,
     VEDRO,
     GARNETS,
     OSMINA,
     SHKALIK,
+    CHARKA,
     SHTOF,
+    SOROKOVKA,
+    LITR,
+    MILLILITR,
+    GALLON,
+    FLOZ,
+    PINT,
+    QUART
 }

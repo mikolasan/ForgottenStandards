@@ -50,7 +50,9 @@ project('core') {
         implementation project(':graphstream:deps:mbox2')
     }
     processResources {
-        from('src/org/graphstream/ui/graphicGraph/stylesheet/rgb.properties')
+        from('src/org/graphstream/ui/graphicGraph/stylesheet/rgb.properties') {
+            include '**/*.properties'
+        }
     }
 }
 

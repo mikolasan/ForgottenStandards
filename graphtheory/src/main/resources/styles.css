@@ -1,0 +1,19 @@
+graph {
+	fill-color: red;
+}
+
+node {
+	size: 10px, 15px;
+	shape: box;
+	fill-color: green;
+	stroke-mode: plain;
+	stroke-color: yellow;
+}
+
+node#A {
+	fill-color: blue;
+}
+
+node:clicked {
+	fill-color: red;
+}

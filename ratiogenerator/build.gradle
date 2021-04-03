@@ -29,7 +29,7 @@ task saveGeneratedSources(dependsOn: runRatioGenerator) {
     group = 'units'
 
     def outputDir = new File(sourceSets.main.java.srcDirs.first(), "io/github/mikolasan/ratiogenerator")
-    def outputFile = new File(outputDir, "LengthUnits.kt")
+    def outputFile = new File(outputDir, "VolumeUnits.kt")
 //    def outputDir = new File("/${buildDir}/output")
 //    def outputFile = new File(outputDir, "full-routes.txt")
     doLast {
