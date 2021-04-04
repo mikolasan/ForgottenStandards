@@ -6,26 +6,26 @@ import java.lang.Exception
 import java.util.*
 
 
-fun findConversionRatio(nameMap: Map<ImperialUnitName, ImperialUnit>, inputUnit: ImperialUnit, outputUnit: ImperialUnit): Double {
+fun findConversionRatio(nameMap: Map<ImperialUnitName, ImperialUnit>, inputUnit: ImperialUnit, outputUnit: ImperialUnit, searchPath: Array<ImperialUnitName>?): Double {
     val inputMap = inputUnit.ratioMap
     val outputMap = outputUnit.ratioMap
     val ratio = outputMap[inputUnit.unitName]
     if (ratio != null) return ratio
 
-    val inverse = inputMap.get(outputUnit.unitName)
+    val inverse = inputMap[outputUnit.unitName]
     if (inverse != null) return 1.0/inverse
 
     for ((unitName,k) in inputMap) {
-        val commonUnitRatio = outputMap.get(unitName)
+        if (searchPath != null && searchPath.contains(unitName)) continue
+
+        val commonUnitRatio = outputMap[unitName]
         commonUnitRatio?.let {
-            val newRatio = commonUnitRatio / k
-            //outputMap[inputUnit.unitName] = newRatio
-            return newRatio
+            return commonUnitRatio / k
         }
 
         val inverseCommonUnit = nameMap[unitName]
         inverseCommonUnit?.let {
-            val newRatio = inverseCommonUnit.ratioMap.get(outputUnit.unitName)
+            val newRatio = inverseCommonUnit.ratioMap[outputUnit.unitName]
             if (newRatio != null)
                 return 1.0 / (k * newRatio)
         }
@@ -34,7 +34,14 @@ fun findConversionRatio(nameMap: Map<ImperialUnitName, ImperialUnit>, inputUnit:
     for ((unitName,k) in outputMap) {
         try {
             val unit = nameMap[unitName]
-            if (unit != null) return findConversionRatio(nameMap, inputUnit, unit) * k
+            if (unit != null) {
+                if (searchPath != null && searchPath.contains(unitName)) continue
+                return if (searchPath == null) {
+                    findConversionRatio(nameMap, inputUnit, unit, arrayOf(unitName)) * k
+                } else {
+                    findConversionRatio(nameMap, inputUnit, unit, searchPath.plus(unitName)) * k
+                }
+            }
         } catch (e: Exception) {
 
         }
@@ -114,20 +121,11 @@ fun printFullRoutes2() {
 fun convertValue(nameMap: Map<ImperialUnitName, ImperialUnit>, inputUnit: ImperialUnit?, outputUnit: ImperialUnit?, inputValue: Double): Double {
     val input = inputUnit ?: return 0.0
     val output = outputUnit ?: return 0.0
-    return inputValue * findConversionRatio(nameMap, input, output)
+    return inputValue * findConversionRatio(nameMap, input, output, null)
 }
 
 fun doUnits(name: String, imperialUnits: ImperialUnits) {
-    val imperialunit = ClassName("io.github.mikolasan.ratiogenerator", "ImperialUnit")
-    val imperialunitname = ClassName("io.github.mikolasan.ratiogenerator", "ImperialUnitName")
-    val imperialtype = ClassName("io.github.mikolasan.ratiogenerator", "ImperialUnitType")
-    val array = ClassName("kotlin", "Array")
-            .parameterizedBy(imperialunit)
-    val map = ClassName("kotlin", "Map")
-            .parameterizedBy(imperialunitname, imperialunit)
-
     val units = imperialUnits.units
-
     val arrayUnits = units.map { unitFrom ->
         val mapUnits = units.map { unitTo ->
             CodeBlock.builder()
@@ -135,14 +133,14 @@ fun doUnits(name: String, imperialUnits: ImperialUnits) {
                     .build()
         }
         CodeBlock.builder()
-                .add("%T(%T.%L, %T.%L, mapOf(\n⇥⇥%L⇤⇤))", imperialunit, imperialtype, unitFrom.type, unitFrom.unitName::class, unitFrom.unitName, mapUnits.joinToCode(separator = ",\n"))
+                .add("%T(%T.%L, %T.%L, mapOf(\n⇥⇥%L⇤⇤))", ImperialUnit::class, ImperialUnitType::class, unitFrom.type, unitFrom.unitName::class, unitFrom.unitName, mapUnits.joinToCode(separator = ",\n"))
                 .build()
     }
-    val unitsArray = PropertySpec.builder("units", array)
+    val unitsArray = PropertySpec.builder("units", Array<ImperialUnit>::class.parameterizedBy(ImperialUnit::class))
             .addModifiers(KModifier.OVERRIDE)
             .initializer("arrayOf(\n%L\n)", arrayUnits.joinToCode(separator = ",\n"))
             .build()
-    val nameMap = PropertySpec.builder("nameMap", map)
+    val nameMap = PropertySpec.builder("nameMap", Map::class.parameterizedBy(ImperialUnitName::class, ImperialUnit::class))
             .addModifiers(KModifier.OVERRIDE)
             .initializer("makeUnitByNameMap(%N)", unitsArray)
             .build()
@@ -173,5 +171,6 @@ fun main() {
 //    println("printFullRoutes2 time: $time2")
 
 //    doUnits("LengthUnits", MinLengthUnits)
-    doUnits("VolumeUnits", MinVolumeUnits)
+//    doUnits("VolumeUnits", MinVolumeUnits)
+    doUnits("WeightUnits", MinWeightUnits)
 }

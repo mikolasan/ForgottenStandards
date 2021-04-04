@@ -240,10 +240,16 @@ class MainActivity : FragmentActivity() {
         workingUnits.orderedUnits = workingUnits.allUnits.getValue(ImperialUnitType.valueOf(category.name.toUpperCase()))
         workingUnits.listAdapter.units = workingUnits.orderedUnits
         workingUnits.listAdapter.resetAllValues()
-        converterFragment?.let {
-            it.topPanel.changeUnit(workingUnits.orderedUnits[0])
-            it.bottomPanel.changeUnit(workingUnits.orderedUnits[1])
-            it.displayUnitValues()
+        workingUnits.selectedUnit = workingUnits.orderedUnits[0]
+        workingUnits.secondUnit = workingUnits.orderedUnits[1]
+        converterFragment?.run {
+            topPanel.changeUnit(workingUnits.selectedUnit)
+            bottomPanel.changeUnit(workingUnits.secondUnit)
+            displayUnitValues()
+        }
+        unitListFragment?.run {
+            restoreSelectedUnit(workingUnits.selectedUnit)
+            restoreSecondUnit(workingUnits.secondUnit)
         }
 
     }

@@ -36,5 +36,21 @@ enum class ImperialUnitName {
     GALLON,
     FLOZ,
     PINT,
-    QUART
+    QUART,
+
+    DOLYA,
+    ZOLOTNIK,
+    LOT,
+    FUNT,
+    POOD,
+    BERKOVETS,
+    GRAN,
+    SCRUPUL,
+    DRAKHMA,
+    UNTSIYA,
+    KILOGRAMM,
+    GRAMM,
+    POUND,
+    STONE
+
 }

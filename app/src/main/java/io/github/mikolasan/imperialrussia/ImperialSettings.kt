@@ -8,13 +8,15 @@ import io.github.mikolasan.ratiogenerator.*
 import java.lang.ClassCastException
 
 class ImperialSettings(application: Application) : AndroidViewModel(application) {
-    val allTypes: Array<ImperialUnitType> = arrayOf(
+    private val allTypes: Array<ImperialUnitType> = arrayOf(
             ImperialUnitType.LENGTH,
-            ImperialUnitType.VOLUME
+            ImperialUnitType.VOLUME,
+            ImperialUnitType.WEIGHT
     )
     private val unitObjects: Map<ImperialUnitType, ImperialUnits> = mapOf(
             ImperialUnitType.LENGTH to LengthUnits,
-            ImperialUnitType.VOLUME to VolumeUnits
+            ImperialUnitType.VOLUME to VolumeUnits,
+            ImperialUnitType.WEIGHT to WeightUnits
     )
 
     private val preferencesFile = "ImperialRussiaPref.7"

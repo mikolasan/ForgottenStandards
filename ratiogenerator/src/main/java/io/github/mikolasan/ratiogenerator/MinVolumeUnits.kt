@@ -44,7 +44,8 @@ object MinVolumeUnits : ImperialUnits() {
                     ImperialUnitName.SHTOF to 2.16
             )),
             ImperialUnit(ImperialUnitType.VOLUME, ImperialUnitName.QUART, mutableMapOf(
-                    ImperialUnitName.PINT to 2.0
+                    ImperialUnitName.PINT to 2.0,
+                    ImperialUnitName.GARNETS to 3.466
             )),
             ImperialUnit(ImperialUnitType.VOLUME, ImperialUnitName.BOCHKA, mutableMapOf(
                     ImperialUnitName.VEDRO to 1.0/40.0
