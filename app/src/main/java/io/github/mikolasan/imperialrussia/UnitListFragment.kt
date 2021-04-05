@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ListView
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import io.github.mikolasan.ratiogenerator.ImperialUnit
@@ -15,6 +16,7 @@ class UnitListFragment : Fragment() {
     private lateinit var unitsList: ListView
     lateinit var listAdapter: ImperialListAdapter
     private var switchFragment: SwitchFragment? = null
+    private lateinit var title: TextView
 
     private fun setListeners(view: View) {
         unitsList.setOnItemClickListener { _, _, position, _ ->
@@ -33,6 +35,7 @@ class UnitListFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_unit_list, container, false)
         unitsList = view.findViewById(R.id.units_list)
+        title = view.findViewById(R.id.unit_type_label)
         setListeners(view)
         return view
     }
@@ -121,5 +124,9 @@ class UnitListFragment : Fragment() {
 
     fun swapPanels() {
 //        listAdapter.swapSelection()
+    }
+
+    fun setTitle(text: String) {
+        title.text = text
     }
 }

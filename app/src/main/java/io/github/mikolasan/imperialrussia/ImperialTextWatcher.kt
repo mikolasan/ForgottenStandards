@@ -4,13 +4,13 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
 
-open class ImperialTextWatcher(val panel: ImperialUnitPanel, val selectedPanel: ImperialUnitPanel, val activity: MainActivity) : TextWatcher {
+open class ImperialTextWatcher(val panel: ImperialUnitPanel, val fragment: ConverterFragment, val activity: MainActivity) : TextWatcher {
     var selfEditing = false
     val input = panel.input
 
     override fun afterTextChanged(s: Editable?) {
         println("[topInput] afterTextChanged ${s.toString()}")
-        if (selectedPanel?.input != input)
+        if (fragment.selectedPanel?.input != input)
             return
         if (selfEditing)
             return

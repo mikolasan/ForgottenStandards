@@ -246,12 +246,15 @@ class MainActivity : FragmentActivity() {
             topPanel.changeUnit(workingUnits.selectedUnit)
             bottomPanel.changeUnit(workingUnits.secondUnit)
             displayUnitValues()
+            selectTopPanel()
         }
         unitListFragment?.run {
             restoreSelectedUnit(workingUnits.selectedUnit)
             restoreSecondUnit(workingUnits.secondUnit)
+            setTitle(category.name)
         }
 
+        hideTypeSwitcher()
     }
 }
 

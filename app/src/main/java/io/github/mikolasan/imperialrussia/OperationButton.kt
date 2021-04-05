@@ -12,8 +12,9 @@ import androidx.appcompat.widget.AppCompatButton
 class OperationButton(context: Context, attributeSet: AttributeSet) : AppCompatButton(context, attributeSet) {
     private val operations = setOf('÷', '×', '+', '-')
 
-    fun setOnClickPanel(panel: ImperialUnitPanel) {
+    fun setOnClickPanel(fragment: ConverterFragment) {
         setOnClickListener{ button ->
+            val panel: ImperialUnitPanel = fragment.selectedPanel
             if (button.id != R.id.op_eval && panel.hasExponent()) {
                 panel.setUnitValue(0.0)
                 panel.setString("")

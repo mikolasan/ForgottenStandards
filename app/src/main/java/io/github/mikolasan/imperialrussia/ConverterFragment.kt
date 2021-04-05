@@ -13,7 +13,7 @@ class ConverterFragment : Fragment() {
 
     lateinit var bottomPanel: ImperialUnitPanel
     lateinit var topPanel: ImperialUnitPanel
-    private lateinit var selectedPanel: ImperialUnitPanel
+    lateinit var selectedPanel: ImperialUnitPanel
     private lateinit var ratioLabel: TextView
 
     private fun setPanelListeners(view: View) {
@@ -38,32 +38,32 @@ class ConverterFragment : Fragment() {
         val bottomInput = bottomPanel.input
         topInput.setOnClickListener(topPanelOnClickListener)
         bottomInput.setOnClickListener(bottomPanelOnClickListener)
-        topInput.addTextChangedListener(object : ImperialTextWatcher(topPanel, selectedPanel, activity as MainActivity) {})
-        bottomInput.addTextChangedListener(object : ImperialTextWatcher(bottomPanel, selectedPanel, activity as MainActivity) {})
+        topInput.addTextChangedListener(object : ImperialTextWatcher(topPanel, this, activity as MainActivity) {})
+        bottomInput.addTextChangedListener(object : ImperialTextWatcher(bottomPanel, this, activity as MainActivity) {})
     }
 
     private fun setButtonListeners(view: View) {
-
+        val fragment = this
         view.run {
-            findViewById<DigitButton>(R.id.digit_1).setOnClickPanel(selectedPanel)
-            findViewById<DigitButton>(R.id.digit_2).setOnClickPanel(selectedPanel)
-            findViewById<DigitButton>(R.id.digit_3).setOnClickPanel(selectedPanel)
-            findViewById<DigitButton>(R.id.digit_4).setOnClickPanel(selectedPanel)
-            findViewById<DigitButton>(R.id.digit_5).setOnClickPanel(selectedPanel)
-            findViewById<DigitButton>(R.id.digit_6).setOnClickPanel(selectedPanel)
-            findViewById<DigitButton>(R.id.digit_7).setOnClickPanel(selectedPanel)
-            findViewById<DigitButton>(R.id.digit_8).setOnClickPanel(selectedPanel)
-            findViewById<DigitButton>(R.id.digit_9).setOnClickPanel(selectedPanel)
-            findViewById<DigitButton>(R.id.digit_0).setOnClickPanel(selectedPanel)
+            findViewById<DigitButton>(R.id.digit_1).setOnClickPanel(fragment)
+            findViewById<DigitButton>(R.id.digit_2).setOnClickPanel(fragment)
+            findViewById<DigitButton>(R.id.digit_3).setOnClickPanel(fragment)
+            findViewById<DigitButton>(R.id.digit_4).setOnClickPanel(fragment)
+            findViewById<DigitButton>(R.id.digit_5).setOnClickPanel(fragment)
+            findViewById<DigitButton>(R.id.digit_6).setOnClickPanel(fragment)
+            findViewById<DigitButton>(R.id.digit_7).setOnClickPanel(fragment)
+            findViewById<DigitButton>(R.id.digit_8).setOnClickPanel(fragment)
+            findViewById<DigitButton>(R.id.digit_9).setOnClickPanel(fragment)
+            findViewById<DigitButton>(R.id.digit_0).setOnClickPanel(fragment)
 
-            findViewById<OperationButton>(R.id.op_back).setOnClickPanel(selectedPanel)
-            findViewById<OperationButton>(R.id.op_clear).setOnClickPanel(selectedPanel)
-            findViewById<OperationButton>(R.id.op_mult).setOnClickPanel(selectedPanel)
-            findViewById<OperationButton>(R.id.op_div).setOnClickPanel(selectedPanel)
-            findViewById<OperationButton>(R.id.op_plus).setOnClickPanel(selectedPanel)
-            findViewById<OperationButton>(R.id.op_minus).setOnClickPanel(selectedPanel)
-            findViewById<OperationButton>(R.id.op_dot).setOnClickPanel(selectedPanel)
-            findViewById<OperationButton>(R.id.op_eval).setOnClickPanel(selectedPanel)
+            findViewById<OperationButton>(R.id.op_back).setOnClickPanel(fragment)
+            findViewById<OperationButton>(R.id.op_clear).setOnClickPanel(fragment)
+            findViewById<OperationButton>(R.id.op_mult).setOnClickPanel(fragment)
+            findViewById<OperationButton>(R.id.op_div).setOnClickPanel(fragment)
+            findViewById<OperationButton>(R.id.op_plus).setOnClickPanel(fragment)
+            findViewById<OperationButton>(R.id.op_minus).setOnClickPanel(fragment)
+            findViewById<OperationButton>(R.id.op_dot).setOnClickPanel(fragment)
+            findViewById<OperationButton>(R.id.op_eval).setOnClickPanel(fragment)
         }
     }
 

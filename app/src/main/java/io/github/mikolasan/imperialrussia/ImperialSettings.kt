@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import androidx.lifecycle.AndroidViewModel
 import io.github.mikolasan.ratiogenerator.*
 import java.lang.ClassCastException
+import java.lang.Exception
 
 class ImperialSettings(application: Application) : AndroidViewModel(application) {
     private val allTypes: Array<ImperialUnitType> = arrayOf(
@@ -34,7 +35,7 @@ class ImperialSettings(application: Application) : AndroidViewModel(application)
                 val unitName = preferences.getString(settingName, null) ?: defaultUnit.unitName.name
                 val imperialUnitName = ImperialUnitName.valueOf(unitName)
                 unitObjects.getValue(type).nameMap.getValue(imperialUnitName)
-            } catch (e: ClassCastException) {
+            } catch (e: Exception) {
                 System.err.println(e.message)
                 defaultUnit
             }
@@ -103,7 +104,7 @@ class ImperialSettings(application: Application) : AndroidViewModel(application)
         orderedUnits.forEachIndexed { i, u ->
             val unitName = u.unitName.name
             val settingName = "unit${unitName}Position"
-            println("${settingName} - ${i}")
+            println("$settingName - $i")
             preferencesEditor.putInt(settingName, i)
         }
         println("== END ==")

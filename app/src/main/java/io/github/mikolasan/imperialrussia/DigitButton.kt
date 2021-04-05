@@ -11,20 +11,19 @@ import androidx.appcompat.widget.AppCompatButton
  * except one case when the panel displays a value formatted in scientific notation (1.234x10^4).
  */
 class DigitButton(context: Context, attributeSet: AttributeSet) : AppCompatButton(context, attributeSet) {
-    fun setOnClickPanel(selectedPanel: ImperialUnitPanel) {
+    fun setOnClickPanel(fragment: ConverterFragment) {
         setOnClickListener{ view ->
+            val panel: ImperialUnitPanel = fragment.selectedPanel
             val button = view as Button
 
-            selectedPanel.let { panel ->
-                if (!panel.hasUnitAssigned()) return@let
-                if (panel.hasExponent()) {
-                    panel.setUnitValue(0.0)
-                    panel.setString("")
-                }
-                val text = panel.getString() ?: ""
-                if (text.length <= maxDisplayLength) {
-                    panel.appendString(button.text[0])
-                }
+            if (!panel.hasUnitAssigned()) return@setOnClickListener
+            if (panel.hasExponent()) {
+                panel.setUnitValue(0.0)
+                panel.setString("")
+            }
+            val text = panel.getString() ?: ""
+            if (text.length <= maxDisplayLength) {
+                panel.appendString(button.text[0])
             }
         }
     }
