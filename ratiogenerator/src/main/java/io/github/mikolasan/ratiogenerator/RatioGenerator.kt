@@ -5,8 +5,21 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import java.lang.Exception
 import java.util.*
 
+fun addInverseRatios(imperialUnits: ImperialUnits) {
+    val units: Array<ImperialUnit> = imperialUnits.units
+    val nameMap: Map<ImperialUnitName, ImperialUnit> = imperialUnits.nameMap
+    units.forEach {forwardUnit->
+        forwardUnit.ratioMap.forEach { unitName, ratio ->
+            val backwardUnit = nameMap.getValue(unitName)
+            if (!backwardUnit.ratioMap.containsKey(forwardUnit.unitName)) {
+                backwardUnit.ratioMap = backwardUnit.ratioMap + Pair(forwardUnit.unitName, 1.0/ratio)
+            }
+        }
+    }
+}
 
 fun findConversionRatio(nameMap: Map<ImperialUnitName, ImperialUnit>, inputUnit: ImperialUnit, outputUnit: ImperialUnit, searchPath: Array<ImperialUnitName>?): Double {
+    if (inputUnit.unitName == outputUnit.unitName) return 1.0
     val inputMap = inputUnit.ratioMap
     val outputMap = outputUnit.ratioMap
     val ratio = outputMap[inputUnit.unitName]
@@ -125,6 +138,7 @@ fun convertValue(nameMap: Map<ImperialUnitName, ImperialUnit>, inputUnit: Imperi
 }
 
 fun doUnits(name: String, imperialUnits: ImperialUnits) {
+    addInverseRatios(imperialUnits)
     val units = imperialUnits.units
     val arrayUnits = units.map { unitFrom ->
         val mapUnits = units.map { unitTo ->
@@ -163,9 +177,9 @@ fun main(args: Array<String>) {
         else Pair(map + (lastKey to map.getOrDefault(lastKey, emptyList()) + elem), lastKey)
     }.first
 
-    val className = map["--className"]?.first() ?: "io.github.mikolasan.ratiogenerator.MinWeightUnits"
+    val className = map["--className"]?.first() ?: "io.github.mikolasan.ratiogenerator.MinAngleUnits"
     val units = Class.forName(className).kotlin.objectInstance as ImperialUnits
-    val name = map["--objectName"]?.first() ?: "WeightUnits"
+    val name = map["--objectName"]?.first() ?: "AngleUnits"
     doUnits(name, units)
 }
 

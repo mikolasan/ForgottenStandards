@@ -4,14 +4,16 @@ enum class ImperialUnitName {
     // Angle
     RADIAN,
     DEGREE,
-    MINUTE,
-    SECOND,
-    GRADUS,
+    MINUTE_OF_ARC,
+    SECOND_OF_ARC,
+    GRAD,
     CIRCLE,
+    SEXTANT,
+    TURN,
 
     // Area
     DESYATINA,
-    SOTKA,
+    ARE, // sotka
     ACRE,
     HECTARE,
     SQUARE_CENTIMETER,
@@ -22,14 +24,17 @@ enum class ImperialUnitName {
     SQUARE_MILE,
 
     // Currency
-    USD,
+    MOSKOVKA,
+    DENGA,
+    KOPEIKA,
+    ALTIN,
 
     // Energy
     JOULE,
-    KILOWATT_HOUR,
     KILOJOULE,
+    KILOWATT_HOUR,
     CALORIE,
-    KCAL,
+    KILOCALORIE,
 
     // Force
     DYNE,
@@ -92,16 +97,16 @@ enum class ImperialUnitName {
     KILOOHM,
 
     // Speed
-    M_S,
-    MI_H,
+    METER_PER_SECOND,
+    MILE_PER_HOUR,
     KNOT,
     MACH,
-    BEAUFORT,
+    //BEAUFORT, // TODO: this unit is not in constant relation to other units, need a formula
 
     // Storage
     BIT,
     BYTE,
-    KIB,
+    KIBIBYTE,
     PACKET,
     BLOCK,
 

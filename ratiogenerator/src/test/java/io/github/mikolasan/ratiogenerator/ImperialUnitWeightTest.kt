@@ -1,9 +1,5 @@
-package io.github.mikolasan.imperialrussia
+package io.github.mikolasan.ratiogenerator
 
-import io.github.mikolasan.ratiogenerator.ImperialUnitName
-import io.github.mikolasan.ratiogenerator.MinVolumeUnits
-import io.github.mikolasan.ratiogenerator.MinWeightUnits
-import io.github.mikolasan.ratiogenerator.findConversionRatio
 import org.junit.Test
 
 class ImperialUnitWeightTest {

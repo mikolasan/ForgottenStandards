@@ -2,8 +2,10 @@ package io.github.mikolasan.ratiogenerator
 
 object MinResistanceUnits : ImperialUnits() {
     override val units = arrayOf(
-            ImperialUnit(ImperialUnitType.RESISTANCE, ImperialUnitName.DOLYA, mutableMapOf(
-                    ImperialUnitName.GRAN to 1.4
+            ImperialUnit(ImperialUnitType.RESISTANCE, ImperialUnitName.OHM, mutableMapOf(
+                    ImperialUnitName.KILOOHM to 1000.0
+            )),
+            ImperialUnit(ImperialUnitType.RESISTANCE, ImperialUnitName.KILOOHM, mutableMapOf(
             ))
 
     )

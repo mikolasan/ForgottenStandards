@@ -1,19 +1,19 @@
-package io.github.mikolasan.imperialrussia
+package io.github.mikolasan.ratiogenerator
 
-import io.github.mikolasan.ratiogenerator.MinVolumeUnits
-import io.github.mikolasan.ratiogenerator.findConversionRatio
 import org.junit.Test
 
-class ImperialUnitVolumeTest {
+class ImperialUnitTimeTest {
     @Test
     fun findConversionRatio_checkRatioForAllUnits() {
-        val units = MinVolumeUnits.units
+        addInverseRatios(MinTimeUnits)
+        val units = MinTimeUnits.units
+        val nameMap = MinTimeUnits.nameMap
         for (fromUnit in units) {
             for (toUnit in units) {
                 if (fromUnit.unitName == toUnit.unitName) continue
 
                 println("Finding ratio for ${fromUnit.unitName} -> ${toUnit.unitName}...")
-                val ratio = findConversionRatio(MinVolumeUnits.nameMap, fromUnit, toUnit, null)
+                val ratio = findConversionRatio(nameMap, fromUnit, toUnit, null)
                 println("[OK]: ${fromUnit.unitName} -> $ratio ${toUnit.unitName}")
             }
         }
