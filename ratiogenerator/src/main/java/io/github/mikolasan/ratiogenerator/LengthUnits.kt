@@ -4,6 +4,8 @@ import io.github.mikolasan.ratiogenerator.ImperialUnit
 import io.github.mikolasan.ratiogenerator.ImperialUnitName
 import io.github.mikolasan.ratiogenerator.ImperialUnitType
 import io.github.mikolasan.ratiogenerator.ImperialUnits
+import kotlin.Array
+import kotlin.collections.Map
 
 object LengthUnits : ImperialUnits() {
     override val units: Array<ImperialUnit> = arrayOf(

@@ -157,7 +157,18 @@ fun doUnits(name: String, imperialUnits: ImperialUnits) {
     kotlinFile.writeTo(System.out)
 }
 
-fun main() {
+fun main(args: Array<String>) {
+    val map = args.fold(Pair(emptyMap<String, List<String>>(), "")) { (map, lastKey), elem ->
+        if (elem.startsWith("-"))  Pair(map + (elem to emptyList()), elem)
+        else Pair(map + (lastKey to map.getOrDefault(lastKey, emptyList()) + elem), lastKey)
+    }.first
+
+    val className = map["--className"]?.first() ?: "io.github.mikolasan.ratiogenerator.MinWeightUnits"
+    val units = Class.forName(className).kotlin.objectInstance as ImperialUnits
+    val name = map["--objectName"]?.first() ?: "WeightUnits"
+    doUnits(name, units)
+}
+
 //    printWholeRatios()
 
 //    val time1 = measureTimeMillis {
@@ -170,7 +181,3 @@ fun main() {
 //    }
 //    println("printFullRoutes2 time: $time2")
 
-//    doUnits("LengthUnits", MinLengthUnits)
-//    doUnits("VolumeUnits", MinVolumeUnits)
-    doUnits("WeightUnits", MinWeightUnits)
-}

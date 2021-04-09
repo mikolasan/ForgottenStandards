@@ -12,6 +12,12 @@ This app includes simple arithmetic calculator.
 
 Stay tuned for the updates. More features are coming soon.
 
+## How to use Ratio Generator
+
+```shell
+generate_units.bat
+```
+
 ## Roadmap
 
 - Another unit types: volume, weight

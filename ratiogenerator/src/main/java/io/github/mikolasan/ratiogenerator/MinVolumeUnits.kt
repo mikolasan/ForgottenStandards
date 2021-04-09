@@ -23,11 +23,11 @@ object MinVolumeUnits : ImperialUnits() {
             ImperialUnit(ImperialUnitType.VOLUME, ImperialUnitName.SOROKOVKA, mutableMapOf(
                     ImperialUnitName.SHTOF to 4.0
             )),
-            ImperialUnit(ImperialUnitType.VOLUME, ImperialUnitName.LITR, mutableMapOf(
+            ImperialUnit(ImperialUnitType.VOLUME, ImperialUnitName.LITER, mutableMapOf(
                     ImperialUnitName.QUART to 1.13652,
                     ImperialUnitName.SHTOF to 1.23
             )),
-            ImperialUnit(ImperialUnitType.VOLUME, ImperialUnitName.MILLILITR, mutableMapOf(
+            ImperialUnit(ImperialUnitType.VOLUME, ImperialUnitName.MILLILITER, mutableMapOf(
                     ImperialUnitName.PINT to 568.26125,
                     ImperialUnitName.SHKALIK to 61.5,
                     ImperialUnitName.CHARKA to 123.0

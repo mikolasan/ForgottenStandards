@@ -9,13 +9,21 @@ import java.lang.ClassCastException
 import java.lang.Exception
 
 class ImperialSettings(application: Application) : AndroidViewModel(application) {
-    private val allTypes: Array<ImperialUnitType> = arrayOf(
-            ImperialUnitType.LENGTH,
-            ImperialUnitType.VOLUME,
-            ImperialUnitType.WEIGHT
-    )
     private val unitObjects: Map<ImperialUnitType, ImperialUnits> = mapOf(
+            ImperialUnitType.ANGLE to AngleUnits,
+            ImperialUnitType.AREA to AreaUnits,
+            ImperialUnitType.CURRENCY to CurrencyUnits,
+            ImperialUnitType.ENERGY to EnergyUnits,
+            ImperialUnitType.FORCE to ForceUnits,
+            ImperialUnitType.FUEL to FuelUnits,
             ImperialUnitType.LENGTH to LengthUnits,
+            ImperialUnitType.POWER to PowerUnits,
+            ImperialUnitType.PRESSURE to PressureUnits,
+            ImperialUnitType.RESISTANCE to ResistanceUnits,
+            ImperialUnitType.SPEED to SpeedUnits,
+            ImperialUnitType.STORAGE to StorageUnits,
+            ImperialUnitType.TEMPERATURE to TemperatureUnits,
+            ImperialUnitType.TIME to TimeUnits,
             ImperialUnitType.VOLUME to VolumeUnits,
             ImperialUnitType.WEIGHT to WeightUnits
     )
@@ -45,7 +53,7 @@ class ImperialSettings(application: Application) : AndroidViewModel(application)
     }
 
     fun restoreWorkingUnits(): WorkingUnits {
-        val units: Map<ImperialUnitType, Array<ImperialUnit>> = allTypes.associate { unitType ->
+        val units: Map<ImperialUnitType, Array<ImperialUnit>> = ImperialUnitType.values().associate { unitType ->
             Pair(unitType, loadOrderedUnits(unitType))
         }
         val type: ImperialUnitType = if (preferences.contains("category")) {

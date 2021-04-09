@@ -1,20 +1,20 @@
 package io.github.mikolasan.ratiogenerator
 
 enum class ImperialUnitType {
-    LENGTH,
+    ANGLE,
     AREA,
-    VOLUME,
-    TEMPERATURE,
-    WEIGHT,
-    SPEED,
-    TIME,
-    PRESSURE,
-    POWER,
+    CURRENCY,
     ENERGY,
     FORCE,
-    RESISTANCE,
-    CURRENCY,
-    STORAGE,
     FUEL,
-    ANGLE
+    LENGTH,
+    POWER,
+    PRESSURE,
+    RESISTANCE,
+    SPEED,
+    STORAGE,
+    TEMPERATURE,
+    TIME,
+    VOLUME,
+    WEIGHT
 }

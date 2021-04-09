@@ -9,6 +9,7 @@ dependencies {
     //noinspection DifferentStdlibGradleVersion
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.squareup:kotlinpoet:1.5.0'
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.3.72"
 }
 
 sourceCompatibility = '1.8'
@@ -20,23 +21,13 @@ task runRatioGenerator(type: JavaExec) {
     // store the output instead of printing to the console:
     standardOutput = new ByteArrayOutputStream()
     // extension method genSource.output() can be used to obtain the output:
-    doLast {
-        ext.generated = standardOutput.toString()
-    }
-}
-
-task saveGeneratedSources(dependsOn: runRatioGenerator) {
-    group = 'units'
-
     def outputDir = new File(sourceSets.main.java.srcDirs.first(), "io/github/mikolasan/ratiogenerator")
-    def outputFile = new File(outputDir, "WeightUnits.kt")
-//    def outputDir = new File("/${buildDir}/output")
-//    def outputFile = new File(outputDir, "full-routes.txt")
     doLast {
         if(!outputDir.exists()) {
             outputDir.mkdirs()
         }
-        outputFile.text = tasks.runRatioGenerator.generated
+        def outputFile = new File(outputDir, imperialUnits? imperialUnits : "Output.kt")
+        outputFile.text = standardOutput.toString()
     }
 }
 
