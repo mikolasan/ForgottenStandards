@@ -44,9 +44,9 @@ enum class ImperialUnitName {
     KILOGRAM_FORCE,
 
     // Fuel
-    KM_L,
-    MI_GAL,
-    L_100KM,
+    KM_PER_LITER,
+    MILE_PER_GALLON,
+    LITER_ON_100KM,
 
     // Length
     LENGTH_ZERO_NO_UNIT,
@@ -139,7 +139,7 @@ enum class ImperialUnitName {
     LITER,
     MILLILITER,
     GALLON,
-    FLOZ,
+    FLUID_ONCE,
     PINT,
     QUART,
     CUBIC_INCH,

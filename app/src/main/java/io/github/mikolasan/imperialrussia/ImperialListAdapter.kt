@@ -118,10 +118,12 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits) : BaseAdapter(
 
     private fun updateViewData(layout: ConstraintLayout, dataPosition: Int) {
         val data: ImperialUnit = getItem(dataPosition) as ImperialUnit
-        val nameTextView: TextView = layout.findViewById(R.id.unit_name)
-        nameTextView.text = data.unitName.name.toLowerCase().capitalize()
-        val valueTextView: TextView = layout.findViewById(R.id.unit_value)
-        valueTextView.text = valueForDisplay(data.value)
+        val name: TextView = layout.findViewById(R.id.unit_name)
+        name.text = data.unitName.name.toLowerCase().replace('_', ' ').capitalize()
+        val value: TextView = layout.findViewById(R.id.unit_value)
+        value.text = valueForDisplay(data.value)
+        val symbol: TextView = layout.findViewById(R.id.unit_symbol)
+        symbol.text = ImperialSymbol.symbols.getOrDefault(data.unitName, "")
     }
 
     private fun updateArrowListener(layout: ConstraintLayout, dataPosition: Int) {

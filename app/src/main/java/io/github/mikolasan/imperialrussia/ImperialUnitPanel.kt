@@ -42,7 +42,7 @@ class ImperialUnitPanel(context: Context, attributeSet: AttributeSet) : Constrai
 
     private fun updateUnitText() {
         unit?.unitName?.name?.let { s ->
-            val underlineText = SpannableString(s.toLowerCase().capitalize())
+            val underlineText = SpannableString(s.toLowerCase().replace('_', ' ').capitalize())
             //underlineText.setSpan(UnderlineSpan(), 0, underlineText.length, 0)
             title.text = underlineText
         }

@@ -38,6 +38,19 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/unit_symbol"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="ar"
+        android:textAppearance="@style/ImperialPanel"
+        android:textColor="@color/colorPrimary"
+        android:textIsSelectable="false"
+        android:textSize="@dimen/unit_list_name_size"
+        app:layout_constraintBottom_toBottomOf="@+id/unit_value"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/unit_value"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

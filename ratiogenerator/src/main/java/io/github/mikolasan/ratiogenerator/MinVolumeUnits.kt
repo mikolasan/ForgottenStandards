@@ -36,7 +36,7 @@ object MinVolumeUnits : ImperialUnits() {
                     ImperialUnitName.PINT to 8.0,
                     ImperialUnitName.VEDRO to 2.71
             )),
-            ImperialUnit(ImperialUnitType.VOLUME, ImperialUnitName.FLOZ, mutableMapOf(
+            ImperialUnit(ImperialUnitType.VOLUME, ImperialUnitName.FLUID_ONCE, mutableMapOf(
                     ImperialUnitName.SHKALIK to 2.16,
                     ImperialUnitName.CHARKA to 4.33
             )),
