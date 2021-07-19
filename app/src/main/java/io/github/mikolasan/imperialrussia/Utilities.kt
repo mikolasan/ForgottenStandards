@@ -5,6 +5,8 @@ import android.text.SpannableStringBuilder
 import android.text.style.RelativeSizeSpan
 import android.text.style.SuperscriptSpan
 import io.github.mikolasan.ratiogenerator.ImperialUnit
+import io.github.mikolasan.ratiogenerator.ImperialUnitName
+import io.github.mikolasan.ratiogenerator.ImperialUnitType
 import java.text.DecimalFormat
 import java.util.*
 import kotlin.math.abs
@@ -18,7 +20,32 @@ fun getConversionRatio(inputUnit: ImperialUnit, outputUnit: ImperialUnit): Doubl
 fun convertValue(inputUnit: ImperialUnit?, outputUnit: ImperialUnit?, inputValue: Double): Double {
     val input = inputUnit ?: return 0.0
     val output = outputUnit ?: return 0.0
-    return inputValue * getConversionRatio(input, output)
+    return if (inputUnit.type == ImperialUnitType.TEMPERATURE) {
+        temperatureFormula(inputUnit.unitName, outputUnit.unitName, inputValue)
+    } else {
+        inputValue * getConversionRatio(input, output)
+    }
+}
+
+fun temperatureFormula(inputUnit: ImperialUnitName, outputUnit: ImperialUnitName, inputValue: Double): Double {
+    if (inputUnit == outputUnit) {
+      return inputValue
+    } else if (inputUnit == ImperialUnitName.CELSIUS && outputUnit == ImperialUnitName.FAHRENHEIT) {
+        return (inputValue * 9.0 / 5.0) + 32.0
+    } else if (inputUnit == ImperialUnitName.FAHRENHEIT && outputUnit == ImperialUnitName.CELSIUS) {
+        return (inputValue - 32.0) * 5.0 / 9.0
+    } else if (inputUnit == ImperialUnitName.CELSIUS && outputUnit == ImperialUnitName.KELVIN) {
+        return inputValue + 273.15
+    } else if (inputUnit == ImperialUnitName.KELVIN && outputUnit == ImperialUnitName.CELSIUS) {
+        return inputValue - 273.15
+    } else if (inputUnit == ImperialUnitName.FAHRENHEIT && outputUnit == ImperialUnitName.KELVIN) {
+        val celsiusValue = temperatureFormula(ImperialUnitName.FAHRENHEIT, ImperialUnitName.CELSIUS, inputValue)
+        return temperatureFormula(ImperialUnitName.CELSIUS, ImperialUnitName.KELVIN, celsiusValue)
+    } else if (inputUnit == ImperialUnitName.KELVIN && outputUnit == ImperialUnitName.FAHRENHEIT) {
+        val celsiusValue = temperatureFormula(ImperialUnitName.KELVIN, ImperialUnitName.CELSIUS, inputValue)
+        return temperatureFormula(ImperialUnitName.CELSIUS, ImperialUnitName.FAHRENHEIT, celsiusValue)
+    }
+    return 0.0
 }
 
 const val maxDisplayLength = 9
