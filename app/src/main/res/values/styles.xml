@@ -10,11 +10,15 @@
     </style>
 
     <style name="ImperialKeypad" parent="@android:style/TextAppearance">
-        <item name="android:fontFamily">@font/gotham_pro_bold</item>
+        <item name="android:fontFamily">@font/gotham_pro_medium</item>
+    </style>
+
+    <style name="ImperialSymbol" parent="@android:style/TextAppearance">
+        <item name="android:fontFamily">@font/gotham_rounded_light</item>
     </style>
 
     <style name="ImperialPanel" parent="@android:style/TextAppearance">
-        <item name="android:fontFamily">@font/gotham_pro_reg</item>
+        <item name="android:fontFamily">@font/gotham_pro_regular</item>
     </style>
 
 </resources>

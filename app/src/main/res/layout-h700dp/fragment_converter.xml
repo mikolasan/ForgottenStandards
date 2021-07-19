@@ -41,7 +41,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="4dp"
-        android:fontFamily="@font/gotham_pro_reg"
+        android:fontFamily="@font/gotham_pro_regular"
         android:textColor="@color/colorPrimary"
         android:textSize="14sp"
         app:layout_constraintBottom_toTopOf="@id/keyboard_layout"

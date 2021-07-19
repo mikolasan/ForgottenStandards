@@ -187,11 +187,8 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="height" value="100" />
-                            <entry key="outputName" value="ic_side_panel_back" />
-                            <entry key="overrideSize" value="true" />
-                            <entry key="sourceFile" value="C:\Users\neupo\develop\ImperialRussia\assets\side_panel_back.svg" />
-                            <entry key="width" value="236" />
+                            <entry key="outputName" value="ic_grid_button" />
+                            <entry key="sourceFile" value="C:\Users\neupo\develop\ImperialRussia\assets\grid-button.svg" />
                           </map>
                         </option>
                       </PersistentState>

@@ -49,6 +49,23 @@ android {
     }
 }
 
+task runRatioGenerator(type: JavaExec) {
+    group = 'kotlinpoet'
+    classpath = configurations.runtimeOnly
+    main = 'io.github.mikolasan.ratiogenerator.RatioGeneratorKt'
+    // store the output instead of printing to the console:
+    standardOutput = new ByteArrayOutputStream()
+    // extension method genSource.output() can be used to obtain the output:
+    def outputDir = new File("/${buildDir}/generated-sources")
+    doLast {
+        if(!outputDir.exists()) {
+            outputDir.mkdirs()
+        }
+        def outputFile = new File(outputDir, imperialUnits? imperialUnits : "Output.kt")
+        outputFile.text = standardOutput.toString()
+    }
+}
+
 dependencies {
     implementation project(':ratiogenerator')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"

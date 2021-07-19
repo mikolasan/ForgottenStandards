@@ -14,6 +14,9 @@ Stay tuned for the updates. More features are coming soon.
 
 ## How to use Ratio Generator
 
+set unit=Angle
+gradle -PimperialUnits=%unit%Units.kt ratiogenerator:runRatioGenerator --args="--className io.github.mikolasan.ratiogenerator.Min%unit%Units --objectName %unit%Units"
+
 ```shell
 generate_units.bat
 ```

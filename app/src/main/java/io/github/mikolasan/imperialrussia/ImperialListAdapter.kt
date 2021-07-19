@@ -91,26 +91,30 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits) : BaseAdapter(
     )
 
     private fun updateViewColors(layout: ConstraintLayout, dataPosition: Int) {
-        val nameTextView: TextView = layout.findViewById(R.id.unit_name)
-        val valueTextView: TextView = layout.findViewById(R.id.unit_value)
+        val name: TextView = layout.findViewById(R.id.unit_name)
+        val value: TextView = layout.findViewById(R.id.unit_value)
+        val symbol: TextView = layout.findViewById(R.id.unit_symbol)
         val arrowUp: ImageView = layout.findViewById(R.id.arrow_up)
         when (getItem(dataPosition) as ImperialUnit) {
             workingUnits.selectedUnit -> {
                 layout.setBackgroundResource(backgrounds.getValue(ViewState.SELECTED))
-                nameTextView.setTextColorId(nameColors.getValue(ViewState.SELECTED))
-                valueTextView.setTextColorId(valueColors.getValue(ViewState.SELECTED))
+                name.setTextColorId(nameColors.getValue(ViewState.SELECTED))
+                value.setTextColorId(valueColors.getValue(ViewState.SELECTED))
+                symbol.setTextColorId(valueColors.getValue(ViewState.SELECTED))
                 arrowUp.visibility = if (dataPosition == 0) View.INVISIBLE else View.VISIBLE
             }
             workingUnits.secondUnit -> {
                 layout.setBackgroundResource(backgrounds.getValue(ViewState.SECOND))
-                nameTextView.setTextColorId(nameColors.getValue(ViewState.SECOND))
-                valueTextView.setTextColorId(valueColors.getValue(ViewState.SECOND))
+                name.setTextColorId(nameColors.getValue(ViewState.SECOND))
+                value.setTextColorId(valueColors.getValue(ViewState.SECOND))
+                symbol.setTextColorId(valueColors.getValue(ViewState.SECOND))
                 arrowUp.visibility = View.INVISIBLE
             }
             else -> {
                 layout.setBackgroundResource(backgrounds.getValue(ViewState.NORMAL))
-                nameTextView.setTextColorId(nameColors.getValue(ViewState.NORMAL))
-                valueTextView.setTextColorId(valueColors.getValue(ViewState.NORMAL))
+                name.setTextColorId(nameColors.getValue(ViewState.NORMAL))
+                value.setTextColorId(valueColors.getValue(ViewState.NORMAL))
+                symbol.setTextColorId(valueColors.getValue(ViewState.NORMAL))
                 arrowUp.visibility = View.INVISIBLE
             }
         }
