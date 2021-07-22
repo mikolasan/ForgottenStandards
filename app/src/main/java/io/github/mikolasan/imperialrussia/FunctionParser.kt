@@ -15,42 +15,85 @@ class FunctionParser(val expression: String) {
         fun eval(): Double {
             return root.eval()
         }
-    }
 
-    open class Node(
-        val atom: String,
-        val left: Node? = null,
-        val right: Node? = null
-    ) {
-        open fun eval(): Double {
-            return 0.0
+        fun string(): String {
+            return root.left?.atom + " " + root.atom + " " + root.right?.atom
+        }
+
+        fun invert(): Tree {
+            when (root.atom) {
+                "/" -> {
+                    if (root.left?.type == NodeType.VARIABLE) {
+                        // y = x / a -> x = y * a
+                        root.atom = "*"
+                    } else if (root.right?.type == NodeType.VARIABLE) {
+                        // y = a / x -> x = a / y
+                        // no changes
+                    }
+                }
+                "*" -> {
+                    if (root.left?.type == NodeType.VARIABLE) {
+                        // y = x * a -> x = y / a
+                        root.atom = "/"
+                    } else if (root.right?.type == NodeType.VARIABLE) {
+                        // y = a * x -> x = y / a
+                        val a = root.left
+                        root.left = root.right
+                        root.right = a
+                        root.atom = "/"
+                    }
+                }
+                "-" -> {
+                    if (root.left?.type == NodeType.VARIABLE) {
+                        // y = x - a -> x = y + a
+                        root.atom = "+"
+                    } else if (root.right?.type == NodeType.VARIABLE) {
+                        // y = a - x -> x = a - y
+                        // no changes
+                    }
+                }
+                "+" -> {
+                    if (root.left?.type == NodeType.VARIABLE) {
+                        // y = x + a -> x = y - a
+                        root.atom = "-"
+                    } else if (root.right?.type == NodeType.VARIABLE) {
+                        // y = a + x -> x = y - a
+                        val a = root.left
+                        root.left = root.right
+                        root.right = a
+                        root.atom = "-"
+                    }
+                }
+                else -> throw Exception("No such operation")
+            }
+            return this
         }
     }
 
-    class Operand(
-        atom: String,
-        left: Node? = null,
-        right: Node? = null
-    ): Node(atom, left, right) {
-        override fun eval(): Double {
-            return atom.toDouble();
-        }
+    enum class NodeType {
+        OPERAND,
+        OPERATION,
+        VARIABLE
     }
 
-    class Operation(
-        atom: String,
-        left: Node? = null,
-        right: Node? = null
-    ) : Node(atom, left, right) {
-        override fun eval(): Double {
-            val leftOp = left ?: throw Exception("Left operand is not defined")
-            val rightOp = right ?: throw Exception("Right operand is not defined")
-            return when (atom) {
-                "/" -> leftOp.eval() / rightOp.eval()
-                "*" -> leftOp.eval() * rightOp.eval()
-                "-" -> leftOp.eval() - rightOp.eval()
-                "+" -> leftOp.eval() + rightOp.eval()
-                else -> 0.0
+    class Node(var atom: String, val type: NodeType) {
+        var left: Node? = null
+        var right: Node? = null
+        fun eval(): Double {
+            when (type) {
+                NodeType.OPERAND -> return atom.toDouble()
+                NodeType.OPERATION -> {
+                    val leftOp = left ?: throw Exception("Left operand is not defined")
+                    val rightOp = right ?: throw Exception("Right operand is not defined")
+                    return when (atom) {
+                        "/" -> leftOp.eval() / rightOp.eval()
+                        "*" -> leftOp.eval() * rightOp.eval()
+                        "-" -> leftOp.eval() - rightOp.eval()
+                        "+" -> leftOp.eval() + rightOp.eval()
+                        else -> throw Exception("No such operation")
+                    }
+                }
+                else -> throw Exception("Function must be inverted before evaluation")
             }
         }
     }
@@ -84,31 +127,46 @@ class FunctionParser(val expression: String) {
     private fun eat(charToEat: Char): Boolean {
         return carriage.onChar(charToEat) && carriage.hasNextChar(expression) && carriage.nextChar(expression) != null
     }
-    fun parse(): Double {
+
+    fun parse(): Tree {
         carriage.nextChar(expression)
         return parseExpression()
     }
-    private fun parseExpression(): Double {
+
+    private fun parseExpression(): Tree {
         var x = parseTerm()
+        val tree = Tree(x)
         while (true) {
             when {
-                eat('+') -> x += parseTerm()
-                eat('-') -> x -= parseTerm()
-                else -> return x
+                eat('+') -> {
+                    tree.root.left = tree.root
+                    tree.root.left?.left = null
+                    tree.root.left?.right = null
+                    tree.root.atom = "+"
+                    tree.root.right = parseTerm()
+                }
+                eat('-') -> {
+                    tree.root.left = tree.root
+                    tree.root.left?.left = null
+                    tree.root.left?.right = null
+                    tree.root.atom = "-"
+                    tree.root.right = parseTerm()
+                }
+                else -> return tree
             }
         }
     }
 
-    private fun parseTerm(): Double {
-        var x = parseFactor() ?: 0.0
+    private fun parseTerm(): Node {
+        var x = parseFactor()
         while (true) {
             when {
                 eat('×') -> {
-                    val y = parseFactor() ?: 1.0
+                    val y = parseFactor()
                     x *= y
                 }
                 eat('÷') -> {
-                    val y = parseFactor() ?: 1.0
+                    val y = parseFactor()
                     x /= y
                 }
                 else -> return x
