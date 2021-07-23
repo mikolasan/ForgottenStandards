@@ -11,16 +11,14 @@ class InverseFunctionTest {
         val root = FunctionParser.Node("+", FunctionParser.NodeType.OPERATION)
         root.left = left
         root.right = right
-        val tree = FunctionParser.Tree(root)
-        assertEquals(5.0, tree.eval(), 1e-10)
+        assertEquals(5.0, root.eval(), 1e-10)
     }
 
     @Test
     fun tree_OperationNoNodes() {
         val root = FunctionParser.Node("+", FunctionParser.NodeType.OPERATION)
-        val tree = FunctionParser.Tree(root)
         assertThrows(Exception::class.java) {
-            tree.eval()
+            root.eval()
         }
     }
 
@@ -31,9 +29,8 @@ class InverseFunctionTest {
         val root = FunctionParser.Node("+", FunctionParser.NodeType.OPERATION)
         root.left = left
         root.right = right
-        val tree = FunctionParser.Tree(root)
         assertThrows(Exception::class.java) {
-            tree.eval()
+            root.eval()
         }
     }
 
@@ -44,8 +41,7 @@ class InverseFunctionTest {
         val root = FunctionParser.Node("+", FunctionParser.NodeType.OPERATION)
         root.left = left
         root.right = right
-        val tree = FunctionParser.Tree(root)
-        assertEquals("x + 3", tree.string())
+        assertEquals("x + 3", root.string())
     }
 
     @Test
@@ -55,9 +51,8 @@ class InverseFunctionTest {
         val root = FunctionParser.Node("+", FunctionParser.NodeType.OPERATION)
         root.left = left
         root.right = right
-        val tree = FunctionParser.Tree(root)
         root.left = FunctionParser.Node("1", FunctionParser.NodeType.OPERAND)
-        assertEquals(4.0, tree.eval(), 1e-10)
+        assertEquals(4.0, root.eval(), 1e-10)
     }
 
     @Test
@@ -67,23 +62,28 @@ class InverseFunctionTest {
         val root = FunctionParser.Node("+", FunctionParser.NodeType.OPERATION)
         root.left = left
         root.right = right
-        val tree = FunctionParser.Tree(root)
-        val invertTree = tree.invert() // x - 3
-        invertTree.root.left = FunctionParser.Node("1", FunctionParser.NodeType.OPERAND)
-        assertEquals(-2.0, invertTree.eval(), 1e-10)
+        val inversion = root.invert() // x - 3
+        inversion.left = FunctionParser.Node("1", FunctionParser.NodeType.OPERAND)
+        assertEquals(-2.0, inversion.eval(), 1e-10)
     }
 
     @Test
-    fun tree_Invert() {
-        val x = FunctionParser.Node("x", FunctionParser.NodeType.VARIABLE)
-        val a = FunctionParser.Node("3", FunctionParser.NodeType.OPERAND)
-        val root = FunctionParser.Node("+", FunctionParser.NodeType.OPERATION)
-        root.left = x
-        root.right = a
-        val tree = FunctionParser.Tree(root)
-        val invertTree = tree.invert() // x - 3
-        invertTree.root.left = FunctionParser.Node("1", FunctionParser.NodeType.OPERAND)
-        assertEquals(-2.0, invertTree.eval(), 1e-10)
+    fun tree_ParseAndInvert() {
+        val x = FunctionParser("x + 3")
+        val root = x.parse()
+        val inversion = root.invert() // x - 3
+        assertEquals("x - 3", inversion.string())
+        inversion.left = FunctionParser.Node("1", FunctionParser.NodeType.OPERAND)
+        assertEquals(-2.0, inversion.eval(), 1e-10)
+
+        assertEquals("x - 3", FunctionParser("x + 3").inverse())
+        assertEquals("x - 3", FunctionParser("3 + x").inverse())
+        assertEquals("x + 3", FunctionParser("x - 3").inverse())
+        assertEquals("3 - x", FunctionParser("3 - x").inverse())
+        assertEquals("x / 3", FunctionParser("x * 3").inverse())
+        assertEquals("x / 3", FunctionParser("3 * x").inverse())
+        assertEquals("x * 3", FunctionParser("x / 3").inverse())
+        assertEquals("3 / x", FunctionParser("3 / x").inverse())
     }
 
     @Test
