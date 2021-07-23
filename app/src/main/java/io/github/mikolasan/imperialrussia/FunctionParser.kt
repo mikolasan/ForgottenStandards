@@ -5,10 +5,10 @@ import java.text.DecimalFormatSymbols
 import kotlin.math.pow
 
 // Expr    ← Sum
-//Sum     ← Product (('+' / '-') Product)*
-//Product ← Power (('*' / '/') Power)*
-//Power   ← Value ('^' Power)?
-//Value   ← [0-9]+ / '(' Expr ')'
+// Sum     ← Product (('+' / '-') Product)*
+// Product ← Power (('*' / '/') Power)*
+// Power   ← Value ('^' Power)?
+// Value   ← [0-9]+ / '(' Expr ')'
 
 class FunctionParser(private val expression: String) {
     class Tree(val root: Node) {
@@ -150,19 +150,9 @@ class FunctionParser(private val expression: String) {
             when {
                 eat('+') -> {
                     x = Node("+", NodeType.OPERATION, x, parseTerm())
-//                    x.left = x
-//                    x.left?.left = null
-//                    x.left?.right = null
-//                    x.atom = "+"
-//                    x.right = parseTerm()
                 }
                 eat('-') -> {
                     x = Node("-", NodeType.OPERATION, x, parseTerm())
-//                    x.left = x
-//                    x.left?.left = null
-//                    x.left?.right = null
-//                    x.atom = "-"
-//                    x.right = parseTerm()
                 }
                 else -> return x
             }
@@ -175,13 +165,9 @@ class FunctionParser(private val expression: String) {
             when {
                 eat('*') -> {
                     x = Node("*", NodeType.OPERATION, x, parseFactor())
-//                    val y = parseFactor()
-//                    x *= y
                 }
                 eat('/') -> {
                     x = Node("/", NodeType.OPERATION, x, parseFactor())
-//                    val y = parseFactor()
-//                    x /= y
                 }
                 else -> return x
             }
@@ -193,28 +179,18 @@ class FunctionParser(private val expression: String) {
             return Node("x", NodeType.VARIABLE)
         }
         return Node(factor, NodeType.OPERAND)
-//        return try {
-//            factor.toDouble()
-//        } catch (e: NumberFormatException) {
-//            0.0
-//        }
     }
 
     private fun parseFactor(): Node {
         if (eat('+')) {
-            // unary plus
             return Node("+", NodeType.OPERATION, null, parseFactor())
-//            return parseFactor()
         }
         if (eat('-')) {
-            // unary minus
             return Node("-", NodeType.OPERATION, null, parseFactor())
-//            return -parseFactor()
         }
         val factor = carriage.findFactor(expression)
         if (factor.isEmpty() || factor == ".") {
             return Node("0.0", NodeType.OPERAND)
-//            return 0.0
         }
         val x = parseNumber(factor)
 //        if (eat('^')) {
