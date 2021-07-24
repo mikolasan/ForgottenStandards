@@ -26,8 +26,16 @@ class FunctionParser(private val expression: String) {
                var left: Node? = null,
                var right: Node? = null,
     ) {
-        fun string(): String {
-            return left?.atom + " " + atom + " " + right?.atom
+        fun string(surroundingOperation: String? = null): String {
+            var addParenthesis = false
+            if (surroundingOperation != null && type == NodeType.OPERATION) {
+                if ((surroundingOperation == "/" || surroundingOperation == "*") && (atom == "+" || atom == "-")) {
+                    addParenthesis = true
+                }
+            }
+            val leftString = if (left == null) "" else left!!.string(if (type == NodeType.OPERATION) atom else null) + " "
+            val rightString = if (right == null) "" else " " + right!!.string(if (type == NodeType.OPERATION) atom else null)
+            return if (addParenthesis) "(" + leftString + atom + rightString + ")" else leftString + atom + rightString
         }
 
         fun eval(): Double {

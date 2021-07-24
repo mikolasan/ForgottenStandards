@@ -87,6 +87,24 @@ class InverseFunctionTest {
     }
 
     @Test
+    fun tree_AddParenthesis() {
+        // (x + 3) * 2
+        //
+        //     *
+        //    / \
+        //   +   2
+        //  / \
+        // x   3
+        //
+        val root = FunctionParser.Node("*", FunctionParser.NodeType.OPERATION)
+        root.left = FunctionParser.Node("+", FunctionParser.NodeType.OPERATION)
+        root.left!!.left = FunctionParser.Node("x", FunctionParser.NodeType.VARIABLE)
+        root.left!!.right = FunctionParser.Node("3", FunctionParser.NodeType.OPERAND)
+        root.right = FunctionParser.Node("2", FunctionParser.NodeType.OPERAND)
+        assertEquals("(x + 3) * 2", root.string())
+    }
+
+    @Test
     fun inverse_x() {
         assertEquals("x", FunctionParser("x").inverse())
     }
