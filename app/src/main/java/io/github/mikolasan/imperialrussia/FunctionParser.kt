@@ -2,6 +2,7 @@ package io.github.mikolasan.imperialrussia
 
 import java.lang.Exception
 import java.text.DecimalFormatSymbols
+import kotlin.math.exp
 import kotlin.math.pow
 
 // Expr    ← Sum
@@ -10,7 +11,7 @@ import kotlin.math.pow
 // Power   ← Value ('^' Power)?
 // Value   ← [0-9]+ / '(' Expr ')'
 
-class FunctionParser(private val expression: String) {
+class FunctionParser() {
     class Tree(val root: Node) {
         // ?
     }
@@ -56,59 +57,85 @@ class FunctionParser(private val expression: String) {
             }
         }
 
-        fun invert(): Node {
-            when (atom) {
-                "/" -> {
-                    if (left?.type == NodeType.VARIABLE) {
-                        // y = x / a -> x = y * a
-                        atom = "*"
-                    } else if (right?.type == NodeType.VARIABLE) {
-                        // y = a / x -> x = a / y
-                        // no changes
+        fun swapChildNodes() {
+            val a = left
+            left = right
+            right = a
+        }
+
+        fun invert(l: Node? = null, r: Node? = null): Node {
+            if (type == NodeType.OPERATION) {
+                when (atom) {
+                    "/" -> {
+                        if (right?.type == NodeType.OPERAND) {
+                            // y = x / a -> x = y * a
+//                            atom = "*"
+                            return Node("*", NodeType.OPERATION, left?.invert(), right)
+
+                        } else if (left?.type == NodeType.OPERAND) {
+                            // y = a / x -> x = a / y
+                            // no changes
+                            return Node("/", NodeType.OPERATION, left, right?.invert())
+                        }
                     }
-                }
-                "*" -> {
-                    if (left?.type == NodeType.VARIABLE) {
-                        // y = x * a -> x = y / a
-                        atom = "/"
-                    } else if (right?.type == NodeType.VARIABLE) {
-                        // y = a * x -> x = y / a
-                        val a = left
-                        left = right
-                        right = a
-                        atom = "/"
+                    "*" -> {
+                        if (right?.type == NodeType.OPERAND) {
+                            // y = x * a -> x = y / a
+//                            atom = "/"
+                            return Node("/", NodeType.OPERATION, left?.invert(), right)
+                        } else if (left?.type == NodeType.OPERAND) {
+                            // y = a * x -> x = y / a
+//                            swapChildNodes()
+//                            atom = "/"
+                            return Node("/", NodeType.OPERATION, right?.invert(), left)
+                        }
                     }
-                }
-                "-" -> {
-                    if (left?.type == NodeType.VARIABLE) {
-                        // y = x - a -> x = y + a
-                        atom = "+"
-                    } else if (right?.type == NodeType.VARIABLE) {
-                        // y = a - x -> x = a - y
-                        // no changes
+                    "-" -> {
+                        if (right?.type == NodeType.OPERAND) {
+                            // y = x - a -> x = y + a
+//                            atom = "+"
+                            return Node("+", NodeType.OPERATION, left?.invert(), right)
+                        } else if (left?.type == NodeType.OPERAND) {
+                            // y = a - x -> x = a - y
+                            // no changes
+                            return Node("-", NodeType.OPERATION, left, right?.invert())
+                        }
                     }
-                }
-                "+" -> {
-                    if (left?.type == NodeType.VARIABLE) {
-                        // y = x + a -> x = y - a
-                        atom = "-"
-                    } else if (right?.type == NodeType.VARIABLE) {
-                        // y = a + x -> x = y - a
-                        val a = left
-                        left = right
-                        right = a
-                        atom = "-"
+                    "+" -> {
+                        if (right?.type == NodeType.OPERAND) {
+                            // y = x + a -> x = y - a
+//                            atom = "-"
+                            val newLeft = Node("-", NodeType.OPERATION,
+                                Node("x", NodeType.VARIABLE),
+                                Node(right!!.atom, right!!.type))
+                            if (left == null) {
+                                return newLeft
+                            } else {
+                                return left!!.invert(newLeft, null)
+                            }
+                        } else if (left?.type == NodeType.OPERAND) {
+                            // y = a + x -> x = y - a
+//                            swapChildNodes()
+//                            atom = "-"
+                            return Node("-", NodeType.OPERATION, right?.invert(), left)
+                        }
                     }
+                    else -> throw Exception("No such operation")
                 }
-                else -> throw Exception("No such operation")
             }
-            return this
+            return if (l != null) l else this
         }
     }
 
-    class Carriage(var char: Char? = null, var pos: Int = -1) {
+    class Carriage(val expression: String) {
         private val grouping = DecimalFormatSymbols.getInstance().groupingSeparator
         private val decimal = DecimalFormatSymbols.getInstance().decimalSeparator
+        var char: Char? = null
+        var pos: Int = -1
+
+        init {
+            fastForward(expression)
+        }
 
         fun onChar(check: Char): Boolean {
             return char == check
@@ -126,7 +153,12 @@ class FunctionParser(private val expression: String) {
             char = expression.elementAtOrNull(++pos)
             return char
         }
-        fun findFactor(expression: String): String {
+        fun eat(charToEat: Char): Boolean {
+            return onChar(charToEat)
+                    && hasNextChar(expression)
+                    && fastForward(expression) != null
+        }
+        fun findFactor(): String {
             val startPos = pos
             while (char == 'x' || char in '0'..'9' || char == decimal || char == grouping) {
                 nextChar(expression)
@@ -137,45 +169,46 @@ class FunctionParser(private val expression: String) {
                 .substring(startPos, endPos)
                 .replace(grouping.toString(), "")
         }
+        fun inParenthesis(): String {
+            val startPos = pos
+            while (char != ')') {
+                nextChar(expression)
+            }
+            val endPos = pos
+            fastForward(expression)
+            return expression.substring(startPos, endPos)
+        }
     }
 
-    private val carriage = Carriage()
-
-    private fun eat(charToEat: Char): Boolean {
-        return carriage.onChar(charToEat)
-                && carriage.hasNextChar(expression)
-                && carriage.fastForward(expression) != null
+    fun parse(expression: String): Node {
+        val carriage = Carriage(expression)
+        return parseExpression(carriage)
     }
 
-    fun parse(): Node {
-        carriage.fastForward(expression)
-        return parseExpression()
-    }
-
-    private fun parseExpression(): Node {
-        var x = parseTerm()
+    private fun parseExpression(carriage: Carriage): Node {
+        var x = parseTerm(carriage)
         while (true) {
             when {
-                eat('+') -> {
-                    x = Node("+", NodeType.OPERATION, x, parseTerm())
+                carriage.eat('+') -> {
+                    x = Node("+", NodeType.OPERATION, x, parseTerm(carriage))
                 }
-                eat('-') -> {
-                    x = Node("-", NodeType.OPERATION, x, parseTerm())
+                carriage.eat('-') -> {
+                    x = Node("-", NodeType.OPERATION, x, parseTerm(carriage))
                 }
                 else -> return x
             }
         }
     }
 
-    private fun parseTerm(): Node {
-        var x = parseFactor()
+    private fun parseTerm(carriage: Carriage): Node {
+        var x = parseFactor(carriage)
         while (true) {
             when {
-                eat('*') -> {
-                    x = Node("*", NodeType.OPERATION, x, parseFactor())
+                carriage.eat('*') -> {
+                    x = Node("*", NodeType.OPERATION, x, parseFactor(carriage))
                 }
-                eat('/') -> {
-                    x = Node("/", NodeType.OPERATION, x, parseFactor())
+                carriage.eat('/') -> {
+                    x = Node("/", NodeType.OPERATION, x, parseFactor(carriage))
                 }
                 else -> return x
             }
@@ -189,14 +222,15 @@ class FunctionParser(private val expression: String) {
         return Node(factor, NodeType.OPERAND)
     }
 
-    private fun parseFactor(): Node {
-        if (eat('+')) {
-            return Node("+", NodeType.OPERATION, null, parseFactor())
+    private fun parseFactor(carriage: Carriage): Node {
+        if (carriage.eat('(')) {
+            return parseExpression(Carriage(carriage.inParenthesis()))
+        } else if (carriage.eat('+')) {
+            return Node("+", NodeType.OPERATION, null, parseFactor(carriage))
+        } else if (carriage.eat('-')) {
+            return Node("-", NodeType.OPERATION, null, parseFactor(carriage))
         }
-        if (eat('-')) {
-            return Node("-", NodeType.OPERATION, null, parseFactor())
-        }
-        val factor = carriage.findFactor(expression)
+        val factor = carriage.findFactor()
         if (factor.isEmpty() || factor == ".") {
             return Node("0.0", NodeType.OPERAND)
         }
@@ -207,8 +241,8 @@ class FunctionParser(private val expression: String) {
         return x
     }
 
-    fun inverse(): String {
-        val root = parse()
+    fun inverse(expression: String): String {
+        val root = parse(expression)
         val inversion = root.invert()
         return inversion.string()
     }
