@@ -23,9 +23,10 @@ class FunctionParser() {
     }
 
     class Node(var atom: String,
-               val type: NodeType,
+               var type: NodeType,
                var left: Node? = null,
                var right: Node? = null,
+               var parent: Node? = null,
     ) {
         fun string(surroundingOperation: String? = null): String {
             var addParenthesis = false
@@ -39,7 +40,12 @@ class FunctionParser() {
             return if (addParenthesis) "(" + leftString + atom + rightString + ")" else leftString + atom + rightString
         }
 
-        fun eval(): Double {
+        fun eval(x: String? = null): Double {
+            if (x != null) {
+                val xNode = findVariable()
+                xNode?.atom = x
+                xNode?.type = NodeType.OPERAND
+            }
             when (type) {
                 NodeType.OPERAND -> return atom.toDouble()
                 NodeType.OPERATION -> {
@@ -57,73 +63,95 @@ class FunctionParser() {
             }
         }
 
-        fun swapChildNodes() {
-            val a = left
-            left = right
-            right = a
-        }
+        private fun newOperationNode(operation: String, left: Node, right: Node) =
+            Node(operation, NodeType.OPERATION, left, right)
 
-        fun invert(l: Node? = null, r: Node? = null): Node {
-            if (type == NodeType.OPERATION) {
-                when (atom) {
-                    "/" -> {
-                        if (right?.type == NodeType.OPERAND) {
-                            // y = x / a -> x = y * a
-//                            atom = "*"
-                            return Node("*", NodeType.OPERATION, left?.invert(), right)
+        private fun copyLeftNode(src: Node) = Node(src.left!!.atom, src.left!!.type)
 
-                        } else if (left?.type == NodeType.OPERAND) {
-                            // y = a / x -> x = a / y
-                            // no changes
-                            return Node("/", NodeType.OPERATION, left, right?.invert())
+        private fun copyRightNode(src: Node) = Node(src.right!!.atom, src.right!!.type)
+
+        fun invert(): Node {
+            var inversion = Node("x", NodeType.VARIABLE)
+            var pointer: Node? = this
+            while (pointer?.type == NodeType.OPERATION) {
+                val (movedOperand, newPointer) = when (pointer.atom) {
+                    "+" -> when {
+                        pointer.right?.type == NodeType.OPERAND -> {
+                            // y = x + a -> y - a = x
+                            Pair(newOperationNode("-", inversion, copyRightNode(pointer)),
+                                pointer.left)
                         }
+                        pointer.left?.type == NodeType.OPERAND -> {
+                            // y = a + x -> y - a = x
+                            Pair(newOperationNode("-", inversion, copyLeftNode(pointer)),
+                                pointer.right)
+                        }
+                        else -> Pair(inversion, null)
                     }
-                    "*" -> {
-                        if (right?.type == NodeType.OPERAND) {
-                            // y = x * a -> x = y / a
-//                            atom = "/"
-                            return Node("/", NodeType.OPERATION, left?.invert(), right)
-                        } else if (left?.type == NodeType.OPERAND) {
-                            // y = a * x -> x = y / a
-//                            swapChildNodes()
-//                            atom = "/"
-                            return Node("/", NodeType.OPERATION, right?.invert(), left)
+                    "*" -> when {
+                        pointer.right?.type == NodeType.OPERAND -> {
+                            // y = x * a -> y / a = x
+                            Pair(newOperationNode("/", inversion, copyRightNode(pointer)),
+                                pointer.left)
                         }
+                        pointer.left?.type == NodeType.OPERAND -> {
+                            // y = a * x -> y / a = x
+                            Pair(newOperationNode("/", inversion, copyLeftNode(pointer)),
+                                pointer.right)
+                        }
+                        else -> Pair(inversion, null)
                     }
-                    "-" -> {
-                        if (right?.type == NodeType.OPERAND) {
-                            // y = x - a -> x = y + a
-//                            atom = "+"
-                            return Node("+", NodeType.OPERATION, left?.invert(), right)
-                        } else if (left?.type == NodeType.OPERAND) {
-                            // y = a - x -> x = a - y
-                            // no changes
-                            return Node("-", NodeType.OPERATION, left, right?.invert())
+                    "-" -> when {
+                        pointer.right?.type == NodeType.OPERAND -> {
+                            // y = x - a -> y + a = x
+                            Pair(newOperationNode("+", inversion, copyRightNode(pointer)),
+                                pointer.left)
                         }
+                        pointer.left?.type == NodeType.OPERAND -> {
+                            // y = a - x -> a - y = x
+                            Pair(newOperationNode("-", copyLeftNode(pointer), inversion),
+                                pointer.right)
+                        }
+                        else -> Pair(inversion, null)
                     }
-                    "+" -> {
-                        if (right?.type == NodeType.OPERAND) {
-                            // y = x + a -> x = y - a
-//                            atom = "-"
-                            val newLeft = Node("-", NodeType.OPERATION,
-                                Node("x", NodeType.VARIABLE),
-                                Node(right!!.atom, right!!.type))
-                            if (left == null) {
-                                return newLeft
-                            } else {
-                                return left!!.invert(newLeft, null)
-                            }
-                        } else if (left?.type == NodeType.OPERAND) {
-                            // y = a + x -> x = y - a
-//                            swapChildNodes()
-//                            atom = "-"
-                            return Node("-", NodeType.OPERATION, right?.invert(), left)
+                    "/" -> when {
+                        pointer.right?.type == NodeType.OPERAND -> {
+                            // y = x / a -> y * a = x
+                            Pair(newOperationNode("*", inversion, copyRightNode(pointer)),
+                                pointer.left)
                         }
+                        pointer.left?.type == NodeType.OPERAND -> {
+                            // y = a / x -> a / y = x
+                            Pair(newOperationNode("/", copyLeftNode(pointer), inversion),
+                                pointer.right)
+                        }
+                        else -> Pair(inversion, null)
                     }
                     else -> throw Exception("No such operation")
                 }
+                inversion = movedOperand
+                pointer = newPointer
             }
-            return if (l != null) l else this
+            return inversion
+        }
+
+        fun findVariable(): Node? {
+            var variableNode: Node?
+            variableNode = left?.let { leftNode ->
+                if (leftNode.type == NodeType.VARIABLE) {
+                    return leftNode
+                }
+                return@let leftNode.findVariable()
+            }
+            if (variableNode == null) {
+                variableNode = right?.let { rightNode ->
+                    if (rightNode.type == NodeType.VARIABLE) {
+                        return rightNode
+                    }
+                    return@let rightNode.findVariable()
+                }
+            }
+            return variableNode
         }
     }
 
@@ -190,10 +218,20 @@ class FunctionParser() {
         while (true) {
             when {
                 carriage.eat('+') -> {
-                    x = Node("+", NodeType.OPERATION, x, parseTerm(carriage))
+                    val y = Node("+", NodeType.OPERATION)
+                    y.left = x
+                    y.left?.parent = y
+                    y.right = parseTerm(carriage)
+                    y.right?.parent = y
+                    x = y
                 }
                 carriage.eat('-') -> {
-                    x = Node("-", NodeType.OPERATION, x, parseTerm(carriage))
+                    val y = Node("-", NodeType.OPERATION)
+                    y.left = x
+                    y.left?.parent = y
+                    y.right = parseTerm(carriage)
+                    y.right?.parent = y
+                    x = y
                 }
                 else -> return x
             }
@@ -205,10 +243,20 @@ class FunctionParser() {
         while (true) {
             when {
                 carriage.eat('*') -> {
-                    x = Node("*", NodeType.OPERATION, x, parseFactor(carriage))
+                    val y = Node("*", NodeType.OPERATION)
+                    y.left = x
+                    y.left?.parent = y
+                    y.right = parseFactor(carriage)
+                    y.right?.parent = y
+                    x = y
                 }
                 carriage.eat('/') -> {
-                    x = Node("/", NodeType.OPERATION, x, parseFactor(carriage))
+                    val y = Node("/", NodeType.OPERATION)
+                    y.left = x
+                    y.left?.parent = y
+                    y.right = parseFactor(carriage)
+                    y.right?.parent = y
+                    x = y
                 }
                 else -> return x
             }
@@ -226,9 +274,13 @@ class FunctionParser() {
         if (carriage.eat('(')) {
             return parseExpression(Carriage(carriage.inParenthesis()))
         } else if (carriage.eat('+')) {
-            return Node("+", NodeType.OPERATION, null, parseFactor(carriage))
+            val y = Node("+", NodeType.OPERATION)
+            y.right = parseFactor(carriage)
+            return y
         } else if (carriage.eat('-')) {
-            return Node("-", NodeType.OPERATION, null, parseFactor(carriage))
+            val y = Node("-", NodeType.OPERATION)
+            y.right = parseFactor(carriage)
+            return y
         }
         val factor = carriage.findFactor()
         if (factor.isEmpty() || factor == ".") {
@@ -243,7 +295,9 @@ class FunctionParser() {
 
     fun inverse(expression: String): String {
         val root = parse(expression)
-        val inversion = root.invert()
-        return inversion.string()
+        return root.invert().string()
+//        val x = root.findVariable()
+//        val inversion = x?.parent?.invert()
+//        return inversion?.string() ?: ""
     }
 }

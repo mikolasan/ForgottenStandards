@@ -51,44 +51,9 @@ class InverseFunctionTest {
         val root = FunctionParser.Node("+", FunctionParser.NodeType.OPERATION)
         root.left = left
         root.right = right
-        root.left = FunctionParser.Node("1", FunctionParser.NodeType.OPERAND)
-        assertEquals(4.0, root.eval(), 1e-10)
+        assertEquals(4.0, root.eval("1"), 1e-10)
     }
 
-    @Test
-    fun nodeInvertReplaceEvaluate() {
-        val left = FunctionParser.Node("x", FunctionParser.NodeType.VARIABLE)
-        val right = FunctionParser.Node("3", FunctionParser.NodeType.OPERAND)
-        val root = FunctionParser.Node("+", FunctionParser.NodeType.OPERATION)
-        root.left = left
-        root.right = right
-        val inversion = root.invert() // x - 3
-        inversion.left = FunctionParser.Node("1", FunctionParser.NodeType.OPERAND)
-        assertEquals(-2.0, inversion.eval(), 1e-10)
-    }
-
-    @Test
-    fun nodeParseInvertToString() {
-        val root = FunctionParser().parse("x + 3")
-        val inversion = root.invert() // x - 3
-        assertEquals("x - 3", inversion.string())
-        inversion.left = FunctionParser.Node("1", FunctionParser.NodeType.OPERAND)
-        assertEquals(-2.0, inversion.eval(), 1e-10)
-
-        assertEquals("x - 3", FunctionParser().inverse("x + 3"))
-        assertEquals("x - 3", FunctionParser().inverse("3 + x"))
-        assertEquals("x + 3", FunctionParser().inverse("x - 3"))
-        assertEquals("3 - x", FunctionParser().inverse("3 - x"))
-        assertEquals("x / 3", FunctionParser().inverse("x * 3"))
-        assertEquals("x / 3", FunctionParser().inverse("3 * x"))
-        assertEquals("x * 3", FunctionParser().inverse("x / 3"))
-        assertEquals("3 / x", FunctionParser().inverse("3 / x"))
-    }
-
-    @Test
-    fun nestedNodeInvert() {
-        assertEquals("x - 3 + 4", FunctionParser().inverse("x + 3 - 4"))
-    }
 
     @Test
     fun nestedNodesAsStringAddParenthesis() {
@@ -100,12 +65,22 @@ class InverseFunctionTest {
         //  / \
         // x   3
         //
+        // x + 3 * 2
+        //
+        //   +
+        //  / \
+        // x   *
+        //    / \
+        //   3   2
+        //
         val root = FunctionParser.Node("*", FunctionParser.NodeType.OPERATION)
         root.left = FunctionParser.Node("+", FunctionParser.NodeType.OPERATION)
         root.left!!.left = FunctionParser.Node("x", FunctionParser.NodeType.VARIABLE)
         root.left!!.right = FunctionParser.Node("3", FunctionParser.NodeType.OPERAND)
         root.right = FunctionParser.Node("2", FunctionParser.NodeType.OPERAND)
         assertEquals("(x + 3) * 2", root.string())
+        val node = FunctionParser().parse("x + 3 * 2")
+        assertEquals("x + 3 * 2", node.string())
     }
 
     @Test
@@ -123,6 +98,45 @@ class InverseFunctionTest {
     @Test
     fun nodeInverseVariableIsIdentity() {
         assertEquals("x", FunctionParser().inverse("x"))
+    }
+
+    @Test
+    fun nodeInvertReplaceEvaluate() {
+        val left = FunctionParser.Node("x", FunctionParser.NodeType.VARIABLE)
+        val right = FunctionParser.Node("3", FunctionParser.NodeType.OPERAND)
+        val root = FunctionParser.Node("+", FunctionParser.NodeType.OPERATION)
+        root.left = left
+        root.right = right
+        val inversion = root.invert() // x - 3
+        assertEquals(-2.0, inversion.eval("1"), 1e-10)
+    }
+
+    @Test
+    fun nodeParseInvertToString() {
+        val root = FunctionParser().parse("x + 3")
+        val inversion = root.invert() // x - 3
+        assertEquals("x - 3", inversion.string())
+        assertEquals(-2.0, inversion.eval("1"), 1e-10)
+
+        assertEquals("x - 3", FunctionParser().inverse("x + 3"))
+        assertEquals("x - 3", FunctionParser().inverse("3 + x"))
+        assertEquals("x - 4 - 3", FunctionParser().inverse("x + 3 + 4"))
+        assertEquals("x + 4 - 3", FunctionParser().inverse("x + 3 - 4"))
+        assertEquals("x + 3", FunctionParser().inverse("x - 3"))
+        assertEquals("3 - x", FunctionParser().inverse("3 - x"))
+        assertEquals("x / 3", FunctionParser().inverse("x * 3"))
+        assertEquals("x / 3", FunctionParser().inverse("3 * x"))
+        assertEquals("x * 3", FunctionParser().inverse("x / 3"))
+        assertEquals("3 / x", FunctionParser().inverse("3 / x"))
+        // x * 5.0 / 9.0
+        //
+        //    '/'
+        //    / \
+        //   *   9
+        //  / \
+        // x   5
+        //
+        assertEquals("x * 9.0 / 5.0", FunctionParser().inverse("x * 5.0 / 9.0"))
     }
 
     @Test
