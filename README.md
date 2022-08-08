@@ -59,6 +59,10 @@ See [this privacy policy](https://neupokoev.xyz/projects/imperial-russia/privacy
 - RecyclerView
 - Simple [recursive descent parser](https://en.wikipedia.org/wiki/Recursive_descent_parser) in the calculator
 - SharedPreferences for persistancy
+- [Markwon](https://noties.io/Markwon/) Markdown library without WebView requirement
+- [Observer pattern](https://en.wikipedia.org/wiki/Observer_pattern) used in the Main Activity. Child fragments call method in the activity and depending on the layout if other fragments exist, then the message will be delivered to them.
+- Different layouts: landscape (no main panels), tablet landscape (additional info panel), portrait, spacious portrait (additional info panel). Smart watch and auto layouts are in the roadmap.
+
 
 ### How to use Ratio Generator
 
