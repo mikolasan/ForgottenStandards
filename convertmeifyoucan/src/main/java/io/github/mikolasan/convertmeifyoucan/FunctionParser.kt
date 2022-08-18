@@ -1,4 +1,4 @@
-package io.github.mikolasan.imperialrussia
+package io.github.mikolasan.convertmeifyoucan
 
 import java.lang.Exception
 import java.text.DecimalFormatSymbols
@@ -11,7 +11,7 @@ import kotlin.math.pow
 // Power   ← Value ('^' Power)?
 // Value   ← [0-9]+ / '(' Expr ')'
 
-class FunctionParser() {
+class FunctionParser {
     class Tree(val root: Node) {
         // ?
     }

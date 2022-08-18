@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import io.github.mikolasan.ratiogenerator.ImperialUnit
+import java.util.*
 
 class ImperialListAdapter(private val workingUnits: WorkingUnits) : BaseAdapter() {
     var units: Array<ImperialUnit> = workingUnits.orderedUnits
@@ -123,7 +124,12 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits) : BaseAdapter(
     private fun updateViewData(layout: ConstraintLayout, dataPosition: Int) {
         val data: ImperialUnit = getItem(dataPosition) as ImperialUnit
         val name: TextView = layout.findViewById(R.id.unit_name)
-        name.text = data.unitName.name.toLowerCase().replace('_', ' ').capitalize()
+        name.text = data.unitName.name.lowercase(Locale.getDefault()).replace('_', ' ')
+            .replaceFirstChar {
+                if (it.isLowerCase()) it.titlecase(
+                    Locale.getDefault()
+                ) else it.toString()
+            }
         val value: TextView = layout.findViewById(R.id.unit_value)
         value.text = valueForDisplay(data.value)
         val symbol: TextView = layout.findViewById(R.id.unit_symbol)

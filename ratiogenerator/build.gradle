@@ -6,6 +6,7 @@ apply plugin: 'kotlin'
 
 
 dependencies {
+    implementation project(':convertmeifyoucan')
     //noinspection DifferentStdlibGradleVersion
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.squareup:kotlinpoet:1.5.0'

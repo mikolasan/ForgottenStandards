@@ -2,23 +2,84 @@ package io.github.mikolasan.ratiogenerator
 
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import io.github.mikolasan.convertmeifyoucan.FunctionParser
 import java.lang.Exception
 import java.util.*
 
 fun addInverseRatios(imperialUnits: ImperialUnits) {
-    val units: Array<ImperialUnit> = imperialUnits.units
-    val nameMap: Map<ImperialUnitName, ImperialUnit> = imperialUnits.nameMap
-    units.forEach {forwardUnit->
-        forwardUnit.ratioMap.forEach { unitName, ratio ->
-            val backwardUnit = nameMap.getValue(unitName)
-            if (!backwardUnit.ratioMap.containsKey(forwardUnit.unitName)) {
-                backwardUnit.ratioMap = backwardUnit.ratioMap + Pair(forwardUnit.unitName, 1.0/ratio)
-            }
-        }
-    }
+//    val units: Array<ImperialUnit> = imperialUnits.units
+//    val nameMap: Map<ImperialUnitName, ImperialUnit> = imperialUnits.nameMap
+//    units.forEach { forwardUnit ->
+//        forwardUnit.formulaMap?.let { formulaMap ->
+//            formulaMap.forEach { (unitName, formula) ->
+//                val backwardUnit = nameMap.getValue(unitName)
+//                if (backwardUnit.formulaMap == null) {
+//                    backwardUnit.formulaMap = mutableMapOf();
+//                }
+//                when(backwardUnit.formulaMap?.containsKey(forwardUnit.unitName)) {
+//                    true -> {
+//                        backwardUnit.formulaMap = (backwardUnit.formulaMap :? mapOf()) + Pair(forwardUnit.unitName, "")
+//                    }
+//                    else -> Unit
+//                }
+//            }
+//        }
+//
+//        forwardUnit.ratioMap.forEach { (unitName, ratio) ->
+//            val backwardUnit = nameMap.getValue(unitName)
+//            if (!backwardUnit.ratioMap.containsKey(forwardUnit.unitName)) {
+//                backwardUnit.ratioMap += Pair(forwardUnit.unitName, 1.0/ratio)
+//            }
+//        }
+//    }
 }
 
-fun findConversionRatio(nameMap: Map<ImperialUnitName, ImperialUnit>, inputUnit: ImperialUnit, outputUnit: ImperialUnit, searchPath: Array<ImperialUnitName>?): Double {
+fun findConversionFormula(nameMap: Map<ImperialUnitName, ImperialUnit>, inputUnit: ImperialUnit, outputUnit: ImperialUnit, searchPath: Array<ImperialUnitName>? = null): String {
+    if (inputUnit.unitName == outputUnit.unitName) return "x"
+    val inputMap = inputUnit.formulaMap ?: throw Exception("no input map")
+    val outputMap = outputUnit.formulaMap ?: throw Exception("no output map")
+    val formula = outputMap[inputUnit.unitName]
+    if (formula != null) return formula
+
+    val inverse = inputMap[outputUnit.unitName]
+    if (inverse != null) return FunctionParser().inverse(inverse)
+//
+//    for ((unitName,k) in inputMap) {
+//        if (searchPath != null && searchPath.contains(unitName)) continue
+//
+//        val commonUnitRatio = outputMap[unitName]
+//        commonUnitRatio?.let {
+//            return commonUnitRatio / k
+//        }
+//
+//        val inverseCommonUnit = nameMap[unitName]
+//        inverseCommonUnit?.let {
+//            val newRatio = inverseCommonUnit.ratioMap[outputUnit.unitName]
+//            if (newRatio != null)
+//                return 1.0 / (k * newRatio)
+//        }
+//    }
+//
+//    for ((unitName,k) in outputMap) {
+//        try {
+//            val unit = nameMap[unitName]
+//            if (unit != null) {
+//                if (searchPath != null && searchPath.contains(unitName)) continue
+//                return if (searchPath == null) {
+//                    findConversionRatio(nameMap, inputUnit, unit, arrayOf(unitName)) * k
+//                } else {
+//                    findConversionRatio(nameMap, inputUnit, unit, searchPath.plus(unitName)) * k
+//                }
+//            }
+//        } catch (e: Exception) {
+//
+//        }
+//    }
+
+    throw Exception("no ratio")
+}
+
+fun findConversionRatio(nameMap: Map<ImperialUnitName, ImperialUnit>, inputUnit: ImperialUnit, outputUnit: ImperialUnit, searchPath: Array<ImperialUnitName>? = null): Double {
     if (inputUnit.unitName == outputUnit.unitName) return 1.0
     val inputMap = inputUnit.ratioMap
     val outputMap = outputUnit.ratioMap
@@ -150,9 +211,10 @@ fun doUnits(name: String, imperialUnits: ImperialUnits) {
                 .add("%T(%T.%L, %T.%L, mapOf(\n⇥⇥%L⇤⇤))", ImperialUnit::class, ImperialUnitType::class, unitFrom.type, unitFrom.unitName::class, unitFrom.unitName, mapUnits.joinToCode(separator = ",\n"))
                 .build()
     }
+    val arrayCodeBlock = arrayUnits.joinToCode(separator = ",\n")
     val unitsArray = PropertySpec.builder("units", Array<ImperialUnit>::class.parameterizedBy(ImperialUnit::class))
             .addModifiers(KModifier.OVERRIDE)
-            .initializer("arrayOf(\n%L\n)", arrayUnits.joinToCode(separator = ",\n"))
+            .initializer("arrayOf(\n%L\n)", arrayCodeBlock)
             .build()
     val nameMap = PropertySpec.builder("nameMap", Map::class.parameterizedBy(ImperialUnitName::class, ImperialUnit::class))
             .addModifiers(KModifier.OVERRIDE)
@@ -171,6 +233,7 @@ fun doUnits(name: String, imperialUnits: ImperialUnits) {
     kotlinFile.writeTo(System.out)
 }
 
+@Suppress("NewApi")
 fun main(args: Array<String>) {
     val map = args.fold(Pair(emptyMap<String, List<String>>(), "")) { (map, lastKey), elem ->
         if (elem.startsWith("-"))  Pair(map + (elem to emptyList()), elem)

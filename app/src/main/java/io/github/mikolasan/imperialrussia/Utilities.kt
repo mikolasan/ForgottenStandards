@@ -4,6 +4,7 @@ import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.RelativeSizeSpan
 import android.text.style.SuperscriptSpan
+import io.github.mikolasan.convertmeifyoucan.FunctionParser
 import io.github.mikolasan.ratiogenerator.ImperialUnit
 import io.github.mikolasan.ratiogenerator.ImperialUnitName
 import io.github.mikolasan.ratiogenerator.ImperialUnitType
@@ -20,8 +21,10 @@ fun getConversionRatio(inputUnit: ImperialUnit, outputUnit: ImperialUnit): Doubl
 fun convertValue(inputUnit: ImperialUnit?, outputUnit: ImperialUnit?, inputValue: Double): Double {
     val input = inputUnit ?: return 0.0
     val output = outputUnit ?: return 0.0
-    return if (inputUnit.type == ImperialUnitType.TEMPERATURE) {
-        temperatureFormula(inputUnit.unitName, outputUnit.unitName, inputValue)
+    val formula = inputUnit.formulaMap?.get(outputUnit.unitName)
+    return if (!formula.isNullOrEmpty()) {
+        val root = FunctionParser().parse(formula)
+        root.eval(inputValue.toString())
     } else {
         inputValue * getConversionRatio(input, output)
     }

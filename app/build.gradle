@@ -68,6 +68,7 @@ task runRatioGenerator(type: JavaExec) {
 }
 
 dependencies {
+    implementation project(':convertmeifyoucan')
     implementation project(':ratiogenerator')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     // https://developer.android.com/jetpack/androidx/releases/core

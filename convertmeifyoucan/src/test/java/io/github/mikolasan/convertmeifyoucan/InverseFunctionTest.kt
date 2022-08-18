@@ -1,4 +1,4 @@
-package io.github.mikolasan.imperialrussia
+package io.github.mikolasan.convertmeifyoucan
 
 import org.junit.Test
 import org.junit.Assert.*
@@ -160,6 +160,6 @@ class InverseFunctionTest {
         //  / \
         // x  32
         //
-        assertEquals("(x - 32.0) * 5.0 / 9.0", FunctionParser().inverse("(x * 9.0 / 5.0) + 32.0"))
+        assertEquals("(x - 32.0) * 5.0 / 9.0", FunctionParser().inverse("x * 9.0 / 5.0 + 32.0"))
     }
 }
