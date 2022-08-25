@@ -300,4 +300,9 @@ class FunctionParser {
 //        val inversion = x?.parent?.invert()
 //        return inversion?.string() ?: ""
     }
+
+    fun inverse(array: Array<String>): Array<String> = array
+            .map {f -> inverse(f) }
+            .asReversed()
+            .toTypedArray()
 }

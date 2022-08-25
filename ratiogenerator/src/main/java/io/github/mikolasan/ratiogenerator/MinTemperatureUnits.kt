@@ -3,12 +3,12 @@ package io.github.mikolasan.ratiogenerator
 object MinTemperatureUnits : ImperialUnits() {
     override val units = arrayOf(
             ImperialUnit(ImperialUnitType.TEMPERATURE, ImperialUnitName.CELSIUS, mutableMapOf(), mutableMapOf(
-                    ImperialUnitName.FAHRENHEIT to "x * 9 / 5 + 32",
-                    ImperialUnitName.KELVIN to "x + 273.15",
-                    ImperialUnitName.REAUMUR to "x * 5 / 4"
+                    ImperialUnitName.FAHRENHEIT to arrayOf("x * 9 / 5 + 32"),
+                    ImperialUnitName.KELVIN to arrayOf("x + 273.15"),
+                    ImperialUnitName.REAUMUR to arrayOf("x * 5 / 4")
             )),
             ImperialUnit(ImperialUnitType.TEMPERATURE, ImperialUnitName.FAHRENHEIT, mutableMapOf(), mutableMapOf(
-                    ImperialUnitName.RANKINE to "x + 459.67"
+                    ImperialUnitName.RANKINE to arrayOf("x + 459.67")
             )),
             ImperialUnit(ImperialUnitType.TEMPERATURE, ImperialUnitName.KELVIN, mutableMapOf(), mutableMapOf()),
             ImperialUnit(ImperialUnitType.TEMPERATURE, ImperialUnitName.RANKINE, mutableMapOf(), mutableMapOf()),

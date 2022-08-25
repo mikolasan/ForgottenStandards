@@ -34,32 +34,35 @@ fun addInverseRatios(imperialUnits: ImperialUnits) {
 //    }
 }
 
-fun findConversionFormula(nameMap: Map<ImperialUnitName, ImperialUnit>, inputUnit: ImperialUnit, outputUnit: ImperialUnit, searchPath: Array<ImperialUnitName>? = null): String {
-    if (inputUnit.unitName == outputUnit.unitName) return "x"
+fun findConversionFormula(nameMap: Map<ImperialUnitName, ImperialUnit>, inputUnit: ImperialUnit, outputUnit: ImperialUnit, searchPath: Array<ImperialUnitName>? = null): Array<String> {
+    if (inputUnit.unitName == outputUnit.unitName) return arrayOf("x")
     val inputMap = inputUnit.formulaMap ?: throw Exception("no input map")
     val outputMap = outputUnit.formulaMap ?: throw Exception("no output map")
-    val formula = outputMap[inputUnit.unitName]
-    if (formula != null) return formula
+    val formulae: Array<String>? = outputMap[inputUnit.unitName]
+    if (formulae != null) return formulae
 
-    val inverse = inputMap[outputUnit.unitName]
-    if (inverse != null) return FunctionParser().inverse(inverse)
-//
-//    for ((unitName,k) in inputMap) {
-//        if (searchPath != null && searchPath.contains(unitName)) continue
-//
-//        val commonUnitRatio = outputMap[unitName]
-//        commonUnitRatio?.let {
-//            return commonUnitRatio / k
-//        }
-//
-//        val inverseCommonUnit = nameMap[unitName]
-//        inverseCommonUnit?.let {
-//            val newRatio = inverseCommonUnit.ratioMap[outputUnit.unitName]
-//            if (newRatio != null)
-//                return 1.0 / (k * newRatio)
-//        }
-//    }
-//
+    val inverseFormulae: Array<String>? = inputMap[outputUnit.unitName]
+    if (inverseFormulae != null) return FunctionParser().inverse(inverseFormulae)
+
+    for ((name, unit) in nameMap) {
+        //if (searchPath != null && searchPath.contains(unitName)) continue
+
+        unit.formulaMap?.get(inputUnit.unitName)?.let {
+            
+        }
+        val commonUnitRatio = outputMap[unitName]
+        commonUnitRatio?.let {
+            return commonUnitRatio / k
+        }
+
+        val inverseCommonUnit = nameMap[unitName]
+        inverseCommonUnit?.let {
+            val newRatio = inverseCommonUnit.ratioMap[outputUnit.unitName]
+            if (newRatio != null)
+                return 1.0 / (k * newRatio)
+        }
+    }
+
 //    for ((unitName,k) in outputMap) {
 //        try {
 //            val unit = nameMap[unitName]
