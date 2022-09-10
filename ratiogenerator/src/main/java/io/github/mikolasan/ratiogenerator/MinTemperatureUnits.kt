@@ -17,3 +17,17 @@ object MinTemperatureUnits : ImperialUnits() {
 
     override val nameMap = makeUnitByNameMap(units)
 }
+
+typealias x<A, B> = Pair<A, B>
+typealias eq<A, B> = Pair<A, B>
+typealias f<A, B, C> = Triple<A, B, C>
+
+object NewMinTemperatureUnits {
+    val formulaMap = arrayOf(
+        f(ImperialUnitName.CELSIUS, "x * 9 / 5 + 32", ImperialUnitName.FAHRENHEIT),
+        f(ImperialUnitName.CELSIUS, "x + 273.15", ImperialUnitName.KELVIN),
+        f(ImperialUnitName.CELSIUS, "x * 5 / 4", ImperialUnitName.REAUMUR),
+        f(ImperialUnitName.FAHRENHEIT, "x + 459.67", ImperialUnitName.RANKINE)
+    )
+
+}
