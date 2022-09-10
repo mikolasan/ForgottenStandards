@@ -22,7 +22,7 @@ class FindConversionFormulaTest {
         val celsius = temperatureUnits[ImperialUnitName.CELSIUS]!!
         // fahrenheit -> celsius
         assertEquals(true, celsius.formulaMap?.contains(fahrenheit.unitName))
-        assertArrayEquals(celsius.formulaMap!![celsius.unitName], findConversionFormula(temperatureUnits, fahrenheit, celsius))
+        assertArrayEquals(celsius.formulaMap!![fahrenheit.unitName], findConversionFormula(temperatureUnits, fahrenheit, celsius))
     }
 
     @Test
@@ -45,7 +45,17 @@ class FindConversionFormulaTest {
         val celsius = temperatureUnits[ImperialUnitName.CELSIUS]!!
         // rankine -> celsius = rankine -> fahrenheit -> celsius
         assertEquals(false, rankine.formulaMap?.contains(celsius.unitName))
-        assertArrayEquals(arrayOf(""), findConversionFormula(temperatureUnits, rankine, celsius))
+        assertArrayEquals(arrayOf("x + 459.67", "x * 9 / 5 + 32"), findConversionFormula(temperatureUnits, rankine, celsius))
+    }
+
+    @Test
+    fun findConversionFormula_reverseSearch() {
+        val temperatureUnits = MinTemperatureUnits.nameMap
+        val celsius = temperatureUnits[ImperialUnitName.CELSIUS]!!
+        val rankine = temperatureUnits[ImperialUnitName.RANKINE]!!
+        // celsius -> rankine = celsius -> fahrenheit -> rankine
+        assertEquals(false, celsius.formulaMap?.contains(rankine.unitName))
+        assertArrayEquals(arrayOf("(x - 32) * 5 / 9", "x - 459.67"), findConversionFormula(temperatureUnits, celsius, rankine))
     }
 
 //    @Test

@@ -34,52 +34,51 @@ fun addInverseRatios(imperialUnits: ImperialUnits) {
 //    }
 }
 
-fun findConversionFormula(nameMap: Map<ImperialUnitName, ImperialUnit>, inputUnit: ImperialUnit, outputUnit: ImperialUnit, searchPath: Array<ImperialUnitName>? = null): Array<String> {
+fun findConversionFormula(nameMap: Map<ImperialUnitName, ImperialUnit>,
+                          inputUnit: ImperialUnit,
+                          outputUnit: ImperialUnit,
+                          searchPath: Array<ImperialUnitName>? = null): Array<String> {
     if (inputUnit.unitName == outputUnit.unitName) return arrayOf("x")
     val inputMap = inputUnit.formulaMap ?: throw Exception("no input map")
     val outputMap = outputUnit.formulaMap ?: throw Exception("no output map")
-    val formulae: Array<String>? = outputMap[inputUnit.unitName]
+    var formulae: Array<String>? = outputMap[inputUnit.unitName]
     if (formulae != null) return formulae
 
     val inverseFormulae: Array<String>? = inputMap[outputUnit.unitName]
     if (inverseFormulae != null) return FunctionParser().inverse(inverseFormulae)
 
-    for ((name, unit) in nameMap) {
-        //if (searchPath != null && searchPath.contains(unitName)) continue
+    var stepOptions: Array<Pair<ImperialUnitName, Array<String>>> = nameMap
+        .filter { (name, unit) -> unit.formulaMap?.containsKey(inputUnit.unitName) ?: false }
+        .map { (name, unit) -> name to unit.formulaMap!![inputUnit.unitName]!! }
+        .toTypedArray()
 
-        unit.formulaMap?.get(inputUnit.unitName)?.let {
-            
-        }
-        val commonUnitRatio = outputMap[unitName]
-        commonUnitRatio?.let {
-            return commonUnitRatio / k
-        }
+    if (stepOptions.isEmpty()) {
+        stepOptions = inputMap
+            .map { (name, formulae) -> name to FunctionParser().inverse(formulae) }
+            .toTypedArray()
 
-        val inverseCommonUnit = nameMap[unitName]
-        inverseCommonUnit?.let {
-            val newRatio = inverseCommonUnit.ratioMap[outputUnit.unitName]
-            if (newRatio != null)
-                return 1.0 / (k * newRatio)
-        }
     }
+    if (stepOptions.isEmpty()) {
+        throw Exception("no second step")
+    }
+    formulae = stepOptions
+        .filter { !(searchPath?.contains(it.first) ?: false) }
+        .map {
+            try {
+                var path = searchPath
+                if (path.isNullOrEmpty()) {
+                    path = arrayOf(inputUnit.unitName)
+                }
+                val nextSteps =
+                    findConversionFormula(nameMap, nameMap[it.first]!!, outputUnit, path + arrayOf(it.first))
+                it.second + nextSteps
+            } catch (e: Exception) {
+                emptyArray()
+            }
+        }
+        .first { (a) -> a.isNotEmpty() } ?: throw Exception("no ratio")
 
-//    for ((unitName,k) in outputMap) {
-//        try {
-//            val unit = nameMap[unitName]
-//            if (unit != null) {
-//                if (searchPath != null && searchPath.contains(unitName)) continue
-//                return if (searchPath == null) {
-//                    findConversionRatio(nameMap, inputUnit, unit, arrayOf(unitName)) * k
-//                } else {
-//                    findConversionRatio(nameMap, inputUnit, unit, searchPath.plus(unitName)) * k
-//                }
-//            }
-//        } catch (e: Exception) {
-//
-//        }
-//    }
-
-    throw Exception("no ratio")
+    return formulae
 }
 
 fun findConversionRatio(nameMap: Map<ImperialUnitName, ImperialUnit>, inputUnit: ImperialUnit, outputUnit: ImperialUnit, searchPath: Array<ImperialUnitName>? = null): Double {
