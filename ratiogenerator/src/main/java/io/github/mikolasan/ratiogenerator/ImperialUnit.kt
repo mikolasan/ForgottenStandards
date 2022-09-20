@@ -1,14 +1,17 @@
 package io.github.mikolasan.ratiogenerator
 
 class ImperialUnit(val type: ImperialUnitType,
-                   val unitName: ImperialUnitName,
-                   var ratioMap: Map<ImperialUnitName, Double>,
-                   var formulaMap: Map<ImperialUnitName, Array<String>>? = null
+                   val unitName: ImperialUnitName
+//                   var ratioMap: Map<ImperialUnitName, Double>,
+//                   var formulaMap: Map<ImperialUnitName, Array<String>>? = null
 ) {
 //    val type: ImperialUnitType = ImperialUnitType.LENGTH
     var value: Double = 0.0
     var inputString: String = ""
     var formattedString: String = ""
+
+    var ratioMap: Map<ImperialUnitName, Double> = mapOf()
+    var formulaMap: Map<ImperialUnitName, Array<String>> = mapOf()
 
     fun restoreValue(s: String, v: Double) {
         inputString = s
