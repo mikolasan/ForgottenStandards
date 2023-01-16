@@ -48,6 +48,7 @@ android {
         }
     }
     buildToolsVersion '33.0.0'
+    namespace 'io.github.mikolasan.imperialrussia'
 }
 
 task runRatioGenerator(type: JavaExec) {
