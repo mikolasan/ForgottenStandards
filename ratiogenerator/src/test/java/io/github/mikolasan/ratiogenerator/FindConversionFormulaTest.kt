@@ -58,12 +58,12 @@ class FindConversionFormulaTest {
         assertArrayEquals(arrayOf("(x - 32) * 5 / 9", "x - 459.67"), findConversionFormula(temperatureUnits, celsius, rankine))
     }
 
-//    @Test
-//    fun findConversionFormula_oneStepSearch() {
-//        val temperatureUnits = MinTemperatureUnits.nameMap
-//        val fahrenheit = temperatureUnits[ImperialUnitName.FAHRENHEIT]!!
-//        assertEquals(false, fahrenheit.formulaMap?.contains(ImperialUnitName.KELVIN))
-//        val kelvin = temperatureUnits[ImperialUnitName.KELVIN]!!
-//        assertArrayEquals(arrayOf(""), findConversionFormula(temperatureUnits, fahrenheit, kelvin))
-//    }
+    @Test
+    fun findConversionFormula_oneStepSearch() {
+        val temperatureUnits = MinTemperatureUnits.nameMap
+        val fahrenheit = temperatureUnits[ImperialUnitName.FAHRENHEIT]!!
+        val kelvin = temperatureUnits[ImperialUnitName.KELVIN]!!
+        assertEquals(false, fahrenheit.formulaMap?.contains(kelvin.unitName))
+        assertArrayEquals(arrayOf("x * 9 / 5 + 32", "x - 273.15"), findConversionFormula(temperatureUnits, fahrenheit, kelvin))
+    }
 }

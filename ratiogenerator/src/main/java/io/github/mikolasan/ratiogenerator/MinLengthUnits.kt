@@ -2,7 +2,7 @@ package io.github.mikolasan.ratiogenerator
 
 object MinLengthUnits : ImperialUnits(
     type = ImperialUnitType.LENGTH,
-    conversionTable = mapOf(
+    ratioList = listOf(
         eq(x(1.0, ImperialUnitName.ARSHIN), x(28.0, ImperialUnitName.INCH)),
         eq(x(1.0, ImperialUnitName.ARSHIN), x(16.0, ImperialUnitName.VERSHOK)),
         eq(x(1.0, ImperialUnitName.ARSHIN), x(4.0, ImperialUnitName.SPAN)),

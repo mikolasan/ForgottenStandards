@@ -2,7 +2,7 @@ package io.github.mikolasan.ratiogenerator
 
 object MinTemperatureUnits : ImperialUnits(
     type = ImperialUnitType.TEMPERATURE,
-    conversionTable = mapOf(),
+    ratioList = listOf(),
     formulaList = listOf(
         f(ImperialUnitName.CELSIUS, "x * 9 / 5 + 32", ImperialUnitName.FAHRENHEIT),
         f(ImperialUnitName.CELSIUS, "x + 273.15", ImperialUnitName.KELVIN),

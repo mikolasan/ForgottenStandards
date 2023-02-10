@@ -208,11 +208,6 @@ class FunctionParser {
         }
     }
 
-    fun parse(expression: String): Node {
-        val carriage = Carriage(expression)
-        return parseExpression(carriage)
-    }
-
     private fun parseExpression(carriage: Carriage): Node {
         var x = parseTerm(carriage)
         while (true) {
@@ -292,6 +287,16 @@ class FunctionParser {
 //        }
         return x
     }
+
+    fun parse(expression: String): Node {
+        val carriage = Carriage(expression)
+        return parseExpression(carriage)
+    }
+
+    fun parse(array: Array<String>): Array<Node> = array
+        .map {f -> parse(f)}
+        .asReversed()
+        .toTypedArray()
 
     fun inverse(expression: String): String {
         val root = parse(expression)
