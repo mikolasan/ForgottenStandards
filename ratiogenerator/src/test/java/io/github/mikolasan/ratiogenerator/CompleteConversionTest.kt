@@ -28,4 +28,20 @@ class CompleteConversionTest {
             }
         }
     }
+
+    @Test
+    fun allTemperatureUnits() {
+        val units = MinTemperatureUnits.units
+        val map = MinTemperatureUnits.nameMap
+        for (fromUnit in units) {
+            for (toUnit in units) {
+                if (fromUnit.unitName == toUnit.unitName) continue
+
+                println("Finding ratio for ${fromUnit.unitName} -> ${toUnit.unitName}...")
+                val formulaArray = findConversionFormula(map, fromUnit, toUnit)
+                assert(formulaArray.isNotEmpty())
+                println("[OK]: ${fromUnit.unitName} -> ${formulaArray.contentToString()} = ${toUnit.unitName}")
+            }
+        }
+    }
 }

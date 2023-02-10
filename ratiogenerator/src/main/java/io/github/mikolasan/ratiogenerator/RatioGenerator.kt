@@ -39,31 +39,31 @@ fun findConversionFormula(nameMap: Map<ImperialUnitName, ImperialUnit>,
                           outputUnit: ImperialUnit,
                           searchPath: Array<ImperialUnitName>? = null): Array<String> {
     if (inputUnit.unitName == outputUnit.unitName) return arrayOf("x")
-    val inputMap = inputUnit.formulaMap ?: throw Exception("no input map")
-    val outputMap = outputUnit.formulaMap ?: throw Exception("no output map")
+    val inputMap = inputUnit.formulaMap
+    val outputMap = outputUnit.formulaMap
     var formulae: Array<String>? = outputMap[inputUnit.unitName]
     if (formulae != null) return formulae
 
     val inverseFormulae: Array<String>? = inputMap[outputUnit.unitName]
     if (inverseFormulae != null) return FunctionParser().inverse(inverseFormulae)
 
-    var stepOptions: Array<Pair<ImperialUnitName, Array<String>>> = nameMap
-        .filter { (name, unit) -> unit.formulaMap?.containsKey(inputUnit.unitName) ?: false }
-        .map { (name, unit) -> name to unit.formulaMap!![inputUnit.unitName]!! }
+    val forwardOptions = nameMap
+        .filter { (_, unit) -> unit.formulaMap.containsKey(inputUnit.unitName) }
+        .map { (name, unit) -> name to unit.formulaMap[inputUnit.unitName]!! }.toMap()
+
+    val inverseOptions = inputMap
+        .filter { (name, _) -> !forwardOptions.containsKey(name)}
+        .map { (name, formulae) -> name to FunctionParser().inverse(formulae) }
         .toTypedArray()
 
-    if (stepOptions.isEmpty()) {
-        stepOptions = inputMap
-            .map { (name, formulae) -> name to FunctionParser().inverse(formulae) }
-            .toTypedArray()
+    val stepOptions: Array<Pair<ImperialUnitName, Array<String>>> = forwardOptions.toList().toTypedArray() + inverseOptions
 
-    }
     if (stepOptions.isEmpty()) {
         throw Exception("no second step")
     }
-    formulae = stepOptions
+    val allPaths = stepOptions
         .filter { !(searchPath?.contains(it.first) ?: false) }
-        .map {
+        .mapNotNull {
             try {
                 var path = searchPath
                 if (path.isNullOrEmpty()) {
@@ -73,10 +73,11 @@ fun findConversionFormula(nameMap: Map<ImperialUnitName, ImperialUnit>,
                     findConversionFormula(nameMap, nameMap[it.first]!!, outputUnit, path + arrayOf(it.first))
                 it.second + nextSteps
             } catch (e: Exception) {
-                emptyArray()
+                null
             }
         }
-        .first { (a) -> a.isNotEmpty() } ?: throw Exception("no ratio")
+        .sortedBy { it.size }
+    formulae = allPaths.first()
 
     return formulae
 }

@@ -10,22 +10,22 @@ import java.lang.Exception
 
 class ImperialSettings(application: Application) : AndroidViewModel(application) {
     private val unitObjects: Map<ImperialUnitType, ImperialUnits> = mapOf(
-            ImperialUnitType.ANGLE to AngleUnits,
-            ImperialUnitType.AREA to AreaUnits,
-            ImperialUnitType.CURRENCY to CurrencyUnits,
-            ImperialUnitType.ENERGY to EnergyUnits,
-            ImperialUnitType.FORCE to ForceUnits,
-            ImperialUnitType.FUEL to FuelUnits,
-            ImperialUnitType.LENGTH to LengthUnits,
-            ImperialUnitType.POWER to PowerUnits,
-            ImperialUnitType.PRESSURE to PressureUnits,
-            ImperialUnitType.RESISTANCE to ResistanceUnits,
-            ImperialUnitType.SPEED to SpeedUnits,
-            ImperialUnitType.STORAGE to StorageUnits,
-            ImperialUnitType.TEMPERATURE to TemperatureUnits,
-            ImperialUnitType.TIME to TimeUnits,
-            ImperialUnitType.VOLUME to VolumeUnits,
-            ImperialUnitType.WEIGHT to WeightUnits
+            ImperialUnitType.ANGLE to MinAngleUnits,
+            ImperialUnitType.AREA to MinAreaUnits,
+            ImperialUnitType.CURRENCY to MinCurrencyUnits,
+            ImperialUnitType.ENERGY to MinEnergyUnits,
+            ImperialUnitType.FORCE to MinForceUnits,
+            ImperialUnitType.FUEL to MinFuelUnits,
+            ImperialUnitType.LENGTH to MinLengthUnits,
+            ImperialUnitType.POWER to MinPowerUnits,
+            ImperialUnitType.PRESSURE to MinPressureUnits,
+            ImperialUnitType.RESISTANCE to MinResistanceUnits,
+            ImperialUnitType.SPEED to MinSpeedUnits,
+            ImperialUnitType.STORAGE to MinStorageUnits,
+            ImperialUnitType.TEMPERATURE to MinTemperatureUnits,
+            ImperialUnitType.TIME to MinTimeUnits,
+            ImperialUnitType.VOLUME to MinVolumeUnits,
+            ImperialUnitType.WEIGHT to MinWeightUnits
     )
 
     private val preferencesFile = "ImperialRussiaPref.7"
