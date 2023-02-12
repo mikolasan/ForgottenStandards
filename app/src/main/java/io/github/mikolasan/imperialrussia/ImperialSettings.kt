@@ -86,7 +86,7 @@ class ImperialSettings(application: Application) : AndroidViewModel(application)
     }
 
     private fun loadOrderedUnits(type: ImperialUnitType): Array<ImperialUnit> {
-        val units = unitObjects.getValue(type).units.copyOf()
+        val units = unitObjects.getValue(type).units.toTypedArray().copyOf()
         unitObjects.getValue(type).units.forEachIndexed { i, u ->
             val unitName = u.unitName.name
             val settingName = "unit${unitName}Position"
@@ -101,7 +101,7 @@ class ImperialSettings(application: Application) : AndroidViewModel(application)
             units[p] = u
         }
         if (units.distinct().size != units.size) {
-            unitObjects.getValue(type).units.copyInto(units)
+            unitObjects.getValue(type).units.toTypedArray().copyInto(units)
         }
         preferencesEditor.apply()
         return units
