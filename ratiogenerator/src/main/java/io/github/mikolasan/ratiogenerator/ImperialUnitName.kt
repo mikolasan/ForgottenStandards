@@ -95,6 +95,8 @@ enum class ImperialUnitName {
     // Resistance
     OHM,
     KILOOHM,
+    PLANCK_IMPEDANCE,
+    QUANTIZED_HALL_RESISTANCE,
 
     // Speed
     METER_PER_SECOND,

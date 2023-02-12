@@ -1,0 +1,31 @@
+package io.github.mikolasan.ratiogenerator
+
+object MinWeightUnits : ImperialUnits(
+    type = ImperialUnitType.WEIGHT,
+    ratioList = listOf(
+        eq(x(1.0, ImperialUnitName.GRAN), x(1.4, ImperialUnitName.DOLYA)),
+        eq(x(1.0, ImperialUnitName.SCRUPUL), x(28.0, ImperialUnitName.DOLYA)),
+        eq(x(1.0, ImperialUnitName.FUNT), x(9216.0, ImperialUnitName.DOLYA)),
+        eq(x(1.0, ImperialUnitName.ZOLOTNIK), x(96.0, ImperialUnitName.DOLYA)),
+        eq(x(1.0, ImperialUnitName.LOT), x(288.0, ImperialUnitName.DOLYA)),
+        eq(x(1.0, ImperialUnitName.FUNT), x(96.0, ImperialUnitName.ZOLOTNIK)),
+        eq(x(1.0, ImperialUnitName.POUND), x(84.0, ImperialUnitName.ZOLOTNIK)),
+        eq(x(1.0, ImperialUnitName.UNTSIYA), x(7.0, ImperialUnitName.ZOLOTNIK)),
+        eq(x(1.0, ImperialUnitName.LOT), x(3.0, ImperialUnitName.ZOLOTNIK)),
+        eq(x(1.0, ImperialUnitName.FUNT), x(32.0, ImperialUnitName.LOT)),
+        eq(x(1.0, ImperialUnitName.POOD), x(40.0, ImperialUnitName.FUNT)),
+        eq(x(1.0, ImperialUnitName.BERKOVETS), x(400.0, ImperialUnitName.FUNT)),
+        eq(x(1.0, ImperialUnitName.SCRUPUL), x(20.0, ImperialUnitName.GRAN)),
+        eq(x(1.0, ImperialUnitName.DRAKHMA), x(60.0, ImperialUnitName.GRAN)),
+        eq(x(1.0, ImperialUnitName.UNTSIYA), x(480.0, ImperialUnitName.GRAN)),
+        eq(x(1.0, ImperialUnitName.POUND), x(5760.0, ImperialUnitName.GRAN)),
+        eq(x(1.0, ImperialUnitName.UNTSIYA), x(8.0, ImperialUnitName.DRAKHMA)),
+        eq(x(1.0, ImperialUnitName.POUND), x(12.0, ImperialUnitName.UNTSIYA)),
+        eq(x(1.0, ImperialUnitName.POOD), x(16.3807, ImperialUnitName.KILOGRAMM)),
+        eq(x(1.0, ImperialUnitName.UNTSIYA), x(29.861, ImperialUnitName.GRAMM)),
+        eq(x(1.0, ImperialUnitName.FUNT), x(409.51718, ImperialUnitName.GRAMM)),
+        eq(x(1.0, ImperialUnitName.SCRUPUL), x(1.2442, ImperialUnitName.GRAMM)),
+        eq(x(1.0, ImperialUnitName.POOD), x(36.121, ImperialUnitName.POUND)),
+        eq(x(1.0, ImperialUnitName.BERKOVETS), x(25.8, ImperialUnitName.STONE)),
+    ),
+    formulaList = listOf())
