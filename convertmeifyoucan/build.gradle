@@ -1,12 +1,13 @@
 version = '0.0.1'
 description = 'convert-me-if-you-can'
 
-
 apply plugin: 'java-library'
 apply plugin: 'kotlin'
 
-sourceCompatibility = '1.8'
-java.targetCompatibility = JavaVersion.VERSION_1_8
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_17
+}
 
 dependencies {
     testImplementation 'junit:junit:4.13.2'
