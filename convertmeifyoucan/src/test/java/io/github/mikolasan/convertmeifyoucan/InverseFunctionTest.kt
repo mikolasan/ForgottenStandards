@@ -4,6 +4,19 @@ import org.junit.Test
 import org.junit.Assert.*
 
 class InverseFunctionTest {
+
+    @Test
+    fun decimalNumberFormatParsing() {
+        assertEquals(1.2, FunctionParser().parse("1.2").atom.toDouble(), 1e-10)
+        assertEquals(1234.5, FunctionParser().parse("1,234.5").atom.toDouble(), 1e-10)
+    }
+
+    @Test
+    fun scientificNumberFormatParsing() {
+        assertEquals(1E-5, FunctionParser().parse("1E-5").atom.toDouble(), 1e-10)
+        assertEquals(1e-5, FunctionParser().parse("1e-5").atom.toDouble(), 1e-10)
+    }
+
     @Test
     fun nodeEvaluation() {
         val left = FunctionParser.Node("2", FunctionParser.NodeType.OPERAND)

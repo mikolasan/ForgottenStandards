@@ -15,7 +15,7 @@ import kotlin.math.floor
 import kotlin.math.log10
 
 fun getConversionRatio(inputUnit: ImperialUnit, outputUnit: ImperialUnit): Double {
-    return outputUnit.ratioMap[inputUnit.unitName] ?: throw ImperialConverterException("no ratio")
+    return outputUnit.ratioMap[inputUnit.unitName] ?: 0.0
 }
 
 fun convertValue(inputUnit: ImperialUnit?, outputUnit: ImperialUnit?, inputValue: Double): Double {

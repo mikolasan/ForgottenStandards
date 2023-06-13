@@ -37,7 +37,7 @@ class FunctionParser {
             }
             val leftString = if (left == null) "" else left!!.string(if (type == NodeType.OPERATION) atom else null) + " "
             val rightString = if (right == null) "" else " " + right!!.string(if (type == NodeType.OPERATION) atom else null)
-            return if (addParenthesis) "(" + leftString + atom + rightString + ")" else leftString + atom + rightString
+            return if (addParenthesis) "($leftString$atom$rightString)" else leftString + atom + rightString
         }
 
         fun eval(x: String? = null): Double {
@@ -46,12 +46,12 @@ class FunctionParser {
                 xNode?.atom = x
                 xNode?.type = NodeType.OPERAND
             }
-            when (type) {
-                NodeType.OPERAND -> return atom.toDouble()
+            return when (type) {
+                NodeType.OPERAND -> atom.toDouble()
                 NodeType.OPERATION -> {
                     val leftOp = left ?: throw Exception("Left operand is not defined")
                     val rightOp = right ?: throw Exception("Right operand is not defined")
-                    return when (atom) {
+                    when (atom) {
                         "/" -> leftOp.eval() / rightOp.eval()
                         "*" -> leftOp.eval() * rightOp.eval()
                         "-" -> leftOp.eval() - rightOp.eval()
@@ -59,6 +59,7 @@ class FunctionParser {
                         else -> throw Exception("No such operation")
                     }
                 }
+
                 else -> throw Exception("Function must be inverted before evaluation")
             }
         }

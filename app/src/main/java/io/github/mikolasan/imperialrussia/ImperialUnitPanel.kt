@@ -12,6 +12,7 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import io.github.mikolasan.ratiogenerator.ImperialUnit
 import java.text.DecimalFormat
+import java.util.Locale
 
 
 class ImperialUnitPanel(context: Context, attributeSet: AttributeSet) : ConstraintLayout(context, attributeSet) {
@@ -42,7 +43,12 @@ class ImperialUnitPanel(context: Context, attributeSet: AttributeSet) : Constrai
 
     private fun updateUnitText() {
         unit?.unitName?.name?.let { s ->
-            val underlineText = SpannableString(s.toLowerCase().replace('_', ' ').capitalize())
+            val underlineText = SpannableString(s
+                .lowercase(Locale.ROOT)
+                .replace('_', ' ')
+                .replaceFirstChar {
+                    if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString()
+                })
             //underlineText.setSpan(UnderlineSpan(), 0, underlineText.length, 0)
             title.text = underlineText
         }

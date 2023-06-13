@@ -49,6 +49,7 @@ class SwitchFragment : Fragment(R.layout.fragment_switch) {
         return view
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(SwitchViewModel::class.java)

@@ -28,7 +28,7 @@ class ImperialSettings(application: Application) : AndroidViewModel(application)
             ImperialUnitType.WEIGHT to MinWeightUnits
     )
 
-    private val preferencesFile = "ImperialRussiaPref.7"
+    private val preferencesFile = "ImperialRussiaPref.8"
 
     private val preferencesEditor: SharedPreferences.Editor by lazy {
         return@lazy preferences.edit()

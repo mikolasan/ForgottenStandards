@@ -135,6 +135,7 @@ class ConverterFragment : Fragment() {
         return view
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
