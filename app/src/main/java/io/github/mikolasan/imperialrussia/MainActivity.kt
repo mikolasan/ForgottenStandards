@@ -239,7 +239,7 @@ class MainActivity : FragmentActivity() {
         workingUnits.listAdapter.resetAllValues()
         workingUnits.orderedUnits = workingUnits.allUnits.getValue(ImperialUnitType.valueOf(category.name.toUpperCase()))
         workingUnits.listAdapter.units = workingUnits.orderedUnits
-        workingUnits.listAdapter.resetAllValues()
+        workingUnits.listAdapter.resetAllValues() // why?
         workingUnits.selectedUnit = workingUnits.orderedUnits[0]
         workingUnits.secondUnit = workingUnits.orderedUnits[1]
         converterFragment?.run {

@@ -8,7 +8,10 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import io.github.mikolasan.ratiogenerator.ImperialUnit
 
-class ImperialCategoryAdapter(private val categories: Array<ImperialUnitCategory>, private val publishSubject: MainActivity) : RecyclerView.Adapter<ImperialCategoryAdapter.ViewHolder>() {
+class ImperialCategoryAdapter(private val categories: Array<ImperialUnitCategory>,
+                              private val publishSubject: MainActivity)
+    : RecyclerView.Adapter<ImperialCategoryAdapter.ViewHolder>()
+{
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var category: ImperialUnitCategory? = null
         val categoryTitle: TextView = view.findViewById(R.id.category_title)

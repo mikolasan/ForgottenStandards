@@ -8,6 +8,7 @@ import io.github.mikolasan.convertmeifyoucan.FunctionParser
 import io.github.mikolasan.ratiogenerator.ImperialUnit
 import io.github.mikolasan.ratiogenerator.ImperialUnitName
 import io.github.mikolasan.ratiogenerator.ImperialUnitType
+import io.github.mikolasan.ratiogenerator.findConversionFormula
 import java.text.DecimalFormat
 import java.util.*
 import kotlin.math.abs
@@ -21,6 +22,7 @@ fun getConversionRatio(inputUnit: ImperialUnit, outputUnit: ImperialUnit): Doubl
 fun convertValue(inputUnit: ImperialUnit?, outputUnit: ImperialUnit?, inputValue: Double): Double {
     val input = inputUnit ?: return 0.0
     val output = outputUnit ?: return 0.0
+    val formulaArray = findConversionFormula(map, inputUnit, outputUnit)
     val formula = inputUnit.formulaMap[outputUnit.unitName]
     return if (!formula.isNullOrEmpty()) {
         val it = formula.iterator()
