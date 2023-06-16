@@ -156,29 +156,30 @@ class FunctionParser {
         }
     }
 
-    class Carriage(val expression: String) {
+    class Carriage(private val expression: String) {
         private val grouping = DecimalFormatSymbols.getInstance().groupingSeparator
         private val decimal = DecimalFormatSymbols.getInstance().decimalSeparator
         var char: Char? = null
         var pos: Int = -1
+        var exponentPart: Boolean = false
 
         init {
             fastForward(expression)
         }
 
-        fun onChar(check: Char): Boolean {
+        private fun onChar(check: Char): Boolean {
             return char == check
         }
-        fun hasNextChar(expression: String): Boolean {
+        private fun hasNextChar(expression: String): Boolean {
             return pos + 1 < expression.length
         }
-        fun fastForward(expression: String): Char? {
+        private fun fastForward(expression: String): Char? {
             do {
                 char = expression.elementAtOrNull(++pos)
             } while (char == ' ')
             return char
         }
-        fun nextChar(expression: String): Char? {
+        private fun nextChar(expression: String): Char? {
             char = expression.elementAtOrNull(++pos)
             return char
         }
@@ -189,7 +190,20 @@ class FunctionParser {
         }
         fun findFactor(): String {
             val startPos = pos
-            while (char == 'x' || char in '0'..'9' || char == decimal || char == grouping) {
+            while (char == 'x'
+                || char in '0'..'9'
+                || char == 'e'
+                || char == 'E'
+                || exponentPart && char == '-'
+                || exponentPart && char == '+'
+                || char == decimal
+                || char == grouping) {
+                if (char == 'e'
+                    || char == 'E')
+                    exponentPart = true
+                if (exponentPart && char == '-'
+                    || exponentPart && char == '+')
+                    exponentPart = false
                 nextChar(expression)
             }
             val endPos = pos
@@ -265,6 +279,8 @@ class FunctionParser {
         }
         return Node(factor, NodeType.OPERAND)
     }
+
+    private fun parseExponent() {}
 
     private fun parseFactor(carriage: Carriage): Node {
         if (carriage.eat('(')) {
