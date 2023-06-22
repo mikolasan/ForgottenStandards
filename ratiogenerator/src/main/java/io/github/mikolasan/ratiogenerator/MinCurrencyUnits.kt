@@ -1,6 +1,6 @@
 package io.github.mikolasan.ratiogenerator
 
-object MinCurrencyUnits : ImperialUnits(
+object MinCurrencyUnits : ImperialUnitCategory(
     type = ImperialUnitType.CURRENCY,
     ratioList = listOf(
         eq(x(1.0, ImperialUnitName.MOSKOVKA), x(2.0, ImperialUnitName.DENGA)),

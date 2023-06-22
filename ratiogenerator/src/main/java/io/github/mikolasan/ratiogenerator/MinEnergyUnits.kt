@@ -1,6 +1,6 @@
 package io.github.mikolasan.ratiogenerator
 
-object MinEnergyUnits : ImperialUnits(
+object MinEnergyUnits : ImperialUnitCategory(
     type = ImperialUnitType.ENERGY,
     ratioList = listOf(
         eq(x(1.0, ImperialUnitName.KILOJOULE), x(1000.0, ImperialUnitName.JOULE)),

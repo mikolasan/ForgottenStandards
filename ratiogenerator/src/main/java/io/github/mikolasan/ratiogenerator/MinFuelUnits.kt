@@ -1,6 +1,6 @@
 package io.github.mikolasan.ratiogenerator
 
-object MinFuelUnits : ImperialUnits(
+object MinFuelUnits : ImperialUnitCategory(
     type = ImperialUnitType.FUEL,
     ratioList = listOf(
         eq(x(1.0, ImperialUnitName.KM_PER_LITER), x(2.352146, ImperialUnitName.MILE_PER_GALLON)),

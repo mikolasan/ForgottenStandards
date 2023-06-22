@@ -1,6 +1,6 @@
 package io.github.mikolasan.ratiogenerator
 
-object MinForceUnits : ImperialUnits(
+object MinForceUnits : ImperialUnitCategory(
     type = ImperialUnitType.FORCE,
     ratioList = listOf(
         eq(x(1.0, ImperialUnitName.NEWTON), x(100000.0, ImperialUnitName.DYNE)),

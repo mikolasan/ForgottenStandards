@@ -6,14 +6,13 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
-import io.github.mikolasan.ratiogenerator.ImperialUnit
 
-class ImperialCategoryAdapter(private val categories: Array<ImperialUnitCategory>,
+class ImperialCategoryAdapter(private val categories: Array<ImperialUnitCategoryName>,
                               private val publishSubject: MainActivity)
     : RecyclerView.Adapter<ImperialCategoryAdapter.ViewHolder>()
 {
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        var category: ImperialUnitCategory? = null
+        var category: ImperialUnitCategoryName? = null
         val categoryTitle: TextView = view.findViewById(R.id.category_title)
         val space: ConstraintLayout = view.findViewById(R.id.category_space)
     }

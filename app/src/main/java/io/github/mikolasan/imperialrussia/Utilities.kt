@@ -20,21 +20,16 @@ fun getConversionRatio(inputUnit: ImperialUnit, outputUnit: ImperialUnit): Doubl
 }
 
 fun convertValue(inputUnit: ImperialUnit?, outputUnit: ImperialUnit?, inputValue: Double): Double {
-    val input = inputUnit ?: return 0.0
-    val output = outputUnit ?: return 0.0
-    val formulaArray = findConversionFormula(map, inputUnit, outputUnit)
-    val formula = inputUnit.formulaMap[outputUnit.unitName]
-    return if (!formula.isNullOrEmpty()) {
-        val it = formula.iterator()
-        var x = inputValue
-        while (it.hasNext()) {
-            val root = FunctionParser().parse(it.next())
-            x = root.eval(x.toString())
-        }
-        x
-    } else {
-        inputValue * getConversionRatio(input, output)
+    inputUnit ?: return 0.0
+    outputUnit ?: return 0.0
+    val formulaArray = findConversionFormula(inputUnit.category.nameMap, inputUnit, outputUnit)
+    val it = formulaArray.iterator()
+    var x = inputValue
+    while (it.hasNext()) {
+        val root = FunctionParser().parse(it.next())
+        x = root.eval(x.toString())
     }
+    return x
 }
 
 const val maxDisplayLength = 9

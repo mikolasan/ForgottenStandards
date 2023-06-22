@@ -1,6 +1,6 @@
 package io.github.mikolasan.ratiogenerator
 
-object MinPressureUnits : ImperialUnits(
+object MinPressureUnits : ImperialUnitCategory(
     type = ImperialUnitType.PRESSURE,
     ratioList = listOf(
         eq(x(1.0, ImperialUnitName.KILOPASCAL), x(1000.0, ImperialUnitName.PASCAL)),

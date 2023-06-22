@@ -1,6 +1,6 @@
 package io.github.mikolasan.ratiogenerator
 
-object MinTimeUnits : ImperialUnits(
+object MinTimeUnits : ImperialUnitCategory(
     type = ImperialUnitType.TIME,
     ratioList = listOf(
         eq(x(1.0, ImperialUnitName.DAY), x(24.0, ImperialUnitName.HOUR)),

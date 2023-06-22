@@ -235,7 +235,7 @@ class MainActivity : FragmentActivity() {
         }
     }
 
-    fun onCategorySelected(category: ImperialUnitCategory) {
+    fun onCategorySelected(category: ImperialUnitCategoryName) {
         workingUnits.listAdapter.resetAllValues()
         workingUnits.orderedUnits = workingUnits.allUnits.getValue(ImperialUnitType.valueOf(category.name.toUpperCase()))
         workingUnits.listAdapter.units = workingUnits.orderedUnits

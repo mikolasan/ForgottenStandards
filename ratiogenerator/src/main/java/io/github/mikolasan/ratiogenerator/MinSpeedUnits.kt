@@ -1,6 +1,6 @@
 package io.github.mikolasan.ratiogenerator
 
-object MinSpeedUnits : ImperialUnits(
+object MinSpeedUnits : ImperialUnitCategory(
     type = ImperialUnitType.SPEED,
     ratioList = listOf(
         eq(x(1.0, ImperialUnitName.MACH), x(343.2, ImperialUnitName.METER_PER_SECOND)),

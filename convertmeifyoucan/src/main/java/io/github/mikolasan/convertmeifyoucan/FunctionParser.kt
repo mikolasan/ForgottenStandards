@@ -136,7 +136,10 @@ class FunctionParser {
             return inversion
         }
 
-        fun findVariable(): Node? {
+        private fun findVariable(): Node? {
+            if (type == NodeType.VARIABLE)
+                return this
+
             var variableNode: Node?
             variableNode = left?.let { leftNode ->
                 if (leftNode.type == NodeType.VARIABLE) {

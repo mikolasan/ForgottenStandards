@@ -1,6 +1,6 @@
 package io.github.mikolasan.ratiogenerator
 
-object MinResistanceUnits : ImperialUnits(
+object MinResistanceUnits : ImperialUnitCategory(
     type = ImperialUnitType.RESISTANCE,
     ratioList = listOf(
         eq(x(1.0, ImperialUnitName.KILOOHM), x(1000.0, ImperialUnitName.OHM)),

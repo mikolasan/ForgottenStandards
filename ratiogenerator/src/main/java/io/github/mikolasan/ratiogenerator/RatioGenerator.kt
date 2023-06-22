@@ -5,7 +5,7 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import java.lang.Exception
 import java.util.*
 
-fun addInverseRatios(imperialUnits: ImperialUnits) {
+fun addInverseRatios(imperialUnits: ImperialUnitCategory) {
 //    val units: Array<ImperialUnit> = imperialUnits.units
 //    val nameMap: Map<ImperialUnitName, ImperialUnit> = imperialUnits.nameMap
 //    units.forEach { forwardUnit ->
@@ -152,17 +152,17 @@ fun convertValue(nameMap: Map<ImperialUnitName, ImperialUnit>, inputUnit: Imperi
     return inputValue * findConversionRatio(nameMap, input, output, null)
 }
 
-fun doUnits(name: String, imperialUnits: ImperialUnits) {
-    addInverseRatios(imperialUnits)
-    val units = imperialUnits.units
+fun doUnits(name: String, imperialUnitCategory: ImperialUnitCategory) {
+    addInverseRatios(imperialUnitCategory)
+    val units = imperialUnitCategory.units
     val arrayUnits = units.map { unitFrom ->
         val mapUnits = units.map { unitTo ->
             CodeBlock.builder()
-                    .add("%T.%L to %L", unitTo.unitName::class, unitTo.unitName, convertValue(imperialUnits.nameMap, unitTo, unitFrom, 1.0))
+                    .add("%T.%L to %L", unitTo.unitName::class, unitTo.unitName, convertValue(imperialUnitCategory.nameMap, unitTo, unitFrom, 1.0))
                     .build()
         }
         CodeBlock.builder()
-                .add("%T(%T.%L, %T.%L, mapOf(\n⇥⇥%L⇤⇤))", ImperialUnit::class, ImperialUnitType::class, unitFrom.type, unitFrom.unitName::class, unitFrom.unitName, mapUnits.joinToCode(separator = ",\n"))
+                .add("%T(%T.%L, %T.%L, mapOf(\n⇥⇥%L⇤⇤))", ImperialUnit::class, ImperialUnitType::class, unitFrom.unitType, unitFrom.unitName::class, unitFrom.unitName, mapUnits.joinToCode(separator = ",\n"))
                 .build()
     }
     val arrayCodeBlock = arrayUnits.joinToCode(separator = ",\n")
@@ -175,7 +175,7 @@ fun doUnits(name: String, imperialUnits: ImperialUnits) {
             .initializer("makeUnitByNameMap(%N)", unitsArray)
             .build()
     val unitsObject = TypeSpec.objectBuilder(name)
-            .superclass(ImperialUnits::class)
+            .superclass(ImperialUnitCategory::class)
             .addProperty(unitsArray)
             .addProperty(nameMap)
             .build()
@@ -195,7 +195,7 @@ fun main(args: Array<String>) {
     }.first
 
     val className = map["--className"]?.first() ?: "io.github.mikolasan.ratiogenerator.MinAngleUnits"
-    val units = Class.forName(className).kotlin.objectInstance as ImperialUnits
+    val units = Class.forName(className).kotlin.objectInstance as ImperialUnitCategory
     val name = map["--objectName"]?.first() ?: "AngleUnits"
     doUnits(name, units)
 }

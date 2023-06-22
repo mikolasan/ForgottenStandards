@@ -5,11 +5,10 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.lifecycle.AndroidViewModel
 import io.github.mikolasan.ratiogenerator.*
-import java.lang.ClassCastException
 import java.lang.Exception
 
 class ImperialSettings(application: Application) : AndroidViewModel(application) {
-    private val unitObjects: Map<ImperialUnitType, ImperialUnits> = mapOf(
+    private val categoryMap: Map<ImperialUnitType, ImperialUnitCategory> = mapOf(
             ImperialUnitType.ANGLE to MinAngleUnits,
             ImperialUnitType.AREA to MinAreaUnits,
             ImperialUnitType.CURRENCY to MinCurrencyUnits,
@@ -42,7 +41,7 @@ class ImperialSettings(application: Application) : AndroidViewModel(application)
             try {
                 val unitName = preferences.getString(settingName, null) ?: defaultUnit.unitName.name
                 val imperialUnitName = ImperialUnitName.valueOf(unitName)
-                unitObjects.getValue(type).nameMap.getValue(imperialUnitName)
+                categoryMap.getValue(type).nameMap.getValue(imperialUnitName)
             } catch (e: Exception) {
                 System.err.println(e.message)
                 defaultUnit
@@ -53,9 +52,8 @@ class ImperialSettings(application: Application) : AndroidViewModel(application)
     }
 
     fun restoreWorkingUnits(): WorkingUnits {
-        val units: Map<ImperialUnitType, Array<ImperialUnit>> = ImperialUnitType.values().associate { unitType ->
-            Pair(unitType, loadOrderedUnits(unitType))
-        }
+        val units: Map<ImperialUnitType, Array<ImperialUnit>> =
+            ImperialUnitType.values().associateWith { unitType -> loadOrderedUnits(unitType) }
         val type: ImperialUnitType = if (preferences.contains("category")) {
             ImperialUnitType.valueOf(preferences.getString("category", null) ?: "LENGTH")
         } else {
@@ -86,8 +84,8 @@ class ImperialSettings(application: Application) : AndroidViewModel(application)
     }
 
     private fun loadOrderedUnits(type: ImperialUnitType): Array<ImperialUnit> {
-        val units = unitObjects.getValue(type).units.toTypedArray().copyOf()
-        unitObjects.getValue(type).units.forEachIndexed { i, u ->
+        val units = categoryMap.getValue(type).units.toTypedArray().copyOf()
+        categoryMap.getValue(type).units.forEachIndexed { i, u ->
             val unitName = u.unitName.name
             val settingName = "unit${unitName}Position"
             val p = preferences.getInt(settingName, i)
@@ -101,7 +99,7 @@ class ImperialSettings(application: Application) : AndroidViewModel(application)
             units[p] = u
         }
         if (units.distinct().size != units.size) {
-            unitObjects.getValue(type).units.toTypedArray().copyInto(units)
+            categoryMap.getValue(type).units.toTypedArray().copyInto(units)
         }
         preferencesEditor.apply()
         return units

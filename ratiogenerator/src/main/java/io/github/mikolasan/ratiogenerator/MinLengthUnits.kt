@@ -1,6 +1,6 @@
 package io.github.mikolasan.ratiogenerator
 
-object MinLengthUnits : ImperialUnits(
+object MinLengthUnits : ImperialUnitCategory(
     type = ImperialUnitType.LENGTH,
     ratioList = listOf(
         eq(x(1.0, ImperialUnitName.ARSHIN), x(28.0, ImperialUnitName.INCH)),

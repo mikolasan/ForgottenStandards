@@ -6,9 +6,9 @@ typealias f<A, B, C> = Triple<A, B, C>
 typealias RatioList = List<eq<x<Double, ImperialUnitName>, x<Double, ImperialUnitName>>>
 typealias FormulaList = List<f<ImperialUnitName, String, ImperialUnitName>>
 
-abstract class ImperialUnits(val type: ImperialUnitType,
-                             val ratioList: RatioList,
-                             val formulaList: FormulaList) {
+abstract class ImperialUnitCategory(val type: ImperialUnitType,
+                                    val ratioList: RatioList,
+                                    val formulaList: FormulaList) {
 
     val units: Set<ImperialUnit> = getAllUnits(ratioList, formulaList)
     val nameMap: Map<ImperialUnitName, ImperialUnit> = makeNameMapFromUnits(units)
@@ -46,7 +46,7 @@ abstract class ImperialUnits(val type: ImperialUnitType,
             } else {
                 throw Exception("No data to create a list of units")
             }
-        return unitNames.map { name -> ImperialUnit(type, name) }.toSet()
+        return unitNames.map { name -> ImperialUnit(this, type, name) }.toSet()
     }
 
     private fun makeNameMapFromUnits(units: Set<ImperialUnit>): Map<ImperialUnitName, ImperialUnit> =

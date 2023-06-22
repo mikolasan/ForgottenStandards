@@ -1,6 +1,6 @@
 package io.github.mikolasan.ratiogenerator
 
-object MinStorageUnits : ImperialUnits(
+object MinStorageUnits : ImperialUnitCategory(
     type = ImperialUnitType.STORAGE,
     ratioList = listOf(
         eq(x(1.0, ImperialUnitName.BYTE), x(8.0, ImperialUnitName.BIT)),

@@ -1,6 +1,6 @@
 package io.github.mikolasan.ratiogenerator
 
-object MinAreaUnits : ImperialUnits(
+object MinAreaUnits : ImperialUnitCategory(
     type = ImperialUnitType.AREA,
     ratioList = listOf(
         eq(x(1.0, ImperialUnitName.DESYATINA), x(1.09254, ImperialUnitName.HECTARE)),

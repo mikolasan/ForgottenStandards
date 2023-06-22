@@ -1,6 +1,6 @@
 package io.github.mikolasan.ratiogenerator
 
-object MinAngleUnits : ImperialUnits(
+object MinAngleUnits : ImperialUnitCategory(
     type = ImperialUnitType.ANGLE,
     ratioList = listOf(
         eq(x(1.0, ImperialUnitName.TURN), x(2.0 * 3.14, ImperialUnitName.RADIAN)),

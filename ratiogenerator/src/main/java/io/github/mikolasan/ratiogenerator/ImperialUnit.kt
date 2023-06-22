@@ -1,11 +1,11 @@
 package io.github.mikolasan.ratiogenerator
 
-class ImperialUnit(val type: ImperialUnitType,
+class ImperialUnit(val category: ImperialUnitCategory,
+                   val unitType: ImperialUnitType,
                    val unitName: ImperialUnitName
 //                   var ratioMap: Map<ImperialUnitName, Double>,
 //                   var formulaMap: Map<ImperialUnitName, Array<String>>? = null
 ) {
-//    val type: ImperialUnitType = ImperialUnitType.LENGTH
     var value: Double = 0.0
     var inputString: String = ""
     var formattedString: String = ""

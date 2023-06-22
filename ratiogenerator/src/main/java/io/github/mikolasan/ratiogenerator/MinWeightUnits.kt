@@ -1,6 +1,6 @@
 package io.github.mikolasan.ratiogenerator
 
-object MinWeightUnits : ImperialUnits(
+object MinWeightUnits : ImperialUnitCategory(
     type = ImperialUnitType.WEIGHT,
     ratioList = listOf(
         eq(x(1.0, ImperialUnitName.GRAN), x(1.4, ImperialUnitName.DOLYA)),

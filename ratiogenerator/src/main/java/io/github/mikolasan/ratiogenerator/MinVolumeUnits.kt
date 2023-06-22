@@ -1,6 +1,6 @@
 package io.github.mikolasan.ratiogenerator
 
-object MinVolumeUnits : ImperialUnits(
+object MinVolumeUnits : ImperialUnitCategory(
     type = ImperialUnitType.VOLUME,
     ratioList = listOf(
         eq(x(1.0, ImperialUnitName.GARNETS), x(4.0, ImperialUnitName.VEDRO)),
