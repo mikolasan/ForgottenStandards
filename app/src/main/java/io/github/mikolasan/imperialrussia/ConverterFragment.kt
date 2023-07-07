@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import io.github.mikolasan.ratiogenerator.ImperialUnit
 
@@ -42,7 +41,7 @@ class ConverterFragment : Fragment() {
         bottomInput.addTextChangedListener(object : ImperialTextWatcher(bottomPanel, this, activity as MainActivity) {})
     }
 
-    private fun setButtonListeners(view: View) {
+    private fun setKeyboardButtonListeners(view: View) {
         val fragment = this
         view.run {
             findViewById<DigitButton>(R.id.digit_1).setOnClickPanel(fragment)
@@ -64,6 +63,9 @@ class ConverterFragment : Fragment() {
             findViewById<OperationButton>(R.id.op_minus).setOnClickPanel(fragment)
             findViewById<OperationButton>(R.id.op_dot).setOnClickPanel(fragment)
             findViewById<OperationButton>(R.id.op_eval).setOnClickPanel(fragment)
+            findViewById<OperationButton>(R.id.hide_keyboard).setOnClickListener { button ->
+
+            }
         }
     }
 
@@ -131,7 +133,7 @@ class ConverterFragment : Fragment() {
         ratioLabel = view.findViewById<TextView>(R.id.ratio_label)
         selectedPanel = topPanel // init before use
         setPanelListeners(view)
-        setButtonListeners(view)
+//        setKeyboardButtonListeners(view)
         return view
     }
 

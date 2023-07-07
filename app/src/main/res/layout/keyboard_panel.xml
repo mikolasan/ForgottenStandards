@@ -300,4 +300,22 @@
         app:layout_constraintBottom_toBottomOf="@+id/digit_3"
         app:layout_constraintStart_toEndOf="@+id/digit_3" />
 
+    <io.github.mikolasan.imperialrussia.OperationButton
+        android:id="@+id/hide_keyboard"
+        style="@android:style/Widget.Button"
+        android:layout_width="@dimen/op_key_side"
+        android:layout_height="@dimen/op_key_side"
+        android:layout_marginStart="@dimen/keypad_margin"
+        android:layout_marginTop="@dimen/keypad_margin"
+        android:background="@drawable/ic_keyboard_special_back"
+        android:elevation="@dimen/key_elevation"
+        android:gravity="center_horizontal|center_vertical"
+        android:text="@string/key_hide"
+        android:textAppearance="@style/ImperialKeypad"
+        android:textColor="@color/keyboardSpecial"
+        android:textSize="@dimen/op_back_font_size"
+
+        app:layout_constraintStart_toEndOf="@+id/op_eval"
+        app:layout_constraintTop_toBottomOf="@+id/op_plus" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

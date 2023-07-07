@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/motion_layout"
@@ -60,24 +61,8 @@
         tools:layout="@layout/fragment_unit_list" />
 
     <androidx.fragment.app.FragmentContainerView
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/fragment_container_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
-    <!--<androidx.appcompat.widget.AppCompatButton-->
-    <!--android:id="@+id/language"-->
-    <!--style="@android:style/Widget.Button"-->
-    <!--android:layout_width="@dimen/op_key_side"-->
-    <!--android:layout_height="@dimen/op_key_side"-->
-    <!--android:layout_marginStart="4dp"-->
-    <!--android:layout_marginTop="8dp"-->
-    <!--android:background="@drawable/ic_keyboard_special_back"-->
-    <!--android:text="@string/lang_ru"-->
-    <!--android:textAppearance="@style/ImperialKeypad"-->
-    <!--android:textColor="@color/keyboardSpecial"-->
-    <!--android:textSize="28sp"-->
-    <!--app:layout_constraintStart_toStartOf="parent"-->
-    <!--app:layout_constraintTop_toTopOf="parent" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

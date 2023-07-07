@@ -28,7 +28,6 @@ class MainActivity : FragmentActivity() {
 
     private lateinit var settings: ImperialSettings
     lateinit var workingUnits: WorkingUnits
-    lateinit var pagerAdapter: ImperialPagerAdapter
     lateinit var markwon: Markwon
     private val descriptions by lazy {
         ImperialUnitName.values().map {
@@ -54,12 +53,6 @@ class MainActivity : FragmentActivity() {
         }
 
         setContentView(R.layout.activity_main)
-        try {
-            val viewPager = findViewById<ViewPager2>(R.id.pager)
-            viewPager.adapter = pagerAdapter
-        } catch (e: Exception) {
-            // layout without view pager
-        }
 
         try {
             val label = findViewById<TextView>(R.id.description_text)
@@ -121,7 +114,6 @@ class MainActivity : FragmentActivity() {
     private fun restoreMainUnits() {
         workingUnits = settings.restoreWorkingUnits()
 
-        pagerAdapter = ImperialPagerAdapter(this)
         val topString = settings.restoreTopString()
         workingUnits.selectedUnit.restoreValue(topString, BasicCalculator(topString).eval())
         val bottomString = settings.restoreBottomString()
@@ -141,9 +133,6 @@ class MainActivity : FragmentActivity() {
 
     fun onPanelsSwapped() {
         unitListFragment?.onPanelsSwapped()
-        pagerAdapter.notifyItemChanged(UNIT_LIST_PAGE_ID)
-        //pagerAdapter.notifyDataSetChanged()
-
         try {
             val label = findViewById<TextView>(R.id.description_text)
             val unit = workingUnits.selectedUnit

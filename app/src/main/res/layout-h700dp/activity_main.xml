@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/motion_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
@@ -18,35 +19,51 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/pager"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+    <fragment
+        android:id="@+id/description"
+        android:name="io.github.mikolasan.imperialrussia.DescriptionFragment"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/list"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_max="@dimen/max_description_height"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_default="percent"
+        app:layout_constraintWidth_percent="1.0"
+        tools:layout="@layout/fragment_description" />
+
+    <fragment
+        android:id="@+id/converter"
+        android:name="io.github.mikolasan.imperialrussia.ConverterFragment"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/list"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_default="percent"
+        app:layout_constraintWidth_percent="1.0"
+        tools:layout="@layout/fragment_converter" />
+
+    <fragment
+        android:id="@+id/list"
+        android:name="io.github.mikolasan.imperialrussia.UnitListFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/converter"
+        app:layout_constraintWidth_default="percent"
+        app:layout_constraintWidth_percent="1.0"
+        tools:layout="@layout/fragment_unit_list" />
 
     <androidx.fragment.app.FragmentContainerView
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/fragment_container_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <!--<androidx.appcompat.widget.AppCompatButton-->
-    <!--android:id="@+id/language"-->
-    <!--style="@android:style/Widget.Button"-->
-    <!--android:layout_width="@dimen/op_key_side"-->
-    <!--android:layout_height="@dimen/op_key_side"-->
-    <!--android:layout_marginStart="4dp"-->
-    <!--android:layout_marginTop="8dp"-->
-    <!--android:background="@drawable/ic_keyboard_special_back"-->
-    <!--android:text="@string/lang_ru"-->
-    <!--android:textAppearance="@style/ImperialKeypad"-->
-    <!--android:textColor="@color/keyboardSpecial"-->
-    <!--android:textSize="28sp"-->
-    <!--app:layout_constraintStart_toStartOf="parent"-->
-    <!--app:layout_constraintTop_toTopOf="parent" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -20,6 +20,7 @@ android {
         versionName "1.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         resConfigs 'en', 'ru'
+        multiDexEnabled true
     }
     buildFeatures {
         viewBinding true
