@@ -161,7 +161,6 @@
         android:layout_width="@dimen/digit_key_side"
         android:layout_height="@dimen/digit_key_side"
         android:layout_marginTop="@dimen/keypad_margin"
-        android:layout_marginBottom="16dp"
         android:background="@drawable/ic_keyboard_digit_back"
         android:elevation="@dimen/key_elevation"
         android:gravity="center"
@@ -169,7 +168,6 @@
         android:textAppearance="@style/ImperialKeypad"
         android:textColor="@color/keyboardDigit"
         android:textSize="@dimen/digit_font_size"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/digit_2"
         app:layout_constraintTop_toBottomOf="@+id/digit_2" />
 

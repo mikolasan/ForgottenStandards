@@ -41,33 +41,7 @@ class ConverterFragment : Fragment() {
         bottomInput.addTextChangedListener(object : ImperialTextWatcher(bottomPanel, this, activity as MainActivity) {})
     }
 
-    private fun setKeyboardButtonListeners(view: View) {
-        val fragment = this
-        view.run {
-            findViewById<DigitButton>(R.id.digit_1).setOnClickPanel(fragment)
-            findViewById<DigitButton>(R.id.digit_2).setOnClickPanel(fragment)
-            findViewById<DigitButton>(R.id.digit_3).setOnClickPanel(fragment)
-            findViewById<DigitButton>(R.id.digit_4).setOnClickPanel(fragment)
-            findViewById<DigitButton>(R.id.digit_5).setOnClickPanel(fragment)
-            findViewById<DigitButton>(R.id.digit_6).setOnClickPanel(fragment)
-            findViewById<DigitButton>(R.id.digit_7).setOnClickPanel(fragment)
-            findViewById<DigitButton>(R.id.digit_8).setOnClickPanel(fragment)
-            findViewById<DigitButton>(R.id.digit_9).setOnClickPanel(fragment)
-            findViewById<DigitButton>(R.id.digit_0).setOnClickPanel(fragment)
 
-            findViewById<OperationButton>(R.id.op_back).setOnClickPanel(fragment)
-            findViewById<OperationButton>(R.id.op_clear).setOnClickPanel(fragment)
-            findViewById<OperationButton>(R.id.op_mult).setOnClickPanel(fragment)
-            findViewById<OperationButton>(R.id.op_div).setOnClickPanel(fragment)
-            findViewById<OperationButton>(R.id.op_plus).setOnClickPanel(fragment)
-            findViewById<OperationButton>(R.id.op_minus).setOnClickPanel(fragment)
-            findViewById<OperationButton>(R.id.op_dot).setOnClickPanel(fragment)
-            findViewById<OperationButton>(R.id.op_eval).setOnClickPanel(fragment)
-            findViewById<OperationButton>(R.id.hide_keyboard).setOnClickListener { button ->
-
-            }
-        }
-    }
 
     private fun updateRatioLabel() {
         val fromUnit = selectedPanel.unit

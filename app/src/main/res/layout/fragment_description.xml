@@ -8,7 +8,7 @@
     <TextView
         android:id="@+id/description_text"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
@@ -19,6 +19,8 @@
         android:paddingEnd="20dp"
         android:paddingBottom="20dp"
         android:text="@string/description_blank"
+        android:maxLines="5"
+        android:ellipsize="end"
         android:textAppearance="@style/ImperialTales"
         android:textColor="@color/colorPrimary" />
 
