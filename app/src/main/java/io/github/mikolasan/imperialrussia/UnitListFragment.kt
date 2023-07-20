@@ -95,11 +95,6 @@ class UnitListFragment : Fragment() {
     }
 
     fun onPanelsSwapped() {
-        (activity as? MainActivity)?.let { mainActivity ->
-            val temp = mainActivity.workingUnits.selectedUnit
-            mainActivity.workingUnits.selectedUnit = mainActivity.workingUnits.secondUnit
-            mainActivity.workingUnits.secondUnit = temp
-        }
         listAdapter.notifyDataSetChanged()
     }
 
@@ -121,10 +116,6 @@ class UnitListFragment : Fragment() {
 //        listAdapter.setSecondUnit(secondUnit)
         listAdapter.notifyDataSetChanged()
 
-    }
-
-    fun swapPanels() {
-//        listAdapter.swapSelection()
     }
 
     fun setTitle(text: String) {

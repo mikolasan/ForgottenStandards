@@ -123,16 +123,29 @@ class MainActivity : FragmentActivity() {
         workingUnits.bottomUnit.restoreValue(bottomString, BasicCalculator(bottomString).eval())
     }
 
-    private fun swapPanels() {
-        val savedUnit = workingUnits.topUnit
+    fun swapWorkingUnits() {
+        val temp = workingUnits.selectedUnit
+        workingUnits.selectedUnit = workingUnits.secondUnit
+        workingUnits.secondUnit = temp
+
+        val temp2 = workingUnits.topUnit
         workingUnits.topUnit = workingUnits.bottomUnit
-        workingUnits.bottomUnit = savedUnit
+        workingUnits.bottomUnit = temp2
+    }
+
+    private fun swapPanels() {
+        swapWorkingUnits()
         converterFragment?.swapPanels()
-        unitListFragment?.swapPanels()
+    }
+
+    fun onPanelSelected(panel: ImperialUnitPanel) {
+
     }
 
     fun onPanelsSwapped() {
+        swapWorkingUnits()
         unitListFragment?.onPanelsSwapped()
+        // update description
         try {
             val label = findViewById<TextView>(R.id.description_text)
             val unit = workingUnits.selectedUnit
