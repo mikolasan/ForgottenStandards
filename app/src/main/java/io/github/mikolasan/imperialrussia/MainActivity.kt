@@ -2,10 +2,14 @@ package io.github.mikolasan.imperialrussia
 
 import android.os.Bundle
 import android.text.Editable
+import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentContainer
+import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager2.widget.ViewPager2
@@ -25,6 +29,7 @@ class MainActivity : FragmentActivity() {
     private var converterFragment: ConverterFragment? = null
     private var unitListFragment: UnitListFragment? = null
     private var switchFragment: SwitchFragment = SwitchFragment()
+    private var keyboardFragment: KeyboardFragment? = null
 
     private lateinit var settings: ImperialSettings
     lateinit var workingUnits: WorkingUnits
@@ -220,6 +225,7 @@ class MainActivity : FragmentActivity() {
             is ConverterFragment -> converterFragment = fragment
             is UnitListFragment -> unitListFragment = fragment
             is SwitchFragment -> switchFragment = fragment
+            is KeyboardFragment -> keyboardFragment = fragment
         }
     }
 
@@ -257,6 +263,22 @@ class MainActivity : FragmentActivity() {
         }
 
         hideTypeSwitcher()
+    }
+
+    fun showUnitList() {
+        converterFragment?.let { f ->
+            f.view?.visibility = if (f.isVisible) View.GONE else View.VISIBLE
+        }
+    }
+
+    fun showKeyboard() {
+        keyboardFragment?.view?.visibility = View.VISIBLE
+        findViewById<FragmentContainerView>(R.id.keyboard_button).visibility = View.GONE
+    }
+
+    fun showKeyboardButton() {
+        keyboardFragment?.view?.visibility = View.GONE
+        findViewById<FragmentContainerView>(R.id.keyboard_button).visibility = View.VISIBLE
     }
 }
 
