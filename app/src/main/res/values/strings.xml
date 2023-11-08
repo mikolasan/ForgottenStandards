@@ -46,4 +46,5 @@
     <string name="description_blank" translatable="false">Though for many physical quantities, SI prefixes for factors of 10^3—like milli- and kilo-—are often preferred by technicians, the centimetre remains a practical unit of length for many everyday measurements. A centimetre is approximately the width of the fingernail of an average adult person.
 
 In addition to its use in the measurement of length, the centimetre is used: sometimes, to report the level of rainfall as measured by a rain gauge; in maps, centimetres are used to make conversions from map scale to real world scale (kilometres).</string>
+    <string name="search_unit_hint">Search for measurement unit</string>
 </resources>

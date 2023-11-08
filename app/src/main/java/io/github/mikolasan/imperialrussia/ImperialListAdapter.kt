@@ -3,13 +3,15 @@ package io.github.mikolasan.imperialrussia
 import android.content.Context
 import android.view.*
 import android.widget.BaseAdapter
+import android.widget.Filter
+import android.widget.Filterable
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import io.github.mikolasan.ratiogenerator.ImperialUnit
 import java.util.*
 
-class ImperialListAdapter(private val workingUnits: WorkingUnits) : BaseAdapter() {
+class ImperialListAdapter(private val workingUnits: WorkingUnits) : BaseAdapter(), Filterable {
     var units: Array<ImperialUnit> = workingUnits.orderedUnits
     private var arrowClickListener: (Int, View, ImperialUnit) -> Unit = { position, _, _ ->
         println("arrowClickListener $position")
@@ -154,6 +156,37 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits) : BaseAdapter(
             }
             dataPosition != 0
         }
+    }
+
+    override fun getFilter(): Filter {
+        return customFilter
+    }
+
+    private val customFilter = object : Filter() {
+        override fun performFiltering(constraint: CharSequence?): FilterResults {
+            val filteredUnits = mutableListOf<ImperialUnit>()
+            if (constraint.isNullOrEmpty()) {
+                filteredUnits.addAll(units)
+            } else {
+                for (item in units) {
+                    if (item.unitName.name
+                            .toLowerCase()
+                            .startsWith(constraint.toString().toLowerCase())) {
+                        filteredUnits.add(item)
+                    }
+                }
+            }
+            val results = FilterResults()
+            results.values = filteredUnits
+            return results
+        }
+
+        override fun publishResults(constraint: CharSequence?, filterResults: FilterResults?) {
+            notifyDataSetChanged()
+            // TODO: use submitList from AsyncListDiffer (used in ListAdapter)
+            //submitList(filterResults?.values as MutableList<String>)
+        }
+
     }
 
 

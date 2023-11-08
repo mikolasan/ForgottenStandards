@@ -30,6 +30,7 @@ class MainActivity : FragmentActivity() {
     private var unitListFragment: UnitListFragment? = null
     private var switchFragment: SwitchFragment = SwitchFragment()
     private var keyboardFragment: KeyboardFragment? = null
+    private var searchFragment: SearchFragment? = null
 
     private lateinit var settings: ImperialSettings
     lateinit var workingUnits: WorkingUnits
@@ -226,6 +227,7 @@ class MainActivity : FragmentActivity() {
             is UnitListFragment -> unitListFragment = fragment
             is SwitchFragment -> switchFragment = fragment
             is KeyboardFragment -> keyboardFragment = fragment
+            is SearchFragment -> searchFragment = fragment
         }
     }
 
@@ -279,6 +281,10 @@ class MainActivity : FragmentActivity() {
     fun showKeyboardButton() {
         keyboardFragment?.view?.visibility = View.GONE
         findViewById<FragmentContainerView>(R.id.keyboard_button).visibility = View.VISIBLE
+    }
+
+    fun showSearch() {
+        
     }
 }
 

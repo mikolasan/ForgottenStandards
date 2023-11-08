@@ -33,7 +33,7 @@ class UnitListFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_unit_list, container, false)
+        val view = inflater.inflate(R.layout.fragment_list, container, false)
         unitsList = view.findViewById(R.id.units_list)
         title = view.findViewById(R.id.unit_type_label)
         setListeners(view)

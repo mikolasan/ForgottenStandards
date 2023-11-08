@@ -5,25 +5,24 @@
     android:layout_height="wrap_content"
     android:paddingLeft="8dp"
     android:paddingRight="8dp"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:gravity="center">
 
-    <ImageView
-        android:id="@+id/show_categories_button"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:src="@drawable/ic_grid" />
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/search_text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:text="@string/search_unit_hint"
+        android:textAlignment="center"
+        android:textAppearance="@style/ImperialPanel"
+        android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/imperial_panel_text_size" />
 
     <ImageView
         android:id="@+id/open_search_button"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:src="@drawable/ic_search" />
-
-    <ImageView
-        android:id="@+id/expand_list_button"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:src="@drawable/ic_list" />
 
 </LinearLayout>

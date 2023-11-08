@@ -44,7 +44,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_default="percent"
         app:layout_constraintWidth_percent="0.4"
-        tools:layout="@layout/fragment_unit_list" />
+        tools:layout="@layout/fragment_list" />
 
     <fragment
         android:id="@+id/description"

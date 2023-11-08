@@ -30,6 +30,16 @@
         tools:layout="@layout/fragment_converter" />
 
     <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/search"
+        android:name="io.github.mikolasan.imperialrussia.SearchFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout="@layout/fragment_search" />
+
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/converter"
         android:name="io.github.mikolasan.imperialrussia.ConverterFragment"
         android:layout_width="0dp"
@@ -49,7 +59,7 @@
         app:layout_constraintEnd_toStartOf="@id/actions"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/converter"
-        tools:layout="@layout/fragment_unit_list" />
+        tools:layout="@layout/fragment_list" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/keyboard"
