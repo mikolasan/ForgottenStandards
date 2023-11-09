@@ -41,8 +41,6 @@ class ConverterFragment : Fragment() {
         bottomInput.addTextChangedListener(object : ImperialTextWatcher(bottomPanel, this, activity as MainActivity) {})
     }
 
-
-
     private fun updateRatioLabel() {
         val fromUnit = selectedPanel.unit
         val toUnit = if (fromUnit == topPanel.unit) bottomPanel.unit else topPanel.unit
@@ -107,6 +105,13 @@ class ConverterFragment : Fragment() {
         ratioLabel = view.findViewById<TextView>(R.id.ratio_label)
         selectedPanel = topPanel // init before use
         setPanelListeners(view)
+
+//        arguments?.let {
+//            val categoryName = it.getString("category")
+//            val topUnitName = it.getString("topUnit")
+//            val bottomUnitName = it.getString("bottomUnit")
+//            val topUnit =
+//        }
 //        setKeyboardButtonListeners(view)
         return view
     }

@@ -9,6 +9,7 @@ import android.widget.ListView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.navArgs
 import io.github.mikolasan.ratiogenerator.ImperialUnit
 
 class UnitListFragment : Fragment() {
@@ -32,10 +33,13 @@ class UnitListFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_list, container, false)
         unitsList = view.findViewById(R.id.units_list)
         title = view.findViewById(R.id.unit_type_label)
+        title.text = arguments?.getString("categoryTitle")
+
         setListeners(view)
         return view
     }
@@ -74,10 +78,6 @@ class UnitListFragment : Fragment() {
         super.onHiddenChanged(hidden)
         listAdapter.notifyDataSetChanged()
 
-    }
-
-    override fun onStart() {
-        super.onStart()
     }
 
     fun restoreSelectedUnit(unit: ImperialUnit) {

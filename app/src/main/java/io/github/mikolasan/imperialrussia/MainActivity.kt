@@ -6,12 +6,14 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentContainer
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import io.github.mikolasan.ratiogenerator.ImperialUnit
 import io.github.mikolasan.ratiogenerator.ImperialUnitName
@@ -176,15 +178,24 @@ class MainActivity : FragmentActivity() {
     }
 
     fun onUnitSelected(unit: ImperialUnit) {
-        converterFragment?.let {
-            it.onUnitSelected(workingUnits.selectedUnit, unit)
-        }
-        try {
-            val label = findViewById<TextView>(R.id.description_text)
-            markwon.setMarkdown(label, descriptions[unit.unitName.ordinal])
-        } catch (e: Exception) {
-            // layout without view pager
-        }
+        val nav = findNavController(R.id.nav_host_fragment)
+        val bundle = bundleOf(
+            "category" to unit.category.type.name,
+            "topUnit" to workingUnits.topUnit.unitName.name,
+            "bottomUnit" to workingUnits.bottomUnit.unitName.name
+        )
+        nav.navigate(R.id.action_select_unit, bundle)
+
+//        converterFragment?.let {
+//            it.onUnitSelected(workingUnits.selectedUnit, unit)
+//        }
+
+//        try {
+//            val label = findViewById<TextView>(R.id.description_text)
+//            markwon.setMarkdown(label, descriptions[unit.unitName.ordinal])
+//        } catch (e: Exception) {
+//            // layout without view pager
+//        }
     }
 
     fun onArrowClicked(unit: ImperialUnit) {
@@ -246,6 +257,17 @@ class MainActivity : FragmentActivity() {
     }
 
     fun onCategorySelected(category: ImperialUnitCategoryName) {
+        val nav = findNavController(R.id.nav_host_fragment)
+        val bundle = bundleOf(
+            "categoryTitle" to category.name
+
+        )
+        nav.navigate(R.id.action_select_category, bundle)
+//        nav.navigate(R.id.action_select_category)
+//        val categoryTitle = category.name
+//        val action = SwitchFragmentDirections.actionSelectCategory(categoryTitle)
+//        nav.navigate(action)
+
         workingUnits.listAdapter.resetAllValues()
         workingUnits.orderedUnits = workingUnits.allUnits.getValue(ImperialUnitType.valueOf(category.name.toUpperCase()))
         workingUnits.listAdapter.units = workingUnits.orderedUnits
@@ -261,10 +283,11 @@ class MainActivity : FragmentActivity() {
         unitListFragment?.run {
             restoreSelectedUnit(workingUnits.selectedUnit)
             restoreSecondUnit(workingUnits.secondUnit)
-            setTitle(category.name)
+//            setTitle(category.name)
         }
 
-        hideTypeSwitcher()
+//        hideTypeSwitcher()
+
     }
 
     fun showUnitList() {

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/switchFragment">
+
+    <fragment
+        android:id="@+id/switchFragment"
+        android:name="io.github.mikolasan.imperialrussia.SwitchFragment"
+        android:label="fragment_switch"
+        tools:layout="@layout/fragment_switch" >
+        <action
+            android:id="@+id/action_select_category"
+            app:destination="@id/unitListFragment">
+            <argument
+                android:name="categoryTitle"
+                app:argType="string"
+                android:defaultValue="Time" />
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/unitListFragment"
+        android:name="io.github.mikolasan.imperialrussia.UnitListFragment"
+        android:label="UnitListFragment" >
+        <action
+            android:id="@+id/action_select_unit"
+            app:destination="@id/converterFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/converterFragment"
+        android:name="io.github.mikolasan.imperialrussia.ConverterFragment"
+        android:label="ConverterFragment" />
+</navigation>
