@@ -310,11 +310,11 @@ class MainActivity : FragmentActivity() {
 //            params.bottomToBottom = parent.id
         }
 //            .visibility = View.VISIBLE
-        findViewById<FragmentContainerView>(R.id.keyboard_button)?.visibility = View.GONE
+        findViewById<FragmentContainerView>(R.id.keyboard_button)?.visibility = View.INVISIBLE
     }
 
     fun showKeyboardButton() {
-        keyboardFragment?.view?.visibility = View.GONE
+        keyboardFragment?.view?.visibility = View.INVISIBLE
         findViewById<FragmentContainerView>(R.id.keyboard_button)?.visibility = View.VISIBLE
     }
 

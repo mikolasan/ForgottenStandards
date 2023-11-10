@@ -20,76 +20,16 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/actions"
-        android:name="io.github.mikolasan.imperialrussia.ActionsFragment"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout="@layout/fragment_converter" />
-
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/search"
-        android:name="io.github.mikolasan.imperialrussia.SearchFragment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout="@layout/fragment_search" />
-
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/converter"
-        android:name="io.github.mikolasan.imperialrussia.ConverterFragment"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/list"
-        app:layout_constraintEnd_toStartOf="@id/actions"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout="@layout/fragment_converter" />
-
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/list"
-        android:name="io.github.mikolasan.imperialrussia.UnitListFragment"
+        android:id="@+id/nav_host_fragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/keyboard"
-        app:layout_constraintEnd_toStartOf="@id/actions"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/converter"
-        tools:layout="@layout/fragment_list" />
-
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/keyboard"
-        android:name="io.github.mikolasan.imperialrussia.KeyboardFragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:elevation="2dp"
-        app:layout_constraintBottom_toBottomOf="@+id/wallpaper"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout="@layout/keyboard_panel"
-        tools:targetApi="lollipop" />
-
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragment_container_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="0dp" />
-
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/keyboard_button"
-        android:name="io.github.mikolasan.imperialrussia.KeyboardButtonFragment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:elevation="2dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:layout="@layout/keyboard_button_fragment"
-        tools:targetApi="lollipop" />
+
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/nav_graph" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,7 +10,6 @@ plugins {
 //apply plugin: 'kotlin-android'
 
 
-version = '1.0'
 description = 'imperialrussia-android'
 
 android {
