@@ -3,9 +3,11 @@ package io.github.mikolasan.imperialrussia
 import android.os.Bundle
 import android.text.Editable
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -174,6 +176,10 @@ class MainActivity : FragmentActivity() {
     }
 
     fun onUnitSelected(unit: ImperialUnit) {
+        converterFragment?.let {
+            it.onUnitSelected(workingUnits.topUnit, unit)
+        }
+
         val nav = findNavController(R.id.nav_host_fragment)
         val bundle = bundleOf(
             "category" to unit.category.type.name,
@@ -181,10 +187,6 @@ class MainActivity : FragmentActivity() {
             "bottomUnit" to workingUnits.bottomUnit.unitName.name
         )
         nav.navigate(R.id.action_select_unit, bundle)
-
-//        converterFragment?.let {
-//            it.onUnitSelected(workingUnits.topUnit, unit)
-//        }
 
 //        try {
 //            val label = findViewById<TextView>(R.id.description_text)
@@ -299,7 +301,15 @@ class MainActivity : FragmentActivity() {
     }
 
     fun showKeyboard() {
-        keyboardFragment?.view?.visibility = View.VISIBLE
+        keyboardFragment?.view?.let {
+            it.bringToFront()
+            it.visibility = View.VISIBLE
+//            val parent = findViewById<ConstraintLayout>(R.id.converting_area)
+//            val params = it.layoutParams as FrameLayout.LayoutParams
+//            params.endToEnd = parent.id
+//            params.bottomToBottom = parent.id
+        }
+//            .visibility = View.VISIBLE
         findViewById<FragmentContainerView>(R.id.keyboard_button)?.visibility = View.GONE
     }
 

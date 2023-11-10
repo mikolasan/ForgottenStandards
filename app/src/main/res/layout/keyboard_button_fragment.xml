@@ -3,15 +3,20 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:paddingLeft="8dp"
-    android:paddingRight="8dp"
+    android:background="@drawable/ic_input_panel_back"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:paddingLeft="12dp"
+    android:paddingRight="12dp"
+    android:layout_marginEnd="12dp"
+    android:layout_marginBottom="12dp"
     android:orientation="vertical"
     android:gravity="center">
 
     <ImageView
         android:id="@+id/show_keyboard_button"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:src="@drawable/ic_keyboard" />
 
 </LinearLayout>

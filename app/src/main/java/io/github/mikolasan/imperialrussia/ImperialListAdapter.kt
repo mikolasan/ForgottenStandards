@@ -118,7 +118,7 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits) : BaseAdapter(
                 name.setTextColorId(nameColors.getValue(ViewState.NORMAL))
                 value.setTextColorId(valueColors.getValue(ViewState.NORMAL))
                 symbol.setTextColorId(valueColors.getValue(ViewState.NORMAL))
-                arrowUp.visibility = View.INVISIBLE
+                arrowUp.visibility = View.VISIBLE
             }
         }
     }

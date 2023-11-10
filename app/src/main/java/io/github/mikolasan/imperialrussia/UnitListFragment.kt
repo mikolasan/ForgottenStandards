@@ -19,20 +19,6 @@ class UnitListFragment : Fragment() {
     private var switchFragment: SwitchFragment? = null
     private lateinit var title: TextView
 
-    private fun setListeners(view: View) {
-        unitsList.setOnItemClickListener { _, _, position, _ ->
-            val unit = listAdapter.getItem(position) as ImperialUnit
-            (activity as MainActivity).onUnitSelected(unit)
-        }
-
-        view.run {
-            val typeSwitcher: ConstraintLayout = view.findViewById(R.id.unit_type)
-            typeSwitcher.setOnClickListener { v ->
-                (activity as MainActivity).showTypeSwitcher()
-            }
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -124,5 +110,19 @@ class UnitListFragment : Fragment() {
 
     fun setTitle(text: String) {
         title.text = text
+    }
+
+    private fun setListeners(view: View) {
+        unitsList.setOnItemClickListener { _, _, position, _ ->
+            val unit = listAdapter.getItem(position) as ImperialUnit
+            (activity as MainActivity).onUnitSelected(unit)
+        }
+
+        view.run {
+            val typeSwitcher: ConstraintLayout = view.findViewById(R.id.unit_type)
+            typeSwitcher.setOnClickListener { v ->
+                (activity as MainActivity).showTypeSwitcher()
+            }
+        }
     }
 }
