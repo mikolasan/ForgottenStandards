@@ -67,8 +67,6 @@ class ImperialSettings(application: Application) : AndroidViewModel(application)
         return WorkingUnits().apply {
             allUnits = units
             orderedUnits = currentUnits
-            selectedUnit = topPanelUnit
-            secondUnit = bottomPanelUnit
             topUnit = topPanelUnit
             bottomUnit = bottomPanelUnit
             listAdapter = ImperialListAdapter(this)

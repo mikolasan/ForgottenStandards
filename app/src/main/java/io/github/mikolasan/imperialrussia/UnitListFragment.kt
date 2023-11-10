@@ -33,23 +33,12 @@ class UnitListFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_list, container, false)
-        unitsList = view.findViewById(R.id.units_list)
-        title = view.findViewById(R.id.unit_type_label)
-        title.text = arguments?.getString("categoryTitle")
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
-        setListeners(view)
-        return view
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+        (activity as? MainActivity)?.setSubscriber(this)
 
         listAdapter = (activity as MainActivity).workingUnits.listAdapter
-        unitsList.adapter = listAdapter
         listAdapter.setOnArrowClickListener { _: Int, arrow: View, unit: ImperialUnit ->
             arrow.visibility = View.INVISIBLE // hide the arrow
             (activity as MainActivity).onArrowClicked(unit)
@@ -59,13 +48,28 @@ class UnitListFragment : Fragment() {
             (activity as MainActivity).onArrowLongClicked(unit)
             unitsList.setSelectionAfterHeaderView()
         }
+    }
 
-        (activity as? MainActivity)?.let { mainActivity ->
-            val workingUnits = mainActivity.workingUnits
-            restoreSelectedUnit(workingUnits.selectedUnit)
-            restoreSecondUnit(workingUnits.secondUnit)
-            updateAllValues(workingUnits.selectedUnit)
-            mainActivity.setSubscriber(this)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(R.layout.fragment_list, container, false)
+        unitsList = view.findViewById(R.id.units_list)
+        unitsList.adapter = listAdapter
+
+        title = view.findViewById(R.id.unit_type_label)
+        title.text = arguments?.getString("categoryTitle")
+
+        setListeners(view)
+        return view
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        (activity as? MainActivity)?.workingUnits?.let { workingUnits ->
+            restoreSelectedUnit(workingUnits.topUnit)
+            restoreSecondUnit(workingUnits.bottomUnit)
+            updateAllValues(workingUnits.topUnit)
         }
     }
 
@@ -82,14 +86,14 @@ class UnitListFragment : Fragment() {
 
     fun restoreSelectedUnit(unit: ImperialUnit) {
         (activity as? MainActivity)?.let { mainActivity ->
-            mainActivity.workingUnits.selectedUnit = unit
+            mainActivity.workingUnits.topUnit = unit
         }
         //listAdapter.setSelectedUnit(unit)
     }
 
     fun restoreSecondUnit(unit: ImperialUnit) {
         (activity as? MainActivity)?.let { mainActivity ->
-            mainActivity.workingUnits.secondUnit = unit
+            mainActivity.workingUnits.bottomUnit = unit
         }
         //listAdapter.setSelectedUnit(unit)
     }
@@ -109,8 +113,8 @@ class UnitListFragment : Fragment() {
     // TODO: remove '?'
     fun onUnitSelected(selectedUnit: ImperialUnit, secondUnit: ImperialUnit?) {
         (activity as? MainActivity)?.let { mainActivity ->
-            mainActivity.workingUnits.selectedUnit = selectedUnit
-            mainActivity.workingUnits.secondUnit = secondUnit!!
+            mainActivity.workingUnits.topUnit = selectedUnit
+            mainActivity.workingUnits.bottomUnit = secondUnit!!
         }
 //        listAdapter.setSelectedUnit(selectedUnit)
 //        listAdapter.setSecondUnit(secondUnit)

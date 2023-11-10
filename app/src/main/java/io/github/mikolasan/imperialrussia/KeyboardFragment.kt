@@ -9,6 +9,22 @@ import androidx.fragment.app.Fragment
 class KeyboardFragment : Fragment() {
     var selectedPanel: ImperialUnitPanel? = null
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        (activity as MainActivity).setSubscriber(this)
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(R.layout.keyboard_panel, container, false)
+        setButtonListeners(view)
+        return view
+    }
+
+    override fun onStart() {
+        super.onStart()
+        (activity as MainActivity).onKeyboardConnected(this)
+    }
+
     private fun setButtonListeners(view: View) {
         val fragment = this
         view.run {
@@ -35,12 +51,5 @@ class KeyboardFragment : Fragment() {
                 (activity as MainActivity).showKeyboardButton()
             }
         }
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.keyboard_panel, container, false)
-        (activity as MainActivity).setSubscriber(this)
-        setButtonListeners(view)
-        return view
     }
 }

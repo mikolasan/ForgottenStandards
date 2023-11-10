@@ -99,14 +99,14 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits) : BaseAdapter(
         val symbol: TextView = layout.findViewById(R.id.unit_symbol)
         val arrowUp: ImageView = layout.findViewById(R.id.arrow_up)
         when (getItem(dataPosition) as ImperialUnit) {
-            workingUnits.selectedUnit -> {
+            workingUnits.topUnit -> {
                 layout.setBackgroundResource(backgrounds.getValue(ViewState.SELECTED))
                 name.setTextColorId(nameColors.getValue(ViewState.SELECTED))
                 value.setTextColorId(valueColors.getValue(ViewState.SELECTED))
                 symbol.setTextColorId(valueColors.getValue(ViewState.SELECTED))
                 arrowUp.visibility = if (dataPosition == 0) View.INVISIBLE else View.VISIBLE
             }
-            workingUnits.secondUnit -> {
+            workingUnits.bottomUnit -> {
                 layout.setBackgroundResource(backgrounds.getValue(ViewState.SECOND))
                 name.setTextColorId(nameColors.getValue(ViewState.SECOND))
                 value.setTextColorId(valueColors.getValue(ViewState.SECOND))

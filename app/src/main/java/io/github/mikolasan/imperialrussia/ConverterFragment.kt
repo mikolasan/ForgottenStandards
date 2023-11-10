@@ -15,41 +15,39 @@ class ConverterFragment : Fragment() {
     lateinit var selectedPanel: ImperialUnitPanel
     private lateinit var ratioLabel: TextView
 
-    private fun setPanelListeners(view: View) {
-
-        val topPanelOnClickListener: (View) -> Unit = {
-            if (selectedPanel != topPanel) {
-                selectPanel(topPanel, bottomPanel)
-                (activity as MainActivity).onPanelsSwapped()
-            }
-        }
-        val bottomPanelOnClickListener: (View) -> Unit = {
-            if (selectedPanel != bottomPanel) {
-                selectPanel(bottomPanel, topPanel)
-                (activity as MainActivity).onPanelsSwapped()
-            }
-        }
-
-        topPanel.setOnClickListener(topPanelOnClickListener)
-        bottomPanel.setOnClickListener(bottomPanelOnClickListener)
-
-        val topInput = topPanel.input
-        val bottomInput = bottomPanel.input
-        topInput.setOnClickListener(topPanelOnClickListener)
-        bottomInput.setOnClickListener(bottomPanelOnClickListener)
-        topInput.addTextChangedListener(object : ImperialTextWatcher(topPanel, this, activity as MainActivity) {})
-        bottomInput.addTextChangedListener(object : ImperialTextWatcher(bottomPanel, this, activity as MainActivity) {})
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        (activity as? MainActivity)?.setSubscriber(this)
     }
 
-    private fun updateRatioLabel() {
-        val fromUnit = selectedPanel.unit
-        val toUnit = if (fromUnit == topPanel.unit) bottomPanel.unit else topPanel.unit
-        if (fromUnit == null || toUnit == null) {
-            ratioLabel.text = ""
-        } else {
-            val ratio = getConversionRatio(fromUnit, toUnit)
-            val format = "1 ${fromUnit.unitName.name} = [value] ${toUnit.unitName.name}"
-            ratioLabel.text = patternForDisplay(format, ratio)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(R.layout.fragment_converter, container, false)
+        bottomPanel = view.findViewById(R.id.convert_from)
+        topPanel = view.findViewById(R.id.convert_to)
+        topPanel.setHintText(view.context.resources.getString(R.string.select_unit_hint))
+        bottomPanel.setHintText(view.context.resources.getString(R.string.select_unit_2_hint))
+        ratioLabel = view.findViewById(R.id.ratio_label)
+        selectedPanel = topPanel // init before use
+        setPanelListeners(view)
+
+//        arguments?.let {
+//            val categoryName = it.getString("category")
+//            val topUnitName = it.getString("topUnit")
+//            val bottomUnitName = it.getString("bottomUnit")
+//            val topUnit =
+//        }
+//        setKeyboardButtonListeners(view)
+        return view
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        (activity as? MainActivity)?.workingUnits?.let { workingUnits ->
+            restoreTopPanel(workingUnits.topUnit)
+            restoreBottomPanel(workingUnits.bottomUnit)
+            selectPanel(topPanel, bottomPanel)
+            displayUnitValues()
         }
     }
 
@@ -94,39 +92,6 @@ class ConverterFragment : Fragment() {
         (activity as? MainActivity)?.onBottomPanelUnitChanged(unit)
 
         updateRatioLabel()
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_converter, container, false)
-        bottomPanel = view.findViewById<ImperialUnitPanel>(R.id.convert_from)
-        topPanel = view.findViewById<ImperialUnitPanel>(R.id.convert_to)
-        topPanel.setHintText(view.context.resources.getString(R.string.select_unit_hint))
-        bottomPanel.setHintText(view.context.resources.getString(R.string.select_unit_2_hint))
-        ratioLabel = view.findViewById<TextView>(R.id.ratio_label)
-        selectedPanel = topPanel // init before use
-        setPanelListeners(view)
-
-//        arguments?.let {
-//            val categoryName = it.getString("category")
-//            val topUnitName = it.getString("topUnit")
-//            val bottomUnitName = it.getString("bottomUnit")
-//            val topUnit =
-//        }
-//        setKeyboardButtonListeners(view)
-        return view
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        (activity as? MainActivity)?.setSubscriber(this)
-        (activity as? MainActivity)?.workingUnits?.let { workingUnits ->
-            restoreTopPanel(workingUnits.topUnit)
-            restoreBottomPanel(workingUnits.bottomUnit)
-            selectPanel(topPanel, bottomPanel)
-            displayUnitValues()
-        }
     }
 
     fun restoreTopPanel(unit: ImperialUnit) {
@@ -209,4 +174,43 @@ class ConverterFragment : Fragment() {
 
         updateRatioLabel()
     }
+
+    private fun setPanelListeners(view: View) {
+
+        val topPanelOnClickListener: (View) -> Unit = {
+            if (selectedPanel != topPanel) {
+                selectPanel(topPanel, bottomPanel)
+                (activity as MainActivity).onPanelsSwapped()
+            }
+        }
+        val bottomPanelOnClickListener: (View) -> Unit = {
+            if (selectedPanel != bottomPanel) {
+                selectPanel(bottomPanel, topPanel)
+                (activity as MainActivity).onPanelsSwapped()
+            }
+        }
+
+        topPanel.setOnClickListener(topPanelOnClickListener)
+        bottomPanel.setOnClickListener(bottomPanelOnClickListener)
+
+        val topInput = topPanel.input
+        val bottomInput = bottomPanel.input
+        topInput.setOnClickListener(topPanelOnClickListener)
+        bottomInput.setOnClickListener(bottomPanelOnClickListener)
+        topInput.addTextChangedListener(object : ImperialTextWatcher(topPanel, this, activity as MainActivity) {})
+        bottomInput.addTextChangedListener(object : ImperialTextWatcher(bottomPanel, this, activity as MainActivity) {})
+    }
+
+    private fun updateRatioLabel() {
+        val fromUnit = selectedPanel.unit
+        val toUnit = if (fromUnit == topPanel.unit) bottomPanel.unit else topPanel.unit
+        if (fromUnit == null || toUnit == null) {
+            ratioLabel.text = ""
+        } else {
+            val ratio = getConversionRatio(fromUnit, toUnit)
+            val format = "1 ${fromUnit.unitName.name} = [value] ${toUnit.unitName.name}"
+            ratioLabel.text = patternForDisplay(format, ratio)
+        }
+    }
+
 }

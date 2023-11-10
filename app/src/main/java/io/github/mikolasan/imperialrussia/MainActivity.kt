@@ -62,13 +62,13 @@ class MainActivity : FragmentActivity() {
 
         setContentView(R.layout.activity_main)
 
-        try {
-            val label = findViewById<TextView>(R.id.description_text)
-            val unit = workingUnits.selectedUnit
-            markwon.setMarkdown(label, descriptions[unit.unitName.ordinal])
-        } catch (e: Exception) {
-            // layout without view pager
-        }
+//        try {
+//            val label = findViewById<TextView>(R.id.description_text)
+//            val unit = workingUnits.topUnit
+//            markwon.setMarkdown(label, descriptions[unit.unitName.ordinal])
+//        } catch (e: Exception) {
+//            // layout without view pager
+//        }
 
     }
 
@@ -123,22 +123,15 @@ class MainActivity : FragmentActivity() {
         workingUnits = settings.restoreWorkingUnits()
 
         val topString = settings.restoreTopString()
-        workingUnits.selectedUnit.restoreValue(topString, BasicCalculator(topString).eval())
-        val bottomString = settings.restoreBottomString()
-        workingUnits.secondUnit.restoreValue(bottomString, BasicCalculator(bottomString).eval())
-
         workingUnits.topUnit.restoreValue(topString, BasicCalculator(topString).eval())
+        val bottomString = settings.restoreBottomString()
         workingUnits.bottomUnit.restoreValue(bottomString, BasicCalculator(bottomString).eval())
     }
 
     fun swapWorkingUnits() {
-        val temp = workingUnits.selectedUnit
-        workingUnits.selectedUnit = workingUnits.secondUnit
-        workingUnits.secondUnit = temp
-
-        val temp2 = workingUnits.topUnit
+        val tmp = workingUnits.topUnit
         workingUnits.topUnit = workingUnits.bottomUnit
-        workingUnits.bottomUnit = temp2
+        workingUnits.bottomUnit = tmp
     }
 
     private fun swapPanels() {
@@ -156,10 +149,13 @@ class MainActivity : FragmentActivity() {
         // update description
         try {
             val label = findViewById<TextView>(R.id.description_text)
-            val unit = workingUnits.selectedUnit
+            val unit = workingUnits.topUnit
             markwon.setMarkdown(label, descriptions[unit.unitName.ordinal])
         } catch (e: Exception) {
             // layout without view pager
+        }
+        converterFragment?.run {
+            keyboardFragment?.selectedPanel = selectedPanel
         }
     }
 
@@ -187,7 +183,7 @@ class MainActivity : FragmentActivity() {
         nav.navigate(R.id.action_select_unit, bundle)
 
 //        converterFragment?.let {
-//            it.onUnitSelected(workingUnits.selectedUnit, unit)
+//            it.onUnitSelected(workingUnits.topUnit, unit)
 //        }
 
 //        try {
@@ -196,6 +192,12 @@ class MainActivity : FragmentActivity() {
 //        } catch (e: Exception) {
 //            // layout without view pager
 //        }
+    }
+
+    fun onKeyboardConnected(keyboardFragment: KeyboardFragment) {
+        converterFragment?.run {
+            keyboardFragment.selectedPanel = selectedPanel
+        }
     }
 
     fun onArrowClicked(unit: ImperialUnit) {
@@ -272,17 +274,17 @@ class MainActivity : FragmentActivity() {
         workingUnits.orderedUnits = workingUnits.allUnits.getValue(ImperialUnitType.valueOf(category.name.toUpperCase()))
         workingUnits.listAdapter.units = workingUnits.orderedUnits
         workingUnits.listAdapter.resetAllValues() // why?
-        workingUnits.selectedUnit = workingUnits.orderedUnits[0]
-        workingUnits.secondUnit = workingUnits.orderedUnits[1]
+        workingUnits.topUnit = workingUnits.orderedUnits[0]
+        workingUnits.bottomUnit = workingUnits.orderedUnits[1]
         converterFragment?.run {
-            topPanel.changeUnit(workingUnits.selectedUnit)
-            bottomPanel.changeUnit(workingUnits.secondUnit)
+            topPanel.changeUnit(workingUnits.topUnit)
+            bottomPanel.changeUnit(workingUnits.bottomUnit)
             displayUnitValues()
             selectTopPanel()
         }
         unitListFragment?.run {
-            restoreSelectedUnit(workingUnits.selectedUnit)
-            restoreSecondUnit(workingUnits.secondUnit)
+            restoreSelectedUnit(workingUnits.topUnit)
+            restoreSecondUnit(workingUnits.bottomUnit)
 //            setTitle(category.name)
         }
 
@@ -298,12 +300,12 @@ class MainActivity : FragmentActivity() {
 
     fun showKeyboard() {
         keyboardFragment?.view?.visibility = View.VISIBLE
-        findViewById<FragmentContainerView>(R.id.keyboard_button).visibility = View.GONE
+        findViewById<FragmentContainerView>(R.id.keyboard_button)?.visibility = View.GONE
     }
 
     fun showKeyboardButton() {
         keyboardFragment?.view?.visibility = View.GONE
-        findViewById<FragmentContainerView>(R.id.keyboard_button).visibility = View.VISIBLE
+        findViewById<FragmentContainerView>(R.id.keyboard_button)?.visibility = View.VISIBLE
     }
 
     fun showSearch() {
