@@ -36,28 +36,6 @@ class ImperialUnitPanel(context: Context, attributeSet: AttributeSet) : Constrai
         deactivate()
     }
 
-    fun changeUnit(newUnit: ImperialUnit) {
-        unit = newUnit
-        updateUnitText()
-    }
-
-    private fun updateUnitText() {
-        unit?.unitName?.name?.let { s ->
-            val underlineText = SpannableString(s
-                .lowercase(Locale.ROOT)
-                .replace('_', ' ')
-                .replaceFirstChar {
-                    if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString()
-                })
-            //underlineText.setSpan(UnderlineSpan(), 0, underlineText.length, 0)
-            title.text = underlineText
-        }
-    }
-
-    fun setHintText(newText: String) {
-        hint.text = newText
-    }
-
     fun setHighlight(highlight: Boolean) {
         isActive = highlight
         layout.setBackgroundResource(if (highlight) R.drawable.ic_selected_panel_back else R.drawable.ic_input_panel_back)
@@ -82,6 +60,28 @@ class ImperialUnitPanel(context: Context, attributeSet: AttributeSet) : Constrai
         input.isEnabled = false
         input.visibility = View.INVISIBLE
         hint.visibility = View.VISIBLE
+    }
+
+    fun changeUnit(newUnit: ImperialUnit) {
+        unit = newUnit
+        updateUnitText()
+    }
+
+    private fun updateUnitText() {
+        unit?.unitName?.name?.let { s ->
+            val underlineText = SpannableString(s
+                .lowercase(Locale.ROOT)
+                .replace('_', ' ')
+                .replaceFirstChar {
+                    if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString()
+                })
+            //underlineText.setSpan(UnderlineSpan(), 0, underlineText.length, 0)
+            title.text = underlineText
+        }
+    }
+
+    fun setHintText(newText: String) {
+        hint.text = newText
     }
 
     fun hasUnitAssigned(): Boolean {

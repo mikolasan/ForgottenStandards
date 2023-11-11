@@ -176,17 +176,22 @@ class MainActivity : FragmentActivity() {
     }
 
     fun onUnitSelected(unit: ImperialUnit) {
-        converterFragment?.let {
-            it.onUnitSelected(workingUnits.topUnit, unit)
-        }
+        unitListFragment?.run {
+            if (workingUnits.topUnit != unit) {
 
-        val nav = findNavController(R.id.nav_host_fragment)
-        val bundle = bundleOf(
-            "category" to unit.category.type.name,
-            "topUnit" to workingUnits.topUnit.unitName.name,
-            "bottomUnit" to workingUnits.bottomUnit.unitName.name
-        )
-        nav.navigate(R.id.action_select_unit, bundle)
+            }
+        }
+//        converterFragment?.let {
+//            it.onUnitSelected(workingUnits.topUnit, unit)
+//        }
+//
+//        val nav = findNavController(R.id.nav_host_fragment)
+//        val bundle = bundleOf(
+//            "category" to unit.category.type.name,
+//            "topUnit" to workingUnits.topUnit.unitName.name,
+//            "bottomUnit" to workingUnits.bottomUnit.unitName.name
+//        )
+//        nav.navigate(R.id.action_select_unit, bundle)
 
 //        try {
 //            val label = findViewById<TextView>(R.id.description_text)
@@ -301,15 +306,15 @@ class MainActivity : FragmentActivity() {
     }
 
     fun showKeyboard() {
-        keyboardFragment?.view?.let {
-            it.bringToFront()
-            it.visibility = View.VISIBLE
-//            val parent = findViewById<ConstraintLayout>(R.id.converting_area)
-//            val params = it.layoutParams as FrameLayout.LayoutParams
-//            params.endToEnd = parent.id
-//            params.bottomToBottom = parent.id
+        // show fragment
+        unitListFragment?.view?.let {
+            val layout = it.findViewById<FragmentContainerView>(R.id.keyboard)
+            layout.visibility = View.VISIBLE
         }
-//            .visibility = View.VISIBLE
+        // and its main layout
+        keyboardFragment?.view?.let {
+            it.visibility = View.VISIBLE
+        }
         findViewById<FragmentContainerView>(R.id.keyboard_button)?.visibility = View.INVISIBLE
     }
 

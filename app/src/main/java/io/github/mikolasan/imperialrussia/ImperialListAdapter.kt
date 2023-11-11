@@ -106,13 +106,13 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits) : BaseAdapter(
                 symbol.setTextColorId(valueColors.getValue(ViewState.SELECTED))
                 arrowUp.visibility = if (dataPosition == 0) View.INVISIBLE else View.VISIBLE
             }
-            workingUnits.bottomUnit -> {
-                layout.setBackgroundResource(backgrounds.getValue(ViewState.SECOND))
-                name.setTextColorId(nameColors.getValue(ViewState.SECOND))
-                value.setTextColorId(valueColors.getValue(ViewState.SECOND))
-                symbol.setTextColorId(valueColors.getValue(ViewState.SECOND))
-                arrowUp.visibility = View.INVISIBLE
-            }
+//            workingUnits.bottomUnit -> {
+//                layout.setBackgroundResource(backgrounds.getValue(ViewState.SECOND))
+//                name.setTextColorId(nameColors.getValue(ViewState.SECOND))
+//                value.setTextColorId(valueColors.getValue(ViewState.SECOND))
+//                symbol.setTextColorId(valueColors.getValue(ViewState.SECOND))
+//                arrowUp.visibility = View.INVISIBLE
+//            }
             else -> {
                 layout.setBackgroundResource(backgrounds.getValue(ViewState.NORMAL))
                 name.setTextColorId(nameColors.getValue(ViewState.NORMAL))
