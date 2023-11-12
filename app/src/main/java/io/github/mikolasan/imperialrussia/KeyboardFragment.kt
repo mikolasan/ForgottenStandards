@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 
 class KeyboardFragment : Fragment() {
     var selectedPanel: ImperialUnitPanel? = null
+    var observer: ImperialUnitObserver? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,30 +26,32 @@ class KeyboardFragment : Fragment() {
         (activity as MainActivity).onKeyboardConnected(this)
     }
 
-    private fun setButtonListeners(view: View) {
-        val fragment = this
-        view.run {
-            findViewById<DigitButton>(R.id.digit_1).setOnClickPanel(fragment)
-            findViewById<DigitButton>(R.id.digit_2).setOnClickPanel(fragment)
-            findViewById<DigitButton>(R.id.digit_3).setOnClickPanel(fragment)
-            findViewById<DigitButton>(R.id.digit_4).setOnClickPanel(fragment)
-            findViewById<DigitButton>(R.id.digit_5).setOnClickPanel(fragment)
-            findViewById<DigitButton>(R.id.digit_6).setOnClickPanel(fragment)
-            findViewById<DigitButton>(R.id.digit_7).setOnClickPanel(fragment)
-            findViewById<DigitButton>(R.id.digit_8).setOnClickPanel(fragment)
-            findViewById<DigitButton>(R.id.digit_9).setOnClickPanel(fragment)
-            findViewById<DigitButton>(R.id.digit_0).setOnClickPanel(fragment)
 
-            findViewById<OperationButton>(R.id.op_back).setOnClickPanel(fragment)
-            findViewById<OperationButton>(R.id.op_clear).setOnClickPanel(fragment)
-            findViewById<OperationButton>(R.id.op_mult).setOnClickPanel(fragment)
-            findViewById<OperationButton>(R.id.op_div).setOnClickPanel(fragment)
-            findViewById<OperationButton>(R.id.op_plus).setOnClickPanel(fragment)
-            findViewById<OperationButton>(R.id.op_minus).setOnClickPanel(fragment)
-            findViewById<OperationButton>(R.id.op_dot).setOnClickPanel(fragment)
-            findViewById<OperationButton>(R.id.op_eval).setOnClickPanel(fragment)
-            findViewById<OperationButton>(R.id.hide_keyboard).setOnClickListener {
-                (activity as MainActivity).showKeyboardButton()
+    private fun setButtonListeners(view: View) {
+        observer?.let {observer ->
+            view.run {
+                findViewById<DigitButton>(R.id.digit_2).setOnClickPanel(observer)
+                findViewById<DigitButton>(R.id.digit_1).setOnClickPanel(observer)
+                findViewById<DigitButton>(R.id.digit_3).setOnClickPanel(observer)
+                findViewById<DigitButton>(R.id.digit_4).setOnClickPanel(observer)
+                findViewById<DigitButton>(R.id.digit_5).setOnClickPanel(observer)
+                findViewById<DigitButton>(R.id.digit_6).setOnClickPanel(observer)
+                findViewById<DigitButton>(R.id.digit_7).setOnClickPanel(observer)
+                findViewById<DigitButton>(R.id.digit_8).setOnClickPanel(observer)
+                findViewById<DigitButton>(R.id.digit_9).setOnClickPanel(observer)
+                findViewById<DigitButton>(R.id.digit_0).setOnClickPanel(observer)
+
+                findViewById<OperationButton>(R.id.op_back).setOnClickPanel(observer)
+                findViewById<OperationButton>(R.id.op_clear).setOnClickPanel(observer)
+                findViewById<OperationButton>(R.id.op_mult).setOnClickPanel(observer)
+                findViewById<OperationButton>(R.id.op_div).setOnClickPanel(observer)
+                findViewById<OperationButton>(R.id.op_plus).setOnClickPanel(observer)
+                findViewById<OperationButton>(R.id.op_minus).setOnClickPanel(observer)
+                findViewById<OperationButton>(R.id.op_dot).setOnClickPanel(observer)
+                findViewById<OperationButton>(R.id.op_eval).setOnClickPanel(observer)
+                findViewById<OperationButton>(R.id.hide_keyboard).setOnClickListener {
+                    (activity as MainActivity).showKeyboardButton()
+                }
             }
         }
     }

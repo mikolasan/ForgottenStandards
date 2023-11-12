@@ -28,11 +28,6 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits) : BaseAdapter(
         arrowLongClickListener = listener
     }
 
-    fun resetAllValues() {
-        units.forEach { u -> u.value = 0.0 }
-        notifyDataSetChanged()
-    }
-
     fun updateAllValues(unit: ImperialUnit?, value: Double) {
         units.forEach { u -> u.value = convertValue(unit, u, value) }
         notifyDataSetChanged()

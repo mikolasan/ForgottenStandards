@@ -176,7 +176,9 @@ class ImperialUnitPanel(context: Context, attributeSet: AttributeSet) : Constrai
     }
 
     fun hasExponent(): Boolean {
-        return input.text.getSpans(0, input.text.length, SuperscriptSpan::class.java).isNotEmpty()
+        return input.text
+            .getSpans(0, input.text.length, SuperscriptSpan::class.java)
+            .isNotEmpty()
     }
 
     fun formatStringAndSet(s: String) {

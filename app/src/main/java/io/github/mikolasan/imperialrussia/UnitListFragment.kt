@@ -5,10 +5,12 @@ import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.ListView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentContainerView
 import androidx.navigation.fragment.navArgs
 import io.github.mikolasan.ratiogenerator.ImperialUnit
 
@@ -55,7 +57,8 @@ class UnitListFragment : Fragment() {
         (activity as? MainActivity)?.workingUnits?.let { workingUnits ->
             restoreSelectedUnit(workingUnits.topUnit)
             restoreSecondUnit(workingUnits.bottomUnit)
-            updateAllValues(workingUnits.topUnit)
+            val unit = workingUnits.topUnit
+            listAdapter.updateAllValues(unit, unit.value)
         }
     }
 
@@ -88,14 +91,6 @@ class UnitListFragment : Fragment() {
         listAdapter.notifyDataSetChanged()
     }
 
-    fun onPanelTextChanged(panel: ImperialUnitPanel, s: Editable) {
-
-    }
-
-    fun updateAllValues(masterUnit: ImperialUnit) {
-        listAdapter.updateAllValues(masterUnit, masterUnit.value)
-    }
-
     // TODO: remove '?'
     fun onUnitSelected(selectedUnit: ImperialUnit, secondUnit: ImperialUnit?) {
         (activity as? MainActivity)?.let { mainActivity ->
@@ -124,5 +119,17 @@ class UnitListFragment : Fragment() {
                 (activity as MainActivity).showTypeSwitcher()
             }
         }
+
+        view.viewTreeObserver.addOnGlobalLayoutListener {
+            object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+//                    view.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    // do whatever
+                    val layout = view.findViewById<FragmentContainerView>(R.id.keyboard)
+                    print(layout.visibility)
+                }
+            }
+        }
+
     }
 }

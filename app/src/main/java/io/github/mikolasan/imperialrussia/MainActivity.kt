@@ -5,6 +5,7 @@ import android.text.Editable
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -35,6 +36,7 @@ class MainActivity : FragmentActivity() {
     private var switchFragment: SwitchFragment = SwitchFragment()
     private var keyboardFragment: KeyboardFragment? = null
     private var searchFragment: SearchFragment? = null
+    private val unitObserver = ImperialUnitObserver(null)
 
     private lateinit var settings: ImperialSettings
     lateinit var workingUnits: WorkingUnits
@@ -177,9 +179,16 @@ class MainActivity : FragmentActivity() {
 
     fun onUnitSelected(unit: ImperialUnit) {
         unitListFragment?.run {
-            if (workingUnits.topUnit != unit) {
-
+            if (workingUnits.topUnit == unit) {
+                return@run
             }
+            val tmp = workingUnits.topUnit
+            workingUnits.topUnit = unit
+            workingUnits.bottomUnit = tmp
+
+            unitObserver.setUnitAndUpdateValue(unit) // change keyboard focus
+            workingUnits.listAdapter.notifyDataSetChanged()
+
         }
 //        converterFragment?.let {
 //            it.onUnitSelected(workingUnits.topUnit, unit)
@@ -243,10 +252,27 @@ class MainActivity : FragmentActivity() {
 
     fun setSubscriber(fragment: Fragment) {
         when (fragment) {
-            is ConverterFragment -> converterFragment = fragment
-            is UnitListFragment -> unitListFragment = fragment
+            is ConverterFragment -> {
+                converterFragment = fragment
+                val callable = {unit: ImperialUnit, value: Double ->
+                    val panel = fragment.selectedPanel
+                    panel.unit = unit
+                    panel.setUnitValue(value)
+                }
+                unitObserver.addObserver(callable)
+            }
+            is UnitListFragment -> {
+                unitListFragment = fragment
+                val callable = {unit: ImperialUnit, value: Double ->
+                    workingUnits.listAdapter.updateAllValues(unit, value)
+                }
+                unitObserver.addObserver(callable)
+            }
             is SwitchFragment -> switchFragment = fragment
-            is KeyboardFragment -> keyboardFragment = fragment
+            is KeyboardFragment -> {
+                keyboardFragment = fragment
+                fragment.observer = unitObserver
+            }
             is SearchFragment -> searchFragment = fragment
         }
     }
@@ -277,12 +303,11 @@ class MainActivity : FragmentActivity() {
 //        val action = SwitchFragmentDirections.actionSelectCategory(categoryTitle)
 //        nav.navigate(action)
 
-        workingUnits.listAdapter.resetAllValues()
         workingUnits.orderedUnits = workingUnits.allUnits.getValue(ImperialUnitType.valueOf(category.name.toUpperCase()))
         workingUnits.listAdapter.units = workingUnits.orderedUnits
-        workingUnits.listAdapter.resetAllValues() // why?
         workingUnits.topUnit = workingUnits.orderedUnits[0]
         workingUnits.bottomUnit = workingUnits.orderedUnits[1]
+        workingUnits.listAdapter.updateAllValues(workingUnits.topUnit, 0.0)
         converterFragment?.run {
             topPanel.changeUnit(workingUnits.topUnit)
             bottomPanel.changeUnit(workingUnits.bottomUnit)
@@ -295,6 +320,7 @@ class MainActivity : FragmentActivity() {
 //            setTitle(category.name)
         }
 
+        unitObserver.setUnitAndUpdateValue(workingUnits.topUnit)
 //        hideTypeSwitcher()
 
     }
@@ -308,8 +334,11 @@ class MainActivity : FragmentActivity() {
     fun showKeyboard() {
         // show fragment
         unitListFragment?.view?.let {
+            val list = it.findViewById<ListView>(R.id.units_list)
+            print(list.lastVisiblePosition)
             val layout = it.findViewById<FragmentContainerView>(R.id.keyboard)
             layout.visibility = View.VISIBLE
+            print(list.lastVisiblePosition)
         }
         // and its main layout
         keyboardFragment?.view?.let {
@@ -319,7 +348,7 @@ class MainActivity : FragmentActivity() {
     }
 
     fun showKeyboardButton() {
-        keyboardFragment?.view?.visibility = View.INVISIBLE
+        keyboardFragment?.view?.visibility = View.GONE
         findViewById<FragmentContainerView>(R.id.keyboard_button)?.visibility = View.VISIBLE
     }
 
