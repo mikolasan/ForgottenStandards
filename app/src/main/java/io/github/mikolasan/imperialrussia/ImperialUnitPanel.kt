@@ -91,7 +91,10 @@ class ImperialUnitPanel(context: Context, attributeSet: AttributeSet) : Constrai
     fun getValue(): Double? = unit?.value
 
     fun setUnitValue(v: Double) {
-        unit?.value = v
+        unit?.let {
+            it.value = v
+            it.formattedString = makeSerializedString(valueForDisplay(v))
+        }
     }
 
     fun updateDisplayValue() {
@@ -162,17 +165,6 @@ class ImperialUnitPanel(context: Context, attributeSet: AttributeSet) : Constrai
         val value = BasicCalculator(expression).eval()
         setUnitValue(value)
         updateDisplayValue()
-    }
-
-    fun makeSerializedString(): String {
-        val sep = (DecimalFormat.getInstance() as DecimalFormat).decimalFormatSymbols.groupingSeparator.toString()
-        val s = input.text.toString().replace(sep, "")
-        val span = input.text.getSpans(0, input.text.length, SuperscriptSpan::class.java).singleOrNull()
-        return if (span == null) {
-            s
-        } else {
-            StringBuilder(s).insert(input.text.getSpanStart(span), '^').toString()
-        }
     }
 
     fun hasExponent(): Boolean {

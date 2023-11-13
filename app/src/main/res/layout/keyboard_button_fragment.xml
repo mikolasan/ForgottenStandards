@@ -4,6 +4,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/ic_input_panel_back"
+    android:backgroundTint="@color/bookmark"
     android:paddingTop="8dp"
     android:paddingBottom="8dp"
     android:paddingLeft="12dp"
@@ -11,6 +12,7 @@
     android:layout_marginEnd="12dp"
     android:layout_marginBottom="12dp"
     android:orientation="vertical"
+    android:elevation="3dp"
     android:gravity="center">
 
     <ImageView

@@ -1,5 +1,6 @@
 package io.github.mikolasan.imperialrussia
 
+import android.text.Editable
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.RelativeSizeSpan
@@ -115,6 +116,22 @@ fun valueForDisplay(value: Double?, locale: Locale? = null): SpannableStringBuil
     }
 
     return SpannableStringBuilder(formattedValue)
+}
+
+fun makeSerializedString(input: Editable): String {
+    val df = DecimalFormat.getInstance() as DecimalFormat
+    val sep = df.decimalFormatSymbols.groupingSeparator.toString()
+    val s: String = input.toString().replace(sep, "")
+    val span = input
+        .getSpans(0, input.length, SuperscriptSpan::class.java)
+        .singleOrNull()
+    return if (span == null) {
+        s
+    } else {
+        StringBuilder(s)
+            .insert(input.getSpanStart(span), '^')
+            .toString()
+    }
 }
 
 fun doScientificNotationInPattern(format: String, decimalFormat: DecimalFormat, value: Double): SpannableStringBuilder {

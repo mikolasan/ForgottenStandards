@@ -36,6 +36,9 @@ class UnitListFragment : Fragment() {
             (activity as MainActivity).onArrowLongClicked(unit)
             unitsList.setSelectionAfterHeaderView()
         }
+        listAdapter.setOnBookmarkClickListener { _: Int, arrow: View, unit: ImperialUnit ->
+
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

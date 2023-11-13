@@ -3,12 +3,11 @@ package io.github.mikolasan.ratiogenerator
 class ImperialUnit(val category: ImperialUnitCategory,
                    val unitType: ImperialUnitType,
                    val unitName: ImperialUnitName
-//                   var ratioMap: Map<ImperialUnitName, Double>,
-//                   var formulaMap: Map<ImperialUnitName, Array<String>>? = null
 ) {
     var value: Double = 0.0
     var inputString: String = ""
     var formattedString: String = ""
+    var bookmarked = false
 
     var ratioMap: Map<ImperialUnitName, Double> = mapOf()
     var formulaMap: Map<ImperialUnitName, Array<String>> = mapOf()

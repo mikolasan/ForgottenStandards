@@ -16,6 +16,7 @@
         android:layout_marginTop="6dp"
         android:background="@drawable/ic_selected_panel_back"
         android:minWidth="@dimen/min_imperial_panel_width"
+        android:visibility="gone"
 
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

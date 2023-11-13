@@ -19,7 +19,7 @@ class DigitButton(context: Context, attributeSet: AttributeSet) : AppCompatButto
 
             val button = view as Button
             val char = button.text[0]
-            observer.addChar(char)
+            observer.appendString(char)
 
 //            fragment.selectedPanel?.let { panel ->
 //                if (!panel.hasUnitAssigned()) return@setOnClickListener

@@ -172,8 +172,8 @@ class MainActivity : FragmentActivity() {
             if (oppositePanel.hasUnitAssigned()) {
                 oppositePanel.updateDisplayValue()
             }
-            settings.saveTopString(it.topPanel.makeSerializedString())
-            settings.saveBottomString(it.bottomPanel.makeSerializedString())
+            settings.saveTopString(makeSerializedString(it.topPanel.input.text))
+            settings.saveBottomString(makeSerializedString(it.bottomPanel.input.text))
         }
     }
 
@@ -238,7 +238,7 @@ class MainActivity : FragmentActivity() {
         converterFragment?.let {
             workingUnits.topUnit = it.topPanel.unit!!
             unitListFragment?.onUnitSelected(unit, it.bottomPanel.unit)
-            settings.saveTopUnit(unit, it.topPanel.makeSerializedString())
+            settings.saveTopUnit(unit, makeSerializedString(it.topPanel.input.text))
         }
     }
 
@@ -246,7 +246,7 @@ class MainActivity : FragmentActivity() {
         converterFragment?.let {
             workingUnits.bottomUnit = it.bottomPanel.unit!!
             unitListFragment?.onUnitSelected(unit, it.topPanel.unit)
-            settings.saveBottomUnit(unit, it.bottomPanel.makeSerializedString())
+            settings.saveBottomUnit(unit, makeSerializedString(it.bottomPanel.input.text))
         }
     }
 

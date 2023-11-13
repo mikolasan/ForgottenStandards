@@ -1,6 +1,7 @@
 package io.github.mikolasan.imperialrussia
 
 import android.content.Context
+import android.graphics.PorterDuff
 import android.view.*
 import android.widget.BaseAdapter
 import android.widget.Filter
@@ -19,6 +20,9 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits) : BaseAdapter(
     private var arrowLongClickListener: (Int, View, ImperialUnit) -> Unit = { position, _, _ ->
         println("arrowLongClickListener $position")
     }
+    private var bookmarkClickListener: (Int, View, ImperialUnit) -> Unit = { position, _, _ ->
+        println("bookmarkClickListener $position")
+    }
 
     fun setOnArrowClickListener(listener: (Int, View, ImperialUnit) -> Unit) {
         arrowClickListener = listener
@@ -28,8 +32,18 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits) : BaseAdapter(
         arrowLongClickListener = listener
     }
 
+    fun setOnBookmarkClickListener(listener: (Int, View, ImperialUnit) -> Unit) {
+        bookmarkClickListener = listener
+    }
+
     fun updateAllValues(unit: ImperialUnit?, value: Double) {
-        units.forEach { u -> u.value = convertValue(unit, u, value) }
+        units.forEach { u ->
+            if (u != unit) {
+                val v = convertValue(unit, u, value)
+                u.value = v
+                u.formattedString = makeSerializedString(valueForDisplay(v))
+            }
+        }
         notifyDataSetChanged()
     }
 
@@ -38,7 +52,7 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits) : BaseAdapter(
             if (contentView is ConstraintLayout) {
                 updateViewData(contentView, position)
                 updateViewColors(contentView, position)
-                updateArrowListener(contentView, position)
+                updateControlListeners(contentView, position)
                 return contentView
             }
             return contentView
@@ -48,7 +62,7 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits) : BaseAdapter(
             val view = inflater.inflate(R.layout.unit_space, parent, false) as ConstraintLayout
             updateViewData(view, position)
             updateViewColors(view, position)
-            updateArrowListener(view, position)
+            updateControlListeners(view, position)
             return view
         }
 
@@ -93,12 +107,17 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits) : BaseAdapter(
         val value: TextView = layout.findViewById(R.id.unit_value)
         val symbol: TextView = layout.findViewById(R.id.unit_symbol)
         val arrowUp: ImageView = layout.findViewById(R.id.arrow_up)
+        val bookmark: ImageView = layout.findViewById(R.id.bookmark)
+        val bookmarkColor = if (units[dataPosition].bookmarked) R.color.bookmark else R.color.action
+        val color = bookmark.context.resources.getColor(bookmarkColor)
+        bookmark.drawable.mutate().setColorFilter(color, PorterDuff.Mode.SRC_IN)
         when (getItem(dataPosition) as ImperialUnit) {
             workingUnits.topUnit -> {
                 layout.setBackgroundResource(backgrounds.getValue(ViewState.SELECTED))
                 name.setTextColorId(nameColors.getValue(ViewState.SELECTED))
                 value.setTextColorId(valueColors.getValue(ViewState.SELECTED))
                 symbol.setTextColorId(valueColors.getValue(ViewState.SELECTED))
+
                 arrowUp.visibility = if (dataPosition == 0) View.INVISIBLE else View.VISIBLE
             }
 //            workingUnits.bottomUnit -> {
@@ -113,7 +132,8 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits) : BaseAdapter(
                 name.setTextColorId(nameColors.getValue(ViewState.NORMAL))
                 value.setTextColorId(valueColors.getValue(ViewState.NORMAL))
                 symbol.setTextColorId(valueColors.getValue(ViewState.NORMAL))
-                arrowUp.visibility = View.VISIBLE
+//                bookmark.setColorFilter(if (units[dataPosition].bookmarked) R.color.colorPrimaryDark else R.color.action, PorterDuff.Mode.SRC_IN)
+                arrowUp.visibility = View.INVISIBLE
             }
         }
     }
@@ -128,12 +148,12 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits) : BaseAdapter(
                 ) else it.toString()
             }
         val value: TextView = layout.findViewById(R.id.unit_value)
-        value.text = valueForDisplay(data.value)
+        value.text = data.formattedString //valueForDisplay(data.value)
         val symbol: TextView = layout.findViewById(R.id.unit_symbol)
-        symbol.text = ImperialSymbol.symbols.getOrDefault(data.unitName, "")
+        symbol.text = ImperialSymbol.symbols[data.unitName] ?: ""
     }
 
-    private fun updateArrowListener(layout: ConstraintLayout, dataPosition: Int) {
+    private fun updateControlListeners(layout: ConstraintLayout, dataPosition: Int) {
         val arrowUp: ImageView = layout.findViewById(R.id.arrow_up)
         val unit = units[dataPosition]
         arrowUp.setOnClickListener {
@@ -150,6 +170,13 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits) : BaseAdapter(
                 arrowLongClickListener(dataPosition, it, unit)
             }
             dataPosition != 0
+        }
+
+        val bookmark: ImageView = layout.findViewById(R.id.bookmark)
+        bookmark.setOnClickListener {
+            unit.bookmarked = !unit.bookmarked
+//            bookmarkClickListener(dataPosition, it, unit)
+            notifyDataSetChanged()
         }
     }
 

@@ -2,7 +2,6 @@ package io.github.mikolasan.imperialrussia
 
 import android.text.Editable
 import android.text.SpannableStringBuilder
-import android.widget.TextView
 import io.github.mikolasan.ratiogenerator.ImperialUnit
 
 typealias ObserverCallable = (ImperialUnit, Double) -> Unit
@@ -19,18 +18,19 @@ class ImperialUnitObserver (var unit: ImperialUnit?) {
     fun getEditable(): Editable = formatted
 
     fun setValueAndNotify(v: Double) {
-        unit?.let {
-            it.value = v
-        }
         value = v
         formatted = valueForDisplay(v)
+        unit?.let {
+            it.value = v
+            it.formattedString = makeSerializedString(formatted)
+        }
         onValueUpdated()
     }
 
     fun setUnitAndUpdateValue(u: ImperialUnit) {
         unit = u
-//        value save?
-//        u.value = value
+        formatted = valueForDisplay(u.value)
+        u.formattedString = makeSerializedString(formatted)
     }
 
     fun addChar(char: Char) {
@@ -38,39 +38,73 @@ class ImperialUnitObserver (var unit: ImperialUnit?) {
         setValueAndNotify(v)
     }
 
-    fun dropLastChar() {
-        val v = BasicCalculator(formatted.dropLast(1).toString()).eval()
-        setValueAndNotify(v)
+    fun appendString(c: Char) {
+        if (formatted.toString() == "0") {
+            setString(c.toString())
+        } else {
+            setString(formatted.toString() + c)
+        }
+        val v = BasicCalculator(formatted.toString()).eval()
+        value = v
+        unit?.let {
+            it.value = v
+            it.formattedString = makeSerializedString(formatted)
+        }
+        onValueUpdated()
     }
 
-    fun setString(s: String) {
-        formatted = SpannableStringBuilder(s)
+    fun dropLastChar() {
+        if (formatted.isNotEmpty()) {
+            formatted.delete(formatted.length - 1, formatted.length)
+            if (formatted.length == 0) {
+                formatted.append("0")
+            }
+
+            val v = BasicCalculator(formatted.toString()).eval()
+            value = v
+            unit?.let {
+                it.value = v
+                it.formattedString = makeSerializedString(formatted)
+            }
+            onValueUpdated()
+        }
     }
 
     fun appendStringOrReplace(c: Char, replaceable: Set<Char>) {
-        val value = formatted.toString()
+        val s = formatted.toString()
         when {
-            value.isEmpty() -> {
+            s.isEmpty() -> {
                 setString(c.toString())
             }
-            replaceable.containsAll(listOf(value.last(), c)) -> {
-                setString(value.dropLast(1) + c.toString())
+            replaceable.containsAll(listOf(s.last(), c)) -> {
+                setString(s.dropLast(1) + c.toString())
             }
             c == '.' -> {
-                val factor = value.takeLastWhile { char ->
+                val factor = s.takeLastWhile { char ->
                     char in '0'..'9' || char == '.'
                 }
                 if (factor.isEmpty()) {
-                    setString(value + c.toString())
+                    setString(s + c.toString())
                     return
                 }
                 if (factor.contains('.') || !isValidNumber(factor)) return
-                setString(value + c.toString())
+                setString(s + c.toString())
             }
             else -> {
-                setString(value + c.toString())
+                setString(s + c.toString())
             }
         }
+        val v = BasicCalculator(formatted.toString()).eval()
+        value = v
+        unit?.let {
+            it.value = v
+            it.formattedString = makeSerializedString(formatted)
+        }
+        onValueUpdated()
+    }
+
+    private fun setString(s: String) {
+        formatted = SpannableStringBuilder(s)
     }
 
     private fun onValueUpdated() {
