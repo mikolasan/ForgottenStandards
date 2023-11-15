@@ -145,6 +145,18 @@ class MainActivity : FragmentActivity() {
     }
 
     fun onPanelSelected(panel: ImperialUnitPanel) {
+        val selectedUnit = panel.unit!!
+        if (workingUnits.topUnit == selectedUnit) return
+
+        val tmp = workingUnits.topUnit
+        workingUnits.topUnit = selectedUnit
+        workingUnits.bottomUnit = tmp
+
+        unitObserver.setUnitAndUpdateValue(selectedUnit) // change keyboard focus
+
+        unitListFragment?.run {
+            workingUnits.listAdapter.notifyDataSetChanged()
+        }
 
     }
 
@@ -179,32 +191,66 @@ class MainActivity : FragmentActivity() {
     }
 
     fun onUnitSelected(unit: ImperialUnit) {
-        unitListFragment?.run {
-            if (workingUnits.topUnit == unit) {
-                return@run
-            }
-            val tmp = workingUnits.topUnit
-            workingUnits.topUnit = unit
-            workingUnits.bottomUnit = tmp
-
-            unitObserver.setUnitAndUpdateValue(unit) // change keyboard focus
-            workingUnits.listAdapter.notifyDataSetChanged()
-
-        }
+        var topChanged = true
         converterFragment?.let {
-//            it.onUnitSelected(unit, workingUnits.topUnit)
+            val selectedUnit = it.selectedPanel.unit ?: return@let
+            val topUnit = it.topPanel.unit ?: return@let
+            topChanged = (topUnit == selectedUnit)
+        }
 
-            if (unit == workingUnits.topUnit
-                || unit == workingUnits.bottomUnit) return@let
-
+        if (workingUnits.topUnit == unit) {
+            return
+        }
+        val swapped = workingUnits.bottomUnit == unit
+        if (swapped) {
             val tmp = workingUnits.topUnit
             workingUnits.topUnit = unit
             workingUnits.bottomUnit = tmp
-//            it.swapPanels()
-            it.restoreBottomPanel(workingUnits.bottomUnit)
-            it.restoreTopPanel(workingUnits.topUnit)
-            it.displayUnitValues()
+        } else if (topChanged) {
+            workingUnits.topUnit = unit
+            // keep the bottom
+        } else {
+            val tmp = workingUnits.topUnit
+            workingUnits.topUnit = unit
+            workingUnits.bottomUnit = tmp
         }
+
+        unitObserver.setUnitAndUpdateValue(unit) // change keyboard focus
+
+        unitListFragment?.run {
+            workingUnits.listAdapter.notifyDataSetChanged()
+        }
+
+        converterFragment?.let {
+            if (swapped) {
+//                it.swapPanels()
+                val selectedUnit = it.selectedPanel.unit ?: return@let
+                val topUnit = it.topPanel.unit ?: return@let
+                it.selectedPanel = if (topUnit == selectedUnit) {
+                    it.bottomPanel
+                } else {
+                    it.topPanel
+                }
+                val otherPanel = if (topUnit == selectedUnit) {
+                    it.topPanel
+                } else {
+                    it.bottomPanel
+                }
+                it.selectPanel(it.selectedPanel, otherPanel)
+
+            } else {
+                val selectedUnit = it.selectedPanel.unit ?: return@let
+                val topUnit = it.topPanel.unit ?: return@let
+                if (topChanged) {
+                    it.restoreTopPanel(unit)
+                } else {
+                    it.restoreBottomPanel(unit)
+                }
+                it.displayUnitValues()
+            }
+
+        }
+
 
         try {
             val nav = findNavController(R.id.nav_host_fragment)
@@ -217,6 +263,7 @@ class MainActivity : FragmentActivity() {
         } catch (e: Exception) {
             // ignore
         }
+
 
 //        try {
 //            val label = findViewById<TextView>(R.id.description_text)
@@ -281,6 +328,7 @@ class MainActivity : FragmentActivity() {
                 unitListFragment = fragment
                 val callable = {unit: ImperialUnit, value: Double ->
                     workingUnits.listAdapter.updateAllValues(unit, value)
+                    // notifyDataSetChanged
                 }
                 unitObserver.addObserver(callable)
             }
@@ -314,7 +362,7 @@ class MainActivity : FragmentActivity() {
                 "categoryTitle" to category.name
             )
             nav.navigate(R.id.action_select_category, bundle)
-        } catch (e: IllegalStateException) {
+        } catch (e: Exception) {
             // ignore
         }
 

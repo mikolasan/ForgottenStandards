@@ -163,6 +163,14 @@ class ConverterFragment : Fragment() {
         val bottomValue = bottomPanel.getValue() ?: return
         val topString = topPanel.getString()
         val bottomString = bottomPanel.getString()
+
+        val selectedUnit = selectedPanel.unit ?: return
+        selectedPanel = if (topUnit == selectedUnit) {
+            bottomPanel
+        } else {
+            topPanel
+        }
+
         topPanel.changeUnit(bottomUnit)
         bottomPanel.changeUnit(topUnit)
 
@@ -180,13 +188,13 @@ class ConverterFragment : Fragment() {
         val topPanelOnClickListener: (View) -> Unit = {
             if (selectedPanel != topPanel) {
                 selectPanel(topPanel, bottomPanel)
-                (activity as MainActivity).onPanelsSwapped()
+                (activity as MainActivity).onPanelSelected(selectedPanel)
             }
         }
         val bottomPanelOnClickListener: (View) -> Unit = {
             if (selectedPanel != bottomPanel) {
                 selectPanel(bottomPanel, topPanel)
-                (activity as MainActivity).onPanelsSwapped()
+                (activity as MainActivity).onPanelSelected(selectedPanel)
             }
         }
 
