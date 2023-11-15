@@ -23,6 +23,7 @@ import io.github.mikolasan.ratiogenerator.ImperialUnitName
 import io.github.mikolasan.ratiogenerator.ImperialUnitType
 import io.noties.markwon.Markwon
 import java.io.IOException
+import java.lang.IllegalStateException
 import java.util.*
 
 
@@ -190,17 +191,32 @@ class MainActivity : FragmentActivity() {
             workingUnits.listAdapter.notifyDataSetChanged()
 
         }
-//        converterFragment?.let {
-//            it.onUnitSelected(workingUnits.topUnit, unit)
-//        }
-//
-//        val nav = findNavController(R.id.nav_host_fragment)
-//        val bundle = bundleOf(
-//            "category" to unit.category.type.name,
-//            "topUnit" to workingUnits.topUnit.unitName.name,
-//            "bottomUnit" to workingUnits.bottomUnit.unitName.name
-//        )
-//        nav.navigate(R.id.action_select_unit, bundle)
+        converterFragment?.let {
+//            it.onUnitSelected(unit, workingUnits.topUnit)
+
+            if (unit == workingUnits.topUnit
+                || unit == workingUnits.bottomUnit) return@let
+
+            val tmp = workingUnits.topUnit
+            workingUnits.topUnit = unit
+            workingUnits.bottomUnit = tmp
+//            it.swapPanels()
+            it.restoreBottomPanel(workingUnits.bottomUnit)
+            it.restoreTopPanel(workingUnits.topUnit)
+            it.displayUnitValues()
+        }
+
+        try {
+            val nav = findNavController(R.id.nav_host_fragment)
+            val bundle = bundleOf(
+                "category" to unit.category.type.name,
+                "topUnit" to workingUnits.topUnit.unitName.name,
+                "bottomUnit" to workingUnits.bottomUnit.unitName.name
+            )
+            nav.navigate(R.id.action_select_unit, bundle)
+        } catch (e: Exception) {
+            // ignore
+        }
 
 //        try {
 //            val label = findViewById<TextView>(R.id.description_text)
@@ -292,18 +308,24 @@ class MainActivity : FragmentActivity() {
     }
 
     fun onCategorySelected(category: ImperialUnitCategoryName) {
-        val nav = findNavController(R.id.nav_host_fragment)
-        val bundle = bundleOf(
-            "categoryTitle" to category.name
+        try {
+            val nav = findNavController(R.id.nav_host_fragment)
+            val bundle = bundleOf(
+                "categoryTitle" to category.name
+            )
+            nav.navigate(R.id.action_select_category, bundle)
+        } catch (e: IllegalStateException) {
+            // ignore
+        }
 
-        )
-        nav.navigate(R.id.action_select_category, bundle)
 //        nav.navigate(R.id.action_select_category)
 //        val categoryTitle = category.name
 //        val action = SwitchFragmentDirections.actionSelectCategory(categoryTitle)
 //        nav.navigate(action)
 
-        workingUnits.orderedUnits = workingUnits.allUnits.getValue(ImperialUnitType.valueOf(category.name.toUpperCase()))
+        val type = categoryNameToType(category)
+        workingUnits.selectedCategory = type
+        workingUnits.orderedUnits = workingUnits.allUnits.getValue(type)
         workingUnits.listAdapter.units = workingUnits.orderedUnits
         workingUnits.topUnit = workingUnits.orderedUnits[0]
         workingUnits.bottomUnit = workingUnits.orderedUnits[1]

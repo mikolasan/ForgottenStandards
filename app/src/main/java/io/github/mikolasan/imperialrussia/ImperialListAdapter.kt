@@ -87,9 +87,9 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits) : BaseAdapter(
     }
 
     private val backgrounds = mapOf(
-            ViewState.SECOND to R.drawable.ic_side_from_back,
-            ViewState.SELECTED to R.drawable.ic_side_to_back,
-            ViewState.NORMAL to R.drawable.ic_side_panel_back
+            ViewState.SECOND to R.drawable.bg_side_from,
+            ViewState.SELECTED to R.drawable.bg_side_to,
+            ViewState.NORMAL to R.drawable.bg_side_panel
     )
     private val nameColors = mapOf(
             ViewState.SECOND to R.color.inputNormal,

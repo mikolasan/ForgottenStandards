@@ -1,7 +1,6 @@
 package io.github.mikolasan.imperialrussia
 
 import android.content.Context
-import android.os.Build
 import android.text.InputType
 import android.widget.EditText
 import android.widget.TextView
@@ -11,7 +10,6 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import io.github.mikolasan.ratiogenerator.ImperialUnit
-import java.text.DecimalFormat
 import java.util.Locale
 
 
@@ -38,7 +36,7 @@ class ImperialUnitPanel(context: Context, attributeSet: AttributeSet) : Constrai
 
     fun setHighlight(highlight: Boolean) {
         isActive = highlight
-        layout.setBackgroundResource(if (highlight) R.drawable.ic_selected_panel_back else R.drawable.ic_input_panel_back)
+        layout.setBackgroundResource(if (highlight) R.drawable.bg_selected_panel else R.drawable.bg_input_panel)
         input.setTextColor(if (highlight) colorInputSelected else colorInputNormal)
         if (!isActive && hasUnitAssigned() && getString() == "") {
             setUnitValue(0.0)

@@ -39,7 +39,7 @@ class SwitchFragment : Fragment(R.layout.fragment_switch) {
                 ImperialUnitCategoryName("Angle")
         )
         categoryGrid.adapter = ImperialCategoryAdapter(categories, activity as MainActivity);
-        val manager = GridLayoutManager(activity as MainActivity, 3, GridLayoutManager.VERTICAL, false)
+        val manager = GridLayoutManager(activity as MainActivity, 2, GridLayoutManager.VERTICAL, false)
         categoryGrid.layoutManager = manager
         view.findViewById<ConstraintLayout>(R.id.switch_layout).setOnClickListener{
             (activity as MainActivity).hideTypeSwitcher()

@@ -12,26 +12,24 @@
         android:layout_height="match_parent"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_background_damask"
+        android:src="@drawable/bg_damask"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <fragment
-        android:id="@+id/converter"
-        android:name="io.github.mikolasan.imperialrussia.ConverterFragment"
+        android:id="@+id/categories"
+        android:name="io.github.mikolasan.imperialrussia.SwitchFragment"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        app:layout_constraintHeight_min="@dimen/min_converter_height"
-        app:layout_constraintWidth_max="@dimen/max_converter_width"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/list"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/list"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintWidth_default="percent"
         app:layout_constraintWidth_percent="0.3"
-        tools:layout="@layout/fragment_converter" />
+        tools:layout="@layout/fragment_switch" />
 
     <fragment
         android:id="@+id/list"
@@ -39,7 +37,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/description"
+        app:layout_constraintEnd_toStartOf="@id/categories"
         app:layout_constraintStart_toEndOf="@id/converter"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_default="percent"
@@ -47,37 +45,16 @@
         tools:layout="@layout/fragment_list" />
 
     <fragment
-        android:id="@+id/description"
-        android:name="io.github.mikolasan.imperialrussia.DescriptionFragment"
+        android:id="@+id/converter"
+        android:name="io.github.mikolasan.imperialrussia.ConverterFragment"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/list"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintWidth_default="percent"
         app:layout_constraintWidth_percent="0.3"
-        tools:layout="@layout/fragment_description" />
-
-    <androidx.fragment.app.FragmentContainerView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/fragment_container_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <!--<androidx.appcompat.widget.AppCompatButton-->
-    <!--android:id="@+id/language"-->
-    <!--style="@android:style/Widget.Button"-->
-    <!--android:layout_width="@dimen/op_key_side"-->
-    <!--android:layout_height="@dimen/op_key_side"-->
-    <!--android:layout_marginStart="4dp"-->
-    <!--android:layout_marginTop="8dp"-->
-    <!--android:background="@drawable/ic_keyboard_special_back"-->
-    <!--android:text="@string/lang_ru"-->
-    <!--android:textAppearance="@style/ImperialKeypad"-->
-    <!--android:textColor="@color/keyboardSpecial"-->
-    <!--android:textSize="28sp"-->
-    <!--app:layout_constraintStart_toStartOf="parent"-->
-    <!--app:layout_constraintTop_toTopOf="parent" />-->
+        tools:layout="@layout/fragment_converter" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
