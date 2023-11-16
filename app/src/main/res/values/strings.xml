@@ -1,7 +1,7 @@
 <resources>
-    <string name="app_name">Imperial Russia</string>
-    <string name="key_hide" translatable="false">v</string>
+    <string name="app_name">Forgotten Standards</string>
     <string name="key_back" translatable="false">⌫</string>
+    <string name="key_hide" translatable="false">▼</string>
     <string name="key_clear" translatable="false">C</string>
     <string name="key_mult" translatable="false">×</string>
     <string name="key_div" translatable="false">÷</string>

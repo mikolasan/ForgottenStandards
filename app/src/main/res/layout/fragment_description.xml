@@ -22,6 +22,6 @@
         android:maxLines="5"
         android:ellipsize="end"
         android:textAppearance="@style/ImperialTales"
-        android:textColor="@color/colorPrimary" />
+        android:textColor="@color/primary" />
 
 </FrameLayout>

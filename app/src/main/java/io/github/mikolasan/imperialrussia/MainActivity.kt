@@ -338,7 +338,7 @@ class MainActivity : FragmentActivity() {
     fun showTypeSwitcher() {
         supportFragmentManager.commit {
             setReorderingAllowed(true)
-            add(R.id.fragment_container_view, switchFragment)
+//            add(R.id.fragment_container_view, switchFragment)
         }
     }
 

@@ -25,19 +25,21 @@ class ImperialUnitPanel(context: Context, attributeSet: AttributeSet) : Constrai
     private val hint: TextView = findViewById(R.id.panel_hint)
     private val layout: ConstraintLayout = findViewById(R.id.big_unit_space)
 
-    private val colorInputSelected = getColor(R.color.inputSelected)
-    private val colorInputNormal = getColor(R.color.inputNormal)
+    private val colorInputSelected = getColor(R.color.fontPrimary)
+    private val colorInputNormal = getColor(R.color.font)
 
     init {
         //input.inputType = InputType.TYPE_NULL // hide keyboard on focus
         input.inputType = InputType.TYPE_CLASS_NUMBER
+        input.setTextColor(colorInputNormal)
         deactivate()
     }
 
     fun setHighlight(highlight: Boolean) {
         isActive = highlight
-        layout.setBackgroundResource(if (highlight) R.drawable.bg_selected_panel else R.drawable.bg_input_panel)
-        input.setTextColor(if (highlight) colorInputSelected else colorInputNormal)
+        layout.setBackgroundResource(if (highlight) R.color.backgroundAccent else R.color.backgroundPanel)
+
+        title.setTextColor(if (highlight) colorInputSelected else colorInputNormal)
         if (!isActive && hasUnitAssigned() && getString() == "") {
             setUnitValue(0.0)
             updateDisplayValue()

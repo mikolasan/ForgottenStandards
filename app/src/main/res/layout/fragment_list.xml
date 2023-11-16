@@ -30,7 +30,7 @@
             android:layout_marginBottom="8dp"
             android:text="Length"
             android:textAppearance="@style/ImperialPanel"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/primary"
             android:textSize="@dimen/imperial_panel_text_size"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"

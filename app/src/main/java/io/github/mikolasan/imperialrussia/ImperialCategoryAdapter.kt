@@ -32,33 +32,17 @@ class ImperialCategoryAdapter(private val categories: Array<ImperialUnitCategory
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-//        val lastPosition = selectedPosition
-//        selectedPosition = holder.bindingAdapterPosition
-//        if (selectedPosition == holder.bindingAdapterPosition) {
-//            holder.space.setBackgroundResource(R.drawable.bg_side_from)
-//        } else {
-//            holder.space.setBackgroundResource(R.drawable.bg_input_panel)
-//        }
-//        holder.position = position
         holder.categoryTitle.text = categories[position].name
         holder.category = categories[position]
-        holder.space.setBackgroundResource(R.drawable.bg_input_panel)
-//        val type = categoryNameToType(holder.category!!)
-//            holder.space.setBackgroundResource(R.drawable.bg_side_from)
-//            holder.space.setBackgroundResource(R.drawable.bg_input_panel)
-
+        holder.space.setBackgroundResource(0)
         holder.space.setOnClickListener {
             // unselect previous holder
             selectedViewHolder?.let {
-                it.space.setBackgroundResource(R.drawable.bg_input_panel)
+                it.space.setBackgroundResource(0)
             }
-//            val layout = it as ConstraintLayout
-//            val h = layout.parent as ViewHolder
-//            selectedPosition = h.position
-
             selectedViewHolder = holder
             publishSubject.onCategorySelected(holder.category!!)
-            holder.space.setBackgroundResource(R.drawable.bg_side_from)
+            holder.space.setBackgroundResource(R.drawable.bg_rect_selected)
         }
     }
 }

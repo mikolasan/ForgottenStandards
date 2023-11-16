@@ -5,9 +5,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/unit_space"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/unit_list_height"
+    android:layout_height="wrap_content"
     android:layout_marginTop="5dp"
-    android:background="@drawable/bg_side_panel"
+    android:background="@color/backgroundAccent"
     android:elevation="3dp">
 
     <ImageView
@@ -41,7 +41,7 @@
         android:minWidth="100dp"
         android:text="Arshin"
         android:textAppearance="@style/ImperialSymbol"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/fontPrimary"
         android:textIsSelectable="false"
         android:textSize="@dimen/unit_list_name_size"
         app:layout_constraintEnd_toEndOf="parent"
@@ -53,9 +53,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
+        android:layout_marginBottom="4dp"
         android:text="ar"
         android:textAppearance="@style/ImperialSymbol"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/fontPrimary"
         android:textIsSelectable="false"
         android:textSize="@dimen/unit_list_name_size"
         app:layout_constraintBottom_toBottomOf="@+id/unit_value"
@@ -67,13 +68,14 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/unit_list_margin_start"
         android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:minWidth="100dp"
         android:text="123.45"
-        android:textAppearance="@style/ImperialSymbol"
-        android:textColor="@color/keyboardDigit"
+        android:textColor="@color/fontPrimary"
         android:textSize="@dimen/unit_list_value_size"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/unit_name" />
+        app:layout_constraintTop_toBottomOf="@+id/unit_name"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

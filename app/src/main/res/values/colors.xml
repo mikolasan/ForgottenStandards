@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#1E1E24</color>
+    <color name="background">#321D5E</color>
+    <color name="backgroundPanel">#4C3184</color>
+    <color name="backgroundAccent">#FAFAFA</color>
+    <color name="backgroundDark">#E3E4DB</color>
+    <color name="font">#FAFAFA</color>
+    <color name="primary">#FAFAFA</color>
+    <color name="fontPrimary">#1E1E24</color>
+    <color name="floatingButton">#A88CE3</color>
+
     <color name="colorPrimaryDark">#FFB433</color>
     <color name="colorAccent">#FCFCFC</color>
     <color name="colorAccentDark">#5BC0EB</color>
-    <color name="backgroundAccent">#534727</color>
-    <color name="backgroundDark">#1E1E24</color>
     <color name="inputSelected">#FCFCFC</color>
     <color name="inputNormal">#dfd5e6</color>
     <color name="keyboardDigit">#7B6D91</color>
-    <color name="keyboardFunc">#634A85</color>
-    <color name="keyboardSpecial">#A995C5</color>
-    <color name="action">#555555</color>
+    <color name="keyboardFunc">#FAFAFA</color>
+    <color name="keyboardSpecial">#321D5E</color>
+    <color name="backgroundKeyboardOperation">#321D5E</color>
+    <color name="action">#555C62</color>
     <color name="bookmark">#FF9800</color>
 </resources>

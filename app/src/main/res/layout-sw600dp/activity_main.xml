@@ -4,24 +4,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/motion_layout"
+    android:background="@color/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/wallpaper"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:adjustViewBounds="true"
-        android:scaleType="centerCrop"
-        android:src="@drawable/bg_damask"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <fragment
-        android:id="@+id/description"
-        android:name="io.github.mikolasan.imperialrussia.DescriptionFragment"
+        android:id="@+id/categories"
+        android:name="io.github.mikolasan.imperialrussia.SwitchFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintHeight_max="@dimen/max_description_height"
@@ -31,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_default="percent"
         app:layout_constraintWidth_percent="0.5"
-        tools:layout="@layout/fragment_description" />
+        tools:layout="@layout/fragment_switch" />
 
     <fragment
         android:id="@+id/converter"
@@ -42,7 +31,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/list"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/description"
+        app:layout_constraintTop_toBottomOf="@id/categories"
         app:layout_constraintWidth_default="percent"
         app:layout_constraintWidth_percent="0.5"
         tools:layout="@layout/fragment_converter" />
@@ -60,9 +49,5 @@
         app:layout_constraintWidth_percent="0.5"
         tools:layout="@layout/fragment_list" />
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragment_container_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

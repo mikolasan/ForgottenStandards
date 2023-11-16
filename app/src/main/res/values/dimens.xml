@@ -38,5 +38,7 @@
     <dimen name="imperial_panel_input_padding_start">12dp</dimen>
     <dimen name="imperial_panel_input_padding_end">12dp</dimen>
     <dimen name="imperial_panel_input_radius">12dp</dimen>
+    <dimen name="floating_button_width">40dp</dimen>
+    <dimen name="floating_button_height">40dp</dimen>
 
 </resources>
