@@ -2,12 +2,12 @@ package io.github.mikolasan.imperialrussia
 
 import android.content.Context
 import android.text.InputType
-import android.widget.EditText
-import android.widget.TextView
 import android.text.SpannableString
 import android.text.style.SuperscriptSpan
 import android.util.AttributeSet
 import android.view.View
+import android.widget.EditText
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import io.github.mikolasan.ratiogenerator.ImperialUnit
 import java.util.Locale

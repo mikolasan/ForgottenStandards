@@ -7,11 +7,10 @@ import android.text.style.RelativeSizeSpan
 import android.text.style.SuperscriptSpan
 import io.github.mikolasan.convertmeifyoucan.FunctionParser
 import io.github.mikolasan.ratiogenerator.ImperialUnit
-import io.github.mikolasan.ratiogenerator.ImperialUnitName
 import io.github.mikolasan.ratiogenerator.ImperialUnitType
 import io.github.mikolasan.ratiogenerator.findConversionFormula
 import java.text.DecimalFormat
-import java.util.*
+import java.util.Locale
 import kotlin.math.abs
 import kotlin.math.floor
 import kotlin.math.log10

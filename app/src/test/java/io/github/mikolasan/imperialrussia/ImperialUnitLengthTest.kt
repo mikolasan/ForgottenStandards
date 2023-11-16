@@ -3,8 +3,8 @@ package io.github.mikolasan.imperialrussia
 import io.github.mikolasan.ratiogenerator.ImperialUnit
 import io.github.mikolasan.ratiogenerator.ImperialUnitName
 import io.github.mikolasan.ratiogenerator.ImperialUnitType
-import org.junit.Test
 import org.junit.Assert.*
+import org.junit.Test
 
 
 class ImperialUnitLengthTest {

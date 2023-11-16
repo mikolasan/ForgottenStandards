@@ -2,7 +2,9 @@ package io.github.mikolasan.imperialrussia
 
 import android.content.Context
 import android.graphics.PorterDuff
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.Filter
 import android.widget.Filterable
@@ -10,7 +12,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import io.github.mikolasan.ratiogenerator.ImperialUnit
-import java.util.*
+import java.util.Locale
 
 class ImperialListAdapter(private val workingUnits: WorkingUnits) : BaseAdapter(), Filterable {
     var units: Array<ImperialUnit> = workingUnits.orderedUnits

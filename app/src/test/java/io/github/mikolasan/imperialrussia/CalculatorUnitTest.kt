@@ -1,8 +1,7 @@
 package io.github.mikolasan.imperialrussia
 
+import org.junit.Assert.assertEquals
 import org.junit.Test
-
-import org.junit.Assert.*
 
 /**
  * Local unit test, which will execute on the development machine (host).

@@ -2,7 +2,6 @@ package io.github.mikolasan.imperialrussia
 
 import android.text.Editable
 import android.text.TextWatcher
-import android.widget.EditText
 
 open class ImperialTextWatcher(val panel: ImperialUnitPanel, val fragment: ConverterFragment, val activity: MainActivity) : TextWatcher {
     var selfEditing = false

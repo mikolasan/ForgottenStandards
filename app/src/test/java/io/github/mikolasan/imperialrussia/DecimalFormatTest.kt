@@ -1,9 +1,9 @@
 package io.github.mikolasan.imperialrussia
 
+import org.junit.Assert.assertEquals
 import org.junit.Test
-import org.junit.Assert.*
 import java.text.DecimalFormatSymbols
-import java.util.*
+import java.util.Locale
 
 
 /**

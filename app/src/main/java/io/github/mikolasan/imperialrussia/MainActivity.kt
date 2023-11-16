@@ -3,28 +3,21 @@ package io.github.mikolasan.imperialrussia
 import android.os.Bundle
 import android.text.Editable
 import android.view.View
-import android.widget.FrameLayout
-import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentContainer
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
-import androidx.viewpager2.widget.ViewPager2
 import io.github.mikolasan.ratiogenerator.ImperialUnit
 import io.github.mikolasan.ratiogenerator.ImperialUnitName
-import io.github.mikolasan.ratiogenerator.ImperialUnitType
 import io.noties.markwon.Markwon
 import java.io.IOException
-import java.lang.IllegalStateException
-import java.util.*
+import java.util.Locale
 
 
 class MainActivity : FragmentActivity() {
