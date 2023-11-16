@@ -314,6 +314,7 @@ class MainActivity : FragmentActivity() {
                     val panel = fragment.selectedPanel
                     panel.unit = unit
                     panel.setUnitValue(value)
+                    panel.updateDisplayValue()
                 }
                 unitObserver.addObserver(callable)
             }

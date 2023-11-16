@@ -14,15 +14,15 @@ description = 'imperialrussia-android'
 
 android {
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
 
-    compileSdkVersion 34
     defaultConfig {
         applicationId "io.github.mikolasan.imperialrussia"
-        minSdkVersion 19
+        minSdkVersion 26
         targetSdkVersion 34
+        compileSdk 34
         versionCode 4
         versionName "1.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -35,6 +35,9 @@ android {
 
     buildTypes {
         debug {
+            // for low overhead profiling
+            debuggable true
+
             // Enables code shrinking, obfuscation, and optimization for only
             // your project's release build type.
             minifyEnabled false
@@ -55,8 +58,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    buildToolsVersion '33.0.0'
     namespace 'io.github.mikolasan.imperialrussia'
+    compileSdk 34
+    buildToolsVersion '34.0.0'
 }
 
 task runRatioGenerator(type: JavaExec) {
