@@ -23,7 +23,7 @@ android {
         minSdkVersion 26
         targetSdkVersion 34
         compileSdk 34
-        versionCode 4
+        versionCode 5
         versionName "1.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         resourceConfigurations += ['en', 'ru']
