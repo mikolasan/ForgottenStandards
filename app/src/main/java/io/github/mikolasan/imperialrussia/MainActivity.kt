@@ -27,7 +27,7 @@ class MainActivity : FragmentActivity() {
 
     private var converterFragment: ConverterFragment? = null
     private var unitListFragment: UnitListFragment? = null
-    private var switchFragment: SwitchFragment = SwitchFragment()
+    private var switchFragment: SwitchFragment? = null
     private var keyboardFragment: KeyboardFragment? = null
     private var searchFragment: SearchFragment? = null
     private val unitObserver = ImperialUnitObserver(null)
@@ -144,6 +144,7 @@ class MainActivity : FragmentActivity() {
         workingUnits.topUnit.restoreValue(topString, BasicCalculator(topString).eval())
         val bottomString = settings.restoreBottomString()
         workingUnits.bottomUnit.restoreValue(bottomString, BasicCalculator(bottomString).eval())
+
     }
 
     fun swapWorkingUnits() {
@@ -277,6 +278,8 @@ class MainActivity : FragmentActivity() {
             // ignore
         }
 
+        settings.saveTopUnit(workingUnits.topUnit, workingUnits.topUnit.formattedString)
+        settings.saveBottomUnit(workingUnits.bottomUnit, workingUnits.bottomUnit.formattedString)
 
 //        try {
 //            val label = findViewById<TextView>(R.id.description_text)
@@ -362,10 +365,10 @@ class MainActivity : FragmentActivity() {
     }
 
     fun hideTypeSwitcher() {
-        supportFragmentManager.commit {
-            setReorderingAllowed(true)
-            remove(switchFragment)
-        }
+//        supportFragmentManager.commit {
+//            setReorderingAllowed(true)
+//            remove(switchFragment)
+//        }
     }
 
     fun onCategorySelected(category: ImperialUnitCategoryName) {
@@ -406,6 +409,7 @@ class MainActivity : FragmentActivity() {
         unitObserver.setUnitAndUpdateValue(workingUnits.topUnit)
 //        hideTypeSwitcher()
 
+        settings.saveCategory(category.name.toUpperCase())
     }
 
     fun showUnitList() {

@@ -33,8 +33,15 @@ class ImperialCategoryAdapter(private val categories: Array<ImperialUnitCategory
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.categoryTitle.text = categories[position].name
-        holder.category = categories[position]
-        holder.space.setBackgroundResource(0)
+        val viewCategory = categories[position]
+        holder.category = viewCategory
+        val selectedCategory = publishSubject.workingUnits.selectedCategory
+        if (selectedCategory == categoryNameToType(viewCategory)) {
+            selectedViewHolder = holder
+            holder.space.setBackgroundResource(R.drawable.bg_rect_selected)
+        } else {
+            holder.space.setBackgroundResource(0)
+        }
         holder.space.setOnClickListener {
             // unselect previous holder
             selectedViewHolder?.let {

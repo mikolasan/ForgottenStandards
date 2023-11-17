@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView
 
 class SwitchFragment : Fragment(R.layout.fragment_switch) {
 
+    lateinit var categoryAdapter: ImperialCategoryAdapter
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_switch, container, false)
@@ -36,7 +38,8 @@ class SwitchFragment : Fragment(R.layout.fragment_switch) {
                 ImperialUnitCategoryName("Fuel"),
                 ImperialUnitCategoryName("Angle")
         )
-        categoryGrid.adapter = ImperialCategoryAdapter(categories, activity as MainActivity);
+        categoryAdapter = ImperialCategoryAdapter(categories, activity as MainActivity)
+        categoryGrid.adapter = categoryAdapter
         val manager = GridLayoutManager(activity as MainActivity, 2, GridLayoutManager.VERTICAL, false)
         categoryGrid.layoutManager = manager
         view.findViewById<ConstraintLayout>(R.id.switch_layout).setOnClickListener{

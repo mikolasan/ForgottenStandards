@@ -45,7 +45,7 @@ class ImperialSettings(application: Application) : AndroidViewModel(application)
             ImperialUnitType.WEIGHT to MinWeightUnits
     )
 
-    private val preferencesFile = "ImperialRussiaPref.8"
+    private val preferencesFile = "ImperialRussiaPref.9"
 
     private val preferencesEditor: SharedPreferences.Editor by lazy {
         return@lazy preferences.edit()
@@ -87,6 +87,7 @@ class ImperialSettings(application: Application) : AndroidViewModel(application)
             orderedUnits = currentUnits
             topUnit = topPanelUnit
             bottomUnit = bottomPanelUnit
+            selectedCategory = topPanelUnit.unitType
             listAdapter = ImperialListAdapter(this)
         }
     }
@@ -130,6 +131,11 @@ class ImperialSettings(application: Application) : AndroidViewModel(application)
             preferencesEditor.putInt(settingName, i)
         }
         println("== END ==")
+        preferencesEditor.apply()
+    }
+
+    fun saveCategory(serializedString: String) {
+        preferencesEditor.putString("category", serializedString)
         preferencesEditor.apply()
     }
 
