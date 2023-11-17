@@ -6,14 +6,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentContainerView
 import io.github.mikolasan.ratiogenerator.ImperialUnit
 
 class ConverterFragment : Fragment() {
 
+    var keyboardFragment: KeyboardFragment? = null
+    var keyboardButtonFragment: KeyboardButtonFragment? = null
     lateinit var bottomPanel: ImperialUnitPanel
     lateinit var topPanel: ImperialUnitPanel
     lateinit var selectedPanel: ImperialUnitPanel
     private lateinit var ratioLabel: TextView
+    lateinit var keyboardView: FragmentContainerView
+    lateinit var keyboardButtonView: FragmentContainerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +35,10 @@ class ConverterFragment : Fragment() {
         selectedPanel = topPanel // init before use
         setPanelListeners(view)
 
+        keyboardView = view.findViewById(R.id.keyboard)
+        keyboardButtonView = view.findViewById(R.id.keyboard_button)
+
+
 //        arguments?.let {
 //            val categoryName = it.getString("category")
 //            val topUnitName = it.getString("topUnit")
@@ -42,6 +51,9 @@ class ConverterFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
+
+        keyboardFragment = keyboardView.getFragment()
+        keyboardButtonFragment = keyboardButtonView.getFragment()
 
         (activity as? MainActivity)?.workingUnits?.let { workingUnits ->
             restoreTopPanel(workingUnits.topUnit)

@@ -70,6 +70,26 @@ class MainActivity : FragmentActivity() {
 
     }
 
+    override fun onStart() {
+        super.onStart()
+
+        val listVisible = unitListFragment != null
+        val converterVisible = converterFragment != null
+        if (!converterVisible && listVisible) {
+            // only list - show button
+            unitListFragment?.keyboardButtonFragment?.view?.visibility = View.VISIBLE
+            unitListFragment?.keyboardButtonView?.visibility = View.VISIBLE
+        } else if (converterVisible && !listVisible) {
+            // only converter - show keyboard
+            converterFragment?.keyboardFragment?.view?.visibility = View.VISIBLE
+            converterFragment?.keyboardView?.visibility = View.VISIBLE
+        } else {
+            // show keyboard only in converter
+            converterFragment?.keyboardFragment?.view?.visibility = View.VISIBLE
+            converterFragment?.keyboardView?.visibility = View.VISIBLE
+        }
+    }
+
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         // onRestoreInstanceState works against me. I include layouts and included layouts do not have
         // unique ids. And it calls TextChangedListener on my inputs with wrong values.
@@ -328,7 +348,6 @@ class MainActivity : FragmentActivity() {
             }
             is SwitchFragment -> switchFragment = fragment
             is KeyboardFragment -> {
-                keyboardFragment = fragment
                 fragment.observer = unitObserver
             }
             is SearchFragment -> searchFragment = fragment
@@ -396,24 +415,41 @@ class MainActivity : FragmentActivity() {
     }
 
     fun showKeyboard() {
-        // show fragment
-        unitListFragment?.view?.let {
-            val list = it.findViewById<ListView>(R.id.units_list)
-            print(list.lastVisiblePosition)
-            val layout = it.findViewById<FragmentContainerView>(R.id.keyboard)
-            layout.visibility = View.VISIBLE
-            print(list.lastVisiblePosition)
+        val listVisible = unitListFragment != null
+        val converterVisible = converterFragment != null
+
+        if (!converterVisible && listVisible) {
+            unitListFragment?.keyboardFragment?.view?.visibility = View.VISIBLE
+            unitListFragment?.keyboardView?.visibility = View.VISIBLE
+        } else if (converterVisible && !listVisible) {
+            converterFragment?.keyboardFragment?.view?.visibility = View.VISIBLE
+            converterFragment?.keyboardView?.visibility = View.VISIBLE
+        } else {
+            converterFragment?.keyboardFragment?.view?.visibility = View.VISIBLE
+            converterFragment?.keyboardView?.visibility = View.VISIBLE
         }
-        // and its main layout
-        keyboardFragment?.view?.let {
-            it.visibility = View.VISIBLE
-        }
-        findViewById<FragmentContainerView>(R.id.keyboard_button)?.visibility = View.INVISIBLE
+
+        unitListFragment?.keyboardButtonFragment?.view?.visibility = View.INVISIBLE
+        converterFragment?.keyboardButtonFragment?.view?.visibility = View.INVISIBLE
     }
 
     fun showKeyboardButton() {
-        keyboardFragment?.view?.visibility = View.GONE
-        findViewById<FragmentContainerView>(R.id.keyboard_button)?.visibility = View.VISIBLE
+        val listVisible = unitListFragment != null
+        val converterVisible = converterFragment != null
+
+        if (!converterVisible && listVisible) {
+            unitListFragment?.keyboardButtonFragment?.view?.visibility = View.VISIBLE
+            unitListFragment?.keyboardButtonView?.visibility = View.VISIBLE
+        } else if (converterVisible && !listVisible) {
+            converterFragment?.keyboardButtonFragment?.view?.visibility = View.VISIBLE
+            converterFragment?.keyboardButtonView?.visibility = View.VISIBLE
+        } else {
+            converterFragment?.keyboardButtonFragment?.view?.visibility = View.VISIBLE
+            converterFragment?.keyboardButtonView?.visibility = View.VISIBLE
+        }
+
+        unitListFragment?.keyboardFragment?.view?.visibility = View.GONE
+        converterFragment?.keyboardFragment?.view?.visibility = View.GONE
     }
 
     fun showSearch() {

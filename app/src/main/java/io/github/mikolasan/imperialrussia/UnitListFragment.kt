@@ -14,10 +14,14 @@ import io.github.mikolasan.ratiogenerator.ImperialUnit
 
 class UnitListFragment : Fragment() {
 
+    var keyboardFragment: KeyboardFragment? = null
+    var keyboardButtonFragment: KeyboardButtonFragment? = null
     private lateinit var unitsList: ListView
     lateinit var listAdapter: ImperialListAdapter
     private var switchFragment: SwitchFragment? = null
     private lateinit var title: TextView
+    lateinit var keyboardView: FragmentContainerView
+    lateinit var keyboardButtonView: FragmentContainerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,12 +52,18 @@ class UnitListFragment : Fragment() {
         title = view.findViewById(R.id.unit_type_label)
         title.text = arguments?.getString("categoryTitle")
 
+        keyboardView = view.findViewById(R.id.keyboard)
+        keyboardButtonView = view.findViewById(R.id.keyboard_button)
+
         setListeners(view)
         return view
     }
 
     override fun onStart() {
         super.onStart()
+
+        keyboardFragment = keyboardView.getFragment()
+        keyboardButtonFragment = keyboardButtonView.getFragment()
 
         (activity as? MainActivity)?.workingUnits?.let { workingUnits ->
             restoreSelectedUnit(workingUnits.topUnit)
