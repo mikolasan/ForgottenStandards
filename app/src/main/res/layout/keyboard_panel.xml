@@ -10,6 +10,7 @@
     android:background="@color/backgroundPanel"
     android:minWidth="@dimen/min_imperial_panel_width"
     android:paddingLeft="12dp"
+    android:elevation="5dp"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toBottomOf="@id/convert_from">
 

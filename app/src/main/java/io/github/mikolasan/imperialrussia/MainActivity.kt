@@ -73,21 +73,21 @@ class MainActivity : FragmentActivity() {
     override fun onStart() {
         super.onStart()
 
-        val listVisible = unitListFragment != null
-        val converterVisible = converterFragment != null
-        if (!converterVisible && listVisible) {
-            // only list - show button
-            unitListFragment?.keyboardButtonFragment?.view?.visibility = View.VISIBLE
-            unitListFragment?.keyboardButtonView?.visibility = View.VISIBLE
-        } else if (converterVisible && !listVisible) {
-            // only converter - show keyboard
-            converterFragment?.keyboardFragment?.view?.visibility = View.VISIBLE
-            converterFragment?.keyboardView?.visibility = View.VISIBLE
-        } else {
-            // show keyboard only in converter
-            converterFragment?.keyboardFragment?.view?.visibility = View.VISIBLE
-            converterFragment?.keyboardView?.visibility = View.VISIBLE
-        }
+//        val listVisible = unitListFragment != null
+//        val converterVisible = converterFragment != null
+//        if (!converterVisible && listVisible) {
+//            // only list - show button
+//            unitListFragment?.keyboardButtonFragment?.view?.visibility = View.VISIBLE
+//            unitListFragment?.keyboardButtonView?.visibility = View.VISIBLE
+//        } else if (converterVisible && !listVisible) {
+//            // only converter - show keyboard
+//            converterFragment?.keyboardFragment?.view?.visibility = View.VISIBLE
+//            converterFragment?.keyboardView?.visibility = View.VISIBLE
+//        } else {
+//            // show keyboard only in converter
+//            converterFragment?.keyboardFragment?.view?.visibility = View.VISIBLE
+//            converterFragment?.keyboardView?.visibility = View.VISIBLE
+//        }
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
@@ -410,11 +410,31 @@ class MainActivity : FragmentActivity() {
 //        hideTypeSwitcher()
 
         settings.saveCategory(category.name.toUpperCase())
+
+
     }
 
     fun showUnitList() {
         converterFragment?.let { f ->
             f.view?.visibility = if (f.isVisible) View.GONE else View.VISIBLE
+        }
+    }
+
+    fun updateKeyboard() {
+        val listVisible = unitListFragment != null
+        val converterVisible = converterFragment != null
+        if (!converterVisible && listVisible) {
+            // only list - show button
+            unitListFragment?.keyboardButtonFragment?.view?.visibility = View.VISIBLE
+            unitListFragment?.keyboardButtonView?.visibility = View.VISIBLE
+        } else if (converterVisible && !listVisible) {
+            // only converter - show keyboard
+            converterFragment?.keyboardFragment?.view?.visibility = View.VISIBLE
+            converterFragment?.keyboardView?.visibility = View.VISIBLE
+        } else {
+            // show keyboard only in converter
+            converterFragment?.keyboardFragment?.view?.visibility = View.VISIBLE
+            converterFragment?.keyboardView?.visibility = View.VISIBLE
         }
     }
 

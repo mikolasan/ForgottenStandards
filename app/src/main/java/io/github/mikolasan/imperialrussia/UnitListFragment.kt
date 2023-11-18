@@ -5,9 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.widget.EditText
 import android.widget.ListView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
 import io.github.mikolasan.ratiogenerator.ImperialUnit
@@ -48,6 +50,10 @@ class UnitListFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_list, container, false)
         unitsList = view.findViewById(R.id.units_list)
         unitsList.adapter = listAdapter
+        val searchInput = view.findViewById<EditText>(R.id.search_input)
+        searchInput.addTextChangedListener {
+            unitsList.setFilterText(it.toString())
+        }
 
         title = view.findViewById(R.id.unit_type_label)
         title.text = arguments?.getString("categoryTitle")
@@ -71,6 +77,8 @@ class UnitListFragment : Fragment() {
             val unit = workingUnits.topUnit
             listAdapter.updateAllValues(unit, unit.value)
         }
+
+        (activity as? MainActivity)?.updateKeyboard()
     }
 
     override fun onResume() {

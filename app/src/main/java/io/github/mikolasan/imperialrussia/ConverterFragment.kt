@@ -61,6 +61,8 @@ class ConverterFragment : Fragment() {
             selectPanel(topPanel, bottomPanel)
             displayUnitValues()
         }
+
+        (activity as? MainActivity)?.updateKeyboard()
     }
 
     fun selectPanel(new: ImperialUnitPanel, old: ImperialUnitPanel) {
