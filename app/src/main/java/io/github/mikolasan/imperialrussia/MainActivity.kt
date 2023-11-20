@@ -1,8 +1,11 @@
 package io.github.mikolasan.imperialrussia
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.view.View
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
@@ -390,10 +393,13 @@ class MainActivity : FragmentActivity() {
         val type = categoryNameToType(category)
         workingUnits.selectedCategory = type
         workingUnits.orderedUnits = workingUnits.allUnits.getValue(type)
-        workingUnits.listAdapter.units = workingUnits.orderedUnits
         workingUnits.topUnit = workingUnits.orderedUnits[0]
         workingUnits.bottomUnit = workingUnits.orderedUnits[1]
+
+        workingUnits.listAdapter.allUnits = workingUnits.orderedUnits
+        workingUnits.listAdapter.units = workingUnits.listAdapter.allUnits
         workingUnits.listAdapter.updateAllValues(workingUnits.topUnit, 0.0)
+
         converterFragment?.run {
             topPanel.changeUnit(workingUnits.topUnit)
             bottomPanel.changeUnit(workingUnits.bottomUnit)
@@ -455,6 +461,18 @@ class MainActivity : FragmentActivity() {
 
         unitListFragment?.keyboardButtonFragment?.view?.visibility = View.INVISIBLE
         converterFragment?.keyboardButtonFragment?.view?.visibility = View.INVISIBLE
+
+        // hide soft Android keyboard
+        // Only runs if there is a view that is currently focused
+        this.currentFocus?.let { view ->
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            imm?.hideSoftInputFromWindow(view.windowToken, 0)
+        }
+
+        unitListFragment
+            ?.view
+            ?.findViewById<EditText>(R.id.search_input)
+            ?.clearFocus()
     }
 
     fun showKeyboardButton() {

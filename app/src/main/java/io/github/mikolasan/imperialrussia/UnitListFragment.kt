@@ -54,6 +54,11 @@ class UnitListFragment : Fragment() {
         searchInput.addTextChangedListener {
             listAdapter.filter.filter(it.toString())
         }
+        searchInput.setOnFocusChangeListener { view, hasFocus ->
+            if (hasFocus) {
+                (activity as MainActivity).showKeyboardButton()
+            }
+        }
 
         title = view.findViewById(R.id.unit_type_label)
         title.text = arguments?.getString("categoryTitle")
@@ -71,12 +76,12 @@ class UnitListFragment : Fragment() {
         keyboardFragment = keyboardView.getFragment()
         keyboardButtonFragment = keyboardButtonView.getFragment()
 
-        (activity as? MainActivity)?.workingUnits?.let { workingUnits ->
-            restoreSelectedUnit(workingUnits.topUnit)
-            restoreSecondUnit(workingUnits.bottomUnit)
-            val unit = workingUnits.topUnit
-            listAdapter.updateAllValues(unit, unit.value)
-        }
+//        (activity as? MainActivity)?.workingUnits?.let { workingUnits ->
+//            restoreSelectedUnit(workingUnits.topUnit)
+//            restoreSecondUnit(workingUnits.bottomUnit)
+//            val unit = workingUnits.topUnit
+//            listAdapter.updateAllValues(unit, unit.value)
+//        }
 
         (activity as? MainActivity)?.updateKeyboard()
     }
