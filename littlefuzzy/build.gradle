@@ -1,0 +1,16 @@
+version = '0.0.1'
+description = 'littlefuzzy'
+
+apply plugin: 'java-library'
+apply plugin: 'kotlin'
+
+version '0.1.1'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+dependencies {
+    testImplementation 'junit:junit:4.13.2'
+}

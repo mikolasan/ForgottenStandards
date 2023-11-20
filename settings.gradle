@@ -1,4 +1,5 @@
 rootProject.name = 'imperialrussia'
 include ':ratiogenerator',
         ':convertmeifyoucan',
+        ':littlefuzzy',
         ':app'
