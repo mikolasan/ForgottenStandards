@@ -2,17 +2,17 @@ package com.willowtreeapps.fuzzywuzzy
 
 import com.willowtreeapps.fuzzywuzzy.diffutils.Extractor
 import com.willowtreeapps.fuzzywuzzy.diffutils.algorithms.WeightedRatio
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
+import org.junit.Test
+import org.junit.Before
 
 class ExtractorTest {
 
     lateinit var choices: List<String>
     private lateinit var extractor: Extractor
 
-    @BeforeTest
+    @Before
     fun setUp() {
         choices = listOf("google", "bing", "facebook", "linkedin", "twitter", "googleplus", "bingnews", "plexoogl")
         extractor = Extractor()

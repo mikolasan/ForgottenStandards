@@ -52,7 +52,7 @@ class UnitListFragment : Fragment() {
         unitsList.adapter = listAdapter
         val searchInput = view.findViewById<EditText>(R.id.search_input)
         searchInput.addTextChangedListener {
-            unitsList.setFilterText(it.toString())
+            listAdapter.filter.filter(it.toString())
         }
 
         title = view.findViewById(R.id.unit_type_label)

@@ -3,16 +3,16 @@ package com.willowtreeapps.fuzzywuzzy
 
 import com.willowtreeapps.fuzzywuzzy.diffutils.FuzzySearch
 import com.willowtreeapps.fuzzywuzzy.diffutils.ratio.SimpleRatio
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
+import org.junit.Test
 
 
 class FuzzyWuzzyTest {
 
 
-    val choices = listOf("google", "bing", "facebook", "linkedin", "twitter", "googleplus", "bingnews", "plexoogl")
-    val moreChoices = listOf("Atlanta Falcons", "New York Jets", "New York Giants", "Dallas Cowboys")
+    private val choices = listOf("google", "bing", "facebook", "linkedin", "twitter", "googleplus", "bingnews", "plexoogl")
+    private val moreChoices = listOf("Atlanta Falcons", "New York Jets", "New York Giants", "Dallas Cowboys")
 
 
     @Test
@@ -84,10 +84,10 @@ class FuzzyWuzzyTest {
         val res2 = FuzzySearch.extractTop("goolge", choices, SimpleRatio(), 2)
 
         assertEquals(res.size, 2)
-        assertTrue(res.get(0).string == "google" && res.get(1).string == "googleplus")
+        assertTrue(res[0].string == "google" && res.get(1).string == "googleplus")
 
         assertEquals(res2.size, 2)
-        assertTrue(res2.get(0).string == "google" && res2.get(1).string == "googleplus")
+        assertTrue(res2[0].string == "google" && res2.get(1).string == "googleplus")
 
         assertTrue(FuzzySearch.extractTop("goolge", choices, 2, 100).isEmpty())
 
@@ -99,7 +99,7 @@ class FuzzyWuzzyTest {
         val res = FuzzySearch.extractAll("goolge", choices)
 
         assertEquals(res.size, choices.size)
-        assertEquals(res.get(0).string, "google")
+        assertEquals(res[0].string, "google")
 
         assertEquals(FuzzySearch.extractAll("goolge", choices, 40).size, 3)
 
@@ -111,8 +111,8 @@ class FuzzyWuzzyTest {
         val res = FuzzySearch.extractSorted("goolge", choices)
 
         assertEquals(res.size, choices.size)
-        assertEquals(res.get(0).string, "google")
-        assertEquals(res.get(1).string, "googleplus")
+        assertEquals(res[0].string, "google")
+        assertEquals(res[1].string, "googleplus")
 
         assertEquals(FuzzySearch.extractSorted("goolge", choices, 40).size, 3)
 

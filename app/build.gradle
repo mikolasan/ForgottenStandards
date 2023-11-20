@@ -20,10 +20,10 @@ android {
 
     defaultConfig {
         applicationId "io.github.mikolasan.imperialrussia"
-        minSdkVersion 26
+        minSdkVersion 31
         targetSdkVersion 34
         compileSdk 34
-        versionCode 5
+        versionCode 6
         versionName "1.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         resourceConfigurations += ['en', 'ru']
@@ -81,6 +81,7 @@ task runRatioGenerator(type: JavaExec) {
 }
 
 dependencies {
+    implementation project(':littlefuzzy')
     implementation project(':convertmeifyoucan')
     implementation project(':ratiogenerator')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"

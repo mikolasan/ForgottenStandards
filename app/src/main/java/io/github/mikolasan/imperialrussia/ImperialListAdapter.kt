@@ -11,11 +11,16 @@ import android.widget.Filterable
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.willowtreeapps.fuzzywuzzy.diffutils.FuzzySearch
 import io.github.mikolasan.ratiogenerator.ImperialUnit
 import java.util.Locale
 
+
 class ImperialListAdapter(private val workingUnits: WorkingUnits) : BaseAdapter(), Filterable {
+    var allUnits: Array<ImperialUnit> = workingUnits.orderedUnits
     var units: Array<ImperialUnit> = workingUnits.orderedUnits
+    var names: List<String> = listOf()
+
     private var arrowClickListener: (Int, View, ImperialUnit) -> Unit = { position, _, _ ->
         println("arrowClickListener $position")
     }
@@ -39,13 +44,15 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits) : BaseAdapter(
     }
 
     fun updateAllValues(unit: ImperialUnit?, value: Double) {
-        units.forEach { u ->
+        allUnits.forEach { u ->
             if (u != unit) {
                 val v = convertValue(unit, u, value)
                 u.value = v
                 u.formattedString = makeSerializedString(valueForDisplay(v))
             }
         }
+        names = allUnits.map { u -> u.unitName.name.lowercase(Locale.ROOT) }
+//        units = units
         notifyDataSetChanged()
     }
 
@@ -188,24 +195,27 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits) : BaseAdapter(
 
     private val customFilter = object : Filter() {
         override fun performFiltering(constraint: CharSequence?): FilterResults {
-            val filteredUnits = mutableListOf<ImperialUnit>()
-            if (constraint.isNullOrEmpty()) {
-                filteredUnits.addAll(units)
-            } else {
-                for (item in units) {
-                    if (item.unitName.name
-                            .toLowerCase()
-                            .startsWith(constraint.toString().toLowerCase())) {
-                        filteredUnits.add(item)
-                    }
-                }
-            }
             val results = FilterResults()
-            results.values = filteredUnits
-            return results
+            if (constraint.isNullOrEmpty()) {
+                results.values = allUnits
+                return results
+            } else {
+                val filteredUnits = mutableListOf<ImperialUnit>()
+                val query = constraint.toString().lowercase(Locale.ROOT)
+                val filteredUNames = FuzzySearch.extractSorted(query, names, 50)
+                for (n in filteredUNames) {
+                    allUnits
+                        .find { u -> u.unitName.name.lowercase(Locale.ROOT) == n.string }
+                        ?.let {u -> filteredUnits.add(u) }
+                }
+                results.values = filteredUnits.toTypedArray()
+                return results
+            }
+
         }
 
         override fun publishResults(constraint: CharSequence?, filterResults: FilterResults?) {
+            units = filterResults?.values as Array<ImperialUnit>
             notifyDataSetChanged()
             // TODO: use submitList from AsyncListDiffer (used in ListAdapter)
             //submitList(filterResults?.values as MutableList<String>)

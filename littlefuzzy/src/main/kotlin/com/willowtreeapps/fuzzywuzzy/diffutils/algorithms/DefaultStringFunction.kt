@@ -1,8 +1,7 @@
 package com.willowtreeapps.fuzzywuzzy.diffutils.algorithms
 
 import com.willowtreeapps.fuzzywuzzy.ToStringFunction
-
-expect val pattern: String
+import java.util.Locale
 
 class DefaultStringFunction : ToStringFunction<String> {
 
@@ -12,10 +11,11 @@ class DefaultStringFunction : ToStringFunction<String> {
      * @param `item` Input string
      * @return The processed string
      */
-    override fun apply(item: String) = subNonAlphaNumeric(item, " ").toLowerCase().trim { it <= ' ' }
+    override fun apply(item: String) = subNonAlphaNumeric(item, " ").lowercase(Locale.ROOT).trim { it <= ' ' }
 
     companion object {
 
+        private const val pattern: String = "(?U)[^\\p{Alnum}]"
         private const val nonUnicodePattern = "[^\\p{Alnum}]"
         private val r by lazy {
             try {
