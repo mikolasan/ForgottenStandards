@@ -1,5 +1,9 @@
 name: Android CI
 
+permissions:
+  checks: write
+  pull-requests: write
+
 on:
   push:
     branches: [ "master" ]
@@ -38,3 +42,12 @@ jobs:
       
       - name: Run gradle tests (ratiogenerator)
         run: ./gradlew :ratiogenerator:test
+
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          files: |
+            littlefuzzy/build/test-results/**/*.xml
+            convertmeifyoucan/build/test-results/**/*.xml
+            ratiogenerator/build/test-results/**/*.xml
