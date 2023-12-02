@@ -268,17 +268,19 @@ class MainActivity : FragmentActivity() {
 
         }
 
-
-        try {
-            val nav = findNavController(R.id.nav_host_fragment)
-            val bundle = bundleOf(
-                "category" to unit.category.type.name,
-                "topUnit" to workingUnits.topUnit.unitName.name,
-                "bottomUnit" to workingUnits.bottomUnit.unitName.name
-            )
-            nav.navigate(R.id.action_select_unit, bundle)
-        } catch (e: Exception) {
-            // ignore
+        // TODO: only when the second unit is selected as fav
+        if (workingUnits.favoritedUnits.size > 1) {
+            try {
+                val nav = findNavController(R.id.nav_host_fragment)
+                val bundle = bundleOf(
+                    "category" to unit.category.type.name,
+                    "topUnit" to workingUnits.topUnit.unitName.name,
+                    "bottomUnit" to workingUnits.bottomUnit.unitName.name
+                )
+                nav.navigate(R.id.action_select_unit, bundle)
+            } catch (e: Exception) {
+                // ignore
+            }
         }
 
         settings.saveTopUnit(workingUnits.topUnit, workingUnits.topUnit.formattedString)

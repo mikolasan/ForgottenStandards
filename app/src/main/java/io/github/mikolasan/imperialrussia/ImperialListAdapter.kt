@@ -19,7 +19,7 @@ import java.util.Locale
 class ImperialListAdapter(private val workingUnits: WorkingUnits) : BaseAdapter(), Filterable {
     var allUnits: Array<ImperialUnit> = workingUnits.orderedUnits
     var units: Array<ImperialUnit> = workingUnits.orderedUnits
-    var names: List<String> = listOf()
+    var names: List<String> = allUnits.map { u -> u.unitName.name.lowercase(Locale.ROOT) }
 
     private var arrowClickListener: (Int, View, ImperialUnit) -> Unit = { position, _, _ ->
         println("arrowClickListener $position")
@@ -184,7 +184,7 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits) : BaseAdapter(
         val bookmark: ImageView = layout.findViewById(R.id.bookmark)
         bookmark.setOnClickListener {
             unit.bookmarked = !unit.bookmarked
-//            bookmarkClickListener(dataPosition, it, unit)
+            bookmarkClickListener(dataPosition, it, unit)
             notifyDataSetChanged()
         }
     }

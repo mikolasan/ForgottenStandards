@@ -41,7 +41,12 @@ class UnitListFragment : Fragment() {
             unitsList.setSelectionAfterHeaderView()
         }
         listAdapter.setOnBookmarkClickListener { _: Int, arrow: View, unit: ImperialUnit ->
-
+            if (unit.bookmarked) {
+                (activity as MainActivity).workingUnits.favoritedUnits.plusAssign(unit)
+                (activity as MainActivity).onUnitSelected(unit)
+            } else {
+                (activity as MainActivity).workingUnits.favoritedUnits.minusAssign(unit)
+            }
         }
     }
 
