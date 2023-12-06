@@ -9,9 +9,11 @@ import android.widget.EditText
 import android.widget.ListView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.os.bundleOf
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
+import androidx.navigation.findNavController
 import io.github.mikolasan.ratiogenerator.ImperialUnit
 
 class UnitListFragment : Fragment() {
@@ -41,11 +43,26 @@ class UnitListFragment : Fragment() {
             unitsList.setSelectionAfterHeaderView()
         }
         listAdapter.setOnBookmarkClickListener { _: Int, arrow: View, unit: ImperialUnit ->
-            if (unit.bookmarked) {
-                (activity as MainActivity).workingUnits.favoritedUnits.plusAssign(unit)
-                (activity as MainActivity).onUnitSelected(unit)
-            } else {
-                (activity as MainActivity).workingUnits.favoritedUnits.minusAssign(unit)
+            (activity as MainActivity).let {
+                if (unit.bookmarked) {
+                    it.workingUnits.favoritedUnits.plusAssign(unit)
+                    it.onUnitSelected(unit)
+                    if (it.workingUnits.favoritedUnits.size > 1) {
+                        try {
+                            val nav = it.findNavController(R.id.nav_host_fragment)
+                            val bundle = bundleOf(
+                                "category" to unit.category.type.name,
+                                "topUnit" to it.workingUnits.topUnit.unitName.name,
+                                "bottomUnit" to it.workingUnits.bottomUnit.unitName.name
+                            )
+                            nav.navigate(R.id.action_select_unit, bundle)
+                        } catch (e: Exception) {
+                            // ignore
+                        }
+                    }
+                } else {
+                    it.workingUnits.favoritedUnits.minusAssign(unit)
+                }
             }
         }
     }

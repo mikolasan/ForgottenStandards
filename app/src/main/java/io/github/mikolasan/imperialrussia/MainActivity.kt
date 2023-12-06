@@ -1,8 +1,13 @@
 package io.github.mikolasan.imperialrussia
 
 import android.content.Context
+import android.graphics.SurfaceTexture
+import android.opengl.EGL14.EGL_CONTEXT_CLIENT_VERSION
+import android.opengl.EGL14.EGL_OPENGL_ES2_BIT
+import android.opengl.GLES20
 import android.os.Bundle
 import android.text.Editable
+import android.view.TextureView
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -21,6 +26,11 @@ import io.github.mikolasan.ratiogenerator.ImperialUnitName
 import io.noties.markwon.Markwon
 import java.io.IOException
 import java.util.Locale
+import javax.microedition.khronos.egl.EGL10
+import javax.microedition.khronos.egl.EGL10.*
+import javax.microedition.khronos.egl.EGLConfig
+import javax.microedition.khronos.egl.EGLContext
+import javax.microedition.khronos.egl.EGLDisplay
 
 
 class MainActivity : FragmentActivity() {
@@ -62,6 +72,9 @@ class MainActivity : FragmentActivity() {
         }
 
         setContentView(R.layout.activity_main)
+
+        val texture = findViewById<TextureView>(R.id.texture_view)
+        texture.surfaceTextureListener = SimpleSurfaceTextureListener()
 
 //        try {
 //            val label = findViewById<TextView>(R.id.description_text)
@@ -301,7 +314,11 @@ class MainActivity : FragmentActivity() {
     }
 
     fun onArrowClicked(unit: ImperialUnit) {
-        Toast.makeText(applicationContext, "'${unit.unitName.name}' has been moved to the top", Toast.LENGTH_SHORT).show()
+        Toast.makeText(
+            applicationContext,
+            "'${unit.unitName.name}' has been moved to the top",
+            Toast.LENGTH_SHORT
+        ).show()
         if (workingUnits.topUnit != unit) {
             swapPanels()
             converterFragment?.selectTopPanel()
@@ -310,7 +327,11 @@ class MainActivity : FragmentActivity() {
     }
 
     fun onArrowLongClicked(unit: ImperialUnit) {
-        Toast.makeText(applicationContext, "'${unit.unitName.name}' has been moved to the top", Toast.LENGTH_SHORT).show()
+        Toast.makeText(
+            applicationContext,
+            "'${unit.unitName.name}' has been moved to the top",
+            Toast.LENGTH_SHORT
+        ).show()
         if (workingUnits.topUnit != unit) {
             swapPanels()
             converterFragment?.selectTopPanel()
@@ -338,7 +359,7 @@ class MainActivity : FragmentActivity() {
         when (fragment) {
             is ConverterFragment -> {
                 converterFragment = fragment
-                val callable = {unit: ImperialUnit, value: Double ->
+                val callable = { unit: ImperialUnit, value: Double ->
                     val panel = fragment.selectedPanel
                     panel.unit = unit
                     panel.setUnitValue(value)
@@ -346,18 +367,21 @@ class MainActivity : FragmentActivity() {
                 }
                 unitObserver.addObserver(callable)
             }
+
             is UnitListFragment -> {
                 unitListFragment = fragment
-                val callable = {unit: ImperialUnit, value: Double ->
+                val callable = { unit: ImperialUnit, value: Double ->
                     workingUnits.listAdapter.updateAllValues(unit, value)
                     // notifyDataSetChanged
                 }
                 unitObserver.addObserver(callable)
             }
+
             is SwitchFragment -> switchFragment = fragment
             is KeyboardFragment -> {
                 fragment.observer = unitObserver
             }
+
             is SearchFragment -> searchFragment = fragment
         }
     }
@@ -497,7 +521,7 @@ class MainActivity : FragmentActivity() {
     }
 
     fun showSearch() {
-        
+
     }
 }
 
