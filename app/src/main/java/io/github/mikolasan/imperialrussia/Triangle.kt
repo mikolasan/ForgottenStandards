@@ -1,5 +1,6 @@
 package io.github.mikolasan.imperialrussia
 
+import android.graphics.Matrix
 import android.opengl.GLES20
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -14,14 +15,11 @@ var triangleCoords = floatArrayOf(     // in counterclockwise order:
 )
 
 fun loadShader(type: Int, shaderCode: String): Int {
-
-    // create a vertex shader type (GLES20.GL_VERTEX_SHADER)
-    // or a fragment shader type (GLES20.GL_FRAGMENT_SHADER)
     return GLES20.glCreateShader(type).also { shader ->
-
-        // add the source code to the shader and compile it
         GLES20.glShaderSource(shader, shaderCode)
         GLES20.glCompileShader(shader)
+//        val compiled = intArrayOf(0)
+//        GLES20.glGetShaderiv(shader, GLES20.GL_COMPILE_STATUS, compiled, 0)
     }
 }
 
@@ -29,35 +27,32 @@ fun loadShader(type: Int, shaderCode: String): Int {
 class Triangle {
 
     private val vertexShaderCode =
-        "attribute vec4 vPosition;" +
-                "void main() {" +
-                "  gl_Position = vPosition;" +
-                "}"
+        "uniform mat4 uMVPMatrix;" +
+        "attribute vec4 aPosition;" +
+        "void main() {" +
+        "    gl_Position = uMVPMatrix * aPosition;" +
+        "}"
 
     private val fragmentShaderCode =
         "precision mediump float;" +
-                "uniform vec4 vColor;" +
-                "void main() {" +
-                "  gl_FragColor = vColor;" +
-                "}"
+        "uniform vec4 uColor;" +
+        "void main() {" +
+        "    gl_FragColor = uColor;" +
+        "}"
 
-    private var mProgram: Int
+    private var mProgram: Int = -1
 
-    init {
+    fun createProgram() {
         val vertexShader: Int = loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode)
         val fragmentShader: Int = loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode)
 
         // create empty OpenGL ES Program
         mProgram = GLES20.glCreateProgram().also {
-
-            // add the vertex shader to program
             GLES20.glAttachShader(it, vertexShader)
-
-            // add the fragment shader to program
             GLES20.glAttachShader(it, fragmentShader)
-
-            // creates OpenGL ES program executables
             GLES20.glLinkProgram(it)
+//            val linked = intArrayOf(0)
+//            GLES20.glGetShaderiv(it, GLES20.GL_LINK_STATUS, linked, 0)
         }
     }
 
@@ -90,12 +85,8 @@ class Triangle {
         GLES20.glUseProgram(mProgram)
 
         // get handle to vertex shader's vPosition member
-        positionHandle = GLES20.glGetAttribLocation(mProgram, "vPosition").also {
-
-            // Enable a handle to the triangle vertices
+        positionHandle = GLES20.glGetAttribLocation(mProgram, "aPosition").also {
             GLES20.glEnableVertexAttribArray(it)
-
-            // Prepare the triangle coordinate data
             GLES20.glVertexAttribPointer(
                 it,
                 COORDS_PER_VERTEX,
@@ -104,20 +95,24 @@ class Triangle {
                 vertexStride,
                 vertexBuffer
             )
-
-            // get handle to fragment shader's vColor member
-            mColorHandle = GLES20.glGetUniformLocation(mProgram, "vColor").also { colorHandle ->
-
-                // Set color for drawing the triangle
-                GLES20.glUniform4fv(colorHandle, 1, color, 0)
-            }
-
-            // Draw the triangle
-            GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, vertexCount)
-
-            // Disable vertex array
-            GLES20.glDisableVertexAttribArray(it)
         }
+
+        mColorHandle = GLES20.glGetUniformLocation(mProgram, "uColor").also { it ->
+            GLES20.glUniform4fv(it, 1, color, 0)
+        }
+
+        val mvpMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix").also {
+            val mvpMatrix = floatArrayOf(
+                1.0F, 0.0F, 0.0F, 0.0F,
+                0.0F, 1.0F, 0.0F, 0.0F,
+                0.0F, 0.0F, 1.0F, 0.0F,
+                0.0F, 0.0F, 0.0F, 1.0F,
+            )
+            GLES20.glUniformMatrix4fv(it, 1, false, mvpMatrix, 0)
+        }
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, vertexCount)
+        GLES20.glDisableVertexAttribArray(positionHandle)
+        GLES20.glUseProgram(0);
     }
 
 }

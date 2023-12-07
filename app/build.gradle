@@ -19,7 +19,7 @@ android {
 
     defaultConfig {
         applicationId "io.github.mikolasan.imperialrussia"
-        minSdkVersion 31
+        minSdkVersion 27
         targetSdkVersion 34
         compileSdk 34
         versionCode 8
