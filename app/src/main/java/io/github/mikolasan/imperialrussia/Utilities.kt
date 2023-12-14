@@ -199,7 +199,11 @@ fun parseDisplayString(string: String, locale: Locale? = null): Double {
 }
 
 fun categoryNameToType(category: ImperialUnitCategoryName): ImperialUnitType {
-    return ImperialUnitType.valueOf(category.name.toUpperCase())
+    val typeName = category.name
+        .uppercase(Locale.ROOT)
+        .replace(" ", "_")
+        .replace("&", "AND")
+    return ImperialUnitType.valueOf(typeName)
 }
 
 fun <T> MutableList<T>.moveToFrontFrom(index: Int) {

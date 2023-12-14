@@ -24,6 +24,7 @@ import io.github.mikolasan.ratiogenerator.MinTemperatureUnits
 import io.github.mikolasan.ratiogenerator.MinTimeUnits
 import io.github.mikolasan.ratiogenerator.MinVolumeUnits
 import io.github.mikolasan.ratiogenerator.MinWeightUnits
+import io.github.mikolasan.ratiogenerator.MinNutBoltUnits
 
 class ImperialSettings(application: Application) : AndroidViewModel(application) {
     private val categoryMap: Map<ImperialUnitType, ImperialUnitCategory> = mapOf(
@@ -42,7 +43,8 @@ class ImperialSettings(application: Application) : AndroidViewModel(application)
             ImperialUnitType.TEMPERATURE to MinTemperatureUnits,
             ImperialUnitType.TIME to MinTimeUnits,
             ImperialUnitType.VOLUME to MinVolumeUnits,
-            ImperialUnitType.WEIGHT to MinWeightUnits
+            ImperialUnitType.WEIGHT to MinWeightUnits,
+            ImperialUnitType.NUT_AND_BOLT to MinNutBoltUnits,
     )
 
     private val preferencesFile = "ImperialRussiaPref.9"

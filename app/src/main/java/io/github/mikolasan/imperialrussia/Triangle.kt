@@ -1,6 +1,5 @@
 package io.github.mikolasan.imperialrussia
 
-import android.graphics.Matrix
 import android.opengl.GLES20
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -109,7 +108,10 @@ class Triangle {
                 0.0F, 0.0F, 0.0F, 1.0F,
             )
             GLES20.glUniformMatrix4fv(it, 1, false, mvpMatrix, 0)
+
+
         }
+
         GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, vertexCount)
         GLES20.glDisableVertexAttribArray(positionHandle)
         GLES20.glUseProgram(0);

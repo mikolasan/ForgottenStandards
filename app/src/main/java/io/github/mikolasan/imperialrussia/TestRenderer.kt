@@ -1,5 +1,6 @@
 package io.github.mikolasan.imperialrussia
 
+import android.opengl.Matrix
 import android.graphics.SurfaceTexture
 import android.opengl.EGL14
 import android.opengl.EGLConfig
@@ -11,6 +12,13 @@ class TestRenderer(val surface: SurfaceTexture) : Thread() {
 
     private var mTriangle: Triangle = Triangle()
     private var mSquare: Square = Square()
+    @Volatile
+    var angle: Float = 0f
+    @Volatile
+    var width: Int = 0
+    @Volatile
+    var height: Int = 0
+
 
     fun getConfig(eglDisplay: EGLDisplay): EGLConfig {
         val renderableType = EGL14.EGL_OPENGL_ES2_BIT
@@ -48,7 +56,7 @@ class TestRenderer(val surface: SurfaceTexture) : Thread() {
         EGL14.eglInitialize(eglDisplay, version, 0, version, 1)
         val eglConfig = getConfig(eglDisplay)
         val attribList = intArrayOf(
-            EGL14.EGL_CONTEXT_CLIENT_VERSION, 3,
+            EGL14.EGL_CONTEXT_CLIENT_VERSION, 2,
             EGL14.EGL_NONE)
         val eglContext = EGL14.eglCreateContext(
             eglDisplay,
@@ -67,6 +75,9 @@ class TestRenderer(val surface: SurfaceTexture) : Thread() {
             surfaceAttribs,
             0)
 
+        val rotationMatrix = FloatArray(16)
+        val mvpMatrix = FloatArray(16)
+        Matrix.setIdentityM(mvpMatrix, 0)
         var colorVelocity = 0.01f
         var color = 0f
         while (!isStopped && EGL14.eglGetError() == EGL14.EGL_SUCCESS) {
@@ -80,9 +91,20 @@ class TestRenderer(val surface: SurfaceTexture) : Thread() {
             GLES20.glDisable(GLES20.GL_CULL_FACE)
             GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
 
-            val width = 500
-            val height = 500
-            GLES20.glViewport(0, 0, width, height);
+            val scratch = FloatArray(16)
+
+
+            // Create a rotation for the triangle
+            // long time = SystemClock.uptimeMillis() % 4000L;
+            // float angle = 0.090f * ((int) time);
+            Matrix.setRotateM(rotationMatrix, 0, angle, 0f, 0f, -1.0f)
+
+            // Combine the rotation matrix with the projection and camera view
+            // Note that the mvpMatrix factor *must be first* in order
+            // for the matrix multiplication product to be correct.
+            Matrix.multiplyMM(scratch, 0, mvpMatrix, 0, rotationMatrix, 0)
+
+//            GLES20.glViewport(0, 0, width, height);
 
             mTriangle.createProgram()
             mTriangle.draw()

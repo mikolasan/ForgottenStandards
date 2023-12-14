@@ -44,7 +44,7 @@ abstract class ImperialUnitCategory(val type: ImperialUnitType,
             } else if (formulaList.isNotEmpty()) {
                 formulaList.flatMap { arrayOf(it.first, it.third).asIterable() }.toSet()
             } else {
-                throw Exception("No data to create a list of units")
+                setOf()
             }
         return unitNames.map { name -> ImperialUnit(this, type, name) }.toSet()
     }

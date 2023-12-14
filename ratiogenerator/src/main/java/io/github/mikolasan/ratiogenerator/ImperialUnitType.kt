@@ -16,5 +16,6 @@ enum class ImperialUnitType {
     TEMPERATURE,
     TIME,
     VOLUME,
-    WEIGHT
+    WEIGHT,
+    NUT_AND_BOLT
 }

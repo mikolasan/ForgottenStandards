@@ -7,6 +7,7 @@ import android.opengl.EGL14.EGL_OPENGL_ES2_BIT
 import android.opengl.GLES20
 import android.os.Bundle
 import android.text.Editable
+import android.view.MotionEvent
 import android.view.TextureView
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -32,6 +33,7 @@ import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.egl.EGLContext
 import javax.microedition.khronos.egl.EGLDisplay
 
+const val TOUCH_SCALE_FACTOR: Float = 180.0f / 320f
 
 class MainActivity : FragmentActivity() {
 
@@ -72,9 +74,6 @@ class MainActivity : FragmentActivity() {
         }
 
         setContentView(R.layout.activity_main)
-
-        val texture = findViewById<TextureView>(R.id.texture_view)
-        texture.surfaceTextureListener = SimpleSurfaceTextureListener()
 
 //        try {
 //            val label = findViewById<TextView>(R.id.description_text)

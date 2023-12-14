@@ -36,15 +36,17 @@ class SwitchFragment : Fragment(R.layout.fragment_switch) {
 
                 ImperialUnitCategoryName("Storage"),
                 ImperialUnitCategoryName("Fuel"),
-                ImperialUnitCategoryName("Angle")
+                ImperialUnitCategoryName("Angle"),
+                // New
+                ImperialUnitCategoryName("Nut & Bolt")
         )
         categoryAdapter = ImperialCategoryAdapter(categories, activity as MainActivity)
         categoryGrid.adapter = categoryAdapter
         val manager = GridLayoutManager(activity as MainActivity, 2, GridLayoutManager.VERTICAL, false)
         categoryGrid.layoutManager = manager
-        view.findViewById<ConstraintLayout>(R.id.switch_layout).setOnClickListener{
-            (activity as MainActivity).hideTypeSwitcher()
-        }
+//        view.findViewById<ConstraintLayout>(R.id.switch_layout).setOnClickListener{
+//            (activity as MainActivity).hideTypeSwitcher()
+//        }
         return view
     }
 }
