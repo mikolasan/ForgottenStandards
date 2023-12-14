@@ -5,15 +5,17 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.TextureView
 
-class NutBoltView(context: Context, attributeSet: AttributeSet) : TextureView(context, attributeSet) {
-    private lateinit var renderer: TestRenderer
+const val TOUCH_SCALE_FACTOR: Float = 180.0f / 320f
 
+class NutBoltView(context: Context, attributeSet: AttributeSet) : TextureView(context, attributeSet) {
+    private val simpleSurfaceTextureListener = SimpleSurfaceTextureListener()
+    private var renderer: TestRenderer = TestRenderer()
+    init {
+        simpleSurfaceTextureListener.renderer = renderer
+        surfaceTextureListener = simpleSurfaceTextureListener
+    }
     private var previousX: Float = 0f
     private var previousY: Float = 0f
-
-    fun setRenderer(r: TestRenderer) {
-        renderer = r
-    }
 
     override fun onTouchEvent(e: MotionEvent): Boolean {
         val x: Float = e.x

@@ -34,8 +34,6 @@ import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.egl.EGLContext
 import javax.microedition.khronos.egl.EGLDisplay
 
-const val TOUCH_SCALE_FACTOR: Float = 180.0f / 320f
-
 class MainActivity : FragmentActivity() {
 
     private val languageSetting = "language"

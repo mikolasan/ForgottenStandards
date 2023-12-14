@@ -7,7 +7,8 @@ import android.opengl.EGLConfig
 import android.opengl.EGLDisplay
 import android.opengl.GLES20
 
-class TestRenderer(val surface: SurfaceTexture) : Thread() {
+class TestRenderer : Thread() {
+    lateinit var surface: SurfaceTexture
     var isStopped = false
 
     private var mTriangle: Triangle = Triangle()
