@@ -18,6 +18,9 @@
                 app:argType="string"
                 android:defaultValue="Time" />
         </action>
+        <action
+            android:id="@+id/action_select_nut_bolt"
+            app:destination="@id/nutBoltFragment" />
     </fragment>
     <fragment
         android:id="@+id/unitListFragment"
@@ -31,4 +34,8 @@
         android:id="@+id/converterFragment"
         android:name="io.github.mikolasan.imperialrussia.ConverterFragment"
         android:label="ConverterFragment" />
+    <fragment
+        android:id="@+id/nutBoltFragment"
+        android:name="io.github.mikolasan.imperialrussia.NutBoltFragment"
+        android:label="NutBoltFragment" />
 </navigation>

@@ -24,6 +24,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import io.github.mikolasan.ratiogenerator.ImperialUnit
 import io.github.mikolasan.ratiogenerator.ImperialUnitName
+import io.github.mikolasan.ratiogenerator.ImperialUnitType
 import io.noties.markwon.Markwon
 import java.io.IOException
 import java.util.Locale
@@ -400,12 +401,18 @@ class MainActivity : FragmentActivity() {
     }
 
     fun onCategorySelected(category: ImperialUnitCategoryName) {
+        val type = categoryNameToType(category)
+
         try {
             val nav = findNavController(R.id.nav_host_fragment)
             val bundle = bundleOf(
                 "categoryTitle" to category.name
             )
-            nav.navigate(R.id.action_select_category, bundle)
+            if (type == ImperialUnitType.NUT_AND_BOLT) {
+                nav.navigate(R.id.action_select_nut_bolt, bundle)
+            } else {
+                nav.navigate(R.id.action_select_category, bundle)
+            }
         } catch (e: Exception) {
             // ignore
         }
@@ -415,8 +422,14 @@ class MainActivity : FragmentActivity() {
 //        val action = SwitchFragmentDirections.actionSelectCategory(categoryTitle)
 //        nav.navigate(action)
 
-        val type = categoryNameToType(category)
+
         workingUnits.selectedCategory = type
+
+        if (type == ImperialUnitType.NUT_AND_BOLT) {
+            // TODO
+            return
+        }
+
         workingUnits.orderedUnits = workingUnits.allUnits.getValue(type)
         workingUnits.topUnit = workingUnits.orderedUnits[0]
         workingUnits.bottomUnit = workingUnits.orderedUnits[1]

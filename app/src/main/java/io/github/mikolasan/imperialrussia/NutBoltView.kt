@@ -1,10 +1,11 @@
 package io.github.mikolasan.imperialrussia
 
 import android.content.Context
+import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.TextureView
 
-class NutBoltView(context: Context) : TextureView(context) {
+class NutBoltView(context: Context, attributeSet: AttributeSet) : TextureView(context, attributeSet) {
     private lateinit var renderer: TestRenderer
 
     private var previousX: Float = 0f

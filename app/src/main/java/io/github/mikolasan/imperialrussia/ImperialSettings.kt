@@ -47,7 +47,7 @@ class ImperialSettings(application: Application) : AndroidViewModel(application)
             ImperialUnitType.NUT_AND_BOLT to MinNutBoltUnits,
     )
 
-    private val preferencesFile = "ImperialRussiaPref.9"
+    private val preferencesFile = "ImperialRussiaPref.10"
 
     private val preferencesEditor: SharedPreferences.Editor by lazy {
         return@lazy preferences.edit()
