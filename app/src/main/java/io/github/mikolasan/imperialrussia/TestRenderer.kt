@@ -13,6 +13,11 @@ class TestRenderer : Thread() {
 
     private var mTriangle: Triangle = Triangle()
     private var mSquare: Square = Square()
+
+    private val vPMatrix = FloatArray(16)
+    private val projectionMatrix = FloatArray(16)
+    private val viewMatrix = FloatArray(16)
+
     @Volatile
     var angle: Float = 0f
     @Volatile
@@ -48,6 +53,16 @@ class TestRenderer : Thread() {
         return configs[0]!!
     }
 
+//    override fun onSurfaceChanged(unused: GL10, width: Int, height: Int) {
+//        GLES20.glViewport(0, 0, width, height)
+//
+//        val ratio: Float = width.toFloat() / height.toFloat()
+//
+//        // this projection matrix is applied to object coordinates
+//        // in the onDrawFrame() method
+//        Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1f, 1f, 3f, 7f)
+//    }
+
 
     override fun run() {
         super.run()
@@ -77,10 +92,18 @@ class TestRenderer : Thread() {
             0)
 
         val rotationMatrix = FloatArray(16)
-        val mvpMatrix = FloatArray(16)
-        Matrix.setIdentityM(mvpMatrix, 0)
+//        val mvpMatrix = FloatArray(16)
+//        Matrix.setIdentityM(mvpMatrix, 0)
         var colorVelocity = 0.01f
         var color = 0f
+
+        GLES20.glViewport(0, 0, width, height)
+        val ratio: Float = width.toFloat() / height.toFloat()
+
+        // this projection matrix is applied to object coordinates
+        // in the onDrawFrame() method
+        Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1f, 1f, 3f, 7f)
+
         while (!isStopped && EGL14.eglGetError() == EGL14.EGL_SUCCESS) {
             EGL14.eglMakeCurrent(eglDisplay, eglSurface, eglSurface, eglContext)
 
@@ -92,6 +115,8 @@ class TestRenderer : Thread() {
             GLES20.glDisable(GLES20.GL_CULL_FACE)
             GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
 
+
+
             val scratch = FloatArray(16)
 
 
@@ -101,14 +126,20 @@ class TestRenderer : Thread() {
             Matrix.setRotateM(rotationMatrix, 0, angle, 0f, 0f, -1.0f)
 
             // Combine the rotation matrix with the projection and camera view
-            // Note that the mvpMatrix factor *must be first* in order
+            // Note that the vPMatrix factor *must be first* in order
             // for the matrix multiplication product to be correct.
-            Matrix.multiplyMM(scratch, 0, mvpMatrix, 0, rotationMatrix, 0)
+            Matrix.multiplyMM(scratch, 0, vPMatrix, 0, rotationMatrix, 0)
 
 //            GLES20.glViewport(0, 0, width, height);
 
+            // Set the camera position (View matrix)
+            Matrix.setLookAtM(viewMatrix, 0, 0f, 0f, 3f, 0f, 0f, 0f, 0f, 1.0f, 0.0f)
+
+            // Calculate the projection and view transformation
+            Matrix.multiplyMM(vPMatrix, 0, projectionMatrix, 0, viewMatrix, 0)
+
             mTriangle.createProgram()
-            mTriangle.draw()
+            mTriangle.draw(scratch)
 
             EGL14.eglSwapBuffers(eglDisplay, eglSurface)
 

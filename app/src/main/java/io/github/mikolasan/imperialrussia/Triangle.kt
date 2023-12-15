@@ -39,6 +39,7 @@ class Triangle {
         "    gl_FragColor = uColor;" +
         "}"
 
+    private var vPMatrixHandle: Int = 0
     private var mProgram: Int = -1
 
     fun createProgram() {
@@ -79,7 +80,7 @@ class Triangle {
     private val vertexCount: Int = triangleCoords.size / COORDS_PER_VERTEX
     private val vertexStride: Int = COORDS_PER_VERTEX * 4 // 4 bytes per vertex
 
-    fun draw() {
+    fun draw(mvpMatrix: FloatArray) {
         // Add program to OpenGL ES environment
         GLES20.glUseProgram(mProgram)
 
@@ -100,21 +101,14 @@ class Triangle {
             GLES20.glUniform4fv(it, 1, color, 0)
         }
 
-        val mvpMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix").also {
-            val mvpMatrix = floatArrayOf(
-                1.0F, 0.0F, 0.0F, 0.0F,
-                0.0F, 1.0F, 0.0F, 0.0F,
-                0.0F, 0.0F, 1.0F, 0.0F,
-                0.0F, 0.0F, 0.0F, 1.0F,
-            )
+        vPMatrixHandle = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix").also {
+            // Pass the projection and view transformation to the shader
             GLES20.glUniformMatrix4fv(it, 1, false, mvpMatrix, 0)
-
-
         }
 
         GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, vertexCount)
         GLES20.glDisableVertexAttribArray(positionHandle)
-        GLES20.glUseProgram(0);
+//        GLES20.glUseProgram(0);
     }
 
 }
