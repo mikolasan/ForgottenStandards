@@ -1,40 +1,32 @@
 package io.github.mikolasan.imperialrussia
 
 import android.content.Context
-import android.graphics.SurfaceTexture
-import android.opengl.EGL14.EGL_CONTEXT_CLIENT_VERSION
-import android.opengl.EGL14.EGL_OPENGL_ES2_BIT
-import android.opengl.GLES20
 import android.os.Bundle
 import android.text.Editable
-import android.view.MotionEvent
-import android.view.TextureView
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
 import io.github.mikolasan.ratiogenerator.ImperialUnit
 import io.github.mikolasan.ratiogenerator.ImperialUnitName
 import io.github.mikolasan.ratiogenerator.ImperialUnitType
 import io.noties.markwon.Markwon
 import java.io.IOException
 import java.util.Locale
-import javax.microedition.khronos.egl.EGL10
-import javax.microedition.khronos.egl.EGL10.*
-import javax.microedition.khronos.egl.EGLConfig
-import javax.microedition.khronos.egl.EGLContext
-import javax.microedition.khronos.egl.EGLDisplay
 
-class MainActivity : FragmentActivity() {
+class MainActivity : AppCompatActivity() {
 
     private val languageSetting = "language"
     private var newLocale: Locale? = null
@@ -73,6 +65,24 @@ class MainActivity : FragmentActivity() {
         }
 
         setContentView(R.layout.activity_main)
+        val toolbar = findViewById<Toolbar>(R.id.my_toolbar)
+        setSupportActionBar(toolbar)
+
+        // val navController = findNavController(R.id.nav_host_fragment) // doesn't work because of some stupid shit about lifecycle, see https://issuetracker.google.com/issues/142847973?pli=1
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navController = navHostFragment.navController
+        val globalUnits = workingUnits
+        navController.addOnDestinationChangedListener{ controller, destination, arguments ->
+            if (destination.id == R.id.unitListFragment || destination.id == R.id.nutBoltFragment) {
+                supportActionBar?.title = globalUnits.selectedCategory?.name
+            } else {
+                supportActionBar?.title = destination.label
+            }
+        }
+
+        val appBarConfiguration = AppBarConfiguration(navController.graph)
+        toolbar.setupWithNavController(navController, appBarConfiguration)
+
 
 //        try {
 //            val label = findViewById<TextView>(R.id.description_text)
@@ -400,6 +410,8 @@ class MainActivity : FragmentActivity() {
 
     fun onCategorySelected(category: ImperialUnitCategoryName) {
         val type = categoryNameToType(category)
+        // category must be updated before navigating to the list because the title depends on it
+        workingUnits.selectedCategory = category
 
         try {
             val nav = findNavController(R.id.nav_host_fragment)
@@ -421,7 +433,7 @@ class MainActivity : FragmentActivity() {
 //        nav.navigate(action)
 
 
-        workingUnits.selectedCategory = type
+
 
         if (type == ImperialUnitType.NUT_AND_BOLT) {
             // TODO
@@ -451,7 +463,7 @@ class MainActivity : FragmentActivity() {
         unitObserver.setUnitAndUpdateValue(workingUnits.topUnit)
 //        hideTypeSwitcher()
 
-        settings.saveCategory(category.name.toUpperCase())
+        settings.saveCategory(category.name)
 
 
     }

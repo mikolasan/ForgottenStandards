@@ -36,7 +36,7 @@ class ImperialCategoryAdapter(private val categories: Array<ImperialUnitCategory
         val viewCategory = categories[position]
         holder.category = viewCategory
         val selectedCategory = publishSubject.workingUnits.selectedCategory
-        if (selectedCategory == categoryNameToType(viewCategory)) {
+        if (selectedCategory == viewCategory) {
             selectedViewHolder = holder
             holder.space.setBackgroundResource(R.drawable.bg_rect_selected)
         } else {

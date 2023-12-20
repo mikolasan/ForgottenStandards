@@ -8,6 +8,7 @@ import android.view.ViewTreeObserver
 import android.widget.EditText
 import android.widget.ListView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
 import androidx.core.widget.addTextChangedListener
@@ -15,6 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
 import androidx.navigation.findNavController
 import io.github.mikolasan.ratiogenerator.ImperialUnit
+
 
 class UnitListFragment : Fragment() {
 
@@ -89,6 +91,10 @@ class UnitListFragment : Fragment() {
         keyboardButtonView = view.findViewById(R.id.keyboard_button)
 
         setListeners(view)
+
+        // This will be too late, DestinationChangedListener is applied before that
+        // the only quirk: label in the nav graph must be omitted
+        // (activity as AppCompatActivity?)!!.supportActionBar!!.title = "your title"
         return view
     }
 

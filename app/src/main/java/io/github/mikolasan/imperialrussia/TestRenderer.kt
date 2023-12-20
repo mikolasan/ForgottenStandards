@@ -1,11 +1,11 @@
 package io.github.mikolasan.imperialrussia
 
-import android.opengl.Matrix
 import android.graphics.SurfaceTexture
 import android.opengl.EGL14
 import android.opengl.EGLConfig
 import android.opengl.EGLDisplay
 import android.opengl.GLES20
+import android.opengl.Matrix
 
 class TestRenderer : Thread() {
     lateinit var surface: SurfaceTexture
