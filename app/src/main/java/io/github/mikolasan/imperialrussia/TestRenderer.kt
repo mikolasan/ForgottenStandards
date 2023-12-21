@@ -138,7 +138,7 @@ class TestRenderer : Thread() {
             // Calculate the projection and view transformation
             Matrix.multiplyMM(vPMatrix, 0, projectionMatrix, 0, viewMatrix, 0)
 
-            mTriangle.createProgram()
+            mTriangle.prepare()
             mTriangle.draw(scratch)
 
             EGL14.eglSwapBuffers(eglDisplay, eglSurface)
