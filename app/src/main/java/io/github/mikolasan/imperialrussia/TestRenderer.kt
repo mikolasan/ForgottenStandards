@@ -7,7 +7,7 @@ import android.opengl.EGLDisplay
 import android.opengl.GLES20
 import android.opengl.Matrix
 
-class TestRenderer : Thread() {
+class TestRenderer(val refreshRate: Long) : Thread() {
     lateinit var surface: SurfaceTexture
     var isStopped = false
 
@@ -95,7 +95,7 @@ class TestRenderer : Thread() {
 //        val mvpMatrix = FloatArray(16)
 //        Matrix.setIdentityM(mvpMatrix, 0)
         var colorVelocity = 0.01f
-        var color = 0f
+        var color = 1.0f
 
         GLES20.glViewport(0, 0, width, height)
         val ratio: Float = width.toFloat() / height.toFloat()
@@ -110,7 +110,7 @@ class TestRenderer : Thread() {
 //            if (color > 1 || color < 0) colorVelocity *= -1
 //            color += colorVelocity
 
-            GLES20.glClearColor(color / 2, color, color, 1.0f)
+            GLES20.glClearColor(color, color, color, 1.0f)
             GLES20.glDisable(GLES20.GL_DEPTH_TEST)
             GLES20.glDisable(GLES20.GL_CULL_FACE)
             GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
@@ -138,12 +138,14 @@ class TestRenderer : Thread() {
             // Calculate the projection and view transformation
             Matrix.multiplyMM(vPMatrix, 0, projectionMatrix, 0, viewMatrix, 0)
 
+            mTriangle.width = width.toFloat()
+            mTriangle.height = height.toFloat()
             mTriangle.prepare()
             mTriangle.draw(scratch)
 
             EGL14.eglSwapBuffers(eglDisplay, eglSurface)
 
-            sleep((1f / 60f * 1000f).toLong()) // in real life this sleep is more complicated
+            sleep(refreshRate) // in real life this sleep is more complicated
         }
 
         surface.release()

@@ -5,17 +5,30 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.TextureView
 
+
 const val TOUCH_SCALE_FACTOR: Float = 180.0f / 320f
 
 class NutBoltView(context: Context, attributeSet: AttributeSet) : TextureView(context, attributeSet) {
     private val simpleSurfaceTextureListener = SimpleSurfaceTextureListener()
-    private var renderer: TestRenderer = TestRenderer()
+    private val refreshRate = getDisplayRefreshRate(context)
+    private var renderer: TestRenderer = TestRenderer(refreshRate)
     init {
         simpleSurfaceTextureListener.renderer = renderer
         surfaceTextureListener = simpleSurfaceTextureListener
     }
     private var previousX: Float = 0f
     private var previousY: Float = 0f
+
+    fun getDisplayRefreshRate(context: Context): Long {
+        context.display?.let { display ->
+            val displayFps: Double = display.refreshRate.toDouble()
+            val refreshMilli = Math.round(1f / displayFps * 1000)
+            println("refresh rate is $displayFps fps --> $refreshMilli millis")
+            return refreshMilli
+        }
+        val defaulValue = (1f / 60f * 1000f).toLong()
+        return defaulValue
+    }
 
     override fun onTouchEvent(e: MotionEvent): Boolean {
         val x: Float = e.x

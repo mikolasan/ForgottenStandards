@@ -30,6 +30,9 @@ fun loadShader(type: Int, shaderCode: String): Int {
 
 class Triangle {
 
+    var width = 0f
+    var height = 0f
+
     private companion object {
         val right = 0.5f
         val bottom = -0.5f
@@ -49,6 +52,11 @@ class Triangle {
             left, bottom, 0f, -1.0f, -1.0f,
         )
 
+        // TODO
+//        #ifdef GL_ES
+//        precision mediump float;
+//        #endif
+
         val simpleVertexShader = """
             uniform mat4 uMVPMatrix;
             attribute vec4 aPosition;
@@ -61,6 +69,7 @@ class Triangle {
             attribute vec4 aPosition;
             attribute vec2 value;
             varying vec2 val;
+            varying vec2 vUv;
             void main() { 
                 val = value; 
                 gl_Position = uMVPMatrix * aPosition; 
@@ -77,15 +86,30 @@ class Triangle {
         // Because GLSL ES standard says so.
         val circleFragmentShader = """
             precision mediump float;
+            uniform vec2 iResolution;
             varying vec2 val;
+            varying vec2 vUv;
             void main() {
                 float R = 1.0;
-                float R2 = 0.5;
+                float R2 = 0.9;
                 float dist = sqrt(dot(val,val));
-                if (dist >= R || dist <= R2) {
+                if (dist >= R) {
                     discard;
                 }
-                gl_FragData[0] = vec4(0.0, 0.0, 1.0, 1.0);
+                vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
+                if (dist <= R2) {
+                    vec2 st = gl_FragCoord.xy / iResolution.xy;
+
+                    vec3 color1 = vec3(1.0, 0.55, 0.0);
+                    vec3 color2 = vec3(0.226, 0.000, 0.615);
+                    
+                    float mixValue = distance(st,vec2(0,1));
+                    vec3 colorm = mix(color1,color2,mixValue);
+                    
+                    color = vec4(st.x, 0.3, 0.3, 1.0);
+
+                }
+                gl_FragData[0] = color;
             }""".trimIndent()
     }
 
@@ -174,9 +198,11 @@ class Triangle {
         val attribPosition = GLES20.glGetAttribLocation(mProgram, "aPosition")
         val attribValue = GLES20.glGetAttribLocation(mProgram, "value")
         val uniformMvpMatrix = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix")
+        val uniformResolution = GLES20.glGetUniformLocation(mProgram, "iResolution")
 
         // Pass the projection and view transformation to the shader
         GLES20.glUniformMatrix4fv(uniformMvpMatrix, 1, false, mvpMatrix, 0)
+        GLES20.glUniform2f(uniformResolution, width, height)
         GLES20.glEnableVertexAttribArray(attribPosition)
         GLES20.glEnableVertexAttribArray(attribValue)
 
