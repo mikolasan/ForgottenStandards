@@ -11,8 +11,7 @@ class TestRenderer(val refreshRate: Long) : Thread() {
     lateinit var surface: SurfaceTexture
     var isStopped = false
 
-    private var mTriangle: Triangle = Triangle()
-    private var mSquare: Square = Square()
+    private var mHoleFigure: HoleFigure = HoleFigure()
 
     private val vPMatrix = FloatArray(16)
     private val projectionMatrix = FloatArray(16)
@@ -138,10 +137,10 @@ class TestRenderer(val refreshRate: Long) : Thread() {
             // Calculate the projection and view transformation
             Matrix.multiplyMM(vPMatrix, 0, projectionMatrix, 0, viewMatrix, 0)
 
-            mTriangle.width = width.toFloat()
-            mTriangle.height = height.toFloat()
-            mTriangle.prepare()
-            mTriangle.draw(scratch)
+            mHoleFigure.width = width.toFloat()
+            mHoleFigure.height = height.toFloat()
+            mHoleFigure.prepare()
+            mHoleFigure.draw(scratch)
 
             EGL14.eglSwapBuffers(eglDisplay, eglSurface)
 
