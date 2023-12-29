@@ -11,7 +11,8 @@ const val TOUCH_SCALE_FACTOR: Float = 180.0f / 320f
 class NutBoltView(context: Context, attributeSet: AttributeSet) : TextureView(context, attributeSet) {
     private val simpleSurfaceTextureListener = SimpleSurfaceTextureListener()
     private val refreshRate = getDisplayRefreshRate(context)
-    private var renderer: TestRenderer = TestRenderer(refreshRate)
+    private val dpi = getDpi(context)
+    private var renderer: TestRenderer = TestRenderer(refreshRate, dpi)
     init {
         simpleSurfaceTextureListener.renderer = renderer
         surfaceTextureListener = simpleSurfaceTextureListener
@@ -30,30 +31,40 @@ class NutBoltView(context: Context, attributeSet: AttributeSet) : TextureView(co
         return defaulValue
     }
 
+    fun getDpi(context: Context): Int {
+        return context.resources.displayMetrics.densityDpi
+    }
+
     override fun onTouchEvent(e: MotionEvent): Boolean {
         val x: Float = e.x
         val y: Float = e.y
-        val width = 500
-        val height = 500
+//        val width = renderer.width
+//        val height = renderer.height
 
         when (e.action) {
             MotionEvent.ACTION_MOVE -> {
 
-                var dx: Float = x - previousX
-                var dy: Float = y - previousY
+                val dx: Float = x - previousX
+                val dy: Float = y - previousY
 
-                // reverse direction of rotation above the mid-line
-                if (y > height / 2) {
-                    dx *= -1
-                }
+                renderer.positionX += dx / 1000f
+                renderer.positionY -= dy / 1000f
 
-                // reverse direction of rotation to left of the mid-line
-                if (x < width / 2) {
-                    dy *= -1
-                }
+                println("touch delta ${dx}, ${dy}")
 
-                renderer.angle += (dx + dy) * TOUCH_SCALE_FACTOR
-//                requestRender()
+//                // reverse direction of rotation above the mid-line
+//                if (y > height / 2) {
+//                    dx *= -1
+//                }
+//
+//                // reverse direction of rotation to left of the mid-line
+//                if (x < width / 2) {
+//                    dy *= -1
+//                }
+//
+//                renderer.angle += (dx + dy) * TOUCH_SCALE_FACTOR
+////                requestRender()
+
             }
         }
 
@@ -61,7 +72,6 @@ class NutBoltView(context: Context, attributeSet: AttributeSet) : TextureView(co
         previousY = y
         return true
 
-//        return super.onTouchEvent(event)
     }
 
 }

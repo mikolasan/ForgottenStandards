@@ -1,6 +1,7 @@
 package io.github.mikolasan.imperialrussia
 
 import android.opengl.GLES20
+import android.opengl.Matrix
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
@@ -8,16 +9,26 @@ import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
-class HexFigure(val size: String) {
-
+class HexFigure(val size: Float) {
 
     var width = 0f
     var height = 0f
 
+    var offset: Float = 0f
+//    val scale: Float
+    val radius: Float
+    private val scaleMatrix = FloatArray(16)
+    init {
+        radius = size // ???
+        Matrix.setIdentityM(scaleMatrix, 0)
+//        Matrix.scaleM(scaleMatrix, 0, scale, scale, 1f)
+    }
+
     private companion object {
         const val NUMBER_OF_VERTICES = 6
-        const val radius = 0.5
-        const val innerRadius = 0.4
+//        const val radius = 0.5
+//        const val innerRadius = 0.4
+        const val ringSize = 0.05
 
         val simpleVertexShader = """
             uniform mat4 uMVPMatrix;
@@ -55,6 +66,7 @@ class HexFigure(val size: String) {
 
             // create a floating point buffer from the ByteBuffer
             asFloatBuffer().apply {
+                val innerRadius = if (radius > ringSize) radius - ringSize else 0.01
                 for (i in 0 until NUMBER_OF_VERTICES) {
                     val angle = i * 2 * PI / NUMBER_OF_VERTICES
                     put((cos(angle) * radius).toFloat())    // X coordinate
@@ -85,7 +97,10 @@ class HexFigure(val size: String) {
         val uniformColor = GLES20.glGetUniformLocation(mProgram, "uColor")
 
         // Pass the projection and view transformation to the shader
-        GLES20.glUniformMatrix4fv(uniformMvpMatrix, 1, false, mvpMatrix, 0)
+        val finalTransform = FloatArray(16)
+        Matrix.multiplyMM(finalTransform, 0, mvpMatrix, 0, scaleMatrix, 0)
+        Matrix.translateM(finalTransform, 0, 0f, offset, 0f)
+        GLES20.glUniformMatrix4fv(uniformMvpMatrix, 1, false, finalTransform, 0)
         GLES20.glUniform4fv(uniformColor, 1, color, 0)
 
         GLES20.glEnableVertexAttribArray(attribPosition)
