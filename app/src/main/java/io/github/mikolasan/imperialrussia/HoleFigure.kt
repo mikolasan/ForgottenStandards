@@ -16,12 +16,12 @@ class HoleFigure {
         val left = -0.5f
         val top = 0.5f
 
-        val vertexBuffer = floatArrayOf(
-            right, bottom, 0f, // v1
-            right, top, 0f, // v2
-            left, top, 0f, // v3
-            left, bottom, 0f, // v4
-        )
+//        val vertexBuffer = floatArrayOf(
+//            right, bottom, 0f, // v1
+//            right, top, 0f, // v2
+//            left, top, 0f, // v3
+//            left, bottom, 0f, // v4
+//        )
         val quad: FloatArray = floatArrayOf(
             right, bottom, 0f, 1.0f, -1.0f,
             right, top, 0f, 1.0f, 1.0f,

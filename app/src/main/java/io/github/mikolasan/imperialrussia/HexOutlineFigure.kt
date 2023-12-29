@@ -8,8 +8,7 @@ import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
-class HexFigure(val size: String) {
-
+class HexOutlineFigure {
 
     var width = 0f
     var height = 0f
@@ -17,7 +16,6 @@ class HexFigure(val size: String) {
     private companion object {
         const val NUMBER_OF_VERTICES = 6
         const val radius = 0.5
-        const val innerRadius = 0.4
 
         val simpleVertexShader = """
             uniform mat4 uMVPMatrix;
@@ -49,7 +47,7 @@ class HexFigure(val size: String) {
     // Hex
     private var vertexBuffer: FloatBuffer =
         // (number of coordinate values * 4 bytes per float)
-        ByteBuffer.allocateDirect((NUMBER_OF_VERTICES * 2 + 2) * 3 * 4).run {
+        ByteBuffer.allocateDirect(NUMBER_OF_VERTICES * 3 * 4).run {
             // use the device hardware's native byte order
             order(ByteOrder.nativeOrder())
 
@@ -60,17 +58,7 @@ class HexFigure(val size: String) {
                     put((cos(angle) * radius).toFloat())    // X coordinate
                     put((sin(angle) * radius).toFloat())    // Y coordinate
                     put(0.0f)                   // Z coordinate
-                    // inner loop
-                    put((cos(angle) * innerRadius).toFloat())    // X coordinate
-                    put((sin(angle) * innerRadius).toFloat())    // Y coordinate
-                    put(0.0f)                   // Z coordinate
                 }
-                put(radius.toFloat())
-                put(0.0f)
-                put(0.0f)
-                put(innerRadius.toFloat())
-                put(0.0f)
-                put(0.0f)
                 rewind()
             }
         }
@@ -98,7 +86,7 @@ class HexFigure(val size: String) {
             vertexBuffer
         )
 
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, NUMBER_OF_VERTICES * 2 + 2)
+        GLES20.glDrawArrays(GLES20.GL_LINE_LOOP, 0, NUMBER_OF_VERTICES)
 
         GLES20.glDisableVertexAttribArray(attribPosition)
         GLES20.glUseProgram(0);

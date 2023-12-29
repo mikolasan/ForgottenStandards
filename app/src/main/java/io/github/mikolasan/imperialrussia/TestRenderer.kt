@@ -12,6 +12,8 @@ class TestRenderer(val refreshRate: Long) : Thread() {
     var isStopped = false
 
     private var mHoleFigure: HoleFigure = HoleFigure()
+    private var mHexFigure: HexFigure = HexFigure("M20")
+    private var mHexFigure2: HexFigure = HexFigure("M18")
 
     private val vPMatrix = FloatArray(16)
     private val projectionMatrix = FloatArray(16)
@@ -137,10 +139,20 @@ class TestRenderer(val refreshRate: Long) : Thread() {
             // Calculate the projection and view transformation
             Matrix.multiplyMM(vPMatrix, 0, projectionMatrix, 0, viewMatrix, 0)
 
-            mHoleFigure.width = width.toFloat()
-            mHoleFigure.height = height.toFloat()
-            mHoleFigure.prepare()
-            mHoleFigure.draw(scratch)
+//            mHoleFigure.width = width.toFloat()
+//            mHoleFigure.height = height.toFloat()
+//            mHoleFigure.prepare()
+//            mHoleFigure.draw(scratch)
+
+            mHexFigure.width = width.toFloat()
+            mHexFigure.height = height.toFloat()
+            mHexFigure.prepare()
+            mHexFigure.draw(scratch)
+
+            mHexFigure2.width = width.toFloat()
+            mHexFigure2.height = height.toFloat()
+            mHexFigure2.prepare()
+            mHexFigure2.draw(scratch)
 
             EGL14.eglSwapBuffers(eglDisplay, eglSurface)
 
