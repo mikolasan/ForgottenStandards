@@ -19,15 +19,15 @@ class HexFigure(val size: Float) {
     val radius: Float
     private val scaleMatrix = FloatArray(16)
     init {
-        radius = size // ???
+        radius = (size / 1000.0).toFloat() // ???
         Matrix.setIdentityM(scaleMatrix, 0)
 //        Matrix.scaleM(scaleMatrix, 0, scale, scale, 1f)
     }
 
     private companion object {
         const val NUMBER_OF_VERTICES = 6
-//        const val radius = 0.5
-//        const val innerRadius = 0.4
+        //const val radius = 0.5
+        //const val innerRadius = 0.4
         const val ringSize = 0.05
 
         val simpleVertexShader = """

@@ -1,5 +1,6 @@
 package io.github.mikolasan.imperialrussia
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
@@ -20,6 +21,7 @@ class NutBoltView(context: Context, attributeSet: AttributeSet) : TextureView(co
     private var previousX: Float = 0f
     private var previousY: Float = 0f
 
+    @SuppressLint("NewApi")
     fun getDisplayRefreshRate(context: Context): Long {
         context.display?.let { display ->
             val displayFps: Double = display.refreshRate.toDouble()
@@ -44,26 +46,26 @@ class NutBoltView(context: Context, attributeSet: AttributeSet) : TextureView(co
         when (e.action) {
             MotionEvent.ACTION_MOVE -> {
 
-                val dx: Float = x - previousX
-                val dy: Float = y - previousY
+                var dx: Float = x - previousX
+                var dy: Float = y - previousY
 
                 renderer.positionX += dx / 1000f
                 renderer.positionY -= dy / 1000f
 
                 println("touch delta ${dx}, ${dy}")
 
-//                // reverse direction of rotation above the mid-line
-//                if (y > height / 2) {
-//                    dx *= -1
-//                }
-//
-//                // reverse direction of rotation to left of the mid-line
-//                if (x < width / 2) {
-//                    dy *= -1
-//                }
-//
+                // reverse direction of rotation above the mid-line
+                if (y > height / 2) {
+                    dx *= -1
+                }
+
+                // reverse direction of rotation to left of the mid-line
+                if (x < width / 2) {
+                    dy *= -1
+                }
+
 //                renderer.angle += (dx + dy) * TOUCH_SCALE_FACTOR
-////                requestRender()
+//                requestRender()
 
             }
         }

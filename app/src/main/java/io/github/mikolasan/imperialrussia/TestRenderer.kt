@@ -34,8 +34,9 @@ class TestRenderer(val refreshRate: Long, val dpi: Int) : Thread() {
 
     init {
         // change the offset
-        mHexFigures.forEachIndexed { i, f ->
-            f.offset = 1 - i.toFloat() / 10f
+        mHexFigures.fold(-1.0f) { acc, f ->
+            f.offset = acc
+            acc + 2.0f * f.radius
         }
     }
     private val vPMatrix = FloatArray(16)
