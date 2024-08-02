@@ -10,7 +10,7 @@
 
     <fragment
         android:id="@+id/categories"
-        android:name="io.github.mikolasan.imperialrussia.SwitchFragment"
+        android:name="xyz.neupokoev.forgottenstandards.SwitchFragment"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,7 +23,7 @@
 
     <fragment
         android:id="@+id/list"
-        android:name="io.github.mikolasan.imperialrussia.UnitListFragment"
+        android:name="xyz.neupokoev.forgottenstandards.UnitListFragment"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -36,7 +36,7 @@
 
     <fragment
         android:id="@+id/converter"
-        android:name="io.github.mikolasan.imperialrussia.ConverterFragment"
+        android:name="xyz.neupokoev.forgottenstandards.ConverterFragment"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         app:layout_constraintEnd_toEndOf="parent"

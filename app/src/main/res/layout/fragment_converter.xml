@@ -10,7 +10,7 @@
     android:layout_alignParentEnd="true"
     android:layout_alignParentBottom="true">
 
-    <io.github.mikolasan.imperialrussia.ImperialUnitPanel
+    <xyz.neupokoev.forgottenstandards.ImperialUnitPanel
         android:id="@+id/convert_to"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -22,7 +22,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <io.github.mikolasan.imperialrussia.ImperialUnitPanel
+    <xyz.neupokoev.forgottenstandards.ImperialUnitPanel
         android:id="@+id/convert_from"
         android:layout_width="0dp"
         android:layout_height="@dimen/imperial_panel_height"
@@ -49,7 +49,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/keyboard"
-        android:name="io.github.mikolasan.imperialrussia.KeyboardFragment"
+        android:name="xyz.neupokoev.forgottenstandards.KeyboardFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="visible"
@@ -62,7 +62,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/keyboard_button"
-        android:name="io.github.mikolasan.imperialrussia.KeyboardButtonFragment"
+        android:name="xyz.neupokoev.forgottenstandards.KeyboardButtonFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="invisible"

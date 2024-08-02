@@ -18,7 +18,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "io.github.mikolasan.imperialrussia"
+        applicationId "xyz.neupokoev.forgottenstandards"
         minSdkVersion 27
         targetSdkVersion 34
         compileSdk 34
@@ -57,7 +57,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    namespace 'io.github.mikolasan.imperialrussia'
+    namespace 'xyz.neupokoev.forgottenstandards'
     compileSdk 34
     buildToolsVersion '34.0.0'
 }

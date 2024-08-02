@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/switchFragment"
-        android:name="io.github.mikolasan.imperialrussia.SwitchFragment"
+        android:name="xyz.neupokoev.forgottenstandards.SwitchFragment"
         android:label="Forgotten Standards"
         tools:layout="@layout/fragment_switch" >
         <action
@@ -24,7 +24,7 @@
     </fragment>
     <fragment
         android:id="@+id/unitListFragment"
-        android:name="io.github.mikolasan.imperialrussia.UnitListFragment"
+        android:name="xyz.neupokoev.forgottenstandards.UnitListFragment"
         >
         <action
             android:id="@+id/action_select_unit"
@@ -32,9 +32,9 @@
     </fragment>
     <fragment
         android:id="@+id/converterFragment"
-        android:name="io.github.mikolasan.imperialrussia.ConverterFragment"
+        android:name="xyz.neupokoev.forgottenstandards.ConverterFragment"
         android:label="Cozy Converter" />
     <fragment
         android:id="@+id/nutBoltFragment"
-        android:name="io.github.mikolasan.imperialrussia.NutBoltFragment" />
+        android:name="xyz.neupokoev.forgottenstandards.NutBoltFragment" />
 </navigation>

@@ -27,7 +27,7 @@
     <dimen name="imperial_panel_input_margin_end">20dp</dimen>
     <dimen name="imperial_panel_input_margin_bottom">8dp</dimen>
     <dimen name="unit_list_divider">6dp</dimen>
-    <dimen name="unit_list_name_size">16sp</dimen>
+    <dimen name="unit_list_name_size">18sp</dimen>
     <dimen name="unit_list_value_size">22sp</dimen>
     <dimen name="unit_list_height">74dp</dimen>
     <dimen name="unit_list_margin_start">12dp</dimen>

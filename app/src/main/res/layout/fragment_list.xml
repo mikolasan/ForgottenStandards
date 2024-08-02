@@ -9,12 +9,12 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/unit_type"
-        android:layout_width="0dp"
+        android:layout_width="400dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="6dp"
         android:layout_marginEnd="6dp"
         android:layout_marginTop="6dp"
-        android:background="@color/backgroundAccent"
+        android:background="@color/backgroundPanel"
         android:minWidth="@dimen/min_imperial_panel_width"
 
         app:layout_constraintEnd_toEndOf="parent"
@@ -69,7 +69,7 @@
 
     <ListView
         android:id="@+id/units_list"
-        android:layout_width="0dp"
+        android:layout_width="400dp"
         android:layout_height="0dp"
         android:layout_marginStart="6dp"
         android:layout_marginTop="6dp"
@@ -85,7 +85,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/keyboard"
-        android:name="io.github.mikolasan.imperialrussia.KeyboardFragment"
+        android:name="xyz.neupokoev.forgottenstandards.KeyboardFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
@@ -98,7 +98,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/keyboard_button"
-        android:name="io.github.mikolasan.imperialrussia.KeyboardButtonFragment"
+        android:name="xyz.neupokoev.forgottenstandards.KeyboardButtonFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="invisible"

@@ -179,7 +179,7 @@ fun doUnits(name: String, imperialUnitCategory: ImperialUnitCategory) {
             .addProperty(unitsArray)
             .addProperty(nameMap)
             .build()
-    val kotlinFile = FileSpec.builder("io.github.mikolasan.imperialrussia", name)
+    val kotlinFile = FileSpec.builder("xyz.neupokoev.forgottenstandards", name)
             .addType(unitsObject)
             .indent("    ")
             .build()

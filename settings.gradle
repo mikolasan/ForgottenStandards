@@ -1,4 +1,4 @@
-rootProject.name = 'imperialrussia'
+rootProject.name = 'forgottenstandards'
 include ':ratiogenerator',
         ':convertmeifyoucan',
         ':littlefuzzy',
