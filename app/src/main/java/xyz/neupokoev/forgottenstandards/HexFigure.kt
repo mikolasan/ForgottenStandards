@@ -19,6 +19,7 @@ class HexFigure(val size: Float) {
     val radius: Float
     private val scaleMatrix = FloatArray(16)
     init {
+        // size - in pixels
         radius = (size / 1000.0).toFloat() // ???
         Matrix.setIdentityM(scaleMatrix, 0)
 //        Matrix.scaleM(scaleMatrix, 0, scale, scale, 1f)

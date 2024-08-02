@@ -131,7 +131,17 @@ class TestRenderer(val refreshRate: Long, val dpi: Int) : Thread() {
 
         // this projection matrix is applied to object coordinates
         // in the onDrawFrame() method
-        Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1f, 1f, 3f, 7f)
+        Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1f, 1f, 1f, 2f)
+//        Matrix.orthoM(projectionMatrix,
+//            0,
+//            -width / 2f,
+//            width / 2f,
+//            -height / 2f,
+//            height / 2f,
+//            0f,
+//            10f
+//        );
+
 
         while (!isStopped && EGL14.eglGetError() == EGL14.EGL_SUCCESS) {
             EGL14.eglMakeCurrent(eglDisplay, eglSurface, eglSurface, eglContext)
@@ -164,8 +174,9 @@ class TestRenderer(val refreshRate: Long, val dpi: Int) : Thread() {
 //            GLES20.glViewport(0, 0, width, height);
 
             // Set the camera position (View matrix)
-            Matrix.setLookAtM(viewMatrix, 0,
-                0f, 0f, 3f,
+            Matrix.setLookAtM(viewMatrix,
+                0,
+                0f, 0f, 1f,
                 0f, 0f, 0f,
                 0f, 1.0f, 0.0f)
 
