@@ -187,8 +187,8 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="outputName" value="ic_bookmark" />
-                            <entry key="sourceFile" value="C:\Users\neupo\develop\ImperialRussia\assets\bookmark.svg" />
+                            <entry key="outputName" value="bg_rect_selected" />
+                            <entry key="sourceFile" value="C:\Users\neupo\develop\ImperialRussia\assets\rect_selected.svg" />
                           </map>
                         </option>
                       </PersistentState>
