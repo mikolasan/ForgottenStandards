@@ -32,8 +32,7 @@
     </fragment>
     <fragment
         android:id="@+id/converterFragment"
-        android:name="xyz.neupokoev.forgottenstandards.ConverterFragment"
-        android:label="Cozy Converter" />
+        android:name="xyz.neupokoev.forgottenstandards.ConverterFragment" />
     <fragment
         android:id="@+id/nutBoltFragment"
         android:name="xyz.neupokoev.forgottenstandards.NutBoltFragment" />

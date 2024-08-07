@@ -12,11 +12,12 @@
         android:layout_width="400dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="6dp"
-        android:layout_marginEnd="6dp"
         android:layout_marginTop="6dp"
+        android:layout_marginEnd="6dp"
         android:background="@color/backgroundPanel"
         android:minWidth="@dimen/min_imperial_panel_width"
 
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -32,26 +33,26 @@
             android:textColor="@color/primary"
             android:textSize="@dimen/imperial_panel_text_size"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/search_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/imperial_panel_input_margin_start"
-            android:layout_marginEnd="@dimen/imperial_panel_input_margin_end"
             android:layout_marginTop="@dimen/imperial_panel_input_margin_top"
+            android:layout_marginEnd="@dimen/imperial_panel_input_margin_end"
             android:layout_marginBottom="@dimen/imperial_panel_input_margin_bottom"
             android:background="@drawable/bg_input_text"
             android:clickable="true"
             android:cursorVisible="true"
             android:focusable="true"
             android:paddingStart="@dimen/imperial_panel_input_padding_start"
-            android:paddingEnd="@dimen/imperial_panel_input_padding_end"
             android:paddingTop="@dimen/imperial_panel_input_padding_top"
+            android:paddingEnd="@dimen/imperial_panel_input_padding_end"
             android:paddingBottom="@dimen/imperial_panel_input_padding_bottom"
             android:singleLine="true"
             android:textAppearance="@style/ImperialPanel"
@@ -59,10 +60,10 @@
             android:textCursorDrawable="@drawable/cursor"
             android:textIsSelectable="true"
             android:textSize="@dimen/imperial_panel_text_size"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,14 +1,18 @@
 package xyz.neupokoev.forgottenstandards
 
+import android.app.SearchManager
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
+import android.view.Menu
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -52,6 +56,39 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        // Inflate the options menu from XML.
+        val inflater = menuInflater
+        inflater.inflate(R.menu.options_menu, menu)
+
+        // Get the SearchView and set the searchable configuration.
+        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        (menu.findItem(R.id.action_search).actionView as SearchView).apply {
+            // Assumes current activity is the searchable activity.
+            setSearchableInfo(searchManager.getSearchableInfo(componentName))
+            setIconifiedByDefault(false) // Don't iconify the widget. Expand it by default.
+            val listener = object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+//                    unitListFragment?.run {
+//                        listAdapter.filter.filter(query)
+//                    }
+//                    return true
+                    return false
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    unitListFragment?.run {
+                        listAdapter.filter.filter(query)
+                    }
+                    return true
+                }
+            }
+            setOnQueryTextListener(listener)
+        }
+
+        return true
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -73,7 +110,9 @@ class MainActivity : AppCompatActivity() {
         val navController = navHostFragment.navController
         val globalUnits = workingUnits
         navController.addOnDestinationChangedListener{ controller, destination, arguments ->
-            if (destination.id == R.id.unitListFragment || destination.id == R.id.nutBoltFragment) {
+            if (destination.id == R.id.unitListFragment
+                || destination.id == R.id.converterFragment
+                || destination.id == R.id.nutBoltFragment) {
                 supportActionBar?.title = globalUnits.selectedCategory?.name
             } else {
                 supportActionBar?.title = destination.label
@@ -82,7 +121,6 @@ class MainActivity : AppCompatActivity() {
 
         val appBarConfiguration = AppBarConfiguration(navController.graph)
         toolbar.setupWithNavController(navController, appBarConfiguration)
-
 
 //        try {
 //            val label = findViewById<TextView>(R.id.description_text)
