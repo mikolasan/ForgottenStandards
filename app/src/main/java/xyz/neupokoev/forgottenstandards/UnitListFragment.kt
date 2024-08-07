@@ -35,35 +35,38 @@ class UnitListFragment : Fragment() {
         (activity as? MainActivity)?.setSubscriber(this)
 
         listAdapter = (activity as MainActivity).workingUnits.listAdapter
-        listAdapter.setOnArrowClickListener { _: Int, arrow: View, unit: ImperialUnit ->
-            arrow.visibility = View.INVISIBLE // hide the arrow
-            (activity as MainActivity).onArrowClicked(unit)
-        }
-        listAdapter.setOnArrowLongClickListener { _: Int, arrow: View, unit: ImperialUnit ->
-            arrow.visibility = View.INVISIBLE // hide the arrow
-            (activity as MainActivity).onArrowLongClicked(unit)
-            unitsList.setSelectionAfterHeaderView()
-        }
-        listAdapter.setOnBookmarkClickListener { _: Int, arrow: View, unit: ImperialUnit ->
-            (activity as MainActivity).let {
-                if (unit.bookmarked) {
-                    it.workingUnits.favoritedUnits.plusAssign(unit)
-                    it.onUnitSelected(unit)
-                    if (it.workingUnits.favoritedUnits.size > 1) {
-                        try {
-                            val nav = it.findNavController(R.id.nav_host_fragment)
-                            val bundle = bundleOf(
-                                "category" to unit.category.type.name,
-                                "topUnit" to it.workingUnits.topUnit.unitName.name,
-                                "bottomUnit" to it.workingUnits.bottomUnit.unitName.name
-                            )
-                            nav.navigate(R.id.action_select_unit, bundle)
-                        } catch (e: Exception) {
-                            // ignore
+        listAdapter.let { listAdapter ->
+
+            listAdapter.setOnArrowClickListener { _: Int, arrow: View, unit: ImperialUnit ->
+                arrow.visibility = View.INVISIBLE // hide the arrow
+                (activity as MainActivity).onArrowClicked(unit)
+            }
+            listAdapter.setOnArrowLongClickListener { _: Int, arrow: View, unit: ImperialUnit ->
+                arrow.visibility = View.INVISIBLE // hide the arrow
+                (activity as MainActivity).onArrowLongClicked(unit)
+                unitsList.setSelectionAfterHeaderView()
+            }
+            listAdapter.setOnBookmarkClickListener { _: Int, arrow: View, unit: ImperialUnit ->
+                (activity as MainActivity).let {
+                    if (unit.bookmarked) {
+                        it.workingUnits.favoritedUnits.plusAssign(unit)
+                        it.onUnitSelected(unit)
+                        if (it.workingUnits.favoritedUnits.size > 1) {
+                            try {
+                                val nav = it.findNavController(R.id.nav_host_fragment)
+                                val bundle = bundleOf(
+                                    "category" to unit.category.type.name,
+                                    "topUnit" to it.workingUnits.topUnit.unitName.name,
+                                    "bottomUnit" to it.workingUnits.bottomUnit.unitName.name
+                                )
+                                nav.navigate(R.id.action_select_unit, bundle)
+                            } catch (e: Exception) {
+                                // ignore
+                            }
                         }
+                    } else {
+                        it.workingUnits.favoritedUnits.minusAssign(unit)
                     }
-                } else {
-                    it.workingUnits.favoritedUnits.minusAssign(unit)
                 }
             }
         }
@@ -111,7 +114,8 @@ class UnitListFragment : Fragment() {
 //            listAdapter.updateAllValues(unit, unit.value)
 //        }
 
-        (activity as? MainActivity)?.updateKeyboard()
+        //(activity as? MainActivity)?.updateKeyboard()
+        (activity as? MainActivity)?.showKeyboard()
     }
 
     override fun onResume() {

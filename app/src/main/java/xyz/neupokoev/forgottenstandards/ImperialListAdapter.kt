@@ -97,7 +97,7 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits) : BaseAdapter(
 
     private val backgrounds = mapOf(
             ViewState.SECOND to R.color.backgroundAccent,
-            ViewState.SELECTED to R.color.backgroundDark,
+            ViewState.SELECTED to R.color.colorPrimaryDark,
             ViewState.NORMAL to R.color.backgroundAccent
     )
     private val nameColors = mapOf(
@@ -109,6 +109,11 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits) : BaseAdapter(
             ViewState.SECOND to R.color.fontPrimary,
             ViewState.SELECTED to R.color.fontPrimary,
             ViewState.NORMAL to R.color.fontPrimary
+    )
+    private val valueBackgrounds = mapOf(
+        ViewState.SECOND to R.color.backgroundAccent,
+        ViewState.SELECTED to R.color.backgroundDark,
+        ViewState.NORMAL to R.color.inputNormal
     )
 
     private fun updateViewColors(layout: ConstraintLayout, dataPosition: Int) {

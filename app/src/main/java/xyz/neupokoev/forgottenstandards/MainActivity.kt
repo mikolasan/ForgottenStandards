@@ -102,25 +102,31 @@ class MainActivity : AppCompatActivity() {
         }
 
         setContentView(R.layout.activity_main)
-        val toolbar = findViewById<Toolbar>(R.id.my_toolbar)
-        setSupportActionBar(toolbar)
+
 
         // val navController = findNavController(R.id.nav_host_fragment) // doesn't work because of some stupid shit about lifecycle, see https://issuetracker.google.com/issues/142847973?pli=1
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        val navController = navHostFragment.navController
-        val globalUnits = workingUnits
-        navController.addOnDestinationChangedListener{ controller, destination, arguments ->
-            if (destination.id == R.id.unitListFragment
-                || destination.id == R.id.converterFragment
-                || destination.id == R.id.nutBoltFragment) {
-                supportActionBar?.title = globalUnits.selectedCategory?.name
-            } else {
-                supportActionBar?.title = destination.label
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as? NavHostFragment
+        val navController = navHostFragment?.navController
+        navController?.run {
+            val globalUnits = workingUnits
+            addOnDestinationChangedListener { controller, destination, arguments ->
+                if (destination.id == R.id.unitListFragment
+                    || destination.id == R.id.converterFragment
+                    || destination.id == R.id.nutBoltFragment
+                ) {
+                    supportActionBar?.title = globalUnits.selectedCategory?.name
+                } else {
+                    supportActionBar?.title = destination.label
+                }
             }
         }
 
-        val appBarConfiguration = AppBarConfiguration(navController.graph)
-        toolbar.setupWithNavController(navController, appBarConfiguration)
+        val toolbar = findViewById<Toolbar>(R.id.my_toolbar)
+        if (toolbar != null && navController != null) {
+            setSupportActionBar(toolbar)
+            val appBarConfiguration = AppBarConfiguration(navController.graph)
+            toolbar.setupWithNavController(navController, appBarConfiguration)
+        }
 
 //        try {
 //            val label = findViewById<TextView>(R.id.description_text)
