@@ -52,8 +52,7 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits) : BaseAdapter(
             }
         }
         names = allUnits.map { u -> u.unitName.name.lowercase(Locale.ROOT) }
-//        units = units
-        notifyDataSetChanged()
+        //notifyDataSetChanged()
     }
 
     override fun getView(position: Int, contentView: View?, parent: ViewGroup?): View {

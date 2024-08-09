@@ -19,16 +19,19 @@ class CompleteConversionTest {
     fun allLengthUnits() {
         val units = MinLengthUnits.units
         val map = MinLengthUnits.nameMap
+        val start = System.currentTimeMillis()
         for (fromUnit in units) {
             for (toUnit in units) {
                 if (fromUnit.unitName == toUnit.unitName) continue
 
-                println("Finding ratio for ${fromUnit.unitName} -> ${toUnit.unitName}...")
+                //println("Finding ratio for ${fromUnit.unitName} -> ${toUnit.unitName}...")
                 val formulaArray = findConversionFormula(map, fromUnit, toUnit)
                 assert(formulaArray.isNotEmpty())
-                println("[OK]: ${fromUnit.unitName} -> ${formulaArray.contentToString()} = ${toUnit.unitName}")
+                //println("[OK]: ${fromUnit.unitName} -> ${formulaArray.contentToString()} = ${toUnit.unitName}")
             }
         }
+        val end = System.currentTimeMillis()
+        println("allLengthUnits took " + (end - start) + " MilliSeconds")
     }
 
     @Test

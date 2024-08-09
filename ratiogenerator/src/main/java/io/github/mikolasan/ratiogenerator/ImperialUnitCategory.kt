@@ -24,7 +24,7 @@ abstract class ImperialUnitCategory(val type: ImperialUnitType,
                     .filter { it.second.second == unit.unitName }
                     .map { it.first.second to (it.second.first / it.first.first) }
                 unit.ratioMap = (leftToRight + rightToLeft).toMap()
-                unit.formulaMap = unit.ratioMap.map { it.key to arrayOf("x * ${it.value}") }.toMap()
+                unit.formulaMap = unit.ratioMap.map { it.key to arrayOf("x * ${it.value}") }.toMap(mutableMapOf())
             }
         } else if (formulaList.isNotEmpty()) {
             // fill formula maps
@@ -32,6 +32,7 @@ abstract class ImperialUnitCategory(val type: ImperialUnitType,
                 unit.formulaMap = formulaList
                     .filter { it.first == unit.unitName }
                     .associate { it.third to arrayOf(it.second) }
+                    .toMutableMap()
             }
         }
     }

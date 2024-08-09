@@ -10,7 +10,7 @@ class ImperialUnit(val category: ImperialUnitCategory,
     var bookmarked = false
 
     var ratioMap: Map<ImperialUnitName, Double> = mapOf()
-    var formulaMap: Map<ImperialUnitName, Array<String>> = mapOf()
+    var formulaMap: MutableMap<ImperialUnitName, Array<String>> = mutableMapOf()
 
     fun restoreValue(s: String, v: Double) {
         inputString = s

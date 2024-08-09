@@ -1,15 +1,17 @@
 package xyz.neupokoev.forgottenstandards
 
 import io.github.mikolasan.ratiogenerator.ImperialUnit
+import io.github.mikolasan.ratiogenerator.ImperialUnitCategory
 import io.github.mikolasan.ratiogenerator.ImperialUnitName
 import io.github.mikolasan.ratiogenerator.ImperialUnitType
+import io.github.mikolasan.ratiogenerator.MinLengthUnits
 import org.junit.Assert.*
 import org.junit.Test
 
 
 class ImperialUnitLengthTest {
-    val defaultValue = ImperialUnit(ImperialUnitType.LENGTH, ImperialUnitName.LENGTH_ZERO_NO_UNIT, mutableMapOf())
-    val imperialUnits = LengthUnits.nameMap
+    val defaultValue = ImperialUnit(MinLengthUnits, ImperialUnitType.LENGTH, ImperialUnitName.LENGTH_ZERO_NO_UNIT)
+    val imperialUnits = MinLengthUnits.nameMap
     val arshin = imperialUnits.getOrDefault(ImperialUnitName.ARSHIN, defaultValue)
     val point = imperialUnits.getOrDefault(ImperialUnitName.POINT, defaultValue)
     val line = imperialUnits.getOrDefault(ImperialUnitName.LINE, defaultValue)
@@ -160,7 +162,7 @@ class ImperialUnitLengthTest {
 
     @Test
     fun getConversionRatio_checkRatioForAllUnits() {
-        val units = LengthUnits.units
+        val units = MinLengthUnits.units
         for (fromUnit in units) {
             for (toUnit in units) {
                 println("Finding ratio for ${fromUnit.unitName} -> ${toUnit.unitName}...")

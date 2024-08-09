@@ -23,6 +23,11 @@ fun convertValue(inputUnit: ImperialUnit?, outputUnit: ImperialUnit?, inputValue
     inputUnit ?: return 0.0
     outputUnit ?: return 0.0
     val formulaArray = findConversionFormula(inputUnit.category.nameMap, inputUnit, outputUnit)
+
+    if (!outputUnit.formulaMap.containsKey(inputUnit.unitName)) {
+        outputUnit.formulaMap[inputUnit.unitName] = formulaArray
+    }
+
     val it = formulaArray.iterator()
     var x = inputValue
     while (it.hasNext()) {
