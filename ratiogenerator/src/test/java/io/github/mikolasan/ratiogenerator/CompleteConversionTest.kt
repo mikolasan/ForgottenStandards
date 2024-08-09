@@ -51,6 +51,26 @@ class CompleteConversionTest {
     }
 
     @Test
+    fun finiteValuesInConversionFormulas() {
+        val map = MinLengthUnits.nameMap
+        val foot = map[ImperialUnitName.FOOT]!!
+        val span = map[ImperialUnitName.SPAN]!!
+        val array = findConversionFormulas(map, foot, span)
+        assert(array.isNotEmpty())
+
+        val i = array.iterator()
+        while (i.hasNext()) {
+            var x = 42.0
+            val ii = i.next().iterator()
+            while (ii.hasNext()) {
+                val root = FunctionParser().parse(ii.next())
+                x = root.eval(x.toString())
+            }
+            assert(x.isFinite())
+        }
+    }
+
+    @Test
     fun completeConversion() {
         val units = MinForceUnits.units
         val map = MinForceUnits.nameMap
