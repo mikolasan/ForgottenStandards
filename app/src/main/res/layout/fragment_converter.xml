@@ -47,29 +47,4 @@
         app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/keyboard"
-        android:name="xyz.neupokoev.forgottenstandards.KeyboardFragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="visible"
-        android:elevation="2dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout="@layout/keyboard_panel"
-        tools:targetApi="lollipop" />
-
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/keyboard_button"
-        android:name="xyz.neupokoev.forgottenstandards.KeyboardButtonFragment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="invisible"
-        android:elevation="2dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:layout="@layout/keyboard_button_fragment"
-        tools:targetApi="lollipop" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

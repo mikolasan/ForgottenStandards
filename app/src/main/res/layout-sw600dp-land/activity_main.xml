@@ -32,7 +32,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_default="percent"
         app:layout_constraintWidth_percent="0.4"
-        tools:layout="@layout/fragment_list" />
+        tools:layout="@layout/fragment_list_and_keyboard" />
 
     <fragment
         android:id="@+id/converter"
@@ -46,5 +46,18 @@
         app:layout_constraintWidth_default="percent"
         app:layout_constraintWidth_percent="0.3"
         tools:layout="@layout/fragment_converter" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/keyboard"
+        android:name="xyz.neupokoev.forgottenstandards.KeyboardFragment"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:elevation="2dp"
+        android:visibility="visible"
+        android:layout_margin="6dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:layout="@layout/keyboard_panel"
+        tools:targetApi="lollipop" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

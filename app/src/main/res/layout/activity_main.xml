@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/motion_layout"
     android:background="@color/background"
     android:layout_width="match_parent"
@@ -27,6 +28,32 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:defaultNavHost="true"
         app:navGraph="@navigation/nav_graph" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/keyboard"
+        android:name="xyz.neupokoev.forgottenstandards.KeyboardFragment"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:elevation="2dp"
+        android:visibility="visible"
+        android:layout_margin="6dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout="@layout/keyboard_panel"
+        tools:targetApi="lollipop" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/keyboard_button"
+        android:name="xyz.neupokoev.forgottenstandards.KeyboardButtonFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        android:elevation="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:layout="@layout/keyboard_button_fragment"
+        tools:targetApi="lollipop" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

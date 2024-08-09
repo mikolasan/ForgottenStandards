@@ -7,67 +7,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/unit_type"
-        android:layout_width="400dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="6dp"
-        android:layout_marginTop="6dp"
-        android:layout_marginEnd="6dp"
-        android:background="@color/backgroundPanel"
-        android:minWidth="@dimen/min_imperial_panel_width"
-
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/unit_type_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:text="Length"
-            android:textAppearance="@style/ImperialPanel"
-            android:textColor="@color/primary"
-            android:textSize="@dimen/imperial_panel_text_size"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/search_input"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/imperial_panel_input_margin_start"
-            android:layout_marginTop="@dimen/imperial_panel_input_margin_top"
-            android:layout_marginEnd="@dimen/imperial_panel_input_margin_end"
-            android:layout_marginBottom="@dimen/imperial_panel_input_margin_bottom"
-            android:background="@drawable/bg_input_text"
-            android:clickable="true"
-            android:cursorVisible="true"
-            android:focusable="true"
-            android:paddingStart="@dimen/imperial_panel_input_padding_start"
-            android:paddingTop="@dimen/imperial_panel_input_padding_top"
-            android:paddingEnd="@dimen/imperial_panel_input_padding_end"
-            android:paddingBottom="@dimen/imperial_panel_input_padding_bottom"
-            android:singleLine="true"
-            android:textAppearance="@style/ImperialPanel"
-            android:textColor="@color/inputNormal"
-            android:textCursorDrawable="@drawable/cursor"
-            android:textIsSelectable="true"
-            android:textSize="@dimen/imperial_panel_text_size"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
     <ListView
         android:id="@+id/units_list"
         android:layout_width="400dp"
@@ -77,36 +16,12 @@
         android:layout_marginEnd="6dp"
         android:divider="@android:color/transparent"
         android:dividerHeight="@dimen/unit_list_divider"
-        app:layout_constraintBottom_toTopOf="@+id/keyboard"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/unit_type"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/keyboard"
-        android:name="xyz.neupokoev.forgottenstandards.KeyboardFragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:elevation="2dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout="@layout/keyboard_panel"
-        tools:targetApi="lollipop" />
-
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/keyboard_button"
-        android:name="xyz.neupokoev.forgottenstandards.KeyboardButtonFragment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="invisible"
-        android:elevation="2dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:layout="@layout/keyboard_button_fragment"
-        tools:targetApi="lollipop" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

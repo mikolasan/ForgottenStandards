@@ -35,8 +35,8 @@ class ConverterFragment : Fragment() {
         selectedPanel = topPanel // init before use
         setPanelListeners(view)
 
-        keyboardView = view.findViewById(R.id.keyboard)
-        keyboardButtonView = view.findViewById(R.id.keyboard_button)
+//        keyboardView = view.findViewById(R.id.keyboard)
+//        keyboardButtonView = view.findViewById(R.id.keyboard_button)
 
 
 //        arguments?.let {
@@ -52,8 +52,8 @@ class ConverterFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
-        keyboardFragment = keyboardView.getFragment()
-        keyboardButtonFragment = keyboardButtonView.getFragment()
+//        keyboardFragment = keyboardView.getFragment()
+//        keyboardButtonFragment = keyboardButtonView.getFragment()
 
         (activity as? MainActivity)?.workingUnits?.let { workingUnits ->
             restoreTopPanel(workingUnits.topUnit)
@@ -62,7 +62,7 @@ class ConverterFragment : Fragment() {
             displayUnitValues()
         }
 
-        (activity as? MainActivity)?.updateKeyboard()
+//        (activity as? MainActivity)?.updateKeyboard()
     }
 
     fun selectPanel(new: ImperialUnitPanel, old: ImperialUnitPanel) {

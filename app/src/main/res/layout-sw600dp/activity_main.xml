@@ -22,32 +22,108 @@
         app:layout_constraintWidth_percent="0.5"
         tools:layout="@layout/fragment_switch" />
 
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/unit_type"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="6dp"
+        android:background="@color/backgroundPanel"
+        android:minWidth="@dimen/min_imperial_panel_width"
+
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/unit_type_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="Length"
+            android:textAppearance="@style/ImperialPanel"
+            android:textColor="@color/primary"
+            android:textSize="@dimen/imperial_panel_text_size"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/search_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/imperial_panel_input_margin_start"
+            android:layout_marginTop="@dimen/imperial_panel_input_margin_top"
+            android:layout_marginEnd="@dimen/imperial_panel_input_margin_end"
+            android:layout_marginBottom="@dimen/imperial_panel_input_margin_bottom"
+            android:background="@drawable/bg_input_text"
+            android:clickable="true"
+            android:cursorVisible="true"
+            android:focusable="true"
+            android:paddingStart="@dimen/imperial_panel_input_padding_start"
+            android:paddingTop="@dimen/imperial_panel_input_padding_top"
+            android:paddingEnd="@dimen/imperial_panel_input_padding_end"
+            android:paddingBottom="@dimen/imperial_panel_input_padding_bottom"
+            android:singleLine="true"
+            android:textAppearance="@style/ImperialPanel"
+            android:textColor="@color/inputNormal"
+            android:textCursorDrawable="@drawable/cursor"
+            android:textIsSelectable="true"
+            android:textSize="@dimen/imperial_panel_text_size"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <fragment
+        android:id="@+id/list"
+        android:name="xyz.neupokoev.forgottenstandards.UnitListFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/converter"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_default="percent"
+        app:layout_constraintWidth_percent="0.5"
+        tools:layout="@layout/fragment_list" />
+
     <fragment
         android:id="@+id/converter"
         android:name="xyz.neupokoev.forgottenstandards.ConverterFragment"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="0dp"
         app:layout_constraintHeight_min="@dimen/min_converter_height"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/list"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/keyboard"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/list"
         app:layout_constraintTop_toBottomOf="@id/categories"
         app:layout_constraintWidth_default="percent"
         app:layout_constraintWidth_percent="0.5"
         tools:layout="@layout/fragment_converter" />
 
-    <fragment
-        android:id="@+id/list"
-        android:name="xyz.neupokoev.forgottenstandards.UnitListFragment"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/keyboard"
+        android:name="xyz.neupokoev.forgottenstandards.KeyboardFragment"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="2dp"
+        android:visibility="visible"
+        android:layout_margin="6dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/converter"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_default="percent"
-        app:layout_constraintWidth_percent="0.5"
-        tools:layout="@layout/fragment_list" />
+        tools:layout="@layout/keyboard_panel"
+        tools:targetApi="lollipop" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
