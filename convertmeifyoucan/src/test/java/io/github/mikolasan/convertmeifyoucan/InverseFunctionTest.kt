@@ -8,6 +8,7 @@ class InverseFunctionTest {
     @Test
     fun decimalNumberFormatParsing() {
         assertEquals(1.2, FunctionParser().parse("1.2").atom.toDouble(), 1e-10)
+        assertEquals(0.5, FunctionParser().parse("0.5").atom.toDouble(), 1e-10)
         assertEquals(1234.5, FunctionParser().parse("1,234.5").atom.toDouble(), 1e-10)
     }
 
@@ -174,5 +175,17 @@ class InverseFunctionTest {
         // x  32
         //
         assertEquals("(x - 32.0) * 5.0 / 9.0", FunctionParser().inverse("x * 9.0 / 5.0 + 32.0"))
+    }
+
+    @Test
+    fun divisionByZeroSomehow() {
+        // why: check your locale!
+        val a: Array<String> = arrayOf(
+                "x * 0.3333333333333333",
+                "x * 0.002"
+        )
+        val f = FunctionParser().inverse(a)
+        println(f)
+
     }
 }

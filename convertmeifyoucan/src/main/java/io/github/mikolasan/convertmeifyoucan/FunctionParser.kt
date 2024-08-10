@@ -2,6 +2,7 @@ package io.github.mikolasan.convertmeifyoucan
 
 import java.lang.Exception
 import java.text.DecimalFormatSymbols
+import java.util.Locale
 import kotlin.math.exp
 import kotlin.math.pow
 
@@ -160,8 +161,8 @@ class FunctionParser {
     }
 
     class Carriage(private val expression: String) {
-        private val grouping = DecimalFormatSymbols.getInstance().groupingSeparator
-        private val decimal = DecimalFormatSymbols.getInstance().decimalSeparator
+        private val grouping = DecimalFormatSymbols.getInstance(Locale.US).groupingSeparator
+        private val decimal = DecimalFormatSymbols.getInstance(Locale.US).decimalSeparator
         var char: Char? = null
         var pos: Int = -1
         var exponentPart: Boolean = false

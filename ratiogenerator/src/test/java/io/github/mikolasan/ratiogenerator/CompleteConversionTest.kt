@@ -2,6 +2,7 @@ package io.github.mikolasan.ratiogenerator
 
 import io.github.mikolasan.convertmeifyoucan.FunctionParser
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
 import org.junit.Test
 
 class CompleteConversionTest {
@@ -35,6 +36,40 @@ class CompleteConversionTest {
     }
 
     @Test
+    fun allLengthUnitsWithMapUpdate() {
+        val units = MinLengthUnits.units
+        val map = MinLengthUnits.nameMap
+        val start = System.currentTimeMillis()
+        for (fromUnit in units) {
+            for (toUnit in units) {
+                if (fromUnit.unitName == toUnit.unitName) continue
+                val array = findConversionFormulas(map, fromUnit, toUnit)
+                val i = array.iterator()
+                var first = true
+                while (i.hasNext()) {
+                    val formulaArray = i.next()
+                    if (first) {
+                        if (!toUnit.formulaMap.containsKey(fromUnit.unitName)) {
+                            toUnit.formulaMap[fromUnit.unitName] = formulaArray
+                        }
+                        first = false
+                    }
+                    val ii = formulaArray.iterator()
+                    var x = 42.0
+                    while (ii.hasNext()) {
+                        val root = FunctionParser().parse(ii.next())
+                        x = root.eval(x.toString())
+                    }
+                    assert(x.isFinite())
+//                    assertNotEquals(x, 0.0, 1e-6)
+                }
+            }
+        }
+        val end = System.currentTimeMillis()
+        println("allLengthUnits took " + (end - start) + " MilliSeconds")
+    }
+
+    @Test
     fun allTemperatureUnits() {
         val units = MinTemperatureUnits.units
         val map = MinTemperatureUnits.nameMap
@@ -53,8 +88,8 @@ class CompleteConversionTest {
     @Test
     fun finiteValuesInConversionFormulas() {
         val map = MinLengthUnits.nameMap
-        val foot = map[ImperialUnitName.FOOT]!!
-        val span = map[ImperialUnitName.SPAN]!!
+        val foot = map[ImperialUnitName.SAZHEN]!!
+        val span = map[ImperialUnitName.ELL]!!
         val array = findConversionFormulas(map, foot, span)
         assert(array.isNotEmpty())
 

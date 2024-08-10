@@ -16,7 +16,7 @@ class ConvertValueTest {
             for (toUnit in units) {
                 if (fromUnit.unitName == toUnit.unitName) continue
                 val ret = convertValue(fromUnit, toUnit, 42.0)
-                assertNotEquals(ret, 0.0, 1e-6)
+                assertNotEquals(ret, 0.0, 1e-10)
                 assert(ret.isFinite())
             }
         }

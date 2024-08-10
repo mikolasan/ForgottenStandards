@@ -1,6 +1,7 @@
 package xyz.neupokoev.forgottenstandards
 
 import java.text.DecimalFormatSymbols
+import java.util.Locale
 import kotlin.math.pow
 
 /*
@@ -11,8 +12,8 @@ import kotlin.math.pow
  */
 
 class BasicCalculator(val expression: String) {
-    val grouping = DecimalFormatSymbols.getInstance().groupingSeparator
-    val decimal = DecimalFormatSymbols.getInstance().decimalSeparator
+    val grouping = DecimalFormatSymbols.getInstance(Locale.US).groupingSeparator
+    val decimal = DecimalFormatSymbols.getInstance(Locale.US).decimalSeparator
 
     var char: Char? = null
     var pos = -1

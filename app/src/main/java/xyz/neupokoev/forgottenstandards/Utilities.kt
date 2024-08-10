@@ -98,7 +98,7 @@ fun valueForDisplay(value: Double?, locale: Locale? = null): SpannableStringBuil
     val integerLength = if (integerPart > 0.0) (floor(log10(integerPart)) + 1).toInt() else 1
     val maxIntegerLength = 8
 
-    val numberFormat = if (locale == null) DecimalFormat.getInstance() else DecimalFormat.getInstance(locale)
+    val numberFormat = if (locale == null) DecimalFormat.getInstance(Locale.US) else DecimalFormat.getInstance(locale)
     val decimalFormat = numberFormat as DecimalFormat
 
     if (integerLength > maxIntegerLength) {
@@ -123,7 +123,7 @@ fun valueForDisplay(value: Double?, locale: Locale? = null): SpannableStringBuil
 }
 
 fun makeSerializedString(input: Editable): String {
-    val df = DecimalFormat.getInstance() as DecimalFormat
+    val df = DecimalFormat.getInstance(Locale.US) as DecimalFormat
     val sep = df.decimalFormatSymbols.groupingSeparator.toString()
     val s: String = input.toString().replace(sep, "")
     val span = input
@@ -172,7 +172,7 @@ fun patternForDisplay(format: String, value: Double?, locale: Locale? = null): S
     val integerLength = if (integerPart > 0) (floor(log10(integerPart)) + 1).toInt() else 1
     val maxIntegerLength = 5
 
-    val numberFormat = if (locale == null) DecimalFormat.getInstance() else DecimalFormat.getInstance(locale)
+    val numberFormat = if (locale == null) DecimalFormat.getInstance(Locale.US) else DecimalFormat.getInstance(locale)
     val decimalFormat = numberFormat as DecimalFormat
 
     if (integerLength > maxIntegerLength) {
@@ -197,7 +197,7 @@ fun patternForDisplay(format: String, value: Double?, locale: Locale? = null): S
 }
 
 fun parseDisplayString(string: String, locale: Locale? = null): Double {
-    val numberFormat = if (locale == null) DecimalFormat.getInstance() else DecimalFormat.getInstance(locale)
+    val numberFormat = if (locale == null) DecimalFormat.getInstance(Locale.US) else DecimalFormat.getInstance(locale)
     val decimalFormat = numberFormat as DecimalFormat
     val number = decimalFormat.parse(string)
     return number?.toDouble() ?: 0.0

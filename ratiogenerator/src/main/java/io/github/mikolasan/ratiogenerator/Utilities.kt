@@ -63,6 +63,7 @@ fun findConversionFormula(nameMap: Map<ImperialUnitName, ImperialUnit>,
     return formulae
 }
 
+// TODO: for future optimization
 fun findConversionFormulas(nameMap: Map<ImperialUnitName, ImperialUnit>,
                           inputUnit: ImperialUnit,
                           outputUnit: ImperialUnit,
