@@ -13,10 +13,17 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.willowtreeapps.fuzzywuzzy.diffutils.FuzzySearch
 import io.github.mikolasan.ratiogenerator.ImperialUnit
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Locale
 
 
 class ImperialListAdapter(private val workingUnits: WorkingUnits) : BaseAdapter(), Filterable {
+    val scope = CoroutineScope(Job() + Dispatchers.Main)
+
     var allUnits: Array<ImperialUnit> = workingUnits.orderedUnits
     var units: Array<ImperialUnit> = workingUnits.orderedUnits
     var names: List<String> = allUnits.map { u -> u.unitName.name.lowercase(Locale.ROOT) }
@@ -43,16 +50,21 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits) : BaseAdapter(
         bookmarkClickListener = listener
     }
 
+
     fun updateAllValues(unit: ImperialUnit?, value: Double) {
-        allUnits.forEach { u ->
-            if (u != unit) {
-                val v = convertValue(unit, u, value)
-                u.value = v
-                u.formattedString = makeSerializedString(valueForDisplay(v))
+        val job = scope.launch {
+            withContext(Dispatchers.IO) {
+                allUnits.forEach { u ->
+                    if (u != unit) {
+                        val v = convertValue(unit, u, value)
+                        u.value = v
+                        u.formattedString = makeSerializedString(valueForDisplay(v))
+                    }
+                }
+                names = allUnits.map { u -> u.unitName.name.lowercase(Locale.ROOT) }
             }
+            notifyDataSetChanged()
         }
-        names = allUnits.map { u -> u.unitName.name.lowercase(Locale.ROOT) }
-        //notifyDataSetChanged()
     }
 
     override fun getView(position: Int, contentView: View?, parent: ViewGroup?): View {
