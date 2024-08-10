@@ -11,6 +11,8 @@ import android.widget.Filterable
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.willowtreeapps.fuzzywuzzy.diffutils.FuzzySearch
 import io.github.mikolasan.ratiogenerator.ImperialUnit
 import kotlinx.coroutines.CoroutineScope
@@ -21,8 +23,28 @@ import kotlinx.coroutines.withContext
 import java.util.Locale
 
 
-class ImperialListAdapter(private val workingUnits: WorkingUnits) : BaseAdapter(), Filterable {
-    val scope = CoroutineScope(Job() + Dispatchers.Main)
+class ImperialListAdapter(private val workingUnits: WorkingUnits,
+                          private val publishSubject: MainActivity)
+    : RecyclerView.Adapter<ImperialListAdapter.ViewHolder>(), Filterable
+{
+
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        lateinit var data: ImperialUnit
+        lateinit var publishSubject: MainActivity
+        val layout: ConstraintLayout = view as ConstraintLayout
+        val name: TextView = layout.findViewById(R.id.unit_name)
+        val value: TextView = layout.findViewById(R.id.unit_value)
+        val symbol: TextView = layout.findViewById(R.id.unit_symbol)
+        val arrowUp: ImageView = layout.findViewById(R.id.arrow_up)
+        val bookmark: ImageView = layout.findViewById(R.id.bookmark)
+        init {
+            layout.setOnClickListener {
+                publishSubject.onUnitSelected(data)
+            }
+        }
+    }
+
+    private val scope = CoroutineScope(Job() + Dispatchers.Main)
 
     var allUnits: Array<ImperialUnit> = workingUnits.orderedUnits
     var units: Array<ImperialUnit> = workingUnits.orderedUnits
@@ -50,53 +72,45 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits) : BaseAdapter(
         bookmarkClickListener = listener
     }
 
-
     fun updateAllValues(unit: ImperialUnit?, value: Double) {
-        val job = scope.launch {
-            withContext(Dispatchers.IO) {
-                allUnits.forEach { u ->
-                    if (u != unit) {
+        names = allUnits.map { u -> u.unitName.name.lowercase(Locale.ROOT) }
+        allUnits.forEachIndexed { i, u ->
+            if (u != unit) {
+                scope.launch {
+                    withContext(Dispatchers.IO) {
                         val v = convertValue(unit, u, value)
                         u.value = v
                         u.formattedString = makeSerializedString(valueForDisplay(v))
                     }
+                    notifyItemChanged(i)
                 }
-                names = allUnits.map { u -> u.unitName.name.lowercase(Locale.ROOT) }
+            } else {
+                notifyItemChanged(i)
             }
-            notifyDataSetChanged()
         }
     }
 
-    override fun getView(position: Int, contentView: View?, parent: ViewGroup?): View {
-        if (contentView != null) {
-            if (contentView is ConstraintLayout) {
-                updateViewData(contentView, position)
-                updateViewColors(contentView, position)
-                updateControlListeners(contentView, position)
-                return contentView
-            }
-            return contentView
-        } else {
-            val context = parent?.context
-            val inflater = context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            val view = inflater.inflate(R.layout.unit_space, parent, false) as ConstraintLayout
-            updateViewData(view, position)
-            updateViewColors(view, position)
-            updateControlListeners(view, position)
-            return view
-        }
-
-    }
-
-    override fun getItem(position: Int): Any {
+    private fun getItem(position: Int): ImperialUnit {
         return units[position]
     }
 
-    override fun getItemId(position: Int): Long {
-        return position.toLong()
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): ViewHolder {
+        val context = parent.context
+        val inflater = context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val view = inflater.inflate(R.layout.unit_space, parent, false)
+        return ViewHolder(view)
     }
 
-    override fun getCount(): Int {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        updateViewData(holder, position)
+        updateViewColors(holder, position)
+        updateControlListeners(holder, position)
+    }
+
+    override fun getItemCount(): Int {
         return units.size
     }
 
@@ -127,23 +141,18 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits) : BaseAdapter(
         ViewState.NORMAL to R.color.inputNormal
     )
 
-    private fun updateViewColors(layout: ConstraintLayout, dataPosition: Int) {
-        val name: TextView = layout.findViewById(R.id.unit_name)
-        val value: TextView = layout.findViewById(R.id.unit_value)
-        val symbol: TextView = layout.findViewById(R.id.unit_symbol)
-        val arrowUp: ImageView = layout.findViewById(R.id.arrow_up)
-        val bookmark: ImageView = layout.findViewById(R.id.bookmark)
+    private fun updateViewColors(holder: ViewHolder, dataPosition: Int) {
         val bookmarkColor = if (units[dataPosition].bookmarked) R.color.bookmark else R.color.action
-        val color = bookmark.context.resources.getColor(bookmarkColor)
-        bookmark.drawable.mutate().setColorFilter(color, PorterDuff.Mode.SRC_IN)
+        val color = holder.bookmark.context.resources.getColor(bookmarkColor)
+        holder.bookmark.drawable.mutate().setColorFilter(color, PorterDuff.Mode.SRC_IN)
         when (getItem(dataPosition) as ImperialUnit) {
             workingUnits.topUnit -> {
-                layout.setBackgroundResource(backgrounds.getValue(ViewState.SELECTED))
-                name.setTextColorId(nameColors.getValue(ViewState.SELECTED))
-                value.setTextColorId(valueColors.getValue(ViewState.SELECTED))
-                symbol.setTextColorId(valueColors.getValue(ViewState.SELECTED))
+                holder.layout.setBackgroundResource(backgrounds.getValue(ViewState.SELECTED))
+                holder.name.setTextColorId(nameColors.getValue(ViewState.SELECTED))
+                holder.value.setTextColorId(valueColors.getValue(ViewState.SELECTED))
+                holder.symbol.setTextColorId(valueColors.getValue(ViewState.SELECTED))
 
-                arrowUp.visibility = if (dataPosition == 0) View.INVISIBLE else View.VISIBLE
+                holder.arrowUp.visibility = if (dataPosition == 0) View.INVISIBLE else View.VISIBLE
             }
 //            workingUnits.bottomUnit -> {
 //                layout.setBackgroundResource(backgrounds.getValue(ViewState.SECOND))
@@ -153,55 +162,51 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits) : BaseAdapter(
 //                arrowUp.visibility = View.INVISIBLE
 //            }
             else -> {
-                layout.setBackgroundResource(backgrounds.getValue(ViewState.NORMAL))
-                name.setTextColorId(nameColors.getValue(ViewState.NORMAL))
-                value.setTextColorId(valueColors.getValue(ViewState.NORMAL))
-                symbol.setTextColorId(valueColors.getValue(ViewState.NORMAL))
+                holder.layout.setBackgroundResource(backgrounds.getValue(ViewState.NORMAL))
+                holder.name.setTextColorId(nameColors.getValue(ViewState.NORMAL))
+                holder.value.setTextColorId(valueColors.getValue(ViewState.NORMAL))
+                holder.symbol.setTextColorId(valueColors.getValue(ViewState.NORMAL))
 //                bookmark.setColorFilter(if (units[dataPosition].bookmarked) R.color.colorPrimaryDark else R.color.action, PorterDuff.Mode.SRC_IN)
-                arrowUp.visibility = View.INVISIBLE
+                holder.arrowUp.visibility = View.INVISIBLE
             }
         }
     }
 
-    private fun updateViewData(layout: ConstraintLayout, dataPosition: Int) {
-        val data: ImperialUnit = getItem(dataPosition) as ImperialUnit
-        val name: TextView = layout.findViewById(R.id.unit_name)
-        name.text = data.unitName.name.lowercase(Locale.getDefault()).replace('_', ' ')
+    private fun updateViewData(holder: ViewHolder, dataPosition: Int) {
+        val data: ImperialUnit = getItem(dataPosition)
+        holder.publishSubject = publishSubject
+        holder.data = data
+        holder.name.text = data.unitName.name.lowercase(Locale.getDefault()).replace('_', ' ')
             .replaceFirstChar {
                 if (it.isLowerCase()) it.titlecase(
                     Locale.getDefault()
                 ) else it.toString()
             }
-        val value: TextView = layout.findViewById(R.id.unit_value)
-        value.text = data.formattedString //valueForDisplay(data.value)
-        val symbol: TextView = layout.findViewById(R.id.unit_symbol)
-        symbol.text = ImperialSymbol.symbols[data.unitName] ?: ""
+        holder.value.text = data.formattedString //valueForDisplay(data.value)
+        holder.symbol.text = ImperialSymbol.symbols[data.unitName] ?: ""
     }
 
-    private fun updateControlListeners(layout: ConstraintLayout, dataPosition: Int) {
-        val arrowUp: ImageView = layout.findViewById(R.id.arrow_up)
-        val unit = units[dataPosition]
-        arrowUp.setOnClickListener {
+    private fun updateControlListeners(holder: ViewHolder, dataPosition: Int) {
+        val unit = getItem(dataPosition)
+        holder.arrowUp.setOnClickListener {
             if (dataPosition != 0) {
                 units.moveToFrontFrom(dataPosition)
                 arrowClickListener(dataPosition, it, unit)
-                notifyDataSetChanged()
+                notifyItemMoved(dataPosition, 0)
             }
         }
-        arrowUp.setOnLongClickListener {
+        holder.arrowUp.setOnLongClickListener {
             if (dataPosition != 0) {
                 units.moveToFrontFrom(dataPosition)
-                notifyDataSetChanged()
+                notifyItemMoved(dataPosition, 0)
                 arrowLongClickListener(dataPosition, it, unit)
             }
             dataPosition != 0
         }
-
-        val bookmark: ImageView = layout.findViewById(R.id.bookmark)
-        bookmark.setOnClickListener {
+        holder.bookmark.setOnClickListener {
             unit.bookmarked = !unit.bookmarked
             bookmarkClickListener(dataPosition, it, unit)
-            notifyDataSetChanged()
+            notifyItemChanged(dataPosition)
         }
     }
 

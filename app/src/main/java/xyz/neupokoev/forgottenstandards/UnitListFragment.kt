@@ -12,6 +12,8 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
 import androidx.navigation.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import io.github.mikolasan.ratiogenerator.ImperialUnit
 
 
@@ -19,7 +21,7 @@ class UnitListFragment : Fragment() {
 
     var keyboardFragment: KeyboardFragment? = null
     var keyboardButtonFragment: KeyboardButtonFragment? = null
-    private lateinit var unitsList: ListView
+    private lateinit var unitsList: RecyclerView
     lateinit var listAdapter: ImperialListAdapter
     private var switchFragment: SwitchFragment? = null
     private lateinit var title: TextView
@@ -41,7 +43,7 @@ class UnitListFragment : Fragment() {
             listAdapter.setOnArrowLongClickListener { _: Int, arrow: View, unit: ImperialUnit ->
                 arrow.visibility = View.INVISIBLE // hide the arrow
                 (activity as MainActivity).onArrowLongClicked(unit)
-                unitsList.setSelectionAfterHeaderView()
+                //unitsList.setSelectionAfterHeaderView()
             }
             listAdapter.setOnBookmarkClickListener { _: Int, arrow: View, unit: ImperialUnit ->
                 (activity as MainActivity).let {
@@ -74,6 +76,7 @@ class UnitListFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_list, container, false)
         unitsList = view.findViewById(R.id.units_list)
         unitsList.adapter = listAdapter
+        unitsList.layoutManager = LinearLayoutManager(activity)
         // This is moved to another fragment (main activity for tablets ??)
 //        val searchInput = view.findViewById<EditText>(R.id.search_input)
 //        searchInput.addTextChangedListener {
@@ -161,10 +164,6 @@ class UnitListFragment : Fragment() {
     }
 
     private fun setListeners(view: View) {
-        unitsList.setOnItemClickListener { _, _, position, _ ->
-            val unit = listAdapter.getItem(position) as ImperialUnit
-            (activity as MainActivity).onUnitSelected(unit)
-        }
 
         // This is replaced by the toolbar
 //        view.run {

@@ -11,7 +11,7 @@ class ImperialCategoryAdapter(private val categories: Array<ImperialUnitCategory
                               private val publishSubject: MainActivity)
     : RecyclerView.Adapter<ImperialCategoryAdapter.ViewHolder>()
 {
-    var selectedViewHolder: ViewHolder? = null
+    private var selectedViewHolder: ViewHolder? = null
 //    var selectedPosition: Int = 0
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -44,9 +44,7 @@ class ImperialCategoryAdapter(private val categories: Array<ImperialUnitCategory
         }
         holder.space.setOnClickListener {
             // unselect previous holder
-            selectedViewHolder?.let {
-                it.space.setBackgroundResource(0)
-            }
+            selectedViewHolder?.space?.setBackgroundResource(0)
             selectedViewHolder = holder
             publishSubject.onCategorySelected(holder.category!!)
             holder.space.setBackgroundResource(R.drawable.bg_rect_selected)

@@ -207,6 +207,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun restoreMainUnits() {
         workingUnits = settings.restoreWorkingUnits()
+        workingUnits.listAdapter = ImperialListAdapter(workingUnits, this)
 
         val topString = settings.restoreTopString()
         workingUnits.topUnit.restoreValue(topString, BasicCalculator(topString).eval())

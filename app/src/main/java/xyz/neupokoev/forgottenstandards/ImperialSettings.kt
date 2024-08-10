@@ -72,7 +72,6 @@ class ImperialSettings(application: Application) : AndroidViewModel(application)
             topUnit = topPanelUnit
             bottomUnit = bottomPanelUnit
             selectedCategory = category
-            listAdapter = ImperialListAdapter(this)
         }
     }
 
