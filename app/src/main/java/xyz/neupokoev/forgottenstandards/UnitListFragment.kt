@@ -77,6 +77,7 @@ class UnitListFragment : Fragment() {
         unitsList = view.findViewById(R.id.units_list)
         unitsList.adapter = listAdapter
         unitsList.layoutManager = LinearLayoutManager(activity)
+        unitsList.setItemAnimator(null);
         // This is moved to another fragment (main activity for tablets ??)
 //        val searchInput = view.findViewById<EditText>(R.id.search_input)
 //        searchInput.addTextChangedListener {
