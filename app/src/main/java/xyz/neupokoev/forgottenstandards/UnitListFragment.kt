@@ -5,13 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.widget.ListView
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentContainerView
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.mikolasan.ratiogenerator.ImperialUnit
@@ -19,14 +14,12 @@ import io.github.mikolasan.ratiogenerator.ImperialUnit
 
 class UnitListFragment : Fragment() {
 
-    var keyboardFragment: KeyboardFragment? = null
-    var keyboardButtonFragment: KeyboardButtonFragment? = null
     private lateinit var unitsList: RecyclerView
     lateinit var listAdapter: ImperialListAdapter
-    private var switchFragment: SwitchFragment? = null
     private lateinit var title: TextView
-    lateinit var keyboardView: FragmentContainerView
-    lateinit var keyboardButtonView: FragmentContainerView
+    private lateinit var bottomPanel: ImperialUnitPanel
+    private lateinit var topPanel: ImperialUnitPanel
+    private lateinit var selectedPanel: ImperialUnitPanel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,25 +40,13 @@ class UnitListFragment : Fragment() {
             }
             listAdapter.setOnBookmarkClickListener { _: Int, arrow: View, unit: ImperialUnit ->
                 (activity as MainActivity).let {
-//                    if (unit.bookmarked) {
-//                        it.workingUnits.favoritedUnits.plusAssign(unit)
-//                        it.onUnitSelected(unit)
-//                        if (it.workingUnits.favoritedUnits.size > 1) {
-//                            try {
-//                                val nav = it.findNavController(R.id.nav_host_fragment)
-//                                val bundle = bundleOf(
-//                                    "category" to unit.category.type.name,
-//                                    "topUnit" to it.workingUnits.topUnit.unitName.name,
-//                                    "bottomUnit" to it.workingUnits.bottomUnit.unitName.name
-//                                )
-//                                nav.navigate(R.id.action_select_unit, bundle)
-//                            } catch (e: Exception) {
-//                                // ignore
-//                            }
-//                        }
-//                    } else {
-//                        it.workingUnits.favoritedUnits.minusAssign(unit)
-//                    }
+                    if (unit.bookmarked) {
+                        it.workingUnits.favoritedUnits.plusAssign(unit)
+                        it.onUnitSelected(unit)
+                    } else {
+                        it.workingUnits.favoritedUnits.minusAssign(unit)
+                    }
+                    showBookmark(unit)
                 }
             }
         }
@@ -78,6 +59,16 @@ class UnitListFragment : Fragment() {
         unitsList.adapter = listAdapter
         unitsList.layoutManager = LinearLayoutManager(activity)
         unitsList.setItemAnimator(null);
+
+        topPanel = view.findViewById(R.id.convert_to)
+        topPanel.visibility = View.GONE
+        bottomPanel = view.findViewById(R.id.convert_from)
+        bottomPanel.visibility = View.GONE
+        selectedPanel = topPanel // init before use
+
+        topPanel.setHintText(view.context.resources.getString(R.string.select_unit_hint))
+        bottomPanel.setHintText(view.context.resources.getString(R.string.select_unit_2_hint))
+
         // This is moved to another fragment (main activity for tablets ??)
 //        val searchInput = view.findViewById<EditText>(R.id.search_input)
 //        searchInput.addTextChangedListener {
@@ -146,6 +137,19 @@ class UnitListFragment : Fragment() {
 
     fun onPanelsSwapped() {
         listAdapter.notifyDataSetChanged()
+    }
+
+    fun showBookmark(unit: ImperialUnit) {
+        val favorites = (activity as MainActivity).workingUnits.favoritedUnits
+        if (favorites.isEmpty()) {
+            topPanel.visibility = View.GONE
+        } else {
+            topPanel.visibility = View.VISIBLE
+            topPanel.activate()
+            topPanel.changeUnit(unit)
+            topPanel.updateDisplayValue()
+            // TODO: attach keyboard input to this panel
+        }
     }
 
     // TODO: remove '?'

@@ -10,15 +10,10 @@ import androidx.fragment.app.FragmentContainerView
 import io.github.mikolasan.ratiogenerator.ImperialUnit
 
 class ConverterFragment : Fragment() {
-
-    var keyboardFragment: KeyboardFragment? = null
-    var keyboardButtonFragment: KeyboardButtonFragment? = null
     lateinit var bottomPanel: ImperialUnitPanel
     lateinit var topPanel: ImperialUnitPanel
     lateinit var selectedPanel: ImperialUnitPanel
     private lateinit var ratioLabel: TextView
-    lateinit var keyboardView: FragmentContainerView
-    lateinit var keyboardButtonView: FragmentContainerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

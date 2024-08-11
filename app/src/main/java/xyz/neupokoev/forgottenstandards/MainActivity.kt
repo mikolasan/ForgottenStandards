@@ -288,9 +288,7 @@ class MainActivity : AppCompatActivity() {
         } catch (e: Exception) {
             // layout without view pager
         }
-        converterFragment?.run {
-            keyboardFragment?.selectedPanel = selectedPanel
-        }
+//        keyboardFragment?.selectedPanel = selectedPanel
     }
 
     fun onPanelTextChanged(panel: ImperialUnitPanel, s: Editable) {
@@ -394,9 +392,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onKeyboardConnected(keyboardFragment: KeyboardFragment) {
-        converterFragment?.run {
-            keyboardFragment.selectedPanel = selectedPanel
-        }
+//        keyboardFragment.selectedPanel = selectedPanel
     }
 
     fun onArrowClicked(unit: ImperialUnit) {

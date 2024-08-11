@@ -138,7 +138,7 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits,
     private val valueBackgrounds = mapOf(
         ViewState.SECOND to R.color.backgroundAccent,
         ViewState.SELECTED to R.color.backgroundDark,
-        ViewState.NORMAL to R.color.inputNormal
+        ViewState.NORMAL to R.color.backgroundAccent
     )
 
     private fun updateViewColors(holder: ViewHolder, dataPosition: Int) {
@@ -151,7 +151,7 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits,
                 holder.name.setTextColorId(nameColors.getValue(ViewState.SELECTED))
                 holder.value.setTextColorId(valueColors.getValue(ViewState.SELECTED))
                 holder.symbol.setTextColorId(valueColors.getValue(ViewState.SELECTED))
-
+                holder.value.setBackgroundResource(valueBackgrounds.getValue(ViewState.SELECTED))
                 holder.arrowUp.visibility = if (dataPosition == 0) View.INVISIBLE else View.VISIBLE
             }
 //            workingUnits.bottomUnit -> {
@@ -166,6 +166,7 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits,
                 holder.name.setTextColorId(nameColors.getValue(ViewState.NORMAL))
                 holder.value.setTextColorId(valueColors.getValue(ViewState.NORMAL))
                 holder.symbol.setTextColorId(valueColors.getValue(ViewState.NORMAL))
+                holder.value.setBackgroundResource(valueBackgrounds.getValue(ViewState.NORMAL))
 //                bookmark.setColorFilter(if (units[dataPosition].bookmarked) R.color.colorPrimaryDark else R.color.action, PorterDuff.Mode.SRC_IN)
                 holder.arrowUp.visibility = View.INVISIBLE
             }
