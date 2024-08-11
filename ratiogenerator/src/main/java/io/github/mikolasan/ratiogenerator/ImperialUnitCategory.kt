@@ -23,7 +23,7 @@ abstract class ImperialUnitCategory(val type: ImperialUnitType,
                 val rightToLeft = ratioList
                     .filter { it.second.second == unit.unitName }
                     .map { it.first.second to (it.second.first / it.first.first) }
-                unit.ratioMap = (leftToRight + rightToLeft).toMap()
+                unit.ratioMap = (leftToRight + rightToLeft).toMap(mutableMapOf())
                 unit.formulaMap = unit.ratioMap.map { it.key to arrayOf("x * ${it.value}") }.toMap(mutableMapOf())
             }
         } else if (formulaList.isNotEmpty()) {

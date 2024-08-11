@@ -22,10 +22,25 @@ fun getConversionRatio(inputUnit: ImperialUnit, outputUnit: ImperialUnit): Doubl
 fun convertValue(inputUnit: ImperialUnit?, outputUnit: ImperialUnit?, inputValue: Double): Double {
     inputUnit ?: return 0.0
     outputUnit ?: return 0.0
+
+    if (outputUnit.ratioMap.containsKey(inputUnit.unitName)) {
+        return inputValue * outputUnit.ratioMap[inputUnit.unitName]!!
+    }
+
     val formulaArray = findConversionFormula(inputUnit.category.nameMap, inputUnit, outputUnit)
 
     if (!outputUnit.formulaMap.containsKey(inputUnit.unitName)) {
         outputUnit.formulaMap[inputUnit.unitName] = formulaArray
+    }
+
+    if (!outputUnit.ratioMap.containsKey(inputUnit.unitName)) {
+        val it = formulaArray.iterator()
+        var r = 1.0
+        while (it.hasNext()) {
+            val root = FunctionParser().parse(it.next())
+            r = root.eval(r.toString())
+        }
+        outputUnit.ratioMap[inputUnit.unitName] = r
     }
 
     val it = formulaArray.iterator()
@@ -93,33 +108,34 @@ fun doScientificNotation(decimalFormat: DecimalFormat, value: Double): Spannable
 fun valueForDisplay(value: Double?, locale: Locale? = null): SpannableStringBuilder {
     if (value == null) return SpannableStringBuilder("-.-")
 
-    val absValue = abs(value)
-    val integerPart = floor(absValue)
-    val integerLength = if (integerPart > 0.0) (floor(log10(integerPart)) + 1).toInt() else 1
-    val maxIntegerLength = 8
-
-    val numberFormat = if (locale == null) DecimalFormat.getInstance(Locale.US) else DecimalFormat.getInstance(locale)
-    val decimalFormat = numberFormat as DecimalFormat
-
-    if (integerLength > maxIntegerLength) {
-        return doScientificNotation(decimalFormat, value)
-    }
-
-    decimalFormat.maximumIntegerDigits = integerLength
-    decimalFormat.maximumFractionDigits = maxDisplayLength - integerLength - 1
-    decimalFormat.isDecimalSeparatorAlwaysShown = false
-
-    val formattedValue = decimalFormat.format(value)
-    val formattedLength = formattedValue.replace(decimalFormat.decimalFormatSymbols.groupingSeparator.toString(),"").length
-    val scientificNumber = doScientificNotation(decimalFormat, value)
-    val exponentPosition = scientificNumber.toString().indexOf("×10")
-    if (formattedLength > maxDisplayLength + 1) {
-        return scientificNumber
-    } else if (exponentPosition > 0 && scientificNumber.toString().substring(exponentPosition + 3).toInt() < -7) {
-        return scientificNumber
-    }
-
-    return SpannableStringBuilder(formattedValue)
+    return SpannableStringBuilder(value.toString())
+//    val absValue = abs(value)
+//    val integerPart = floor(absValue)
+//    val integerLength = if (integerPart > 0.0) (floor(log10(integerPart)) + 1).toInt() else 1
+//    val maxIntegerLength = 8
+//
+//    val numberFormat = if (locale == null) DecimalFormat.getInstance(Locale.US) else DecimalFormat.getInstance(locale)
+//    val decimalFormat = numberFormat as DecimalFormat
+//
+//    if (integerLength > maxIntegerLength) {
+//        return doScientificNotation(decimalFormat, value)
+//    }
+//
+//    decimalFormat.maximumIntegerDigits = integerLength
+//    decimalFormat.maximumFractionDigits = maxDisplayLength - integerLength - 1
+//    decimalFormat.isDecimalSeparatorAlwaysShown = false
+//
+//    val formattedValue = decimalFormat.format(value)
+//    val formattedLength = formattedValue.replace(decimalFormat.decimalFormatSymbols.groupingSeparator.toString(),"").length
+//    val scientificNumber = doScientificNotation(decimalFormat, value)
+//    val exponentPosition = scientificNumber.toString().indexOf("×10")
+//    if (formattedLength > maxDisplayLength + 1) {
+//        return scientificNumber
+//    } else if (exponentPosition > 0 && scientificNumber.toString().substring(exponentPosition + 3).toInt() < -7) {
+//        return scientificNumber
+//    }
+//
+//    return SpannableStringBuilder(formattedValue)
 }
 
 fun makeSerializedString(input: Editable): String {

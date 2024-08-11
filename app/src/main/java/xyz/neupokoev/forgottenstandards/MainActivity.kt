@@ -17,8 +17,10 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -38,15 +40,19 @@ class MainActivity : AppCompatActivity() {
     private var converterFragment: ConverterFragment? = null
     private var unitListFragment: UnitListFragment? = null
     private var switchFragment: SwitchFragment? = null
+    private var keyboardView: FragmentContainerView? = null
     private var keyboardFragment: KeyboardFragment? = null
+    private var keyboardButtonView: FragmentContainerView? = null
+    private var keyboardButtonFragment: KeyboardButtonFragment? = null
     private var searchFragment: SearchFragment? = null
+    private var navController: NavController? = null
     private val unitObserver = ImperialUnitObserver(null)
 
     private lateinit var settings: ImperialSettings
     lateinit var workingUnits: WorkingUnits
     lateinit var markwon: Markwon
     private val descriptions by lazy {
-        ImperialUnitName.values().map {
+        ImperialUnitName.entries.map {
             try {
                 val inputReader = applicationContext.assets.open(it.name + ".txt")
                 return@map inputReader.bufferedReader().readLines().joinToString("\n")
@@ -106,8 +112,9 @@ class MainActivity : AppCompatActivity() {
 
         // val navController = findNavController(R.id.nav_host_fragment) // doesn't work because of some stupid shit about lifecycle, see https://issuetracker.google.com/issues/142847973?pli=1
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as? NavHostFragment
-        val navController = navHostFragment?.navController
+        navController = navHostFragment?.navController
         navController?.run {
+            // update title
             val globalUnits = workingUnits
             addOnDestinationChangedListener { controller, destination, arguments ->
                 if (destination.id == R.id.unitListFragment
@@ -115,8 +122,18 @@ class MainActivity : AppCompatActivity() {
                     || destination.id == R.id.nutBoltFragment
                 ) {
                     supportActionBar?.title = globalUnits.selectedCategory?.name
+                    // show keyboard
+                    keyboardFragment?.view?.visibility = View.VISIBLE
+                    keyboardView?.visibility = View.VISIBLE
+                    keyboardButtonFragment?.view?.visibility = View.GONE
+                    keyboardButtonView?.visibility = View.GONE
                 } else {
                     supportActionBar?.title = destination.label
+                    // hide keyboard
+                    keyboardFragment?.view?.visibility = View.GONE
+                    keyboardView?.visibility = View.GONE
+                    keyboardButtonFragment?.view?.visibility = View.GONE
+                    keyboardButtonView?.visibility = View.GONE
                 }
             }
         }
@@ -124,9 +141,14 @@ class MainActivity : AppCompatActivity() {
         val toolbar = findViewById<Toolbar>(R.id.my_toolbar)
         if (toolbar != null && navController != null) {
             setSupportActionBar(toolbar)
-            val appBarConfiguration = AppBarConfiguration(navController.graph)
-            toolbar.setupWithNavController(navController, appBarConfiguration)
+            val appBarConfiguration = AppBarConfiguration(navController!!.graph)
+            toolbar.setupWithNavController(navController!!, appBarConfiguration)
         }
+
+        keyboardView = findViewById(R.id.keyboard)
+        keyboardButtonView = findViewById(R.id.keyboard_button)
+
+
 
 //        try {
 //            val label = findViewById<TextView>(R.id.description_text)
@@ -140,6 +162,18 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+
+        keyboardFragment = keyboardView?.getFragment()
+        keyboardButtonFragment = keyboardButtonView?.getFragment()
+
+        // first time `addOnDestinationChangedListener` is not called
+        if (navController != null) {
+            keyboardFragment?.view?.visibility = View.GONE
+            keyboardView?.visibility = View.GONE
+
+            keyboardButtonFragment?.view?.visibility = View.GONE
+            keyboardButtonView?.visibility = View.GONE
+        }
 
 //        val listVisible = unitListFragment != null
 //        val converterVisible = converterFragment != null
@@ -335,19 +369,18 @@ class MainActivity : AppCompatActivity() {
         }
 
         // TODO: only when the second unit is selected as fav
-        if (workingUnits.favoritedUnits.size > 1) {
-            try {
-                val nav = findNavController(R.id.nav_host_fragment)
-                val bundle = bundleOf(
-                    "category" to unit.category.type.name,
-                    "topUnit" to workingUnits.topUnit.unitName.name,
-                    "bottomUnit" to workingUnits.bottomUnit.unitName.name
-                )
-                nav.navigate(R.id.action_select_unit, bundle)
-            } catch (e: Exception) {
-                // ignore
-            }
-        }
+//        if (workingUnits.favoritedUnits.size > 1) {
+//            try {
+//                val bundle = bundleOf(
+//                    "category" to unit.category.type.name,
+//                    "topUnit" to workingUnits.topUnit.unitName.name,
+//                    "bottomUnit" to workingUnits.bottomUnit.unitName.name
+//                )
+//                navController.navigate(R.id.action_select_unit, bundle)
+//            } catch (e: Exception) {
+//                // ignore
+//            }
+//        }
 
         settings.saveTopUnit(workingUnits.topUnit, workingUnits.topUnit.formattedString)
         settings.saveBottomUnit(workingUnits.bottomUnit, workingUnits.bottomUnit.formattedString)
@@ -459,14 +492,13 @@ class MainActivity : AppCompatActivity() {
         workingUnits.selectedCategory = category
 
         try {
-            val nav = findNavController(R.id.nav_host_fragment)
             val bundle = bundleOf(
                 "categoryTitle" to category.name
             )
             if (type == ImperialUnitType.NUT_AND_BOLT) {
-                nav.navigate(R.id.action_select_nut_bolt, bundle)
+                navController?.navigate(R.id.action_select_nut_bolt, bundle)
             } else {
-                nav.navigate(R.id.action_select_category, bundle)
+                navController?.navigate(R.id.action_select_category, bundle)
             }
         } catch (e: Exception) {
             // ignore
@@ -519,41 +551,28 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun updateKeyboard() {
-        val listVisible = unitListFragment != null
-        val converterVisible = converterFragment != null
-        if (!converterVisible && listVisible) {
-            // only list - show button
-            unitListFragment?.keyboardButtonFragment?.view?.visibility = View.VISIBLE
-            unitListFragment?.keyboardButtonView?.visibility = View.VISIBLE
-        } else if (converterVisible && !listVisible) {
-            // only converter - show keyboard
-            converterFragment?.keyboardFragment?.view?.visibility = View.VISIBLE
-            converterFragment?.keyboardView?.visibility = View.VISIBLE
-        } else {
-            // show keyboard only in converter
-            converterFragment?.keyboardFragment?.view?.visibility = View.VISIBLE
-            converterFragment?.keyboardView?.visibility = View.VISIBLE
-        }
-    }
-
     fun showKeyboard() {
-        val listVisible = unitListFragment != null
-        val converterVisible = converterFragment != null
+        keyboardFragment?.view?.visibility = View.VISIBLE
+        keyboardView?.visibility = View.VISIBLE
+        keyboardButtonFragment?.view?.visibility = View.GONE
+        keyboardButtonView?.visibility = View.GONE
 
-        if (!converterVisible && listVisible) {
-            unitListFragment?.keyboardFragment?.view?.visibility = View.VISIBLE
-            unitListFragment?.keyboardView?.visibility = View.VISIBLE
-        } else if (converterVisible && !listVisible) {
-            converterFragment?.keyboardFragment?.view?.visibility = View.VISIBLE
-            converterFragment?.keyboardView?.visibility = View.VISIBLE
-        } else {
-            converterFragment?.keyboardFragment?.view?.visibility = View.VISIBLE
-            converterFragment?.keyboardView?.visibility = View.VISIBLE
-        }
-
-        unitListFragment?.keyboardButtonFragment?.view?.visibility = View.INVISIBLE
-        converterFragment?.keyboardButtonFragment?.view?.visibility = View.INVISIBLE
+//        val listVisible = unitListFragment != null
+//        val converterVisible = converterFragment != null
+//
+//        if (!converterVisible && listVisible) {
+//            unitListFragment?.keyboardFragment?.view?.visibility = View.VISIBLE
+//            unitListFragment?.keyboardView?.visibility = View.VISIBLE
+//        } else if (converterVisible && !listVisible) {
+//            converterFragment?.keyboardFragment?.view?.visibility = View.VISIBLE
+//            converterFragment?.keyboardView?.visibility = View.VISIBLE
+//        } else {
+//            converterFragment?.keyboardFragment?.view?.visibility = View.VISIBLE
+//            converterFragment?.keyboardView?.visibility = View.VISIBLE
+//        }
+//
+//        unitListFragment?.keyboardButtonFragment?.view?.visibility = View.INVISIBLE
+//        converterFragment?.keyboardButtonFragment?.view?.visibility = View.INVISIBLE
 
         // hide soft Android keyboard
         // Only runs if there is a view that is currently focused
@@ -569,26 +588,28 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun showKeyboardButton() {
-        val listVisible = unitListFragment != null
-        val converterVisible = converterFragment != null
+        keyboardFragment?.view?.visibility = View.GONE
+        keyboardView?.visibility = View.GONE
+        keyboardButtonFragment?.view?.visibility = View.VISIBLE
+        keyboardButtonView?.visibility = View.VISIBLE
 
-        if (!converterVisible && listVisible) {
-            unitListFragment?.keyboardButtonFragment?.view?.visibility = View.VISIBLE
-            unitListFragment?.keyboardButtonView?.visibility = View.VISIBLE
-        } else if (converterVisible && !listVisible) {
-            converterFragment?.keyboardButtonFragment?.view?.visibility = View.VISIBLE
-            converterFragment?.keyboardButtonView?.visibility = View.VISIBLE
-        } else {
-            converterFragment?.keyboardButtonFragment?.view?.visibility = View.VISIBLE
-            converterFragment?.keyboardButtonView?.visibility = View.VISIBLE
-        }
-
-        unitListFragment?.keyboardFragment?.view?.visibility = View.GONE
-        converterFragment?.keyboardFragment?.view?.visibility = View.GONE
+//        val listVisible = unitListFragment != null
+//        val converterVisible = converterFragment != null
+//
+//        if (!converterVisible && listVisible) {
+//            unitListFragment?.keyboardButtonFragment?.view?.visibility = View.VISIBLE
+//            unitListFragment?.keyboardButtonView?.visibility = View.VISIBLE
+//        } else if (converterVisible && !listVisible) {
+//            converterFragment?.keyboardButtonFragment?.view?.visibility = View.VISIBLE
+//            converterFragment?.keyboardButtonView?.visibility = View.VISIBLE
+//        } else {
+//            converterFragment?.keyboardButtonFragment?.view?.visibility = View.VISIBLE
+//            converterFragment?.keyboardButtonView?.visibility = View.VISIBLE
+//        }
+//
+//        unitListFragment?.keyboardFragment?.view?.visibility = View.GONE
+//        converterFragment?.keyboardFragment?.view?.visibility = View.GONE
     }
 
-    fun showSearch() {
-
-    }
 }
 
