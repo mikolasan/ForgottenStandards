@@ -43,10 +43,11 @@ class UnitListFragment : Fragment() {
                     if (unit.bookmarked) {
                         it.workingUnits.favoritedUnits.plusAssign(unit)
                         it.onUnitSelected(unit)
+                        showBookmark(unit)
+                        listAdapter.excludeUnit(unit)
                     } else {
                         it.workingUnits.favoritedUnits.minusAssign(unit)
                     }
-                    showBookmark(unit)
                 }
             }
         }

@@ -13,7 +13,9 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.willowtreeapps.fuzzywuzzy.ToStringFunction
 import com.willowtreeapps.fuzzywuzzy.diffutils.FuzzySearch
+import com.willowtreeapps.fuzzywuzzy.diffutils.algorithms.WeightedRatio
 import io.github.mikolasan.ratiogenerator.ImperialUnit
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -46,9 +48,9 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits,
 
     private val scope = CoroutineScope(Job() + Dispatchers.Main)
 
-    var allUnits: Array<ImperialUnit> = workingUnits.orderedUnits
-    var units: Array<ImperialUnit> = workingUnits.orderedUnits
-    var names: List<String> = allUnits.map { u -> u.unitName.name.lowercase(Locale.ROOT) }
+    private lateinit var allUnits: ArrayList<ImperialUnit>
+    private lateinit var listUnits: ArrayList<ImperialUnit>
+    private lateinit var noPinnedUnits: ArrayList<ImperialUnit>
 
     private var arrowClickListener: (Int, View, ImperialUnit) -> Unit = { position, _, _ ->
         println("arrowClickListener $position")
@@ -72,8 +74,25 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits,
         bookmarkClickListener = listener
     }
 
+    fun setUnits(units: Array<ImperialUnit>) {
+        allUnits = ArrayList(units.toList())
+        this.listUnits = ArrayList(units.toList())
+        this.noPinnedUnits = ArrayList(units.toList())
+    }
+
+    fun excludeUnit(unit: ImperialUnit) {
+        val id = noPinnedUnits.indexOfFirst { it.unitName == unit.unitName }
+        noPinnedUnits.removeAt(id)
+        notifyItemRemoved(id)
+    }
+
+    fun restoreUnit(unit: ImperialUnit) {
+        val id = allUnits.indexOfFirst { it.unitName == unit.unitName }
+        noPinnedUnits.add(id, unit)
+        notifyItemRemoved(id)
+    }
+
     fun updateAllValues(unit: ImperialUnit?, value: Double) {
-        names = allUnits.map { u -> u.unitName.name.lowercase(Locale.ROOT) }
         allUnits.forEachIndexed { i, u ->
             if (u != unit) {
                 scope.launch {
@@ -91,7 +110,7 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits,
     }
 
     private fun getItem(position: Int): ImperialUnit {
-        return units[position]
+        return listUnits[position]
     }
 
     override fun onCreateViewHolder(
@@ -111,7 +130,7 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits,
     }
 
     override fun getItemCount(): Int {
-        return units.size
+        return listUnits.size
     }
 
     enum class ViewState {
@@ -142,7 +161,7 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits,
     )
 
     private fun updateViewColors(holder: ViewHolder, dataPosition: Int) {
-        val bookmarkColor = if (units[dataPosition].bookmarked) R.color.bookmark else R.color.action
+        val bookmarkColor = if (getItem(dataPosition).bookmarked) R.color.bookmark else R.color.action
         val color = holder.bookmark.context.resources.getColor(bookmarkColor)
         holder.bookmark.drawable.mutate().setColorFilter(color, PorterDuff.Mode.SRC_IN)
         when (getItem(dataPosition) as ImperialUnit) {
@@ -191,14 +210,14 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits,
         val unit = getItem(dataPosition)
         holder.arrowUp.setOnClickListener {
             if (dataPosition != 0) {
-                units.moveToFrontFrom(dataPosition)
+                listUnits.moveToFrontFrom(dataPosition)
                 arrowClickListener(dataPosition, it, unit)
                 notifyItemMoved(dataPosition, 0)
             }
         }
         holder.arrowUp.setOnLongClickListener {
             if (dataPosition != 0) {
-                units.moveToFrontFrom(dataPosition)
+                listUnits.moveToFrontFrom(dataPosition)
                 notifyItemMoved(dataPosition, 0)
                 arrowLongClickListener(dataPosition, it, unit)
             }
@@ -215,29 +234,35 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits,
         return customFilter
     }
 
+    class UnitToString : com.willowtreeapps.fuzzywuzzy.ToStringFunction<ImperialUnit> {
+        override fun apply(u: ImperialUnit): String {
+            return u.unitName.name.lowercase(Locale.ROOT)
+        }
+    }
     private val customFilter = object : Filter() {
         override fun performFiltering(constraint: CharSequence?): FilterResults {
             val results = FilterResults()
             if (constraint.isNullOrEmpty()) {
-                results.values = allUnits
+                results.values = noPinnedUnits
                 return results
             } else {
-                val filteredUnits = mutableListOf<ImperialUnit>()
                 val query = constraint.toString().lowercase(Locale.ROOT)
-                val filteredUNames = FuzzySearch.extractSorted(query, names, 50)
-                for (n in filteredUNames) {
-                    allUnits
-                        .find { u -> u.unitName.name.lowercase(Locale.ROOT) == n.string }
-                        ?.let {u -> filteredUnits.add(u) }
-                }
-                results.values = filteredUnits.toTypedArray()
+                val filtered = FuzzySearch.extractSorted(
+                    query,
+                    noPinnedUnits,
+                    UnitToString(),
+                    WeightedRatio(),
+                    50)
+                    .map { it.referent }
+                listUnits = ArrayList(filtered)
+                results.values = listUnits
                 return results
             }
 
         }
 
         override fun publishResults(constraint: CharSequence?, filterResults: FilterResults?) {
-            units = filterResults?.values as Array<ImperialUnit>
+            listUnits = filterResults?.values as ArrayList<ImperialUnit>
             notifyDataSetChanged()
             // TODO: use submitList from AsyncListDiffer (used in ListAdapter)
             //submitList(filterResults?.values as MutableList<String>)

@@ -517,8 +517,7 @@ class MainActivity : AppCompatActivity() {
         workingUnits.topUnit = workingUnits.orderedUnits[0]
         workingUnits.bottomUnit = workingUnits.orderedUnits[1]
 
-        workingUnits.listAdapter.allUnits = workingUnits.orderedUnits
-        workingUnits.listAdapter.units = workingUnits.listAdapter.allUnits
+        workingUnits.listAdapter.setUnits(workingUnits.orderedUnits)
         workingUnits.listAdapter.updateAllValues(workingUnits.topUnit, 0.0)
 
         converterFragment?.run {
