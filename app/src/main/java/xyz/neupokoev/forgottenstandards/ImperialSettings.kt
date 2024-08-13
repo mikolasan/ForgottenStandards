@@ -64,13 +64,11 @@ class ImperialSettings(application: Application) : AndroidViewModel(application)
         val currentUnits = units.getValue(type)
 
         val topPanelUnit: ImperialUnit = restoreUnit(type, "topPanelUnit", currentUnits[0])
-        val bottomPanelUnit: ImperialUnit = restoreUnit(type, "bottomPanelUnit", currentUnits[1])
 
         return WorkingUnits().apply {
             allUnits = units
             orderedUnits = currentUnits
-            topUnit = topPanelUnit
-            bottomUnit = bottomPanelUnit
+            mainUnit = topPanelUnit
             selectedCategory = category
         }
     }

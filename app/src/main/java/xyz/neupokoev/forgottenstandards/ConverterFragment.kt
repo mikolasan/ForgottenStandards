@@ -51,8 +51,8 @@ class ConverterFragment : Fragment() {
 //        keyboardButtonFragment = keyboardButtonView.getFragment()
 
         (activity as? MainActivity)?.workingUnits?.let { workingUnits ->
-            restoreTopPanel(workingUnits.topUnit)
-            restoreBottomPanel(workingUnits.bottomUnit)
+            restoreTopPanel(workingUnits.mainUnit)
+            //restoreBottomPanel(workingUnits.bottomUnit)
             selectPanel(topPanel, bottomPanel)
             displayUnitValues()
         }
@@ -151,14 +151,14 @@ class ConverterFragment : Fragment() {
                     setTopPanel(newUnit, null)
                 } else if (topPanel.unit != newUnit) {
                     selectPanel(bottomPanel, topPanel)
-                    (activity as MainActivity).onPanelsSwapped()
+                    //(activity as MainActivity).onPanelsSwapped()
                 }
             } else if (oldUnit == bottomPanel.unit) {
                 if (topPanel.unit != newUnit) {
                     setBottomPanel(newUnit)
                 } else if (bottomPanel.unit != newUnit){
                     selectPanel(topPanel, bottomPanel)
-                    (activity as MainActivity).onPanelsSwapped()
+                    //(activity as MainActivity).onPanelsSwapped()
                 }
             }
 

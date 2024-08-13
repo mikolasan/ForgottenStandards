@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var workingUnits: WorkingUnits
     lateinit var markwon: Markwon
     private val descriptions by lazy {
-        ImperialUnitName.entries.map {
+        ImperialUnitName.values().map {
             try {
                 val inputReader = applicationContext.assets.open(it.name + ".txt")
                 return@map inputReader.bufferedReader().readLines().joinToString("\n")
@@ -84,7 +84,7 @@ class MainActivity : AppCompatActivity() {
 
                 override fun onQueryTextChange(newText: String?): Boolean {
                     unitListFragment?.run {
-                        listAdapter.filter.filter(query)
+                        setFilter(newText)
                     }
                     return true
                 }
@@ -241,24 +241,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun restoreMainUnits() {
         workingUnits = settings.restoreWorkingUnits()
-        workingUnits.listAdapter = ImperialListAdapter(workingUnits, this)
 
         val topString = settings.restoreTopString()
-        workingUnits.topUnit.restoreValue(topString, BasicCalculator(topString).eval())
-        val bottomString = settings.restoreBottomString()
-        workingUnits.bottomUnit.restoreValue(bottomString, BasicCalculator(bottomString).eval())
-
-    }
-
-    fun swapWorkingUnits() {
-        val tmp = workingUnits.topUnit
-        workingUnits.topUnit = workingUnits.bottomUnit
-        workingUnits.bottomUnit = tmp
-    }
-
-    private fun swapPanels() {
-        swapWorkingUnits()
-        converterFragment?.swapPanels()
+        workingUnits.mainUnit.restoreValue(topString, BasicCalculator(topString).eval())
     }
 
     fun onPanelSelected(panel: ImperialUnitPanel) {
@@ -277,20 +262,6 @@ class MainActivity : AppCompatActivity() {
 //            workingUnits.listAdapter.notifyDataSetChanged()
 //        }
 
-    }
-
-    fun onPanelsSwapped() {
-        swapWorkingUnits()
-        unitListFragment?.onPanelsSwapped()
-        // update description
-        try {
-            val label = findViewById<TextView>(R.id.description_text)
-            val unit = workingUnits.topUnit
-            markwon.setMarkdown(label, descriptions[unit.unitName.ordinal])
-        } catch (e: Exception) {
-            // layout without view pager
-        }
-//        keyboardFragment?.selectedPanel = selectedPanel
     }
 
     fun onPanelTextChanged(panel: ImperialUnitPanel, s: Editable) {
@@ -406,10 +377,6 @@ class MainActivity : AppCompatActivity() {
             "'${unit.unitName.name}' has been moved to the top",
             Toast.LENGTH_SHORT
         ).show()
-        if (workingUnits.topUnit != unit) {
-            swapPanels()
-            converterFragment?.selectTopPanel()
-        }
         settings.saveNewOrder(workingUnits.orderedUnits)
     }
 
@@ -419,25 +386,21 @@ class MainActivity : AppCompatActivity() {
             "'${unit.unitName.name}' has been moved to the top",
             Toast.LENGTH_SHORT
         ).show()
-        if (workingUnits.topUnit != unit) {
-            swapPanels()
-            converterFragment?.selectTopPanel()
-        }
         settings.saveNewOrder(workingUnits.orderedUnits)
     }
 
     fun onTopPanelUnitChanged(unit: ImperialUnit) {
         converterFragment?.let {
-            workingUnits.topUnit = it.topPanel.unit!!
-            unitListFragment?.onUnitSelected(unit, it.bottomPanel.unit)
+            workingUnits.mainUnit = unit
+            unitListFragment?.onUnitSelected(unit)
             settings.saveTopUnit(unit, makeSerializedString(it.topPanel.input.text))
         }
     }
 
     fun onBottomPanelUnitChanged(unit: ImperialUnit) {
         converterFragment?.let {
-            workingUnits.bottomUnit = it.bottomPanel.unit!!
-            unitListFragment?.onUnitSelected(unit, it.topPanel.unit)
+            workingUnits.mainUnit = unit
+            unitListFragment?.onUnitSelected(unit)
             settings.saveBottomUnit(unit, makeSerializedString(it.bottomPanel.input.text))
         }
     }
@@ -458,8 +421,8 @@ class MainActivity : AppCompatActivity() {
             is UnitListFragment -> {
                 unitListFragment = fragment
                 val callable = { unit: ImperialUnit, value: Double ->
-                    workingUnits.listAdapter.updateAllValues(unit, value)
-                    // notifyDataSetChanged
+                    unitListFragment?.updateAllValues(unit, value)
+                    println("the last statement must return Unit")
                 }
                 unitObserver.addObserver(fragment, callable)
             }
@@ -491,6 +454,8 @@ class MainActivity : AppCompatActivity() {
         val type = categoryNameToType(category)
         // category must be updated before navigating to the list because the title depends on it
         workingUnits.selectedCategory = category
+        workingUnits.orderedUnits = workingUnits.allUnits.getValue(type)
+        workingUnits.mainUnit = workingUnits.orderedUnits[0]
 
         try {
             val bundle = bundleOf(
@@ -518,26 +483,23 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        workingUnits.orderedUnits = workingUnits.allUnits.getValue(type)
-        workingUnits.topUnit = workingUnits.orderedUnits[0]
-        workingUnits.bottomUnit = workingUnits.orderedUnits[1]
 
-        workingUnits.listAdapter.setUnits(workingUnits.orderedUnits)
-        workingUnits.listAdapter.updateAllValues(workingUnits.topUnit, 0.0)
 
         converterFragment?.run {
-            topPanel.changeUnit(workingUnits.topUnit)
-            bottomPanel.changeUnit(workingUnits.bottomUnit)
+            topPanel.changeUnit(workingUnits.mainUnit)
+            bottomPanel.changeUnit(workingUnits.orderedUnits[1])
             displayUnitValues()
             selectTopPanel()
         }
         unitListFragment?.run {
-            restoreSelectedUnit(workingUnits.topUnit)
-            restoreSecondUnit(workingUnits.bottomUnit)
+            setUnits(workingUnits.orderedUnits)
+            updateAllValues(workingUnits.mainUnit, 0.0)
+//            restoreSelectedUnit(workingUnits.topUnit)
+//            restoreSecondUnit(workingUnits.bottomUnit)
 //            setTitle(category.name)
         }
 
-        unitObserver.setUnitAndUpdateValue(workingUnits.topUnit)
+        unitObserver.setUnitAndUpdateValue(workingUnits.mainUnit)
 //        hideTypeSwitcher()
 
         settings.saveCategory(category.name)

@@ -16,7 +16,7 @@ import io.github.mikolasan.ratiogenerator.main
 class UnitListFragment : Fragment() {
 
     private lateinit var unitsList: RecyclerView
-    lateinit var listAdapter: ImperialListAdapter
+    private val listAdapter: ImperialListAdapter = ImperialListAdapter()
     private lateinit var title: TextView
     private lateinit var bottomPanel: ImperialUnitPanel
     private lateinit var topPanel: ImperialUnitPanel
@@ -27,9 +27,9 @@ class UnitListFragment : Fragment() {
 
         (activity as MainActivity).let { mainActivity ->
             mainActivity.setSubscriber(this)
-            listAdapter = mainActivity.workingUnits.listAdapter
+            setUnits(mainActivity.workingUnits.orderedUnits)
+            listAdapter.workingUnits = mainActivity.workingUnits
             listAdapter.let { listAdapter ->
-
                 listAdapter.setOnArrowClickListener { _: Int, arrow: View, unit: ImperialUnit ->
                     arrow.visibility = View.INVISIBLE // hide the arrow
                     mainActivity.onArrowClicked(unit)
@@ -123,19 +123,27 @@ class UnitListFragment : Fragment() {
 
     }
 
-    fun restoreSelectedUnit(unit: ImperialUnit) {
-        (activity as? MainActivity)?.let { mainActivity ->
-            mainActivity.workingUnits.topUnit = unit
-        }
-        //listAdapter.setSelectedUnit(unit)
+    fun setUnits(units: Array<ImperialUnit>) {
+        listAdapter.setUnits(units)
     }
 
-    fun restoreSecondUnit(unit: ImperialUnit) {
-        (activity as? MainActivity)?.let { mainActivity ->
-            mainActivity.workingUnits.bottomUnit = unit
-        }
-        //listAdapter.setSelectedUnit(unit)
+    fun updateAllValues(unit: ImperialUnit, value: Double) {
+        listAdapter.updateAllValues(unit, value)
     }
+
+//    fun restoreSelectedUnit(unit: ImperialUnit) {
+//        (activity as? MainActivity)?.let { mainActivity ->
+//            mainActivity.workingUnits.topUnit = unit
+//        }
+//        //listAdapter.setSelectedUnit(unit)
+//    }
+//
+//    fun restoreSecondUnit(unit: ImperialUnit) {
+//        (activity as? MainActivity)?.let { mainActivity ->
+//            mainActivity.workingUnits.bottomUnit = unit
+//        }
+//        //listAdapter.setSelectedUnit(unit)
+//    }
 
     fun onPanelsSwapped() {
         //listAdapter.notifyDataSetChanged()
@@ -214,15 +222,18 @@ class UnitListFragment : Fragment() {
     }
 
     // TODO: remove '?'
-    fun onUnitSelected(selectedUnit: ImperialUnit, secondUnit: ImperialUnit?) {
+    fun onUnitSelected(selectedUnit: ImperialUnit) {
         (activity as? MainActivity)?.let { mainActivity ->
-            mainActivity.workingUnits.topUnit = selectedUnit
-            mainActivity.workingUnits.bottomUnit = secondUnit!!
+            mainActivity.workingUnits.mainUnit = selectedUnit
         }
 //        listAdapter.setSelectedUnit(selectedUnit)
 //        listAdapter.setSecondUnit(secondUnit)
         //listAdapter.notifyDataSetChanged()
 
+    }
+
+    fun setFilter(query: String?) {
+        listAdapter.filter.filter(query)
     }
 
     private fun setListeners(view: View) {

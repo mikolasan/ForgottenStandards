@@ -23,14 +23,13 @@ import kotlinx.coroutines.withContext
 import java.util.Locale
 
 
-class ImperialListAdapter(private val workingUnits: WorkingUnits,
-                          private val publishSubject: MainActivity)
+class ImperialListAdapter
     : RecyclerView.Adapter<ImperialListAdapter.ViewHolder>(), Filterable
 {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         lateinit var data: ImperialUnit
-        lateinit var publishSubject: MainActivity
+        lateinit var unitSelectedListener: (Int, View, ImperialUnit) -> Unit
         val layout: ConstraintLayout = view as ConstraintLayout
         val name: TextView = layout.findViewById(R.id.unit_name)
         val value: TextView = layout.findViewById(R.id.unit_value)
@@ -39,16 +38,21 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits,
         val bookmark: ImageView = layout.findViewById(R.id.bookmark)
         init {
             layout.setOnClickListener {
-                publishSubject.onUnitSelected(data)
+                unitSelectedListener(0, view, data)
             }
         }
     }
 
     private val scope = CoroutineScope(Job() + Dispatchers.Main)
 
+    lateinit var workingUnits: WorkingUnits
     private lateinit var allUnits: ArrayList<ImperialUnit>
     private lateinit var listUnits: ArrayList<ImperialUnit>
     private lateinit var noPinnedUnits: ArrayList<ImperialUnit>
+
+    private var unitSelectedListener: (Int, View, ImperialUnit) -> Unit = { _, _, _ ->
+
+    }
 
     private var arrowClickListener: (Int, View, ImperialUnit) -> Unit = { position, _, _ ->
         println("arrowClickListener $position")
@@ -58,6 +62,10 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits,
     }
     private var bookmarkClickListener: (Int, View, ImperialUnit) -> Unit = { position, _, _ ->
         println("bookmarkClickListener $position")
+    }
+
+    fun setOnUnitSelectedListener(listener: (Int, View, ImperialUnit) -> Unit) {
+        unitSelectedListener = listener
     }
 
     fun setOnArrowClickListener(listener: (Int, View, ImperialUnit) -> Unit) {
@@ -165,7 +173,7 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits,
         val color = holder.bookmark.context.resources.getColor(bookmarkColor)
         holder.bookmark.drawable.mutate().setColorFilter(color, PorterDuff.Mode.SRC_IN)
         when (getItem(dataPosition) as ImperialUnit) {
-            workingUnits.topUnit -> {
+            workingUnits.mainUnit -> {
                 holder.layout.setBackgroundResource(backgrounds.getValue(ViewState.SELECTED))
                 holder.name.setTextColorId(nameColors.getValue(ViewState.SELECTED))
                 holder.value.setTextColorId(valueColors.getValue(ViewState.SELECTED))
@@ -194,7 +202,7 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits,
 
     private fun updateViewData(holder: ViewHolder, dataPosition: Int) {
         val data: ImperialUnit = getItem(dataPosition)
-        holder.publishSubject = publishSubject
+        holder.unitSelectedListener = unitSelectedListener
         holder.data = data
         holder.name.text = data.unitName.name.lowercase(Locale.getDefault()).replace('_', ' ')
             .replaceFirstChar {

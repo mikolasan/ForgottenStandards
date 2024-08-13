@@ -8,7 +8,5 @@ class WorkingUnits() {
     var selectedCategory: ImperialUnitCategoryName? = null
     lateinit var orderedUnits: Array<ImperialUnit>
     var favoritedUnits: MutableList<ImperialUnit> = mutableListOf()
-    lateinit var topUnit: ImperialUnit
-    lateinit var bottomUnit: ImperialUnit
-    lateinit var listAdapter: ImperialListAdapter
+    lateinit var mainUnit: ImperialUnit
 }
