@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.mikolasan.ratiogenerator.ImperialUnit
+import io.github.mikolasan.ratiogenerator.main
 
 
 class UnitListFragment : Fragment() {
@@ -39,14 +40,14 @@ class UnitListFragment : Fragment() {
                     //unitsList.setSelectionAfterHeaderView()
                 }
                 listAdapter.setOnBookmarkClickListener { _: Int, arrow: View, unit: ImperialUnit ->
+                    if (mainActivity.workingUnits.favoritedUnits.size == 2) {
+                        return@setOnBookmarkClickListener
+                    }
                     if (unit.bookmarked) {
                         mainActivity.workingUnits.favoritedUnits.plusAssign(unit)
-                        mainActivity.onUnitSelected(unit)
+                        //mainActivity.onUnitSelected(unit)
                         showBookmark(unit)
                         listAdapter.excludeUnit(unit)
-                    } else {
-                        mainActivity.workingUnits.favoritedUnits.minusAssign(unit)
-                        listAdapter.restoreUnit(unit)
                     }
                 }
             }
@@ -144,6 +145,28 @@ class UnitListFragment : Fragment() {
         listAdapter.updateAllValues(unit, value)
     }
 
+    private fun attachKeyboardInputToTopPanel() {
+        val mainActivity = activity as MainActivity
+        val callable = { unit: ImperialUnit, value: Double ->
+            val panel = topPanel
+            panel.unit = unit
+            panel.setUnitValue(value)
+            panel.updateDisplayValue()
+        }
+        mainActivity.addKeyboardInputObserver(topPanel, callable)
+    }
+
+    private fun attachKeyboardInputToBottomPanel() {
+        val mainActivity = activity as MainActivity
+        val callable = { unit: ImperialUnit, value: Double ->
+            val panel = bottomPanel
+            panel.unit = unit
+            panel.setUnitValue(value)
+            panel.updateDisplayValue()
+        }
+        mainActivity.addKeyboardInputObserver(bottomPanel, callable)
+    }
+
     fun showBookmark(unit: ImperialUnit) {
         val mainActivity = activity as MainActivity
         val favorites = mainActivity.workingUnits.favoritedUnits
@@ -160,28 +183,16 @@ class UnitListFragment : Fragment() {
             topPanel.activate()
             topPanel.changeUnit(unit)
             topPanel.updateDisplayValue()
-            // TODO: attach keyboard input to this panel
-            val callable = { unit: ImperialUnit, value: Double ->
-                val panel = topPanel
-                panel.unit = unit
-                panel.setUnitValue(value)
-                panel.updateDisplayValue()
-            }
-            mainActivity.addKeyboardInputObserver(topPanel, callable)
+            attachKeyboardInputToTopPanel()
+            mainActivity.onPanelSelected(topPanel)
         } else {
 
             bottomPanel.visibility = View.VISIBLE
             bottomPanel.activate()
             bottomPanel.changeUnit(unit)
             bottomPanel.updateDisplayValue()
-            // TODO: attach keyboard input to this panel
-            val callable = { unit: ImperialUnit, value: Double ->
-                val panel = bottomPanel
-                panel.unit = unit
-                panel.setUnitValue(value)
-                panel.updateDisplayValue()
-            }
-            mainActivity.addKeyboardInputObserver(bottomPanel, callable)
+            attachKeyboardInputToBottomPanel()
+            mainActivity.onPanelSelected(bottomPanel)
         }
     }
 
@@ -217,10 +228,23 @@ class UnitListFragment : Fragment() {
     private fun setListeners(view: View) {
 
         topPanel.setOnClickListener {
+            topPanel.setHighlight(true)
+            bottomPanel.setHighlight(false)
+            attachKeyboardInputToTopPanel()
+            (activity as MainActivity).removeKeyboardInputObserver(bottomPanel)
+
+        }
+        topPanel.bookmark.setOnClickListener {
             removeBookmark(topPanel, topPanel.unit!!)
         }
 
         bottomPanel.setOnClickListener {
+            bottomPanel.setHighlight(true)
+            topPanel.setHighlight(false)
+            attachKeyboardInputToBottomPanel()
+            (activity as MainActivity).removeKeyboardInputObserver(topPanel)
+        }
+        bottomPanel.bookmark.setOnClickListener {
             removeBookmark(bottomPanel, bottomPanel.unit!!)
         }
         // This is replaced by the toolbar

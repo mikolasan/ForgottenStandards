@@ -26,7 +26,7 @@ class ImperialUnitPanel(context: Context, attributeSet: AttributeSet) : Constrai
     private val title: TextView = findViewById(R.id.panel_title)
     private val hint: TextView = findViewById(R.id.panel_hint)
     private val layout: ConstraintLayout = findViewById(R.id.big_unit_space)
-    private val bookmark: ImageView = findViewById(R.id.bookmark)
+    val bookmark: ImageView = findViewById(R.id.bookmark)
 
     private val colorInputSelected = getColor(R.color.fontPrimary)
     private val colorInputNormal = getColor(R.color.font)

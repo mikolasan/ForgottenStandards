@@ -263,17 +263,19 @@ class MainActivity : AppCompatActivity() {
 
     fun onPanelSelected(panel: ImperialUnitPanel) {
         val selectedUnit = panel.unit!!
-        if (workingUnits.topUnit == selectedUnit) return
-
-        val tmp = workingUnits.topUnit
-        workingUnits.topUnit = selectedUnit
-        workingUnits.bottomUnit = tmp
-
         unitObserver.setUnitAndUpdateValue(selectedUnit) // change keyboard focus
 
-        unitListFragment?.run {
-            workingUnits.listAdapter.notifyDataSetChanged()
-        }
+//        if (workingUnits.topUnit == selectedUnit) return
+//
+//        val tmp = workingUnits.topUnit
+//        workingUnits.topUnit = selectedUnit
+//        workingUnits.bottomUnit = tmp
+//
+//        unitObserver.setUnitAndUpdateValue(selectedUnit) // change keyboard focus
+//
+//        unitListFragment?.run {
+//            workingUnits.listAdapter.notifyDataSetChanged()
+//        }
 
     }
 
@@ -306,65 +308,67 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onUnitSelected(unit: ImperialUnit) {
-        var topChanged = true
-        converterFragment?.let {
-            val selectedUnit = it.selectedPanel.unit ?: return@let
-            val topUnit = it.topPanel.unit ?: return@let
-            topChanged = (topUnit == selectedUnit)
-        }
-
-        if (workingUnits.topUnit == unit) {
-            return
-        }
-        val swapped = workingUnits.bottomUnit == unit
-        if (swapped) {
-            val tmp = workingUnits.topUnit
-            workingUnits.topUnit = unit
-            workingUnits.bottomUnit = tmp
-        } else if (topChanged) {
-            workingUnits.topUnit = unit
-            // keep the bottom
-        } else {
-            val tmp = workingUnits.topUnit
-            workingUnits.topUnit = unit
-            workingUnits.bottomUnit = tmp
-        }
-
         unitObserver.setUnitAndUpdateValue(unit) // change keyboard focus
 
-        unitListFragment?.run {
-            workingUnits.listAdapter.notifyDataSetChanged()
-        }
-
-        converterFragment?.let {
-            if (swapped) {
-//                it.swapPanels()
-                val selectedUnit = it.selectedPanel.unit ?: return@let
-                val topUnit = it.topPanel.unit ?: return@let
-                it.selectedPanel = if (topUnit == selectedUnit) {
-                    it.bottomPanel
-                } else {
-                    it.topPanel
-                }
-                val otherPanel = if (topUnit == selectedUnit) {
-                    it.topPanel
-                } else {
-                    it.bottomPanel
-                }
-                it.selectPanel(it.selectedPanel, otherPanel)
-
-            } else {
-                val selectedUnit = it.selectedPanel.unit ?: return@let
-                val topUnit = it.topPanel.unit ?: return@let
-                if (topChanged) {
-                    it.restoreTopPanel(unit)
-                } else {
-                    it.restoreBottomPanel(unit)
-                }
-                it.displayUnitValues()
-            }
-
-        }
+//        var topChanged = true
+//        converterFragment?.let {
+//            val selectedUnit = it.selectedPanel.unit ?: return@let
+//            val topUnit = it.topPanel.unit ?: return@let
+//            topChanged = (topUnit == selectedUnit)
+//        }
+//
+//        if (workingUnits.topUnit == unit) {
+//            return
+//        }
+//        val swapped = workingUnits.bottomUnit == unit
+//        if (swapped) {
+//            val tmp = workingUnits.topUnit
+//            workingUnits.topUnit = unit
+//            workingUnits.bottomUnit = tmp
+//        } else if (topChanged) {
+//            workingUnits.topUnit = unit
+//            // keep the bottom
+//        } else {
+//            val tmp = workingUnits.topUnit
+//            workingUnits.topUnit = unit
+//            workingUnits.bottomUnit = tmp
+//        }
+//
+//        unitObserver.setUnitAndUpdateValue(unit) // change keyboard focus
+//
+//        unitListFragment?.run {
+//            workingUnits.listAdapter.notifyDataSetChanged()
+//        }
+//
+//        converterFragment?.let {
+//            if (swapped) {
+////                it.swapPanels()
+//                val selectedUnit = it.selectedPanel.unit ?: return@let
+//                val topUnit = it.topPanel.unit ?: return@let
+//                it.selectedPanel = if (topUnit == selectedUnit) {
+//                    it.bottomPanel
+//                } else {
+//                    it.topPanel
+//                }
+//                val otherPanel = if (topUnit == selectedUnit) {
+//                    it.topPanel
+//                } else {
+//                    it.bottomPanel
+//                }
+//                it.selectPanel(it.selectedPanel, otherPanel)
+//
+//            } else {
+//                val selectedUnit = it.selectedPanel.unit ?: return@let
+//                val topUnit = it.topPanel.unit ?: return@let
+//                if (topChanged) {
+//                    it.restoreTopPanel(unit)
+//                } else {
+//                    it.restoreBottomPanel(unit)
+//                }
+//                it.displayUnitValues()
+//            }
+//
+//        }
 
         // TODO: only when the second unit is selected as fav
 //        if (workingUnits.favoritedUnits.size > 1) {
