@@ -7,6 +7,7 @@ class ImperialUnit(val category: ImperialUnitCategory,
     var value: Double = 0.0
     var inputString: String = ""
     var formattedString: String = ""
+    //var displayString: SpannableStringBuilder = SpannableStringBuilder("-.-")
     var bookmarked = false
 
     var ratioMap: MutableMap<ImperialUnitName, Double> = mutableMapOf()

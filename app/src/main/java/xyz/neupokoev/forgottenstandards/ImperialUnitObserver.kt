@@ -7,12 +7,16 @@ import io.github.mikolasan.ratiogenerator.ImperialUnit
 typealias ObserverCallable = (ImperialUnit, Double) -> Unit
 
 class ImperialUnitObserver (var unit: ImperialUnit?) {
-    private var observers: MutableList<ObserverCallable> = mutableListOf()
+    private var observers: MutableMap<Any, ObserverCallable> = mutableMapOf()
     var value: Double = 0.0
     private var formatted = SpannableStringBuilder()
 
-    fun addObserver(observer: ObserverCallable) {
-        observers.add(observer)
+    fun addObserver(observer: Any, callable: ObserverCallable) {
+        observers.put(observer, callable)
+    }
+
+    fun removeObserver(observer: Any) {
+        observers.remove(observer)
     }
 
     fun getEditable(): Editable = formatted
@@ -22,7 +26,7 @@ class ImperialUnitObserver (var unit: ImperialUnit?) {
         formatted = valueForDisplay(v)
         unit?.let {
             it.value = v
-            it.formattedString = makeSerializedString(formatted)
+            //it.formattedString = makeSerializedString(formatted)
         }
         onValueUpdated()
     }
@@ -30,7 +34,7 @@ class ImperialUnitObserver (var unit: ImperialUnit?) {
     fun setUnitAndUpdateValue(u: ImperialUnit) {
         unit = u
         formatted = valueForDisplay(u.value)
-        u.formattedString = makeSerializedString(formatted)
+        //u.formattedString = makeSerializedString(formatted)
     }
 
     fun addChar(char: Char) {
@@ -48,7 +52,7 @@ class ImperialUnitObserver (var unit: ImperialUnit?) {
         value = v
         unit?.let {
             it.value = v
-            it.formattedString = makeSerializedString(formatted)
+            //it.formattedString = makeSerializedString(formatted)
         }
         onValueUpdated()
     }
@@ -64,7 +68,7 @@ class ImperialUnitObserver (var unit: ImperialUnit?) {
             value = v
             unit?.let {
                 it.value = v
-                it.formattedString = makeSerializedString(formatted)
+                //it.formattedString = makeSerializedString(formatted)
             }
             onValueUpdated()
         }
@@ -98,7 +102,7 @@ class ImperialUnitObserver (var unit: ImperialUnit?) {
         value = v
         unit?.let {
             it.value = v
-            it.formattedString = makeSerializedString(formatted)
+            //it.formattedString = makeSerializedString(formatted)
         }
         onValueUpdated()
     }
@@ -109,8 +113,8 @@ class ImperialUnitObserver (var unit: ImperialUnit?) {
 
     private fun onValueUpdated() {
         unit?.let { u ->
-            observers.forEach {
-                it(u, value)
+            observers.forEach { (_, callable) ->
+                callable(u, value)
             }
         }
     }

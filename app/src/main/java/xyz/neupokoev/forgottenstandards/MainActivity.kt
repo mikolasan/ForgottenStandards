@@ -292,8 +292,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onPanelTextChanged(panel: ImperialUnitPanel, s: Editable) {
-        //unitListFragment?.onPanelTextChanged(panel, s)
-        workingUnits.listAdapter.updateAllValues(panel.unit, panel.unit?.value ?: 0.0)
+        unitListFragment?.onPanelTextChanged(panel.unit!!, panel.unit?.value ?: 0.0)
+//        workingUnits.listAdapter.updateAllValues(panel.unit, panel.unit?.value ?: 0.0)
 
         converterFragment?.let {
             val oppositePanel = if (it.bottomPanel == panel) it.topPanel else it.bottomPanel
@@ -380,8 +380,9 @@ class MainActivity : AppCompatActivity() {
 //            }
 //        }
 
-        settings.saveTopUnit(workingUnits.topUnit, workingUnits.topUnit.formattedString)
-        settings.saveBottomUnit(workingUnits.bottomUnit, workingUnits.bottomUnit.formattedString)
+        // save last input values
+//        settings.saveTopUnit(workingUnits.topUnit, workingUnits.topUnit.formattedString)
+//        settings.saveBottomUnit(workingUnits.bottomUnit, workingUnits.bottomUnit.formattedString)
 
 //        try {
 //            val label = findViewById<TextView>(R.id.description_text)
@@ -447,7 +448,7 @@ class MainActivity : AppCompatActivity() {
                     panel.setUnitValue(value)
                     panel.updateDisplayValue()
                 }
-                unitObserver.addObserver(callable)
+                unitObserver.addObserver(fragment, callable)
             }
 
             is UnitListFragment -> {
@@ -456,7 +457,7 @@ class MainActivity : AppCompatActivity() {
                     workingUnits.listAdapter.updateAllValues(unit, value)
                     // notifyDataSetChanged
                 }
-                unitObserver.addObserver(callable)
+                unitObserver.addObserver(fragment, callable)
             }
 
             is SwitchFragment -> switchFragment = fragment
@@ -544,6 +545,14 @@ class MainActivity : AppCompatActivity() {
         converterFragment?.let { f ->
             f.view?.visibility = if (f.isVisible) View.GONE else View.VISIBLE
         }
+    }
+
+    fun addKeyboardInputObserver(observer: Any, callable: ObserverCallable) {
+        unitObserver.addObserver(observer, callable)
+    }
+
+    fun removeKeyboardInputObserver(observer: Any) {
+        unitObserver.removeObserver(observer)
     }
 
     fun showKeyboard() {

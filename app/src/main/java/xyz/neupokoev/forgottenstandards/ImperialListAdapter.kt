@@ -5,13 +5,11 @@ import android.graphics.PorterDuff
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
 import android.widget.Filter
 import android.widget.Filterable
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.willowtreeapps.fuzzywuzzy.ToStringFunction
 import com.willowtreeapps.fuzzywuzzy.diffutils.FuzzySearch
@@ -76,20 +74,22 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits,
 
     fun setUnits(units: Array<ImperialUnit>) {
         allUnits = ArrayList(units.toList())
-        this.listUnits = ArrayList(units.toList())
-        this.noPinnedUnits = ArrayList(units.toList())
+        noPinnedUnits = ArrayList(units.toList())
+        listUnits = noPinnedUnits
     }
 
     fun excludeUnit(unit: ImperialUnit) {
-        val id = noPinnedUnits.indexOfFirst { it.unitName == unit.unitName }
-        noPinnedUnits.removeAt(id)
+        val id = listUnits.indexOfFirst { it.unitName == unit.unitName }
+        noPinnedUnits.remove(unit)
+        listUnits = noPinnedUnits
         notifyItemRemoved(id)
     }
 
     fun restoreUnit(unit: ImperialUnit) {
-        val id = allUnits.indexOfFirst { it.unitName == unit.unitName }
-        noPinnedUnits.add(id, unit)
-        notifyItemRemoved(id)
+        //val id = allUnits.indexOfFirst { it.unitName == unit.unitName }
+        noPinnedUnits.add(0, unit)
+        listUnits = noPinnedUnits
+        notifyItemInserted(0)
     }
 
     fun updateAllValues(unit: ImperialUnit?, value: Double) {
@@ -99,7 +99,7 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits,
                     withContext(Dispatchers.IO) {
                         val v = convertValue(unit, u, value)
                         u.value = v
-                        u.formattedString = makeSerializedString(valueForDisplay(v))
+                        //u.formattedString = makeSerializedString(valueForDisplay(v))
                     }
                     notifyItemChanged(i)
                 }
@@ -202,7 +202,7 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits,
                     Locale.getDefault()
                 ) else it.toString()
             }
-        holder.value.text = data.formattedString //valueForDisplay(data.value)
+        holder.value.text = valueForDisplay(data.value)
         holder.symbol.text = ImperialSymbol.symbols[data.unitName] ?: ""
     }
 
@@ -234,11 +234,12 @@ class ImperialListAdapter(private val workingUnits: WorkingUnits,
         return customFilter
     }
 
-    class UnitToString : com.willowtreeapps.fuzzywuzzy.ToStringFunction<ImperialUnit> {
-        override fun apply(u: ImperialUnit): String {
-            return u.unitName.name.lowercase(Locale.ROOT)
+    class UnitToString : ToStringFunction<ImperialUnit> {
+        override fun apply(item: ImperialUnit): String {
+            return item.unitName.name.lowercase(Locale.ROOT)
         }
     }
+
     private val customFilter = object : Filter() {
         override fun performFiltering(constraint: CharSequence?): FilterResults {
             val results = FilterResults()

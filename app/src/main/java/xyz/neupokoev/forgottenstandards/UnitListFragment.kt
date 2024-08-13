@@ -24,29 +24,29 @@ class UnitListFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        (activity as? MainActivity)?.setSubscriber(this)
+        (activity as MainActivity).let { mainActivity ->
+            mainActivity.setSubscriber(this)
+            listAdapter = mainActivity.workingUnits.listAdapter
+            listAdapter.let { listAdapter ->
 
-        listAdapter = (activity as MainActivity).workingUnits.listAdapter
-        listAdapter.let { listAdapter ->
-
-            listAdapter.setOnArrowClickListener { _: Int, arrow: View, unit: ImperialUnit ->
-                arrow.visibility = View.INVISIBLE // hide the arrow
-                (activity as MainActivity).onArrowClicked(unit)
-            }
-            listAdapter.setOnArrowLongClickListener { _: Int, arrow: View, unit: ImperialUnit ->
-                arrow.visibility = View.INVISIBLE // hide the arrow
-                (activity as MainActivity).onArrowLongClicked(unit)
-                //unitsList.setSelectionAfterHeaderView()
-            }
-            listAdapter.setOnBookmarkClickListener { _: Int, arrow: View, unit: ImperialUnit ->
-                (activity as MainActivity).let {
+                listAdapter.setOnArrowClickListener { _: Int, arrow: View, unit: ImperialUnit ->
+                    arrow.visibility = View.INVISIBLE // hide the arrow
+                    mainActivity.onArrowClicked(unit)
+                }
+                listAdapter.setOnArrowLongClickListener { _: Int, arrow: View, unit: ImperialUnit ->
+                    arrow.visibility = View.INVISIBLE // hide the arrow
+                    mainActivity.onArrowLongClicked(unit)
+                    //unitsList.setSelectionAfterHeaderView()
+                }
+                listAdapter.setOnBookmarkClickListener { _: Int, arrow: View, unit: ImperialUnit ->
                     if (unit.bookmarked) {
-                        it.workingUnits.favoritedUnits.plusAssign(unit)
-                        it.onUnitSelected(unit)
+                        mainActivity.workingUnits.favoritedUnits.plusAssign(unit)
+                        mainActivity.onUnitSelected(unit)
                         showBookmark(unit)
                         listAdapter.excludeUnit(unit)
                     } else {
-                        it.workingUnits.favoritedUnits.minusAssign(unit)
+                        mainActivity.workingUnits.favoritedUnits.minusAssign(unit)
+                        listAdapter.restoreUnit(unit)
                     }
                 }
             }
@@ -137,20 +137,69 @@ class UnitListFragment : Fragment() {
     }
 
     fun onPanelsSwapped() {
-        listAdapter.notifyDataSetChanged()
+        //listAdapter.notifyDataSetChanged()
+    }
+
+    fun onPanelTextChanged(unit: ImperialUnit, value: Double) {
+        listAdapter.updateAllValues(unit, value)
     }
 
     fun showBookmark(unit: ImperialUnit) {
-        val favorites = (activity as MainActivity).workingUnits.favoritedUnits
+        val mainActivity = activity as MainActivity
+        val favorites = mainActivity.workingUnits.favoritedUnits
         if (favorites.isEmpty()) {
             topPanel.visibility = View.GONE
-        } else {
+            mainActivity.removeKeyboardInputObserver(topPanel)
+            bottomPanel.visibility = View.GONE
+            mainActivity.removeKeyboardInputObserver(bottomPanel)
+            return
+        }
+
+        if (favorites.size == 1) {
             topPanel.visibility = View.VISIBLE
             topPanel.activate()
             topPanel.changeUnit(unit)
             topPanel.updateDisplayValue()
             // TODO: attach keyboard input to this panel
+            val callable = { unit: ImperialUnit, value: Double ->
+                val panel = topPanel
+                panel.unit = unit
+                panel.setUnitValue(value)
+                panel.updateDisplayValue()
+            }
+            mainActivity.addKeyboardInputObserver(topPanel, callable)
+        } else {
+
+            bottomPanel.visibility = View.VISIBLE
+            bottomPanel.activate()
+            bottomPanel.changeUnit(unit)
+            bottomPanel.updateDisplayValue()
+            // TODO: attach keyboard input to this panel
+            val callable = { unit: ImperialUnit, value: Double ->
+                val panel = bottomPanel
+                panel.unit = unit
+                panel.setUnitValue(value)
+                panel.updateDisplayValue()
+            }
+            mainActivity.addKeyboardInputObserver(bottomPanel, callable)
         }
+    }
+
+    fun removeBookmark(panel: ImperialUnitPanel, unit: ImperialUnit) {
+        val mainActivity = activity as MainActivity
+
+        val favorites = mainActivity.workingUnits.favoritedUnits
+        if (favorites.isEmpty()) {
+            return
+        }
+
+        favorites.minusAssign(unit)
+        listAdapter.restoreUnit(unit)
+        unit.bookmarked = false
+
+        panel.visibility = View.GONE
+        mainActivity.removeKeyboardInputObserver(panel)
+
     }
 
     // TODO: remove '?'
@@ -161,16 +210,19 @@ class UnitListFragment : Fragment() {
         }
 //        listAdapter.setSelectedUnit(selectedUnit)
 //        listAdapter.setSecondUnit(secondUnit)
-        listAdapter.notifyDataSetChanged()
+        //listAdapter.notifyDataSetChanged()
 
-    }
-
-    fun setTitle(text: String) {
-        title.text = text
     }
 
     private fun setListeners(view: View) {
 
+        topPanel.setOnClickListener {
+            removeBookmark(topPanel, topPanel.unit!!)
+        }
+
+        bottomPanel.setOnClickListener {
+            removeBookmark(bottomPanel, bottomPanel.unit!!)
+        }
         // This is replaced by the toolbar
 //        view.run {
 //            val typeSwitcher: ConstraintLayout = view.findViewById(R.id.unit_type)

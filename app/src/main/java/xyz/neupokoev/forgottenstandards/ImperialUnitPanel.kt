@@ -1,12 +1,14 @@
 package xyz.neupokoev.forgottenstandards
 
 import android.content.Context
+import android.graphics.PorterDuff
 import android.text.InputType
 import android.text.SpannableString
 import android.text.style.SuperscriptSpan
 import android.util.AttributeSet
 import android.view.View
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import io.github.mikolasan.ratiogenerator.ImperialUnit
@@ -24,11 +26,16 @@ class ImperialUnitPanel(context: Context, attributeSet: AttributeSet) : Constrai
     private val title: TextView = findViewById(R.id.panel_title)
     private val hint: TextView = findViewById(R.id.panel_hint)
     private val layout: ConstraintLayout = findViewById(R.id.big_unit_space)
+    private val bookmark: ImageView = findViewById(R.id.bookmark)
 
     private val colorInputSelected = getColor(R.color.fontPrimary)
     private val colorInputNormal = getColor(R.color.font)
 
     init {
+        val bookmarkColor = R.color.bookmark
+        val color = bookmark.context.resources.getColor(bookmarkColor)
+        bookmark.drawable.mutate().setColorFilter(color, PorterDuff.Mode.SRC_IN)
+
         //input.inputType = InputType.TYPE_NULL // hide keyboard on focus
         input.inputType = InputType.TYPE_CLASS_NUMBER
         input.setTextColor(colorInputNormal)
@@ -91,9 +98,9 @@ class ImperialUnitPanel(context: Context, attributeSet: AttributeSet) : Constrai
     fun getValue(): Double? = unit?.value
 
     fun setUnitValue(v: Double) {
-        unit?.let {
-            it.value = v
-            it.formattedString = makeSerializedString(valueForDisplay(v))
+        unit?.apply {
+            value = v
+            //formattedString = makeSerializedString(valueForDisplay(v))
         }
     }
 
