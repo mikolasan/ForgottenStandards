@@ -2,26 +2,22 @@ package xyz.neupokoev.forgottenstandards
 
 import android.app.SearchManager
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.view.Menu
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
@@ -248,6 +244,7 @@ class MainActivity : AppCompatActivity() {
 
     fun onPanelSelected(panel: ImperialUnitPanel) {
         val selectedUnit = panel.unit!!
+        workingUnits.mainUnit = selectedUnit
         unitObserver.setUnitAndUpdateValue(selectedUnit) // change keyboard focus
 
 //        if (workingUnits.topUnit == selectedUnit) return
@@ -273,12 +270,13 @@ class MainActivity : AppCompatActivity() {
             if (oppositePanel.hasUnitAssigned()) {
                 oppositePanel.updateDisplayValue()
             }
-            settings.saveTopString(makeSerializedString(it.topPanel.input.text))
-            settings.saveBottomString(makeSerializedString(it.bottomPanel.input.text))
+            settings.saveTopString(makeSerializedString(it.topPanel.input.editableText))
+            settings.saveBottomString(makeSerializedString(it.bottomPanel.input.editableText))
         }
     }
 
-    fun onUnitSelected(unit: ImperialUnit) {
+    fun onUnitSelectedInList(unit: ImperialUnit) {
+        workingUnits.mainUnit = unit
         unitObserver.setUnitAndUpdateValue(unit) // change keyboard focus
 
 //        var topChanged = true
@@ -392,16 +390,16 @@ class MainActivity : AppCompatActivity() {
     fun onTopPanelUnitChanged(unit: ImperialUnit) {
         converterFragment?.let {
             workingUnits.mainUnit = unit
-            unitListFragment?.onUnitSelected(unit)
-            settings.saveTopUnit(unit, makeSerializedString(it.topPanel.input.text))
+//            unitListFragment?.onUnitSelected(unit)
+            settings.saveTopUnit(unit, makeSerializedString(it.topPanel.input.editableText))
         }
     }
 
     fun onBottomPanelUnitChanged(unit: ImperialUnit) {
         converterFragment?.let {
             workingUnits.mainUnit = unit
-            unitListFragment?.onUnitSelected(unit)
-            settings.saveBottomUnit(unit, makeSerializedString(it.bottomPanel.input.text))
+//            unitListFragment?.onUnitSelected(unit)
+            settings.saveBottomUnit(unit, makeSerializedString(it.bottomPanel.input.editableText))
         }
     }
 
@@ -421,8 +419,7 @@ class MainActivity : AppCompatActivity() {
             is UnitListFragment -> {
                 unitListFragment = fragment
                 val callable = { unit: ImperialUnit, value: Double ->
-                    unitListFragment?.updateAllValues(unit, value)
-                    println("the last statement must return Unit")
+                    unitListFragment?.updateAllValues(unit, value) ?: Unit
                 }
                 unitObserver.addObserver(fragment, callable)
             }
@@ -455,7 +452,8 @@ class MainActivity : AppCompatActivity() {
         // category must be updated before navigating to the list because the title depends on it
         workingUnits.selectedCategory = category
         workingUnits.orderedUnits = workingUnits.allUnits.getValue(type)
-        workingUnits.mainUnit = workingUnits.orderedUnits[0]
+
+        settings.saveCategory(category.name)
 
         try {
             val bundle = bundleOf(
@@ -463,6 +461,7 @@ class MainActivity : AppCompatActivity() {
             )
             if (type == ImperialUnitType.NUT_AND_BOLT) {
                 navController?.navigate(R.id.action_select_nut_bolt, bundle)
+                return
             } else {
                 navController?.navigate(R.id.action_select_category, bundle)
             }
@@ -470,21 +469,18 @@ class MainActivity : AppCompatActivity() {
             // ignore
         }
 
+        // navigation will happen on the next frame anyway
+        workingUnits.mainUnit = workingUnits.orderedUnits[0]
+        workingUnits.favoritedUnits = mutableListOf()
+
 //        nav.navigate(R.id.action_select_category)
 //        val categoryTitle = category.name
 //        val action = SwitchFragmentDirections.actionSelectCategory(categoryTitle)
 //        nav.navigate(action)
 
+    }
 
-
-
-        if (type == ImperialUnitType.NUT_AND_BOLT) {
-            // TODO
-            return
-        }
-
-
-
+    fun onCategoryOpened() {
         converterFragment?.run {
             topPanel.changeUnit(workingUnits.mainUnit)
             bottomPanel.changeUnit(workingUnits.orderedUnits[1])
@@ -501,10 +497,6 @@ class MainActivity : AppCompatActivity() {
 
         unitObserver.setUnitAndUpdateValue(workingUnits.mainUnit)
 //        hideTypeSwitcher()
-
-        settings.saveCategory(category.name)
-
-
     }
 
     fun showUnitList() {

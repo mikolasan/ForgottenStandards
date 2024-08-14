@@ -15,7 +15,7 @@ open class ImperialTextWatcher(val panel: ImperialUnitPanel, val fragment: Conve
             return
 
         s?.let {
-            input.setSelection(input.text.length)
+//            input.setSelection(input.text.length)
             val inputValue = BasicCalculator(s.toString()).eval()
             panel.setUnitValue(inputValue)
             selfEditing = true

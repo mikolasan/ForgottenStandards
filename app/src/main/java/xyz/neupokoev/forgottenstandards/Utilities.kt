@@ -7,6 +7,7 @@ import android.text.style.RelativeSizeSpan
 import android.text.style.SuperscriptSpan
 import io.github.mikolasan.convertmeifyoucan.FunctionParser
 import io.github.mikolasan.ratiogenerator.ImperialUnit
+import io.github.mikolasan.ratiogenerator.ImperialUnitCategory
 import io.github.mikolasan.ratiogenerator.ImperialUnitType
 import io.github.mikolasan.ratiogenerator.findConversionFormula
 import java.text.DecimalFormat
@@ -33,7 +34,8 @@ fun convertValue(inputUnit: ImperialUnit?, outputUnit: ImperialUnit?, inputValue
         outputUnit.formulaMap[inputUnit.unitName] = formulaArray
     }
 
-    if (!outputUnit.ratioMap.containsKey(inputUnit.unitName)) {
+    if (outputUnit.unitType != ImperialUnitType.TEMPERATURE
+        && !outputUnit.ratioMap.containsKey(inputUnit.unitName)) {
         val it = formulaArray.iterator()
         var r = 1.0
         while (it.hasNext()) {
@@ -108,34 +110,33 @@ fun doScientificNotation(decimalFormat: DecimalFormat, value: Double): Spannable
 fun valueForDisplay(value: Double?, locale: Locale? = null): SpannableStringBuilder {
     if (value == null) return SpannableStringBuilder("-.-")
 
-    return SpannableStringBuilder(value.toString())
-//    val absValue = abs(value)
-//    val integerPart = floor(absValue)
-//    val integerLength = if (integerPart > 0.0) (floor(log10(integerPart)) + 1).toInt() else 1
-//    val maxIntegerLength = 8
-//
-//    val numberFormat = if (locale == null) DecimalFormat.getInstance(Locale.US) else DecimalFormat.getInstance(locale)
-//    val decimalFormat = numberFormat as DecimalFormat
-//
-//    if (integerLength > maxIntegerLength) {
-//        return doScientificNotation(decimalFormat, value)
-//    }
-//
-//    decimalFormat.maximumIntegerDigits = integerLength
-//    decimalFormat.maximumFractionDigits = maxDisplayLength - integerLength - 1
-//    decimalFormat.isDecimalSeparatorAlwaysShown = false
-//
-//    val formattedValue = decimalFormat.format(value)
-//    val formattedLength = formattedValue.replace(decimalFormat.decimalFormatSymbols.groupingSeparator.toString(),"").length
-//    val scientificNumber = doScientificNotation(decimalFormat, value)
-//    val exponentPosition = scientificNumber.toString().indexOf("×10")
-//    if (formattedLength > maxDisplayLength + 1) {
-//        return scientificNumber
-//    } else if (exponentPosition > 0 && scientificNumber.toString().substring(exponentPosition + 3).toInt() < -7) {
-//        return scientificNumber
-//    }
-//
-//    return SpannableStringBuilder(formattedValue)
+    val absValue = abs(value)
+    val integerPart = floor(absValue)
+    val integerLength = if (integerPart > 0.0) (floor(log10(integerPart)) + 1).toInt() else 1
+    val maxIntegerLength = 8
+
+    val numberFormat = if (locale == null) DecimalFormat.getInstance(Locale.US) else DecimalFormat.getInstance(locale)
+    val decimalFormat = numberFormat as DecimalFormat
+
+    if (integerLength > maxIntegerLength) {
+        return doScientificNotation(decimalFormat, value)
+    }
+
+    decimalFormat.maximumIntegerDigits = integerLength
+    decimalFormat.maximumFractionDigits = maxDisplayLength - integerLength - 1
+    decimalFormat.isDecimalSeparatorAlwaysShown = false
+
+    val formattedValue = decimalFormat.format(value)
+    val formattedLength = formattedValue.replace(decimalFormat.decimalFormatSymbols.groupingSeparator.toString(),"").length
+    val scientificNumber = doScientificNotation(decimalFormat, value)
+    val exponentPosition = scientificNumber.toString().indexOf("×10")
+    if (formattedLength > maxDisplayLength + 1) {
+        return scientificNumber
+    } else if (exponentPosition > 0 && scientificNumber.toString().substring(exponentPosition + 3).toInt() < -7) {
+        return scientificNumber
+    }
+
+    return SpannableStringBuilder(formattedValue)
 }
 
 fun makeSerializedString(input: Editable): String {

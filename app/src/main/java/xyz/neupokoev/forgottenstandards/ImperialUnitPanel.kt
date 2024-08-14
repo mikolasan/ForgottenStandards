@@ -22,7 +22,7 @@ class ImperialUnitPanel(context: Context, attributeSet: AttributeSet) : Constrai
 
     var unit: ImperialUnit? = null
     private var isActive = false
-    val input: EditText = findViewById(R.id.panel_input)
+    val input: TextView = findViewById(R.id.panel_input)
     private val title: TextView = findViewById(R.id.panel_title)
     private val hint: TextView = findViewById(R.id.panel_hint)
     private val layout: ConstraintLayout = findViewById(R.id.big_unit_space)
@@ -57,14 +57,14 @@ class ImperialUnitPanel(context: Context, attributeSet: AttributeSet) : Constrai
 
     fun activate() {
         title.visibility = View.VISIBLE
-        input.isEnabled = true
+//        input.isEnabled = false
         input.visibility = View.VISIBLE
         hint.visibility = View.INVISIBLE
     }
 
     fun deactivate() {
         title.visibility = View.INVISIBLE
-        input.isEnabled = false
+//        input.isEnabled = false
         input.visibility = View.INVISIBLE
         hint.visibility = View.VISIBLE
     }
@@ -175,9 +175,10 @@ class ImperialUnitPanel(context: Context, attributeSet: AttributeSet) : Constrai
     }
 
     fun hasExponent(): Boolean {
-        return input.text
-            .getSpans(0, input.text.length, SuperscriptSpan::class.java)
-            .isNotEmpty()
+        return false
+//        return input.text
+//            .getSpans(0, input.text.length, SuperscriptSpan::class.java)
+//            .isNotEmpty()
     }
 
     fun formatStringAndSet(s: String) {

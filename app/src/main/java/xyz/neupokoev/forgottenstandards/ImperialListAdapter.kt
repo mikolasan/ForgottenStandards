@@ -38,7 +38,7 @@ class ImperialListAdapter
         val bookmark: ImageView = layout.findViewById(R.id.bookmark)
         init {
             layout.setOnClickListener {
-                unitSelectedListener(0, view, data)
+                unitSelectedListener(this.absoluteAdapterPosition, view, data)
             }
         }
     }
@@ -112,6 +112,7 @@ class ImperialListAdapter
                     notifyItemChanged(i)
                 }
             } else {
+                unit.value = value
                 notifyItemChanged(i)
             }
         }

@@ -22,9 +22,9 @@
     <dimen name="imperial_panel_hint_margin_top">16dp</dimen>
     <dimen name="imperial_panel_hint_margin_end">16dp</dimen>
     <dimen name="imperial_panel_hint_margin_bottom">8dp</dimen>
-    <dimen name="imperial_panel_input_margin_start">24dp</dimen>
+    <dimen name="imperial_panel_input_margin_start">16dp</dimen>
     <dimen name="imperial_panel_input_margin_top">8dp</dimen>
-    <dimen name="imperial_panel_input_margin_end">24dp</dimen>
+    <dimen name="imperial_panel_input_margin_end">16dp</dimen>
     <dimen name="imperial_panel_input_margin_bottom">8dp</dimen>
     <dimen name="unit_list_divider">10dp</dimen>
     <dimen name="unit_list_name_size">24sp</dimen>

@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,9 +14,9 @@ import io.github.mikolasan.ratiogenerator.main
 
 class UnitListFragment : Fragment() {
 
-    private lateinit var unitsList: RecyclerView
+    private var selectedId: Int = 0
     private val listAdapter: ImperialListAdapter = ImperialListAdapter()
-    private lateinit var title: TextView
+    private lateinit var unitsList: RecyclerView
     private lateinit var bottomPanel: ImperialUnitPanel
     private lateinit var topPanel: ImperialUnitPanel
     private lateinit var selectedPanel: ImperialUnitPanel
@@ -29,6 +28,18 @@ class UnitListFragment : Fragment() {
             mainActivity.setSubscriber(this)
             setUnits(mainActivity.workingUnits.orderedUnits)
             listAdapter.workingUnits = mainActivity.workingUnits
+            listAdapter.setOnUnitSelectedListener { i, _, unit ->
+                mainActivity.onUnitSelectedInList(unit)
+                listAdapter.notifyItemChanged(selectedId)
+                listAdapter.notifyItemChanged(i)
+                selectedId = i
+                mainActivity.removeKeyboardInputObserver(topPanel)
+                mainActivity.removeKeyboardInputObserver(bottomPanel)
+                topPanel.setHighlight(false)
+                bottomPanel.setHighlight(false)
+                listenForKeyboardInputAtTopPanel()
+                listenForKeyboardInputAtBottomPanel()
+            }
             listAdapter.let { listAdapter ->
                 listAdapter.setOnArrowClickListener { _: Int, arrow: View, unit: ImperialUnit ->
                     arrow.visibility = View.INVISIBLE // hide the arrow
@@ -98,6 +109,8 @@ class UnitListFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
+        (activity as MainActivity).onCategoryOpened()
+
 //        keyboardFragment = keyboardView.getFragment()
 //        keyboardButtonFragment = keyboardButtonView.getFragment()
 
@@ -153,6 +166,7 @@ class UnitListFragment : Fragment() {
         listAdapter.updateAllValues(unit, value)
     }
 
+
     private fun attachKeyboardInputToTopPanel() {
         val mainActivity = activity as MainActivity
         val callable = { unit: ImperialUnit, value: Double ->
@@ -175,33 +189,73 @@ class UnitListFragment : Fragment() {
         mainActivity.addKeyboardInputObserver(bottomPanel, callable)
     }
 
+    private fun listenForKeyboardInputAtTopPanel() {
+        val mainActivity = activity as MainActivity
+        val callable = { unit: ImperialUnit, value: Double ->
+            val panel = topPanel
+            val v = convertValue(unit, panel.unit, value)
+            panel.setUnitValue(v)
+            panel.updateDisplayValue()
+        }
+        mainActivity.addKeyboardInputObserver(topPanel, callable)
+    }
+
+    private fun listenForKeyboardInputAtBottomPanel() {
+        val mainActivity = activity as MainActivity
+        val callable = { unit: ImperialUnit, value: Double ->
+            val panel = bottomPanel
+            val v = convertValue(unit, panel.unit, value)
+            panel.setUnitValue(v)
+            panel.updateDisplayValue()
+        }
+        mainActivity.addKeyboardInputObserver(bottomPanel, callable)
+    }
+
     fun showBookmark(unit: ImperialUnit) {
         val mainActivity = activity as MainActivity
         val favorites = mainActivity.workingUnits.favoritedUnits
         if (favorites.isEmpty()) {
             topPanel.visibility = View.GONE
-            mainActivity.removeKeyboardInputObserver(topPanel)
             bottomPanel.visibility = View.GONE
+            mainActivity.removeKeyboardInputObserver(topPanel)
             mainActivity.removeKeyboardInputObserver(bottomPanel)
             return
         }
 
-        if (favorites.size == 1) {
+        if (favorites.size == 1
+            || favorites.size == 2 && bottomPanel.visibility == View.VISIBLE) {
             topPanel.visibility = View.VISIBLE
             topPanel.activate()
             topPanel.changeUnit(unit)
             topPanel.updateDisplayValue()
+            topPanel.setHighlight(true)
+            mainActivity.removeKeyboardInputObserver(topPanel)
             attachKeyboardInputToTopPanel()
             mainActivity.onPanelSelected(topPanel)
+
+            mainActivity.removeKeyboardInputObserver(bottomPanel)
+            if (bottomPanel.visibility == View.VISIBLE) {
+                bottomPanel.setHighlight(false)
+                listenForKeyboardInputAtBottomPanel()
+            }
         } else {
 
             bottomPanel.visibility = View.VISIBLE
             bottomPanel.activate()
             bottomPanel.changeUnit(unit)
             bottomPanel.updateDisplayValue()
+            bottomPanel.setHighlight(true)
+            mainActivity.removeKeyboardInputObserver(bottomPanel)
             attachKeyboardInputToBottomPanel()
             mainActivity.onPanelSelected(bottomPanel)
+
+            mainActivity.removeKeyboardInputObserver(topPanel)
+            if (topPanel.visibility == View.VISIBLE) {
+                topPanel.setHighlight(false)
+                listenForKeyboardInputAtTopPanel()
+            }
         }
+        listAdapter.notifyItemChanged(selectedId)
     }
 
     fun removeBookmark(panel: ImperialUnitPanel, unit: ImperialUnit) {
@@ -213,24 +267,31 @@ class UnitListFragment : Fragment() {
         }
 
         favorites.minusAssign(unit)
-        listAdapter.restoreUnit(unit)
         unit.bookmarked = false
+
+        mainActivity.onUnitSelectedInList(unit)
+
+        listAdapter.notifyItemChanged(selectedId)
+        listAdapter.restoreUnit(unit)
 
         panel.visibility = View.GONE
         mainActivity.removeKeyboardInputObserver(panel)
 
+        unitsList.scrollToPosition(0)
+        selectedId = 0
+
     }
 
     // TODO: remove '?'
-    fun onUnitSelected(selectedUnit: ImperialUnit) {
-        (activity as? MainActivity)?.let { mainActivity ->
-            mainActivity.workingUnits.mainUnit = selectedUnit
-        }
-//        listAdapter.setSelectedUnit(selectedUnit)
-//        listAdapter.setSecondUnit(secondUnit)
-        //listAdapter.notifyDataSetChanged()
-
-    }
+//    fun onUnitSelected(selectedUnit: ImperialUnit) {
+//        (activity as? MainActivity)?.let { mainActivity ->
+//            mainActivity.workingUnits.mainUnit = selectedUnit
+//        }
+////        listAdapter.setSelectedUnit(selectedUnit)
+////        listAdapter.setSecondUnit(secondUnit)
+//        //listAdapter.notifyDataSetChanged()
+//
+//    }
 
     fun setFilter(query: String?) {
         listAdapter.filter.filter(query)
@@ -239,21 +300,36 @@ class UnitListFragment : Fragment() {
     private fun setListeners(view: View) {
 
         topPanel.setOnClickListener {
+            val mainActivity = activity as MainActivity
+
             topPanel.setHighlight(true)
             bottomPanel.setHighlight(false)
-            attachKeyboardInputToTopPanel()
-            (activity as MainActivity).removeKeyboardInputObserver(bottomPanel)
 
+            mainActivity.removeKeyboardInputObserver(topPanel)
+            attachKeyboardInputToTopPanel()
+            mainActivity.removeKeyboardInputObserver(bottomPanel)
+            listenForKeyboardInputAtBottomPanel()
+
+            mainActivity.onPanelSelected(topPanel)
+            listAdapter.notifyItemChanged(selectedId)
         }
         topPanel.bookmark.setOnClickListener {
             removeBookmark(topPanel, topPanel.unit!!)
         }
 
         bottomPanel.setOnClickListener {
+            val mainActivity = activity as MainActivity
+
             bottomPanel.setHighlight(true)
             topPanel.setHighlight(false)
+
+            mainActivity.removeKeyboardInputObserver(bottomPanel)
             attachKeyboardInputToBottomPanel()
-            (activity as MainActivity).removeKeyboardInputObserver(topPanel)
+            mainActivity.removeKeyboardInputObserver(topPanel)
+            listenForKeyboardInputAtTopPanel()
+
+            mainActivity.onPanelSelected(topPanel)
+            listAdapter.notifyItemChanged(selectedId)
         }
         bottomPanel.bookmark.setOnClickListener {
             removeBookmark(bottomPanel, bottomPanel.unit!!)
