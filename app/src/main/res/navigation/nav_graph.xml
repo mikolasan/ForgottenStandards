@@ -25,6 +25,7 @@
     <fragment
         android:id="@+id/unitListFragment"
         android:name="xyz.neupokoev.forgottenstandards.UnitListFragment"
+        tools:layout="@layout/fragment_list"
         >
         <action
             android:id="@+id/action_select_unit"
@@ -32,8 +33,10 @@
     </fragment>
     <fragment
         android:id="@+id/converterFragment"
-        android:name="xyz.neupokoev.forgottenstandards.ConverterFragment" />
+        android:name="xyz.neupokoev.forgottenstandards.ConverterFragment"
+        tools:layout="@layout/fragment_converter" />
     <fragment
         android:id="@+id/nutBoltFragment"
-        android:name="xyz.neupokoev.forgottenstandards.NutBoltFragment" />
+        android:name="xyz.neupokoev.forgottenstandards.NutBoltFragment"
+        tools:layout="@layout/fragment_nut_bolt" />
 </navigation>
