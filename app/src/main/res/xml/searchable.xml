@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <searchable xmlns:android="http://schemas.android.com/apk/res/android">
     android:label="@string/app_name"
-    android:hint="@string/search_unit_hint" >
-
+    android:hint="@string/search_unit_hint"
+    android:searchSuggestAuthority="xyz.neupokoev.forgottenstandards.ImperialContentProvider"
+    android:searchSuggestSelection"lets use selection args and not uri" >
 </searchable>

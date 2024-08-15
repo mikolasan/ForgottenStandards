@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.mikolasan.ratiogenerator.ImperialUnit
-import io.github.mikolasan.ratiogenerator.main
 
 
 class UnitListFragment : Fragment() {
@@ -26,42 +25,6 @@ class UnitListFragment : Fragment() {
 
         (activity as MainActivity).let { mainActivity ->
             mainActivity.setSubscriber(this)
-            setUnits(mainActivity.workingUnits.orderedUnits)
-            listAdapter.workingUnits = mainActivity.workingUnits
-            listAdapter.setOnUnitSelectedListener { i, _, unit ->
-                mainActivity.onUnitSelectedInList(unit)
-                listAdapter.notifyItemChanged(selectedId)
-                listAdapter.notifyItemChanged(i)
-                selectedId = i
-                mainActivity.removeKeyboardInputObserver(topPanel)
-                mainActivity.removeKeyboardInputObserver(bottomPanel)
-                topPanel.setHighlight(false)
-                bottomPanel.setHighlight(false)
-                listenForKeyboardInputAtTopPanel()
-                listenForKeyboardInputAtBottomPanel()
-            }
-            listAdapter.let { listAdapter ->
-                listAdapter.setOnArrowClickListener { _: Int, arrow: View, unit: ImperialUnit ->
-                    arrow.visibility = View.INVISIBLE // hide the arrow
-                    mainActivity.onArrowClicked(unit)
-                }
-                listAdapter.setOnArrowLongClickListener { _: Int, arrow: View, unit: ImperialUnit ->
-                    arrow.visibility = View.INVISIBLE // hide the arrow
-                    mainActivity.onArrowLongClicked(unit)
-                    //unitsList.setSelectionAfterHeaderView()
-                }
-                listAdapter.setOnBookmarkClickListener { _: Int, arrow: View, unit: ImperialUnit ->
-                    if (mainActivity.workingUnits.favoritedUnits.size == 2) {
-                        return@setOnBookmarkClickListener
-                    }
-                    if (unit.bookmarked) {
-                        mainActivity.workingUnits.favoritedUnits.plusAssign(unit)
-                        //mainActivity.onUnitSelected(unit)
-                        showBookmark(unit)
-                        listAdapter.excludeUnit(unit)
-                    }
-                }
-            }
         }
     }
 
@@ -69,6 +32,11 @@ class UnitListFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_list, container, false)
         unitsList = view.findViewById(R.id.units_list)
+
+        val mainActivity = activity as MainActivity
+        setUnits(mainActivity.workingUnits.orderedUnits)
+        listAdapter.workingUnits = mainActivity.workingUnits
+
         unitsList.adapter = listAdapter
         unitsList.layoutManager = LinearLayoutManager(activity)
         unitsList.setItemAnimator(null);
@@ -81,6 +49,8 @@ class UnitListFragment : Fragment() {
 
         topPanel.setHintText(view.context.resources.getString(R.string.select_unit_hint))
         bottomPanel.setHintText(view.context.resources.getString(R.string.select_unit_2_hint))
+
+
 
         // This is moved to another fragment (main activity for tablets ??)
 //        val searchInput = view.findViewById<EditText>(R.id.search_input)
@@ -213,7 +183,7 @@ class UnitListFragment : Fragment() {
 
     fun showBookmark(unit: ImperialUnit) {
         val mainActivity = activity as MainActivity
-        val favorites = mainActivity.workingUnits.favoritedUnits
+        val favorites = mainActivity.workingUnits.favoriteUnits
         if (favorites.isEmpty()) {
             topPanel.visibility = View.GONE
             bottomPanel.visibility = View.GONE
@@ -261,7 +231,7 @@ class UnitListFragment : Fragment() {
     fun removeBookmark(panel: ImperialUnitPanel, unit: ImperialUnit) {
         val mainActivity = activity as MainActivity
 
-        val favorites = mainActivity.workingUnits.favoritedUnits
+        val favorites = mainActivity.workingUnits.favoriteUnits
         if (favorites.isEmpty()) {
             return
         }
@@ -298,6 +268,42 @@ class UnitListFragment : Fragment() {
     }
 
     private fun setListeners(view: View) {
+
+        val mainActivity = activity as MainActivity
+        listAdapter.setOnUnitSelectedListener { i, _, unit ->
+            mainActivity.onUnitSelectedInList(unit)
+            listAdapter.notifyItemChanged(selectedId)
+            listAdapter.notifyItemChanged(i)
+            selectedId = i
+            mainActivity.removeKeyboardInputObserver(topPanel)
+            mainActivity.removeKeyboardInputObserver(bottomPanel)
+            topPanel.setHighlight(false)
+            bottomPanel.setHighlight(false)
+            listenForKeyboardInputAtTopPanel()
+            listenForKeyboardInputAtBottomPanel()
+        }
+        listAdapter.let { listAdapter ->
+            listAdapter.setOnArrowClickListener { _: Int, arrow: View, unit: ImperialUnit ->
+                arrow.visibility = View.INVISIBLE // hide the arrow
+                mainActivity.onArrowClicked(unit)
+            }
+            listAdapter.setOnArrowLongClickListener { _: Int, arrow: View, unit: ImperialUnit ->
+                arrow.visibility = View.INVISIBLE // hide the arrow
+                mainActivity.onArrowLongClicked(unit)
+                //unitsList.setSelectionAfterHeaderView()
+            }
+            listAdapter.setOnBookmarkClickListener { _: Int, arrow: View, unit: ImperialUnit ->
+                if (mainActivity.workingUnits.favoriteUnits.size == 2) {
+                    return@setOnBookmarkClickListener
+                }
+                if (unit.bookmarked) {
+                    mainActivity.workingUnits.favoriteUnits.plusAssign(unit)
+                    //mainActivity.onUnitSelected(unit)
+                    showBookmark(unit)
+                    listAdapter.excludeUnit(unit)
+                }
+            }
+        }
 
         topPanel.setOnClickListener {
             val mainActivity = activity as MainActivity

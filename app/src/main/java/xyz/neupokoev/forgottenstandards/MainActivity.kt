@@ -111,26 +111,8 @@ class MainActivity : AppCompatActivity() {
         navController = navHostFragment?.navController
         navController?.run {
             // update title
-            val globalUnits = workingUnits
             addOnDestinationChangedListener { controller, destination, arguments ->
-                if (destination.id == R.id.unitListFragment
-                    || destination.id == R.id.converterFragment
-                    || destination.id == R.id.nutBoltFragment
-                ) {
-                    supportActionBar?.title = globalUnits.selectedCategory?.name
-                    // show keyboard
-                    keyboardFragment?.view?.visibility = View.VISIBLE
-                    keyboardView?.visibility = View.VISIBLE
-                    keyboardButtonFragment?.view?.visibility = View.GONE
-                    keyboardButtonView?.visibility = View.GONE
-                } else {
-                    supportActionBar?.title = destination.label
-                    // hide keyboard
-                    keyboardFragment?.view?.visibility = View.GONE
-                    keyboardView?.visibility = View.GONE
-                    keyboardButtonFragment?.view?.visibility = View.GONE
-                    keyboardButtonView?.visibility = View.GONE
-                }
+                updateFragment(destination.id, destination.label ?: "")
             }
         }
 
@@ -163,12 +145,8 @@ class MainActivity : AppCompatActivity() {
         keyboardButtonFragment = keyboardButtonView?.getFragment()
 
         // first time `addOnDestinationChangedListener` is not called
-        if (navController != null) {
-            keyboardFragment?.view?.visibility = View.GONE
-            keyboardView?.visibility = View.GONE
-
-            keyboardButtonFragment?.view?.visibility = View.GONE
-            keyboardButtonView?.visibility = View.GONE
+        navController?.currentDestination?.id?.let { destinationId ->
+            updateFragment(destinationId, navController?.currentDestination?.label ?: "")
         }
 
 //        val listVisible = unitListFragment != null
@@ -233,6 +211,29 @@ class MainActivity : AppCompatActivity() {
 //            bottomPanel.updateUnitText()
 //            topPanel.updateUnitText()
 //        }
+    }
+
+    fun updateFragment(destinationId: Int, title: CharSequence) {
+        val setTitleAsCategory = { supportActionBar?.title = workingUnits.selectedCategory?.name }
+        val setTitleToDefaultName = { supportActionBar?.title = title }
+        when (destinationId) {
+            R.id.switchFragment -> {
+                setTitleToDefaultName()
+                hideKeyboardCompletely()
+            }
+            R.id.unitListFragment -> {
+                setTitleAsCategory()
+                showKeyboardButton()
+            }
+            R.id.converterFragment -> {
+                setTitleAsCategory()
+                showKeyboard()
+            }
+            R.id.nutBoltFragment -> {
+                setTitleAsCategory()
+                hideKeyboardCompletely()
+            }
+        }
     }
 
     private fun restoreMainUnits() {
@@ -471,7 +472,7 @@ class MainActivity : AppCompatActivity() {
 
         // navigation will happen on the next frame anyway
         workingUnits.mainUnit = workingUnits.orderedUnits[0]
-        workingUnits.favoritedUnits = mutableListOf()
+        workingUnits.favoriteUnits = mutableListOf()
 
 //        nav.navigate(R.id.action_select_category)
 //        val categoryTitle = category.name
@@ -573,5 +574,11 @@ class MainActivity : AppCompatActivity() {
 //        converterFragment?.keyboardFragment?.view?.visibility = View.GONE
     }
 
+    fun hideKeyboardCompletely() {
+        keyboardFragment?.view?.visibility = View.GONE
+        keyboardView?.visibility = View.GONE
+        keyboardButtonFragment?.view?.visibility = View.GONE
+        keyboardButtonView?.visibility = View.GONE
+    }
 }
 
