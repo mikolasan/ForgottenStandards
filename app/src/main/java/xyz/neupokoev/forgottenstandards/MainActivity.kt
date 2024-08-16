@@ -68,7 +68,8 @@ class MainActivity : AppCompatActivity() {
         (menu.findItem(R.id.action_search).actionView as SearchView).apply {
             // Assumes current activity is the searchable activity.
             setSearchableInfo(searchManager.getSearchableInfo(componentName))
-            setIconifiedByDefault(false) // Don't iconify the widget. Expand it by default.
+            setIconifiedByDefault(true)
+
             val listener = object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
 //                    unitListFragment?.run {
@@ -237,6 +238,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun restoreMainUnits() {
+
         workingUnits = settings.restoreWorkingUnits()
 
         val topString = settings.restoreTopString()

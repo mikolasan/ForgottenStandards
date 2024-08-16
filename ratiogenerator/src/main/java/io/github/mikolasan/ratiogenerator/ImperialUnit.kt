@@ -18,6 +18,9 @@ class ImperialUnit(val category: ImperialUnitCategory,
         value = v
     }
 
+    // for query outputs, will be assigned in the ContentProvider
+    var uniqueId: Long = 0
+
 //    fun inputStringToValue() {
 //        value = BasicCalculator(inputString).eval()
 //    }

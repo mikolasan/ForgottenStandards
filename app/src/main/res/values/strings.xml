@@ -47,5 +47,5 @@
 
 In addition to its use in the measurement of length, the centimetre is used: sometimes, to report the level of rainfall as measured by a rain gauge; in maps, centimetres are used to make conversions from map scale to real world scale (kilometres).</string>
     <string name="search_unit_hint">Search measurement units</string>
-    <string name="action_search">Searchh</string>
+    <string name="action_search">Search</string>
 </resources>
