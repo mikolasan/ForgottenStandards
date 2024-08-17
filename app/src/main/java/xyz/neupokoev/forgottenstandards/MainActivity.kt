@@ -118,10 +118,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         val toolbar = findViewById<Toolbar>(R.id.my_toolbar)
-        if (toolbar != null && navController != null) {
+        if (toolbar != null) {
             setSupportActionBar(toolbar)
-            val appBarConfiguration = AppBarConfiguration(navController!!.graph)
-            toolbar.setupWithNavController(navController!!, appBarConfiguration)
+
+            if (navController != null) {
+                val appBarConfiguration = AppBarConfiguration(navController!!.graph)
+                toolbar.setupWithNavController(navController!!, appBarConfiguration)
+            }
         }
 
         keyboardView = findViewById(R.id.keyboard)
@@ -458,48 +461,34 @@ class MainActivity : AppCompatActivity() {
 
         settings.saveCategory(category.name)
 
-        try {
+        // navigation will happen on the next frame anyway
+        workingUnits.mainUnit = workingUnits.orderedUnits[0]
+        workingUnits.favoriteUnits.forEach { it.bookmarked = false }
+        workingUnits.favoriteUnits = mutableListOf()
+
+        if (navController != null) {
             val bundle = bundleOf(
                 "categoryTitle" to category.name
             )
             if (type == ImperialUnitType.NUT_AND_BOLT) {
                 navController?.navigate(R.id.action_select_nut_bolt, bundle)
-                return
             } else {
                 navController?.navigate(R.id.action_select_category, bundle)
             }
-        } catch (e: Exception) {
-            // ignore
+        } else {
+            onCategoryOpened()
         }
-
-        // navigation will happen on the next frame anyway
-        workingUnits.mainUnit = workingUnits.orderedUnits[0]
-        workingUnits.favoriteUnits = mutableListOf()
-
-//        nav.navigate(R.id.action_select_category)
-//        val categoryTitle = category.name
-//        val action = SwitchFragmentDirections.actionSelectCategory(categoryTitle)
-//        nav.navigate(action)
-
     }
 
     fun onCategoryOpened() {
-        converterFragment?.run {
-            topPanel.changeUnit(workingUnits.mainUnit)
-            bottomPanel.changeUnit(workingUnits.orderedUnits[1])
-            displayUnitValues()
-            selectTopPanel()
-        }
+        unitObserver.setUnitAndUpdateValue(workingUnits.mainUnit)
+
         unitListFragment?.run {
             setUnits(workingUnits.orderedUnits)
             updateAllValues(workingUnits.mainUnit, 0.0)
-//            restoreSelectedUnit(workingUnits.topUnit)
-//            restoreSecondUnit(workingUnits.bottomUnit)
-//            setTitle(category.name)
+            hidePanels()
+            selectFirstInList()
         }
-
-        unitObserver.setUnitAndUpdateValue(workingUnits.mainUnit)
-//        hideTypeSwitcher()
     }
 
     fun showUnitList() {

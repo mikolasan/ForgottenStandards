@@ -8,20 +8,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <fragment
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/categories"
         android:name="xyz.neupokoev.forgottenstandards.SwitchFragment"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintHeight_max="@dimen/max_description_height"
-        app:layout_constraintBottom_toTopOf="@id/converter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/list"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintHeight_default="percent"
-        app:layout_constraintHeight_percent="0.3"
+        app:layout_constraintTop_toBottomOf="@id/my_toolbar"
         app:layout_constraintWidth_default="percent"
-        app:layout_constraintWidth_percent="0.5"
+        app:layout_constraintWidth_percent="0.4"
         tools:layout="@layout/fragment_switch" />
 
 
@@ -87,51 +93,42 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/list"
         android:name="xyz.neupokoev.forgottenstandards.UnitListFragment"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/categories"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/my_toolbar"
         app:layout_constraintWidth_default="percent"
-        app:layout_constraintWidth_percent="0.5"
+        app:layout_constraintWidth_percent="0.6"
         tools:layout="@layout/fragment_list" />
-
-    <fragment
-        android:id="@+id/converter"
-        android:name="xyz.neupokoev.forgottenstandards.ConverterFragment"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintHeight_min="@dimen/min_converter_height"
-        app:layout_constraintBottom_toTopOf="@id/keyboard"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/list"
-        app:layout_constraintTop_toBottomOf="@id/categories"
-        app:layout_constraintHeight_default="percent"
-        app:layout_constraintHeight_percent="0.4"
-        app:layout_constraintWidth_default="percent"
-        app:layout_constraintWidth_percent="0.5"
-        tools:layout="@layout/fragment_converter" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/keyboard"
         android:name="xyz.neupokoev.forgottenstandards.KeyboardFragment"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:elevation="2dp"
         android:visibility="visible"
         android:layout_margin="6dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/list"
-        app:layout_constraintHeight_default="percent"
-        app:layout_constraintHeight_percent="0.3"
-        app:layout_constraintWidth_default="percent"
-        app:layout_constraintWidth_percent="0.5"
         tools:layout="@layout/keyboard_panel"
+        tools:targetApi="lollipop" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/keyboard_button"
+        android:name="xyz.neupokoev.forgottenstandards.KeyboardButtonFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="2dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:layout="@layout/keyboard_button_fragment"
         tools:targetApi="lollipop" />
 
 

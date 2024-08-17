@@ -34,7 +34,6 @@ class UnitListFragment : Fragment() {
         unitsList = view.findViewById(R.id.units_list)
 
         val mainActivity = activity as MainActivity
-        setUnits(mainActivity.workingUnits.orderedUnits)
         listAdapter.workingUnits = mainActivity.workingUnits
 
         unitsList.adapter = listAdapter
@@ -42,14 +41,12 @@ class UnitListFragment : Fragment() {
         unitsList.setItemAnimator(null);
 
         topPanel = view.findViewById(R.id.convert_to)
-        topPanel.visibility = View.GONE
         bottomPanel = view.findViewById(R.id.convert_from)
-        bottomPanel.visibility = View.GONE
         selectedPanel = topPanel // init before use
-
         topPanel.setHintText(view.context.resources.getString(R.string.select_unit_hint))
         bottomPanel.setHintText(view.context.resources.getString(R.string.select_unit_2_hint))
 
+        hidePanels()
 
 
         // This is moved to another fragment (main activity for tablets ??)
@@ -128,14 +125,22 @@ class UnitListFragment : Fragment() {
 //        //listAdapter.setSelectedUnit(unit)
 //    }
 
-    fun onPanelsSwapped() {
-        //listAdapter.notifyDataSetChanged()
+    fun selectFirstInList() {
+        unitsList.scrollToPosition(0)
+        selectedId = 0
+    }
+
+    fun hidePanels() {
+        val mainActivity = activity as MainActivity
+        topPanel.visibility = View.GONE
+        bottomPanel.visibility = View.GONE
+        mainActivity.removeKeyboardInputObserver(topPanel)
+        mainActivity.removeKeyboardInputObserver(bottomPanel)
     }
 
     fun onPanelTextChanged(unit: ImperialUnit, value: Double) {
         listAdapter.updateAllValues(unit, value)
     }
-
 
     private fun attachKeyboardInputToTopPanel() {
         val mainActivity = activity as MainActivity
@@ -185,10 +190,7 @@ class UnitListFragment : Fragment() {
         val mainActivity = activity as MainActivity
         val favorites = mainActivity.workingUnits.favoriteUnits
         if (favorites.isEmpty()) {
-            topPanel.visibility = View.GONE
-            bottomPanel.visibility = View.GONE
-            mainActivity.removeKeyboardInputObserver(topPanel)
-            mainActivity.removeKeyboardInputObserver(bottomPanel)
+            hidePanels()
             return
         }
 
@@ -247,9 +249,7 @@ class UnitListFragment : Fragment() {
         panel.visibility = View.GONE
         mainActivity.removeKeyboardInputObserver(panel)
 
-        unitsList.scrollToPosition(0)
-        selectedId = 0
-
+        selectFirstInList()
     }
 
     // TODO: remove '?'
