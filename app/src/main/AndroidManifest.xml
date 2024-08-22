@@ -16,15 +16,12 @@
             android:authorities="xyz.neupokoev.forgottenstandards.ImperialContentProvider"
             android:name=".ImperialContentProvider"
             android:exported="false">
-
-
         </provider>
 
         <activity android:name=".MainActivity"
 
             android:configChanges="layoutDirection|locale"
             android:exported="true">
-
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,7 +30,8 @@
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
-            <meta-data android:name="android.app.searchable"
+            <meta-data
+                android:name="android.app.searchable"
                 android:resource="@xml/searchable"/>
 
         </activity>
