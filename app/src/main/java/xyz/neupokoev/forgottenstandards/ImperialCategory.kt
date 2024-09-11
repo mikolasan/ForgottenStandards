@@ -42,7 +42,7 @@ object ImperialCategory {
         ImperialUnitCategoryName("Fuel"),
         ImperialUnitCategoryName("Angle"),
         // New
-        ImperialUnitCategoryName("Nut & Bolt")
+        //ImperialUnitCategoryName("Nut & Bolt")
     )
 
     val typeMap: Map<ImperialUnitType, ImperialUnitCategory> = mapOf(
@@ -62,6 +62,6 @@ object ImperialCategory {
         ImperialUnitType.TIME to MinTimeUnits,
         ImperialUnitType.VOLUME to MinVolumeUnits,
         ImperialUnitType.WEIGHT to MinWeightUnits,
-        ImperialUnitType.NUT_AND_BOLT to MinNutBoltUnits,
+        //ImperialUnitType.NUT_AND_BOLT to MinNutBoltUnits,
     )
 }

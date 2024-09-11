@@ -470,11 +470,11 @@ class MainActivity : AppCompatActivity() {
             val bundle = bundleOf(
                 "categoryTitle" to category.name
             )
-            if (type == ImperialUnitType.NUT_AND_BOLT) {
-                navController?.navigate(R.id.action_select_nut_bolt, bundle)
-            } else {
+//            if (type == ImperialUnitType.NUT_AND_BOLT) {
+//                navController?.navigate(R.id.action_select_nut_bolt, bundle)
+//            } else {
                 navController?.navigate(R.id.action_select_category, bundle)
-            }
+//            }
         } else {
             onCategoryOpened()
         }
