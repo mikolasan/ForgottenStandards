@@ -24,7 +24,7 @@ Written in Kotlin. Minimum supported Android version is 4.4.
 
 ## Download
 
-<a href="https://play.google.com/store/apps/details?id=xyz.neupokoev.forgottenstandards&amp;pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1">
+<a href="https://play.google.com/store/apps/details?id=io.github.mikolasan.imperialrussia">
 <img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" height="80">
 </a>
 
