@@ -43,9 +43,9 @@ See [this privacy policy](https://neupokoev.xyz/projects/imperial-russia/privacy
 
 ## Screenshots
 
-|Main screen|Unit list|Landscape mode|
+|Main screen 1|Main screen 2|Landscape mode|
 |---|---|---|
-![](./playstore/1.1-beta/540x960-hdpi-1.png)|![](./playstore/1.1-beta/540x960-hdpi-2.png)|![](./playstore/1.1-beta/1080x1920-hdpi-land.png)
+![](./playstore/2.0/phone_3_cool.png)|![](./playstore/2.0/phone_2_cool.png)|![](./playstore/2.0/phone_4.png)
 
 
 ## For developers
