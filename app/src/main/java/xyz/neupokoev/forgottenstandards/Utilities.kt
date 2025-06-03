@@ -24,6 +24,7 @@ fun convertValue(inputUnit: ImperialUnit?, outputUnit: ImperialUnit?, inputValue
     inputUnit ?: return 0.0
     outputUnit ?: return 0.0
 
+
     if (outputUnit.ratioMap.containsKey(inputUnit.unitName)) {
         return inputValue * outputUnit.ratioMap[inputUnit.unitName]!!
     }

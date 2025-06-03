@@ -98,6 +98,7 @@ object ImperialSymbol {
             // Speed
             ImperialUnitName.METER_PER_SECOND to "m/s",
             ImperialUnitName.MILE_PER_HOUR to "mph",
+            ImperialUnitName.KILOMETER_PER_HOUR to "km/h",
 //            ImperialUnitName.KNOT to "",
 //            ImperialUnitName.MACH to "",
             //ImperialUnitName.BEAUFORT to "", // TODO: this unit is not in constant relation to other units, need a formula

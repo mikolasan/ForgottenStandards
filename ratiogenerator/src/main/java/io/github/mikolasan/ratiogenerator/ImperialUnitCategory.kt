@@ -3,50 +3,47 @@ package io.github.mikolasan.ratiogenerator
 typealias x<A, B> = Pair<A, B>
 typealias eq<A, B> = Pair<A, B>
 typealias f<A, B, C> = Triple<A, B, C>
+typealias r<A, B> = Pair<A, B>
 typealias RatioList = List<eq<x<Double, ImperialUnitName>, x<Double, ImperialUnitName>>>
 typealias FormulaList = List<f<ImperialUnitName, String, ImperialUnitName>>
+typealias RangeList = List<f<ImperialUnitName, ImperialUnitName, List<eq<r<Double, Double>, r<Double, String>>>>>
 
 abstract class ImperialUnitCategory(val type: ImperialUnitType,
                                     val ratioList: RatioList,
-                                    val formulaList: FormulaList) {
+                                    val formulaList: FormulaList,
+    val rangeList: RangeList) {
 
-    val units: Set<ImperialUnit> = getAllUnits(ratioList, formulaList)
+    val units: Set<ImperialUnit> = getAllUnits(ratioList, formulaList, rangeList)
     val nameMap: Map<ImperialUnitName, ImperialUnit> = makeNameMapFromUnits(units)
 
     init {
-        if (ratioList.isNotEmpty()) {
-            // fill ratio maps
-            units.forEach { unit ->
-                val leftToRight = ratioList
-                    .filter { it.first.second == unit.unitName }
-                    .map { it.second.second to (it.first.first / it.second.first) }
-                val rightToLeft = ratioList
-                    .filter { it.second.second == unit.unitName }
-                    .map { it.first.second to (it.second.first / it.first.first) }
-                unit.ratioMap = (leftToRight + rightToLeft).toMap(mutableMapOf())
-                unit.formulaMap = unit.ratioMap.map { it.key to arrayOf("x * ${it.value}") }.toMap(mutableMapOf())
-            }
-        } else if (formulaList.isNotEmpty()) {
-            // fill formula maps
-            units.forEach { unit ->
-                unit.formulaMap = formulaList
-                    .filter { it.first == unit.unitName }
-                    .associate { it.third to arrayOf(it.second) }
-                    .toMutableMap()
-            }
+        units.forEach { unit ->
+            val leftToRight = ratioList
+                .filter { it.first.second == unit.unitName }
+                .map { it.second.second to (it.first.first / it.second.first) }
+            val rightToLeft = ratioList
+                .filter { it.second.second == unit.unitName }
+                .map { it.first.second to (it.second.first / it.first.first) }
+            unit.ratioMap = (leftToRight + rightToLeft).toMap(mutableMapOf())
+
+            val ratiosToFormulae: Map<ImperialUnitName, Array<String>> = unit.ratioMap
+                .map { it.key to arrayOf("x * ${it.value}") }
+                .toMap()
+            val unitFormulae: Map<ImperialUnitName, Array<String>> = formulaList
+                .filter { it.first == unit.unitName }
+                .associate { it.third to arrayOf(it.second) }
+            unit.formulaMap = (ratiosToFormulae + unitFormulae).toMap(mutableMapOf())
+            // TODO
+            // unit.rangeMap = rangeList.filter { it.first == unit.unitName } .map { it.first to it.third}
         }
     }
 
-    private fun getAllUnits(ratioList: RatioList, formulaList: FormulaList): Set<ImperialUnit> {
+    private fun getAllUnits(ratioList: RatioList, formulaList: FormulaList, rangeList: RangeList): Set<ImperialUnit> {
         val unitNames: Set<ImperialUnitName> =
-            if (ratioList.isNotEmpty()) {
-                ratioList.flatMap { arrayOf(it.first.second).asIterable() }.toSet() +
-                        ratioList.flatMap { arrayOf(it.second.second).asIterable() }.toSet()
-            } else if (formulaList.isNotEmpty()) {
-                formulaList.flatMap { arrayOf(it.first, it.third).asIterable() }.toSet()
-            } else {
-                setOf()
-            }
+            ratioList.flatMap { arrayOf(it.first.second).asIterable() }.toSet() +
+                    ratioList.flatMap { arrayOf(it.second.second).asIterable() }.toSet() +
+                    formulaList.flatMap { arrayOf(it.first, it.third).asIterable() }.toSet() +
+                    rangeList.flatMap { arrayOf(it.first, it.second).asIterable() }.toSet()
         return unitNames.map { name -> ImperialUnit(this, type, name) }.toSet()
     }
 

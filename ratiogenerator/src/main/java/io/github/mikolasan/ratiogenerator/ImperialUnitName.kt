@@ -103,7 +103,8 @@ enum class ImperialUnitName {
     MILE_PER_HOUR,
     KNOT,
     MACH,
-    //BEAUFORT, // TODO: this unit is not in constant relation to other units, need a formula
+    KILOMETER_PER_HOUR,
+    BEAUFORT,
 
     // Storage
     BIT,
