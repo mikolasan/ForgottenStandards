@@ -6,12 +6,14 @@ typealias f<A, B, C> = Triple<A, B, C>
 typealias r<A, B> = Pair<A, B>
 typealias RatioList = List<eq<x<Double, ImperialUnitName>, x<Double, ImperialUnitName>>>
 typealias FormulaList = List<f<ImperialUnitName, String, ImperialUnitName>>
-typealias RangeList = List<f<ImperialUnitName, ImperialUnitName, List<eq<r<Double, Double>, r<Double, String>>>>>
+typealias RangeList = List<eq<r<Double, Double>, r<Double, String>>>
+typealias RangeListList = List<f<ImperialUnitName, ImperialUnitName, RangeList>>
 
 abstract class ImperialUnitCategory(val type: ImperialUnitType,
                                     val ratioList: RatioList,
                                     val formulaList: FormulaList,
-    val rangeList: RangeList) {
+    val rangeList: RangeListList = mutableListOf()
+) {
 
     val units: Set<ImperialUnit> = getAllUnits(ratioList, formulaList, rangeList)
     val nameMap: Map<ImperialUnitName, ImperialUnit> = makeNameMapFromUnits(units)
@@ -33,12 +35,14 @@ abstract class ImperialUnitCategory(val type: ImperialUnitType,
                 .filter { it.first == unit.unitName }
                 .associate { it.third to arrayOf(it.second) }
             unit.formulaMap = (ratiosToFormulae + unitFormulae).toMap(mutableMapOf())
-            // TODO
-            // unit.rangeMap = rangeList.filter { it.first == unit.unitName } .map { it.first to it.third}
+
+            unit.rangeMap = rangeList
+                .filter { it.first == unit.unitName }
+                .associateTo(mutableMapOf()) { it.second to it.third }
         }
     }
 
-    private fun getAllUnits(ratioList: RatioList, formulaList: FormulaList, rangeList: RangeList): Set<ImperialUnit> {
+    private fun getAllUnits(ratioList: RatioList, formulaList: FormulaList, rangeList: RangeListList): Set<ImperialUnit> {
         val unitNames: Set<ImperialUnitName> =
             ratioList.flatMap { arrayOf(it.first.second).asIterable() }.toSet() +
                     ratioList.flatMap { arrayOf(it.second.second).asIterable() }.toSet() +

@@ -20,7 +20,7 @@
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/categories"
         android:name="xyz.neupokoev.forgottenstandards.SwitchFragment"
-        android:layout_width="0dp"
+        android:layout_width="400dp"
         android:layout_height="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/list"

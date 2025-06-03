@@ -17,7 +17,7 @@
     <dimen name="min_converter_height">600dp</dimen>
     <dimen name="max_converter_width">400dp</dimen>
     <dimen name="imperial_panel_height">133dp</dimen>
-    <dimen name="imperial_panel_text_size">34sp</dimen>
+    <dimen name="imperial_panel_text_size">28sp</dimen>
     <dimen name="imperial_panel_hint_margin_start">16dp</dimen>
     <dimen name="imperial_panel_hint_margin_top">16dp</dimen>
     <dimen name="imperial_panel_hint_margin_end">16dp</dimen>

@@ -58,7 +58,10 @@ fun findConversionFormula(nameMap: Map<ImperialUnitName, ImperialUnit>,
             }
         }
         .sortedBy { it.size }
-    formulae = allPaths.first()
+    formulae = if (allPaths.isEmpty())
+        arrayOf("x")
+    else
+        allPaths.first()
 
     return formulae
 }
