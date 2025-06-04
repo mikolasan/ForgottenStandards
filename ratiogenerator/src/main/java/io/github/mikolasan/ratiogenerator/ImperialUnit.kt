@@ -9,14 +9,15 @@ class ImperialUnit(val category: ImperialUnitCategory,
     var value: Double = 0.0
     var inputString: String = ""
     var formattedString: String = ""
-    var range: Optional<Pair<Double, Double>> = Optional.empty()
+    var range: Optional<Range> = Optional.empty()
 
     //var displayString: SpannableStringBuilder = SpannableStringBuilder("-.-")
     var bookmarked = false
 
     var ratioMap: MutableMap<ImperialUnitName, Double> = mutableMapOf()
     var formulaMap: MutableMap<ImperialUnitName, Array<String>> = mutableMapOf()
-    var rangeMap: MutableMap<ImperialUnitName, RangeList> = mutableMapOf()
+    var rangeUnit: ImperialUnitName = ImperialUnitName.NO_UNIT
+    var rangeMap: MutableMap<Double, Range> = mutableMapOf()
     fun restoreValue(s: String, v: Double) {
         inputString = s
         value = v

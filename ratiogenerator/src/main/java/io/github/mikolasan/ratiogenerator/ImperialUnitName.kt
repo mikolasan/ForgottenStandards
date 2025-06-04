@@ -1,6 +1,8 @@
 package io.github.mikolasan.ratiogenerator
 
 enum class ImperialUnitName {
+    NO_UNIT,
+
     // Angle
     RADIAN,
     DEGREE,
@@ -49,7 +51,6 @@ enum class ImperialUnitName {
     LITER_ON_100KM,
 
     // Length
-    LENGTH_ZERO_NO_UNIT,
     KILOMETER,
     METER,
     DECIMETER,

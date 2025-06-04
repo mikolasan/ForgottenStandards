@@ -6,16 +6,17 @@ typealias f<A, B, C> = Triple<A, B, C>
 typealias r<A, B> = Pair<A, B>
 typealias RatioList = List<eq<x<Double, ImperialUnitName>, x<Double, ImperialUnitName>>>
 typealias FormulaList = List<f<ImperialUnitName, String, ImperialUnitName>>
-typealias RangeList = List<eq<r<Double, Double>, r<Double, String>>>
-typealias RangeListList = List<f<ImperialUnitName, ImperialUnitName, RangeList>>
+typealias Range = r<Double, Double>
+typealias RangeList = List<eq<Range, r<Double, String>>>
+typealias RangeParity = f<ImperialUnitName, ImperialUnitName, RangeList>
 
 abstract class ImperialUnitCategory(val type: ImperialUnitType,
                                     val ratioList: RatioList,
                                     val formulaList: FormulaList,
-    val rangeList: RangeListList = mutableListOf()
+    val rangeParity: RangeParity = Triple(ImperialUnitName.NO_UNIT, ImperialUnitName.NO_UNIT, listOf())
 ) {
 
-    val units: Set<ImperialUnit> = getAllUnits(ratioList, formulaList, rangeList)
+    val units: Set<ImperialUnit> = getAllUnits(ratioList, formulaList, rangeParity)
     val nameMap: Map<ImperialUnitName, ImperialUnit> = makeNameMapFromUnits(units)
 
     init {
@@ -36,18 +37,20 @@ abstract class ImperialUnitCategory(val type: ImperialUnitType,
                 .associate { it.third to arrayOf(it.second) }
             unit.formulaMap = (ratiosToFormulae + unitFormulae).toMap(mutableMapOf())
 
-            unit.rangeMap = rangeList
-                .filter { it.first == unit.unitName }
-                .associateTo(mutableMapOf()) { it.second to it.third }
+            if (unit.unitName == rangeParity.second && rangeParity.third.isNotEmpty()) {
+                unit.rangeUnit = rangeParity.first
+                unit.rangeMap = rangeParity.third
+                    .associateTo(mutableMapOf()) { it.second.first to it.first }
+            }
         }
     }
 
-    private fun getAllUnits(ratioList: RatioList, formulaList: FormulaList, rangeList: RangeListList): Set<ImperialUnit> {
+    private fun getAllUnits(ratioList: RatioList, formulaList: FormulaList, rangeParity: RangeParity): Set<ImperialUnit> {
         val unitNames: Set<ImperialUnitName> =
             ratioList.flatMap { arrayOf(it.first.second).asIterable() }.toSet() +
                     ratioList.flatMap { arrayOf(it.second.second).asIterable() }.toSet() +
                     formulaList.flatMap { arrayOf(it.first, it.third).asIterable() }.toSet() +
-                    rangeList.flatMap { arrayOf(it.first, it.second).asIterable() }.toSet()
+                    arrayOf(rangeParity.first, rangeParity.second).asIterable().toSet()
         return unitNames.map { name -> ImperialUnit(this, type, name) }.toSet()
     }
 

@@ -1,7 +1,6 @@
 package xyz.neupokoev.forgottenstandards
 
 import io.github.mikolasan.ratiogenerator.ImperialUnit
-import io.github.mikolasan.ratiogenerator.ImperialUnitCategory
 import io.github.mikolasan.ratiogenerator.ImperialUnitName
 import io.github.mikolasan.ratiogenerator.ImperialUnitType
 import io.github.mikolasan.ratiogenerator.MinLengthUnits
@@ -10,7 +9,7 @@ import org.junit.Test
 
 
 class ImperialUnitLengthTest {
-    val defaultValue = ImperialUnit(MinLengthUnits, ImperialUnitType.LENGTH, ImperialUnitName.LENGTH_ZERO_NO_UNIT)
+    val defaultValue = ImperialUnit(MinLengthUnits, ImperialUnitType.LENGTH, ImperialUnitName.NO_UNIT)
     val imperialUnits = MinLengthUnits.nameMap
     val arshin = imperialUnits.getOrDefault(ImperialUnitName.ARSHIN, defaultValue)
     val point = imperialUnits.getOrDefault(ImperialUnitName.POINT, defaultValue)

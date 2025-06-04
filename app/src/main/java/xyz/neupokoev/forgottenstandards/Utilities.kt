@@ -17,6 +17,8 @@ import java.util.Optional
 import kotlin.math.abs
 import kotlin.math.floor
 import kotlin.math.log10
+import kotlin.math.max
+import kotlin.math.min
 
 fun getConversionRatio(inputUnit: ImperialUnit, outputUnit: ImperialUnit): Double {
     return outputUnit.ratioMap[inputUnit.unitName] ?: 0.0
@@ -34,8 +36,17 @@ fun convertValueWrapper(inputUnit: ImperialUnit, inputValue: Double, outputUnit:
 //    u.formattedString = makeSerializedString(valueForDisplay(v))
 }
 
-fun convertValueToRange(inputUnit: ImperialUnit?, outputUnit: ImperialUnit?, inputValue: Double): Pair<Double, Double> {
-    inputUnit.rangeMap
+fun convertValueToRange(inputUnit: ImperialUnit, outputUnit: ImperialUnit, inputValue: Double): Pair<Double, Double> {
+    val conversionInterval: List<Double> = inputUnit.rangeMap.keys.sorted()
+    val minValue = conversionInterval.first()
+    val maxValue = conversionInterval.last()
+    var value = floor(inputValue)
+    value = min(maxValue, value)
+    value = max(minValue, value)
+    val rangeUnit = inputUnit.rangeUnit
+    val nearestKey = conversionInterval
+        .map { abs(value - it) }.minOf { it }
+    return inputUnit.rangeMap.getOrDefault(nearestKey, Pair(0.0, 0.0))
 }
 
 fun convertValue(inputUnit: ImperialUnit, outputUnit: ImperialUnit, inputValue: Double): Double {
