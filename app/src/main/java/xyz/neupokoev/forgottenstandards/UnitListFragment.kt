@@ -168,8 +168,9 @@ class UnitListFragment : Fragment() {
         val mainActivity = activity as MainActivity
         val callable = { unit: ImperialUnit, value: Double ->
             val panel = topPanel
-            val v = convertValue(unit, panel.unit, value)
-            panel.setUnitValue(v)
+            panel.unit?.apply {
+                convertValueWrapper(unit, value, this)
+            }
             panel.updateDisplayValue()
         }
         mainActivity.addKeyboardInputObserver(topPanel, callable)
@@ -179,8 +180,9 @@ class UnitListFragment : Fragment() {
         val mainActivity = activity as MainActivity
         val callable = { unit: ImperialUnit, value: Double ->
             val panel = bottomPanel
-            val v = convertValue(unit, panel.unit, value)
-            panel.setUnitValue(v)
+            panel.unit?.apply {
+                convertValueWrapper(unit, value, this)
+            }
             panel.updateDisplayValue()
         }
         mainActivity.addKeyboardInputObserver(bottomPanel, callable)
@@ -334,7 +336,7 @@ class UnitListFragment : Fragment() {
             mainActivity.removeKeyboardInputObserver(topPanel)
             listenForKeyboardInputAtTopPanel()
 
-            mainActivity.onPanelSelected(topPanel)
+            mainActivity.onPanelSelected(bottomPanel)
             listAdapter.notifyItemChanged(selectedId)
         }
         bottomPanel.bookmark.setOnClickListener {

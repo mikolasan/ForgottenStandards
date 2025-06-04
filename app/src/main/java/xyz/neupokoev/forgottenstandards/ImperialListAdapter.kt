@@ -100,14 +100,12 @@ class ImperialListAdapter
         notifyItemInserted(0)
     }
 
-    fun updateAllValues(unit: ImperialUnit?, value: Double) {
+    fun updateAllValues(unit: ImperialUnit, value: Double) {
         allUnits.forEachIndexed { i, u ->
             if (u != unit) {
                 scope.launch {
                     withContext(Dispatchers.IO) {
-                        val v = convertValue(unit, u, value)
-                        u.value = v
-                        //u.formattedString = makeSerializedString(valueForDisplay(v))
+                        convertValueWrapper(unit, value, u)
                     }
                     notifyItemChanged(i)
                 }

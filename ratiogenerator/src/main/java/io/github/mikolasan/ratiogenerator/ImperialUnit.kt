@@ -1,5 +1,7 @@
 package io.github.mikolasan.ratiogenerator
 
+import java.util.Optional
+
 class ImperialUnit(val category: ImperialUnitCategory,
                    val unitType: ImperialUnitType,
                    val unitName: ImperialUnitName
@@ -7,6 +9,8 @@ class ImperialUnit(val category: ImperialUnitCategory,
     var value: Double = 0.0
     var inputString: String = ""
     var formattedString: String = ""
+    var range: Optional<Pair<Double, Double>> = Optional.empty()
+
     //var displayString: SpannableStringBuilder = SpannableStringBuilder("-.-")
     var bookmarked = false
 

@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentContainerView
 import io.github.mikolasan.ratiogenerator.ImperialUnit
 
 class ConverterFragment : Fragment() {
@@ -60,136 +59,21 @@ class ConverterFragment : Fragment() {
 //        (activity as? MainActivity)?.updateKeyboard()
     }
 
-    fun selectPanel(new: ImperialUnitPanel, old: ImperialUnitPanel) {
+    private fun selectPanel(new: ImperialUnitPanel, old: ImperialUnitPanel) {
         selectedPanel = new
         new.setHighlight(true)
         old.setHighlight(false)
         updateRatioLabel()
     }
 
-    fun selectTopPanel() {
-        selectPanel(topPanel, bottomPanel)
-    }
-
-    fun selectBottomPanel() {
-        selectPanel(bottomPanel, topPanel)
-    }
-
-    private fun setTopPanel(unit: ImperialUnit, value: Double?) {
-        topPanel.changeUnit(unit)
-        if (value == null) {
-            val topValue = convertValue(bottomPanel.unit, unit, bottomPanel.getValue()
-                    ?: 1.0)
-            topPanel.setUnitValue(topValue)
-        } else {
-            topPanel.setUnitValue(value)
-        }
-        topPanel.updateDisplayValue()
-
-        (activity as MainActivity).onTopPanelUnitChanged(unit)
-
-        updateRatioLabel()
-    }
-
-    private fun setBottomPanel(unit: ImperialUnit) {
-        bottomPanel.changeUnit(unit)
-        val bottomValue = convertValue(topPanel.unit, unit, topPanel.getValue()
-                ?: 1.0)
-        bottomPanel.setUnitValue(bottomValue)
-        bottomPanel.updateDisplayValue()
-
-        (activity as? MainActivity)?.onBottomPanelUnitChanged(unit)
-
-        updateRatioLabel()
-    }
-
-    fun restoreTopPanel(unit: ImperialUnit) {
+    private fun restoreTopPanel(unit: ImperialUnit) {
         topPanel.activate()
         topPanel.changeUnit(unit)
     }
 
-    fun restoreBottomPanel(unit: ImperialUnit) {
-        bottomPanel.activate()
-        bottomPanel.changeUnit(unit)
-    }
-
-    fun restoreInputValues(topPanelValue: String, bottomPanelValue: String) {
-        topPanel.formatStringAndSet(topPanelValue)
-        bottomPanel.formatStringAndSet(bottomPanelValue)
-    }
-
-    fun displayUnitValues() {
+    private fun displayUnitValues() {
         topPanel.updateDisplayValue()
         bottomPanel.updateDisplayValue()
-    }
-
-    fun onTopPanelClicked() {
-        if (selectedPanel != topPanel) {
-            selectPanel(topPanel, bottomPanel)
-        }
-    }
-
-    fun onBottomPanelClicked() {
-        if (selectedPanel != topPanel) {
-            selectPanel(bottomPanel, topPanel)
-        }
-    }
-
-    fun onUnitSelected(oldUnit: ImperialUnit, newUnit: ImperialUnit) {
-//        if (!topPanel.hasUnitAssigned()) {
-//            topPanel.activate()
-//            setTopPanel(unit, 1.0)
-//            selectPanel(topPanel, bottomPanel)
-//        } else if (!bottomPanel.hasUnitAssigned() && topPanel.unit != unit) {
-//            bottomPanel.activate()
-//            setBottomPanel(unit)
-//            selectPanel(bottomPanel, topPanel)
-//        } else {
-
-            if (oldUnit == topPanel.unit) {
-                if (bottomPanel.unit != newUnit) {
-                    setTopPanel(newUnit, null)
-                } else if (topPanel.unit != newUnit) {
-                    selectPanel(bottomPanel, topPanel)
-                    //(activity as MainActivity).onPanelsSwapped()
-                }
-            } else if (oldUnit == bottomPanel.unit) {
-                if (topPanel.unit != newUnit) {
-                    setBottomPanel(newUnit)
-                } else if (bottomPanel.unit != newUnit){
-                    selectPanel(topPanel, bottomPanel)
-                    //(activity as MainActivity).onPanelsSwapped()
-                }
-            }
-
-//        }
-    }
-
-    fun swapPanels() {
-        val topUnit = topPanel.unit ?: return
-        val bottomUnit = bottomPanel.unit ?: return
-        val topValue = topPanel.getValue() ?: return
-        val bottomValue = bottomPanel.getValue() ?: return
-        val topString = topPanel.getString()
-        val bottomString = bottomPanel.getString()
-
-        val selectedUnit = selectedPanel.unit ?: return
-        selectedPanel = if (topUnit == selectedUnit) {
-            bottomPanel
-        } else {
-            topPanel
-        }
-
-        topPanel.changeUnit(bottomUnit)
-        bottomPanel.changeUnit(topUnit)
-
-        topPanel.setUnitValue(bottomValue)
-        bottomPanel.setUnitValue(topValue)
-
-        topPanel.setString(bottomString)
-        bottomPanel.setString(topString)
-
-        updateRatioLabel()
     }
 
     private fun setPanelListeners(view: View) {

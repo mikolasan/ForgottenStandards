@@ -8,10 +8,12 @@ import android.text.style.SuperscriptSpan
 import io.github.mikolasan.convertmeifyoucan.FunctionParser
 import io.github.mikolasan.ratiogenerator.ImperialUnit
 import io.github.mikolasan.ratiogenerator.ImperialUnitCategory
+import io.github.mikolasan.ratiogenerator.ImperialUnitName
 import io.github.mikolasan.ratiogenerator.ImperialUnitType
 import io.github.mikolasan.ratiogenerator.findConversionFormula
 import java.text.DecimalFormat
 import java.util.Locale
+import java.util.Optional
 import kotlin.math.abs
 import kotlin.math.floor
 import kotlin.math.log10
@@ -20,10 +22,23 @@ fun getConversionRatio(inputUnit: ImperialUnit, outputUnit: ImperialUnit): Doubl
     return outputUnit.ratioMap[inputUnit.unitName] ?: 0.0
 }
 
-fun convertValue(inputUnit: ImperialUnit?, outputUnit: ImperialUnit?, inputValue: Double): Double {
-    inputUnit ?: return 0.0
-    outputUnit ?: return 0.0
+fun convertValueWrapper(inputUnit: ImperialUnit, inputValue: Double, outputUnit: ImperialUnit) {
+    if (inputUnit.unitName == ImperialUnitName.BEAUFORT) {
+        // then result is a range
+        outputUnit.range = Optional.of(convertValueToRange(inputUnit, outputUnit, inputValue))
+        return
+    }
+    val outputValue = convertValue(inputUnit, outputUnit, inputValue)
+    outputUnit.value = outputValue
+    // TODO:
+//    u.formattedString = makeSerializedString(valueForDisplay(v))
+}
 
+fun convertValueToRange(inputUnit: ImperialUnit?, outputUnit: ImperialUnit?, inputValue: Double): Pair<Double, Double> {
+    inputUnit.rangeMap
+}
+
+fun convertValue(inputUnit: ImperialUnit, outputUnit: ImperialUnit, inputValue: Double): Double {
 
     if (outputUnit.ratioMap.containsKey(inputUnit.unitName)) {
         return inputValue * outputUnit.ratioMap[inputUnit.unitName]!!
