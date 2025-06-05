@@ -54,7 +54,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/unit_value"
+        android:id="@+id/range_min_value"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/unit_list_margin_start"
@@ -65,15 +65,60 @@
         android:paddingTop="@dimen/imperial_panel_input_padding_top"
         android:paddingEnd="@dimen/imperial_panel_input_padding_end"
         android:paddingBottom="@dimen/imperial_panel_input_padding_bottom"
-        android:minWidth="100dp"
+        android:minWidth="80dp"
         android:background="@color/inputNormal"
-        android:text="123.45"
+        android:text="1.11"
         android:textColor="@color/fontPrimary"
         android:textSize="@dimen/unit_list_value_size"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/range_max_value"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/unit_name"
         app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/range_max_value"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unit_list_margin_start"
+        android:layout_marginEnd="@dimen/unit_list_margin_start"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:paddingStart="@dimen/imperial_panel_input_padding_start"
+        android:paddingTop="@dimen/imperial_panel_input_padding_top"
+        android:paddingEnd="@dimen/imperial_panel_input_padding_end"
+        android:paddingBottom="@dimen/imperial_panel_input_padding_bottom"
+        android:minWidth="80dp"
+        android:background="@color/inputNormal"
+        android:text="9.99"
+        android:textColor="@color/fontPrimary"
+        android:textSize="@dimen/unit_list_value_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/range_min_value"
+        app:layout_constraintTop_toBottomOf="@+id/unit_name"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/unit_value"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unit_list_margin_start"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="@dimen/unit_list_margin_start"
+        android:layout_marginBottom="10dp"
+        android:background="@color/inputNormal"
+        android:minWidth="100dp"
+        android:paddingStart="@dimen/imperial_panel_input_padding_start"
+        android:paddingTop="@dimen/imperial_panel_input_padding_top"
+        android:paddingEnd="@dimen/imperial_panel_input_padding_end"
+        android:paddingBottom="@dimen/imperial_panel_input_padding_bottom"
+        android:text="123.45"
+        android:textColor="@color/fontPrimary"
+        android:textSize="@dimen/unit_list_value_size"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/unit_name"
+        tools:visibility="invisible" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/unit_symbol"

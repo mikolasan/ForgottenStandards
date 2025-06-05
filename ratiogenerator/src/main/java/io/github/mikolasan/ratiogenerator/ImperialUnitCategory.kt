@@ -38,7 +38,7 @@ abstract class ImperialUnitCategory(val type: ImperialUnitType,
             unit.formulaMap = (ratiosToFormulae + unitFormulae).toMap(mutableMapOf())
 
             if (unit.unitName == rangeParity.second && rangeParity.third.isNotEmpty()) {
-                unit.rangeUnit = rangeParity.first
+                unit.rangeUnit = nameMap.get(rangeParity.first)
                 unit.rangeMap = rangeParity.third
                     .associateTo(mutableMapOf()) { it.second.first to it.first }
             }

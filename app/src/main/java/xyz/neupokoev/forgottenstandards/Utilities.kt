@@ -7,9 +7,9 @@ import android.text.style.RelativeSizeSpan
 import android.text.style.SuperscriptSpan
 import io.github.mikolasan.convertmeifyoucan.FunctionParser
 import io.github.mikolasan.ratiogenerator.ImperialUnit
-import io.github.mikolasan.ratiogenerator.ImperialUnitCategory
 import io.github.mikolasan.ratiogenerator.ImperialUnitName
 import io.github.mikolasan.ratiogenerator.ImperialUnitType
+import io.github.mikolasan.ratiogenerator.Range
 import io.github.mikolasan.ratiogenerator.findConversionFormula
 import java.text.DecimalFormat
 import java.util.Locale
@@ -36,20 +36,93 @@ fun convertValueWrapper(inputUnit: ImperialUnit, inputValue: Double, outputUnit:
 //    u.formattedString = makeSerializedString(valueForDisplay(v))
 }
 
-fun convertValueToRange(inputUnit: ImperialUnit, outputUnit: ImperialUnit, inputValue: Double): Pair<Double, Double> {
+fun convertValueToRange(
+    inputUnit: ImperialUnit,
+    outputUnit: ImperialUnit,
+    inputValue: Double
+): Range {
     val conversionInterval: List<Double> = inputUnit.rangeMap.keys.sorted()
     val minValue = conversionInterval.first()
     val maxValue = conversionInterval.last()
     var value = floor(inputValue)
     value = min(maxValue, value)
     value = max(minValue, value)
-    val rangeUnit = inputUnit.rangeUnit
-    val nearestKey = conversionInterval
-        .map { abs(value - it) }.minOf { it }
-    return inputUnit.rangeMap.getOrDefault(nearestKey, Pair(0.0, 0.0))
+    val nearestToValueId = conversionInterval
+        .withIndex()
+        .minByOrNull { (_, x) -> abs(value - x) }
+        ?.index ?: return Pair(0.0, 0.0)
+    val baseUnitRange =
+        inputUnit.rangeMap.get(conversionInterval[nearestToValueId]) ?: return Pair(0.0, 0.0)
+    val rangeUnit: ImperialUnit = inputUnit.rangeUnit ?: return Pair(0.0, 0.0)
+
+    val minRangeValue = convertValue(rangeUnit, outputUnit, baseUnitRange.first)
+    val maxRangeValue = convertValue(rangeUnit, outputUnit, baseUnitRange.second)
+    return Pair(floor(minRangeValue), floor(maxRangeValue))
+}
+
+fun findKeyForValueInRange(rangeMap: Map<Double, Range>, x: Double): Double {
+    // if x lies within any range
+    rangeMap.onEach { entry ->
+        val (start, end) = entry.value
+
+        // also NaN boundaries
+        val inRange = when {
+            start.isNaN() && end.isNaN() -> true
+            start.isNaN() -> x <= end
+            end.isNaN() -> x >= start
+            else -> x in start..end
+        }
+
+        if (inRange) {
+            return entry.key
+        }
+    }
+
+    // if x doesn't lie in any range, find the closest boundary
+    var closestValue = 0.0
+    var minDistance = Double.MAX_VALUE
+
+    rangeMap.onEach { entry ->
+        val (start, end) = entry.value
+
+        if (!start.isNaN()) {
+            val distanceToStart = abs(x - start)
+            if (distanceToStart < minDistance) {
+                minDistance = distanceToStart
+                closestValue = entry.key
+            }
+        }
+        if (!end.isNaN()) {
+            val distanceToEnd = abs(x - end)
+            if (distanceToEnd < minDistance) {
+                minDistance = distanceToEnd
+                closestValue = entry.key
+            }
+        }
+    }
+
+    return closestValue
+}
+
+fun convertValueFromRange(
+    inputUnit: ImperialUnit,
+    outputUnit: ImperialUnit,
+    inputValue: Double
+): Double {
+    // input -> output
+    // ?? -> beaufort
+    outputUnit.rangeUnit ?: return 0.0
+
+    val value = convertValue(inputUnit, outputUnit.rangeUnit!!, inputValue)
+    val output = findKeyForValueInRange(outputUnit.rangeMap, value)
+    return output
 }
 
 fun convertValue(inputUnit: ImperialUnit, outputUnit: ImperialUnit, inputValue: Double): Double {
+
+    if (outputUnit.unitName == ImperialUnitName.BEAUFORT) {
+        return convertValueFromRange(inputUnit, outputUnit, inputValue)
+    }
 
     if (outputUnit.ratioMap.containsKey(inputUnit.unitName)) {
         return inputValue * outputUnit.ratioMap[inputUnit.unitName]!!
@@ -62,7 +135,8 @@ fun convertValue(inputUnit: ImperialUnit, outputUnit: ImperialUnit, inputValue: 
     }
 
     if (outputUnit.unitType != ImperialUnitType.TEMPERATURE
-        && !outputUnit.ratioMap.containsKey(inputUnit.unitName)) {
+        && !outputUnit.ratioMap.containsKey(inputUnit.unitName)
+    ) {
         val it = formulaArray.iterator()
         var r = 1.0
         while (it.hasNext()) {
@@ -105,7 +179,12 @@ fun stringForDisplay(formattedValue: String): SpannableStringBuilder {
     val spanEnd = noHats.length
     val spannable = SpannableStringBuilder(noHats)
     spannable.setSpan(SuperscriptSpan(), spanStart, spanEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-    spannable.setSpan(RelativeSizeSpan(0.75f), spanStart, spanEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+    spannable.setSpan(
+        RelativeSizeSpan(0.75f),
+        spanStart,
+        spanEnd,
+        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+    )
     return spannable
 }
 
@@ -130,7 +209,12 @@ fun doScientificNotation(decimalFormat: DecimalFormat, value: Double): Spannable
     val spanEnd = formattedValue.length
     val spannable = SpannableStringBuilder(formattedValue)
     spannable.setSpan(SuperscriptSpan(), spanStart, spanEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-    spannable.setSpan(RelativeSizeSpan(0.75f), spanStart, spanEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+    spannable.setSpan(
+        RelativeSizeSpan(0.75f),
+        spanStart,
+        spanEnd,
+        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+    )
     return spannable
 }
 
@@ -142,7 +226,10 @@ fun valueForDisplay(value: Double?, locale: Locale? = null): SpannableStringBuil
     val integerLength = if (integerPart > 0.0) (floor(log10(integerPart)) + 1).toInt() else 1
     val maxIntegerLength = 8
 
-    val numberFormat = if (locale == null) DecimalFormat.getInstance(Locale.US) else DecimalFormat.getInstance(locale)
+    val numberFormat =
+        if (locale == null) DecimalFormat.getInstance(Locale.US) else DecimalFormat.getInstance(
+            locale
+        )
     val decimalFormat = numberFormat as DecimalFormat
 
     if (integerLength > maxIntegerLength) {
@@ -154,12 +241,17 @@ fun valueForDisplay(value: Double?, locale: Locale? = null): SpannableStringBuil
     decimalFormat.isDecimalSeparatorAlwaysShown = false
 
     val formattedValue = decimalFormat.format(value)
-    val formattedLength = formattedValue.replace(decimalFormat.decimalFormatSymbols.groupingSeparator.toString(),"").length
+    val formattedLength = formattedValue.replace(
+        decimalFormat.decimalFormatSymbols.groupingSeparator.toString(),
+        ""
+    ).length
     val scientificNumber = doScientificNotation(decimalFormat, value)
     val exponentPosition = scientificNumber.toString().indexOf("×10")
     if (formattedLength > maxDisplayLength + 1) {
         return scientificNumber
-    } else if (exponentPosition > 0 && scientificNumber.toString().substring(exponentPosition + 3).toInt() < -7) {
+    } else if (exponentPosition > 0 && scientificNumber.toString().substring(exponentPosition + 3)
+            .toInt() < -7
+    ) {
         return scientificNumber
     }
 
@@ -182,7 +274,11 @@ fun makeSerializedString(input: Editable): String {
     }
 }
 
-fun doScientificNotationInPattern(format: String, decimalFormat: DecimalFormat, value: Double): SpannableStringBuilder {
+fun doScientificNotationInPattern(
+    format: String,
+    decimalFormat: DecimalFormat,
+    value: Double
+): SpannableStringBuilder {
     val separator = decimalFormat.decimalFormatSymbols.decimalSeparator
     val exponent = decimalFormat.decimalFormatSymbols.exponentSeparator
     val minus = decimalFormat.decimalFormatSymbols.minusSign
@@ -204,11 +300,20 @@ fun doScientificNotationInPattern(format: String, decimalFormat: DecimalFormat, 
     val spanEnd = valueStart + formattedValue.length
     val spannable = SpannableStringBuilder(format.replace("[value]", formattedValue))
     spannable.setSpan(SuperscriptSpan(), spanStart, spanEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-    spannable.setSpan(RelativeSizeSpan(0.75f), spanStart, spanEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+    spannable.setSpan(
+        RelativeSizeSpan(0.75f),
+        spanStart,
+        spanEnd,
+        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+    )
     return spannable
 }
 
-fun patternForDisplay(format: String, value: Double?, locale: Locale? = null): SpannableStringBuilder {
+fun patternForDisplay(
+    format: String,
+    value: Double?,
+    locale: Locale? = null
+): SpannableStringBuilder {
     if (value == null) return SpannableStringBuilder(format)
 
     val absValue = abs(value)
@@ -216,7 +321,10 @@ fun patternForDisplay(format: String, value: Double?, locale: Locale? = null): S
     val integerLength = if (integerPart > 0) (floor(log10(integerPart)) + 1).toInt() else 1
     val maxIntegerLength = 5
 
-    val numberFormat = if (locale == null) DecimalFormat.getInstance(Locale.US) else DecimalFormat.getInstance(locale)
+    val numberFormat =
+        if (locale == null) DecimalFormat.getInstance(Locale.US) else DecimalFormat.getInstance(
+            locale
+        )
     val decimalFormat = numberFormat as DecimalFormat
 
     if (integerLength > maxIntegerLength) {
@@ -233,7 +341,9 @@ fun patternForDisplay(format: String, value: Double?, locale: Locale? = null): S
     val exponentPosition = scientificNumber.toString().indexOf("×10")
     if (formattedLength > maxDisplayLength + 1) {
         return doScientificNotationInPattern(format, decimalFormat, value)
-    } else if (exponentPosition > 0 && scientificNumber.toString().substring(exponentPosition + 3).toInt() < -7) {
+    } else if (exponentPosition > 0 && scientificNumber.toString().substring(exponentPosition + 3)
+            .toInt() < -7
+    ) {
         return doScientificNotationInPattern(format, decimalFormat, value)
     }
 
@@ -241,7 +351,10 @@ fun patternForDisplay(format: String, value: Double?, locale: Locale? = null): S
 }
 
 fun parseDisplayString(string: String, locale: Locale? = null): Double {
-    val numberFormat = if (locale == null) DecimalFormat.getInstance(Locale.US) else DecimalFormat.getInstance(locale)
+    val numberFormat =
+        if (locale == null) DecimalFormat.getInstance(Locale.US) else DecimalFormat.getInstance(
+            locale
+        )
     val decimalFormat = numberFormat as DecimalFormat
     val number = decimalFormat.parse(string)
     return number?.toDouble() ?: 0.0

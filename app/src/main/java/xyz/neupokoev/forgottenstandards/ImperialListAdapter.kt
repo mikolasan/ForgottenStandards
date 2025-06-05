@@ -33,6 +33,8 @@ class ImperialListAdapter
         val layout: ConstraintLayout = view as ConstraintLayout
         val name: TextView = layout.findViewById(R.id.unit_name)
         val value: TextView = layout.findViewById(R.id.unit_value)
+        val range_min_value: TextView = layout.findViewById(R.id.range_min_value)
+        val range_max_value: TextView = layout.findViewById(R.id.range_max_value)
         val symbol: TextView = layout.findViewById(R.id.unit_symbol)
         val arrowUp: ImageView = layout.findViewById(R.id.arrow_up)
         val bookmark: ImageView = layout.findViewById(R.id.bookmark)
@@ -209,7 +211,18 @@ class ImperialListAdapter
                     Locale.getDefault()
                 ) else it.toString()
             }
-        holder.value.text = valueForDisplay(data.value)
+        if (data.range.isPresent) {
+            holder.range_min_value.text = valueForDisplay(data.range.get().first)
+            holder.range_max_value.text = valueForDisplay(data.range.get().second)
+            holder.range_min_value.visibility = View.VISIBLE
+            holder.range_max_value.visibility = View.VISIBLE
+            holder.value.visibility = View.INVISIBLE
+        } else {
+            holder.value.text = valueForDisplay(data.value)
+            holder.value.visibility = View.VISIBLE
+            holder.range_min_value.visibility = View.INVISIBLE
+            holder.range_max_value.visibility = View.INVISIBLE
+        }
         holder.symbol.text = ImperialSymbol.symbols[data.unitName] ?: ""
     }
 
