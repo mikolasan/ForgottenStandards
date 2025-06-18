@@ -27,7 +27,7 @@ import io.github.mikolasan.ratiogenerator.MinVolumeUnits
 import io.github.mikolasan.ratiogenerator.MinWeightUnits
 
 class ImperialSettings(application: Application) : AndroidViewModel(application) {
-    private val preferencesFile = "ImperialRussiaPref.10"
+    private val preferencesFile = "ForgStPref.11"
 
     private val preferencesEditor: SharedPreferences.Editor by lazy {
         return@lazy preferences.edit()
@@ -53,7 +53,7 @@ class ImperialSettings(application: Application) : AndroidViewModel(application)
 
     fun restoreWorkingUnits(): WorkingUnits {
         val units: Map<ImperialUnitType, Array<ImperialUnit>> =
-            ImperialUnitType.values().associateWith { unitType -> loadOrderedUnits(unitType) }
+            ImperialUnitType.entries.associateWith { unitType -> loadOrderedUnits(unitType) }
         val category: ImperialUnitCategoryName = if (preferences.contains("category")) {
             val categoryName = preferences.getString("category", null) ?: "Length"
             ImperialCategory.names.find { n -> n.name == categoryName } ?: ImperialCategory.names.first()
@@ -84,6 +84,10 @@ class ImperialSettings(application: Application) : AndroidViewModel(application)
     private fun loadOrderedUnits(type: ImperialUnitType): Array<ImperialUnit> {
         val units = ImperialCategory.typeMap.getValue(type).units.toTypedArray().copyOf()
         ImperialCategory.typeMap.getValue(type).units.forEachIndexed { i, u ->
+            // TODO
+            if (u.unitName.name == "NO_UNIT") {
+                return@forEachIndexed
+            }
             val unitName = u.unitName.name
             val settingName = "unit${unitName}Position"
             val p = preferences.getInt(settingName, i)

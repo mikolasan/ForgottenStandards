@@ -3,6 +3,7 @@ package xyz.neupokoev.forgottenstandards
 import android.text.Editable
 import android.text.SpannableStringBuilder
 import io.github.mikolasan.ratiogenerator.ImperialUnit
+import java.util.Optional
 
 typealias ObserverCallable = (ImperialUnit, Double) -> Unit
 
@@ -26,6 +27,7 @@ class ImperialUnitObserver (var unit: ImperialUnit?) {
         formatted = valueForDisplay(v)
         unit?.let {
             it.value = v
+            it.range = Optional.empty()
             //it.formattedString = makeSerializedString(formatted)
         }
         onValueUpdated()
@@ -52,6 +54,7 @@ class ImperialUnitObserver (var unit: ImperialUnit?) {
         value = v
         unit?.let {
             it.value = v
+            it.range = Optional.empty()
             //it.formattedString = makeSerializedString(formatted)
         }
         onValueUpdated()
@@ -68,6 +71,7 @@ class ImperialUnitObserver (var unit: ImperialUnit?) {
             value = v
             unit?.let {
                 it.value = v
+                it.range = Optional.empty()
                 //it.formattedString = makeSerializedString(formatted)
             }
             onValueUpdated()
@@ -102,6 +106,7 @@ class ImperialUnitObserver (var unit: ImperialUnit?) {
         value = v
         unit?.let {
             it.value = v
+            it.range = Optional.empty()
             //it.formattedString = makeSerializedString(formatted)
         }
         onValueUpdated()

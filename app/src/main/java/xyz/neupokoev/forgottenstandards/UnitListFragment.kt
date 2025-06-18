@@ -23,9 +23,7 @@ class UnitListFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        (activity as MainActivity).let { mainActivity ->
-            mainActivity.setSubscriber(this)
-        }
+        (activity as MainActivity).setSubscriber(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

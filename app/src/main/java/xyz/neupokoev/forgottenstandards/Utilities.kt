@@ -32,6 +32,7 @@ fun convertValueWrapper(inputUnit: ImperialUnit, inputValue: Double, outputUnit:
     }
     val outputValue = convertValue(inputUnit, outputUnit, inputValue)
     outputUnit.value = outputValue
+    outputUnit.range = Optional.empty()
     // TODO:
 //    u.formattedString = makeSerializedString(valueForDisplay(v))
 }
