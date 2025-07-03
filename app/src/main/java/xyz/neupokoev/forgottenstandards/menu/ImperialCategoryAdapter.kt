@@ -1,4 +1,4 @@
-package xyz.neupokoev.forgottenstandards
+package xyz.neupokoev.forgottenstandards.menu
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,9 +6,12 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
+import xyz.neupokoev.forgottenstandards.MainActivity
+import xyz.neupokoev.forgottenstandards.R
 
 class ImperialCategoryAdapter(private val categories: Array<ImperialUnitCategoryName>,
-                              private val publishSubject: MainActivity)
+                              private val publishSubject: MainActivity
+)
     : RecyclerView.Adapter<ImperialCategoryAdapter.ViewHolder>()
 {
     private var selectedViewHolder: ViewHolder? = null

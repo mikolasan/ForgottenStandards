@@ -1,4 +1,4 @@
-package xyz.neupokoev.forgottenstandards
+package xyz.neupokoev.forgottenstandards.advanced
 
 import android.graphics.SurfaceTexture
 import android.opengl.EGL14

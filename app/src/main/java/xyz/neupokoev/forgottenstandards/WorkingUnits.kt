@@ -2,6 +2,7 @@ package xyz.neupokoev.forgottenstandards
 
 import io.github.mikolasan.ratiogenerator.ImperialUnit
 import io.github.mikolasan.ratiogenerator.ImperialUnitType
+import xyz.neupokoev.forgottenstandards.menu.ImperialUnitCategoryName
 
 class WorkingUnits {
     lateinit var allUnits: Map<ImperialUnitType, Array<ImperialUnit>>

@@ -5,26 +5,10 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.lifecycle.AndroidViewModel
 import io.github.mikolasan.ratiogenerator.ImperialUnit
-import io.github.mikolasan.ratiogenerator.ImperialUnitCategory
 import io.github.mikolasan.ratiogenerator.ImperialUnitName
 import io.github.mikolasan.ratiogenerator.ImperialUnitType
-import io.github.mikolasan.ratiogenerator.MinAngleUnits
-import io.github.mikolasan.ratiogenerator.MinAreaUnits
-import io.github.mikolasan.ratiogenerator.MinCurrencyUnits
-import io.github.mikolasan.ratiogenerator.MinEnergyUnits
-import io.github.mikolasan.ratiogenerator.MinForceUnits
-import io.github.mikolasan.ratiogenerator.MinFuelUnits
-import io.github.mikolasan.ratiogenerator.MinLengthUnits
-import io.github.mikolasan.ratiogenerator.MinNutBoltUnits
-import io.github.mikolasan.ratiogenerator.MinPowerUnits
-import io.github.mikolasan.ratiogenerator.MinPressureUnits
-import io.github.mikolasan.ratiogenerator.MinResistanceUnits
-import io.github.mikolasan.ratiogenerator.MinSpeedUnits
-import io.github.mikolasan.ratiogenerator.MinStorageUnits
-import io.github.mikolasan.ratiogenerator.MinTemperatureUnits
-import io.github.mikolasan.ratiogenerator.MinTimeUnits
-import io.github.mikolasan.ratiogenerator.MinVolumeUnits
-import io.github.mikolasan.ratiogenerator.MinWeightUnits
+import xyz.neupokoev.forgottenstandards.menu.ImperialCategory
+import xyz.neupokoev.forgottenstandards.menu.ImperialUnitCategoryName
 
 class ImperialSettings(application: Application) : AndroidViewModel(application) {
     private val preferencesFile = "ForgStPref.11"

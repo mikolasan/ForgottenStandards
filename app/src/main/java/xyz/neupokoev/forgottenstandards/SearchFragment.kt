@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import androidx.fragment.app.Fragment
+import xyz.neupokoev.forgottenstandards.converter.ImperialListAdapter
 
 class SearchFragment : Fragment() {
     var listAdapter: ImperialListAdapter? = null

@@ -1,9 +1,10 @@
-package xyz.neupokoev.forgottenstandards
+package xyz.neupokoev.forgottenstandards.converter
 
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.Button
 import androidx.appcompat.widget.AppCompatButton
+import xyz.neupokoev.forgottenstandards.maxDisplayLength
 
 /**
  * Very simple extension to a standard button with very specific usage of ImperialUnitPanel

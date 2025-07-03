@@ -1,8 +1,9 @@
-package xyz.neupokoev.forgottenstandards
+package xyz.neupokoev.forgottenstandards.converter
 
 import android.content.Context
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatButton
+import xyz.neupokoev.forgottenstandards.R
 
 /**
  * Yet another simple extension to a standard button with very specific usage of ImperialUnitPanel

@@ -1,4 +1,4 @@
-package xyz.neupokoev.forgottenstandards
+package xyz.neupokoev.forgottenstandards.converter
 
 import android.content.Context
 import android.graphics.PorterDuff
@@ -20,6 +20,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import xyz.neupokoev.forgottenstandards.R
+import xyz.neupokoev.forgottenstandards.WorkingUnits
+import xyz.neupokoev.forgottenstandards.convertValueWrapper
+import xyz.neupokoev.forgottenstandards.moveToFrontFrom
+import xyz.neupokoev.forgottenstandards.setTextColorId
+import xyz.neupokoev.forgottenstandards.valueForDisplay
 import java.util.Locale
 
 

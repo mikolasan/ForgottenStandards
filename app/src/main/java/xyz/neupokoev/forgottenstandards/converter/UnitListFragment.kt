@@ -1,4 +1,4 @@
-package xyz.neupokoev.forgottenstandards
+package xyz.neupokoev.forgottenstandards.converter
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,7 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.mikolasan.ratiogenerator.ImperialUnit
-
+import xyz.neupokoev.forgottenstandards.MainActivity
+import xyz.neupokoev.forgottenstandards.R
+import xyz.neupokoev.forgottenstandards.convertValueWrapper
 
 class UnitListFragment : Fragment() {
 
@@ -195,7 +197,8 @@ class UnitListFragment : Fragment() {
         }
 
         if (favorites.size == 1
-            || favorites.size == 2 && bottomPanel.visibility == View.VISIBLE) {
+            || favorites.size == 2 && bottomPanel.visibility == View.VISIBLE
+        ) {
             topPanel.visibility = View.VISIBLE
             topPanel.activate()
             topPanel.changeUnit(unit)

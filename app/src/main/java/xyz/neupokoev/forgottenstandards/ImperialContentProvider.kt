@@ -11,8 +11,8 @@ import com.willowtreeapps.fuzzywuzzy.ToStringFunction
 import com.willowtreeapps.fuzzywuzzy.diffutils.FuzzySearch
 import com.willowtreeapps.fuzzywuzzy.diffutils.algorithms.WeightedRatio
 import io.github.mikolasan.ratiogenerator.ImperialUnit
-import io.github.mikolasan.ratiogenerator.ImperialUnitType
-import xyz.neupokoev.forgottenstandards.ImperialListAdapter.UnitToString
+import xyz.neupokoev.forgottenstandards.converter.ImperialSymbol
+import xyz.neupokoev.forgottenstandards.menu.ImperialCategory
 import java.util.Locale
 
 class ImperialContentProvider : ContentProvider() {

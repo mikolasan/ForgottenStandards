@@ -1,10 +1,11 @@
-package xyz.neupokoev.forgottenstandards
+package xyz.neupokoev.forgottenstandards.advanced
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import xyz.neupokoev.forgottenstandards.R
 
 class NutBoltFragment : Fragment() {
 

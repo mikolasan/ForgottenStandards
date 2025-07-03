@@ -20,7 +20,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/categories"
-        android:name="xyz.neupokoev.forgottenstandards.SwitchFragment"
+        android:name="xyz.neupokoev.forgottenstandards.menu.SwitchFragment"
         android:layout_width="400dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -95,7 +95,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/list"
-        android:name="xyz.neupokoev.forgottenstandards.UnitListFragment"
+        android:name="xyz.neupokoev.forgottenstandards.converter.UnitListFragment"
         android:layout_width="400dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"

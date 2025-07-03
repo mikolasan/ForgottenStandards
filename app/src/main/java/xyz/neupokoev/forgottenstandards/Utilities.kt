@@ -11,6 +11,7 @@ import io.github.mikolasan.ratiogenerator.ImperialUnitName
 import io.github.mikolasan.ratiogenerator.ImperialUnitType
 import io.github.mikolasan.ratiogenerator.Range
 import io.github.mikolasan.ratiogenerator.findConversionFormula
+import xyz.neupokoev.forgottenstandards.menu.ImperialUnitCategoryName
 import java.text.DecimalFormat
 import java.util.Locale
 import java.util.Optional

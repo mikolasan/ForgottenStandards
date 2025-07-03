@@ -1,4 +1,4 @@
-package xyz.neupokoev.forgottenstandards
+package xyz.neupokoev.forgottenstandards.menu
 
 import io.github.mikolasan.ratiogenerator.ImperialUnitCategory
 import io.github.mikolasan.ratiogenerator.ImperialUnitType
@@ -9,7 +9,6 @@ import io.github.mikolasan.ratiogenerator.MinEnergyUnits
 import io.github.mikolasan.ratiogenerator.MinForceUnits
 import io.github.mikolasan.ratiogenerator.MinFuelUnits
 import io.github.mikolasan.ratiogenerator.MinLengthUnits
-import io.github.mikolasan.ratiogenerator.MinNutBoltUnits
 import io.github.mikolasan.ratiogenerator.MinPowerUnits
 import io.github.mikolasan.ratiogenerator.MinPressureUnits
 import io.github.mikolasan.ratiogenerator.MinResistanceUnits

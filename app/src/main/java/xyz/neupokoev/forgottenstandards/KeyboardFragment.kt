@@ -5,6 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import xyz.neupokoev.forgottenstandards.converter.DigitButton
+import xyz.neupokoev.forgottenstandards.converter.ImperialUnitObserver
+import xyz.neupokoev.forgottenstandards.converter.ImperialUnitPanel
+import xyz.neupokoev.forgottenstandards.converter.OperationButton
 
 class KeyboardFragment : Fragment() {
     var selectedPanel: ImperialUnitPanel? = null

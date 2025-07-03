@@ -1,7 +1,10 @@
-package xyz.neupokoev.forgottenstandards
+package xyz.neupokoev.forgottenstandards.advanced
 
 import android.opengl.GLES20
 import android.opengl.Matrix
+import xyz.neupokoev.forgottenstandards.COORDS_PER_VERTEX
+import xyz.neupokoev.forgottenstandards.SIZE_OF_FLOAT
+import xyz.neupokoev.forgottenstandards.createProgram
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer

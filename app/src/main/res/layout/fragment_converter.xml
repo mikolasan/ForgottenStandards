@@ -10,7 +10,7 @@
     android:layout_alignParentEnd="true"
     android:layout_alignParentBottom="true">
 
-    <xyz.neupokoev.forgottenstandards.ImperialUnitPanel
+    <xyz.neupokoev.forgottenstandards.converter.ImperialUnitPanel
         android:id="@+id/convert_to"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -22,7 +22,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <xyz.neupokoev.forgottenstandards.ImperialUnitPanel
+    <xyz.neupokoev.forgottenstandards.converter.ImperialUnitPanel
         android:id="@+id/convert_from"
         android:layout_width="0dp"
         android:layout_height="@dimen/imperial_panel_height"

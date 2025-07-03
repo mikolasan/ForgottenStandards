@@ -1,4 +1,4 @@
-package xyz.neupokoev.forgottenstandards
+package xyz.neupokoev.forgottenstandards.converter
 
 import io.github.mikolasan.ratiogenerator.ImperialUnitName
 

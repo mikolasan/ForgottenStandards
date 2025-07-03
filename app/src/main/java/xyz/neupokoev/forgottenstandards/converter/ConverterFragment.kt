@@ -1,4 +1,4 @@
-package xyz.neupokoev.forgottenstandards
+package xyz.neupokoev.forgottenstandards.converter
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,6 +7,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import io.github.mikolasan.ratiogenerator.ImperialUnit
+import xyz.neupokoev.forgottenstandards.MainActivity
+import xyz.neupokoev.forgottenstandards.R
+import xyz.neupokoev.forgottenstandards.getConversionRatio
+import xyz.neupokoev.forgottenstandards.patternForDisplay
 
 class ConverterFragment : Fragment() {
     lateinit var bottomPanel: ImperialUnitPanel

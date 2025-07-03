@@ -1,23 +1,24 @@
-package xyz.neupokoev.forgottenstandards
+package xyz.neupokoev.forgottenstandards.converter
 
 import android.content.Context
 import android.graphics.PorterDuff
 import android.text.InputType
 import android.text.SpannableString
-import android.text.style.SuperscriptSpan
 import android.util.AttributeSet
-import android.view.View
-import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import io.github.mikolasan.ratiogenerator.ImperialUnit
+import xyz.neupokoev.forgottenstandards.BasicCalculator
+import xyz.neupokoev.forgottenstandards.R
+import xyz.neupokoev.forgottenstandards.getColor
+import xyz.neupokoev.forgottenstandards.stringForDisplay
+import xyz.neupokoev.forgottenstandards.valueForDisplay
 import java.util.Locale
-
 
 class ImperialUnitPanel(context: Context, attributeSet: AttributeSet) : ConstraintLayout(context, attributeSet) {
     init {
-        View.inflate(context, R.layout.big_unit_space, this)
+        inflate(context, R.layout.big_unit_space, this)
     }
 
     var unit: ImperialUnit? = null
@@ -56,17 +57,17 @@ class ImperialUnitPanel(context: Context, attributeSet: AttributeSet) : Constrai
     }
 
     fun activate() {
-        title.visibility = View.VISIBLE
+        title.visibility = VISIBLE
 //        input.isEnabled = false
-        input.visibility = View.VISIBLE
-        hint.visibility = View.INVISIBLE
+        input.visibility = VISIBLE
+        hint.visibility = INVISIBLE
     }
 
     fun deactivate() {
-        title.visibility = View.INVISIBLE
+        title.visibility = INVISIBLE
 //        input.isEnabled = false
-        input.visibility = View.INVISIBLE
-        hint.visibility = View.VISIBLE
+        input.visibility = INVISIBLE
+        hint.visibility = VISIBLE
     }
 
     fun changeUnit(newUnit: ImperialUnit) {
@@ -92,7 +93,7 @@ class ImperialUnitPanel(context: Context, attributeSet: AttributeSet) : Constrai
     }
 
     fun hasUnitAssigned(): Boolean {
-        return title.visibility == View.VISIBLE
+        return title.visibility == VISIBLE
     }
 
     fun getValue(): Double? = unit?.value
