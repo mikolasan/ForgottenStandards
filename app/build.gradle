@@ -13,14 +13,14 @@ description = 'forgottenstandards-android'
 
 android {
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
     }
 
     defaultConfig {
         applicationId "io.github.mikolasan.imperialrussia"
         minSdkVersion 26
-        targetSdkVersion 35
+        targetSdk 36
         compileSdk 35
         versionCode 10
         versionName "2.1"
@@ -58,8 +58,12 @@ android {
         }
     }
     namespace 'xyz.neupokoev.forgottenstandards'
-    compileSdk 35
+    compileSdk 36
     buildToolsVersion '34.0.0'
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_21
+    }
+    compileSdkMinor 1
 }
 
 task runRatioGenerator(type: JavaExec) {
