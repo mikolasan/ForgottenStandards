@@ -23,6 +23,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import io.github.mikolasan.ratiogenerator.ImperialUnit
 import io.github.mikolasan.ratiogenerator.ImperialUnitName
+import io.github.mikolasan.ratiogenerator.ImperialUnitType
 import io.noties.markwon.Markwon
 import xyz.neupokoev.forgottenstandards.converter.ConverterFragment
 import xyz.neupokoev.forgottenstandards.converter.ImperialUnitObserver
@@ -475,11 +476,11 @@ class MainActivity : AppCompatActivity() {
             val bundle = bundleOf(
                 "categoryTitle" to category.name
             )
-//            if (type == ImperialUnitType.NUT_AND_BOLT) {
-//                navController?.navigate(R.id.action_select_nut_bolt, bundle)
-//            } else {
+            if (type == ImperialUnitType.NUT_AND_BOLT) {
+                navController?.navigate(R.id.action_select_nut_bolt, bundle)
+            } else {
                 navController?.navigate(R.id.action_select_category, bundle)
-//            }
+            }
         } else {
             onCategoryOpened()
         }

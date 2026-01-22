@@ -13,7 +13,8 @@ class NutBoltView(context: Context, attributeSet: AttributeSet) : TextureView(co
     private val simpleSurfaceTextureListener = SimpleSurfaceTextureListener()
     private val refreshRate = getDisplayRefreshRate(context)
     private val dpi = getDpi(context)
-    private var renderer: TestRenderer = TestRenderer(refreshRate, dpi)
+    // Make renderer public so the Fragment can set the listener
+    val renderer: TestRenderer = TestRenderer(refreshRate, dpi)
     init {
         simpleSurfaceTextureListener.renderer = renderer
         surfaceTextureListener = simpleSurfaceTextureListener

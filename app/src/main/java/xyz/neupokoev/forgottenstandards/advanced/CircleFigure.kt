@@ -12,7 +12,7 @@ import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
-class HexFigure(val size: Float, defaultColor: FloatArray) {
+class CircleFigure(val size: Float) {
 
     var width = 0f
     var height = 0f
@@ -22,14 +22,13 @@ class HexFigure(val size: Float, defaultColor: FloatArray) {
     val radius: Float
     private val scaleMatrix = FloatArray(16)
     init {
-        // size - in pixels
-        radius = (size / 1000.0).toFloat() // ???
+        // size - in pixels. This is the diameter of the thread.
+        radius = (size / 2000.0).toFloat() // Divide by 2000.0 (size / 2 / 1000.0) to get half the size and scale it to the OpenGL coordinate system
         Matrix.setIdentityM(scaleMatrix, 0)
     }
 
     private companion object {
-        const val NUMBER_OF_VERTICES = 6
-        const val ringSize = 0.05
+        const val NUMBER_OF_SEGMENTS = 36 // A higher number for a smoother circle
 
         val simpleVertexShader = """
             uniform mat4 uMVPMatrix;
@@ -55,42 +54,32 @@ class HexFigure(val size: Float, defaultColor: FloatArray) {
         mProgram = createProgram(simpleVertexShader, simpleFragmentShader) ?: 0
     }
 
-    // Set color with red, green, blue and alpha (opacity) values
-    var color = defaultColor
+    // Set color to a simple gray for the bolt body
+    val color = floatArrayOf(0.4f, 0.4f, 0.4f, 1.0f)
 
-    // Hex
+    // Circle vertices: Center (0,0,0) + NUMBER_OF_SEGMENTS + closing vertex
     private var vertexBuffer: FloatBuffer =
-        // (number of coordinate values * 4 bytes per float)
-        ByteBuffer.allocateDirect((NUMBER_OF_VERTICES * 2 + 2) * 3 * 4).run {
+        // (1 center + NUMBER_OF_SEGMENTS + 1 closing vertex) * 3 coords * 4 bytes
+        ByteBuffer.allocateDirect((NUMBER_OF_SEGMENTS + 2) * COORDS_PER_VERTEX * SIZE_OF_FLOAT).run {
             // use the device hardware's native byte order
             order(ByteOrder.nativeOrder())
-
-            // create a floating point buffer from the ByteBuffer
             asFloatBuffer().apply {
-                val innerRadius = if (radius > ringSize) radius - ringSize else 0.01
-                for (i in 0 until NUMBER_OF_VERTICES) {
-                    val angle = i * 2 * PI / NUMBER_OF_VERTICES
+                put(0.0f) // Center X
+                put(0.0f) // Center Y
+                put(0.0f) // Center Z
+
+                for (i in 0..NUMBER_OF_SEGMENTS) {
+                    val angle = i * 2 * PI / NUMBER_OF_SEGMENTS
                     put((cos(angle) * radius).toFloat())    // X coordinate
                     put((sin(angle) * radius).toFloat())    // Y coordinate
                     put(0.0f)                   // Z coordinate
-                    // inner loop
-                    put((cos(angle) * innerRadius).toFloat())    // X coordinate
-                    put((sin(angle) * innerRadius).toFloat())    // Y coordinate
-                    put(0.0f)                   // Z coordinate
                 }
-                put(radius.toFloat())
-                put(0.0f)
-                put(0.0f)
-                put(innerRadius.toFloat())
-                put(0.0f)
-                put(0.0f)
                 rewind()
             }
         }
 
 
     fun draw(mvpMatrix: FloatArray) {
-        // Add program to OpenGL ES environment
         GLES20.glUseProgram(mProgram)
 
         val attribPosition = GLES20.glGetAttribLocation(mProgram, "aPosition")
@@ -101,7 +90,7 @@ class HexFigure(val size: Float, defaultColor: FloatArray) {
         val finalTransform = FloatArray(16)
         Matrix.multiplyMM(finalTransform, 0, mvpMatrix, 0, scaleMatrix, 0)
         // Apply X and Y offset
-        Matrix.translateM(finalTransform, 0, 0f, offset, 0f)
+        Matrix.translateM(finalTransform, 0, xOffset, offset, 0f)
         GLES20.glUniformMatrix4fv(uniformMvpMatrix, 1, false, finalTransform, 0)
         GLES20.glUniform4fv(uniformColor, 1, color, 0)
 
@@ -115,10 +104,10 @@ class HexFigure(val size: Float, defaultColor: FloatArray) {
             vertexBuffer
         )
 
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, NUMBER_OF_VERTICES * 2 + 2)
+        // Draw the circle using a Triangle Fan, starting from the center (0) and going through all segments (+1 for closing)
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, 0, NUMBER_OF_SEGMENTS + 2)
 
         GLES20.glDisableVertexAttribArray(attribPosition)
         GLES20.glUseProgram(0);
     }
-
 }

@@ -9,6 +9,7 @@ import io.github.mikolasan.ratiogenerator.MinEnergyUnits
 import io.github.mikolasan.ratiogenerator.MinForceUnits
 import io.github.mikolasan.ratiogenerator.MinFuelUnits
 import io.github.mikolasan.ratiogenerator.MinLengthUnits
+import io.github.mikolasan.ratiogenerator.MinNutBoltUnits
 import io.github.mikolasan.ratiogenerator.MinPowerUnits
 import io.github.mikolasan.ratiogenerator.MinPressureUnits
 import io.github.mikolasan.ratiogenerator.MinResistanceUnits
@@ -40,8 +41,8 @@ object ImperialCategory {
         ImperialUnitCategoryName("Storage"),
         ImperialUnitCategoryName("Fuel"),
         ImperialUnitCategoryName("Angle"),
-        // New
-        //ImperialUnitCategoryName("Nut & Bolt")
+
+        ImperialUnitCategoryName("Nut & Bolt")
     )
 
     val typeMap: Map<ImperialUnitType, ImperialUnitCategory> = mapOf(
@@ -61,6 +62,6 @@ object ImperialCategory {
         ImperialUnitType.TIME to MinTimeUnits,
         ImperialUnitType.VOLUME to MinVolumeUnits,
         ImperialUnitType.WEIGHT to MinWeightUnits,
-        //ImperialUnitType.NUT_AND_BOLT to MinNutBoltUnits,
+        ImperialUnitType.NUT_AND_BOLT to MinNutBoltUnits,
     )
 }
