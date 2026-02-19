@@ -476,10 +476,16 @@ class MainActivity : AppCompatActivity() {
             val bundle = bundleOf(
                 "categoryTitle" to category.name
             )
-            if (type == ImperialUnitType.NUT_AND_BOLT) {
-                navController?.navigate(R.id.action_select_nut_bolt, bundle)
-            } else {
-                navController?.navigate(R.id.action_select_category, bundle)
+            when (type) {
+                ImperialUnitType.SLAVIC_CALENDAR -> {
+                    navController?.navigate(R.id.slavicCalendarFragment, bundle)
+                }
+                ImperialUnitType.NUT_AND_BOLT_SIZE -> {
+                    navController?.navigate(R.id.action_select_nut_bolt, bundle)
+                }
+                else -> {
+                    navController?.navigate(R.id.action_select_category, bundle)
+                }
             }
         } else {
             onCategoryOpened()

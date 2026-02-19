@@ -1,0 +1,78 @@
+package xyz.neupokoev.forgottenstandards.advanced
+
+import android.annotation.SuppressLint
+import android.content.Context
+import android.util.AttributeSet
+import android.view.MotionEvent
+import android.view.TextureView
+
+
+const val TOUCH_SCALE_FACTOR: Float = 180.0f / 320f
+
+/**
+ * A generic TextureView wrapper for GlRenderer implementations.
+ */
+class GlView(context: Context, attributeSet: AttributeSet) : TextureView(context, attributeSet) {
+    private val simpleSurfaceTextureListener = SimpleSurfaceTextureListener()
+    private val refreshRate = getDisplayRefreshRate(context)
+    private val dpi = getDpi(context)
+
+    // The view will start with the BoltRenderer by default
+    var renderer: GlRenderer = BoltRenderer(refreshRate, dpi)
+        set(value) {
+            field = value
+            simpleSurfaceTextureListener.renderer = value
+        }
+
+    init {
+        simpleSurfaceTextureListener.renderer = renderer
+        surfaceTextureListener = simpleSurfaceTextureListener
+    }
+    private var previousX: Float = 0f
+    private var previousY: Float = 0f
+
+    @SuppressLint("NewApi")
+    fun getDisplayRefreshRate(context: Context): Long {
+        context.display?.let { display ->
+            val displayFps: Double = display.refreshRate.toDouble()
+            val refreshMilli = Math.round(1f / displayFps * 1000)
+            println("refresh rate is $displayFps fps --> $refreshMilli millis")
+            return refreshMilli
+        }
+        val defaulValue = (1f / 60f * 1000f).toLong()
+        return defaulValue
+    }
+
+    fun getDpi(context: Context): Int {
+        return context.resources.displayMetrics.densityDpi
+    }
+
+    override fun onTouchEvent(e: MotionEvent): Boolean {
+        val x: Float = e.x
+        val y: Float = e.y
+        val currentRenderer = renderer
+
+        when (e.action) {
+            MotionEvent.ACTION_MOVE -> {
+
+                var dx: Float = x - previousX
+                var dy: Float = y - previousY
+
+                if (currentRenderer is BoltRenderer) {
+                    // BoltRenderer: Only vertical pan for scrolling through bolts
+                    currentRenderer.positionY -= dy / 1000f
+                } else if (currentRenderer is CalendarRenderer) {
+                    // CalendarRenderer: Rotation control
+                    // Use total motion delta for rotation, scaled
+                    currentRenderer.angle += (dx + dy) * TOUCH_SCALE_FACTOR
+                }
+            }
+        }
+
+        previousX = x
+        previousY = y
+        return true
+
+    }
+
+}

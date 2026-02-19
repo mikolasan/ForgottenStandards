@@ -39,4 +39,8 @@
         android:id="@+id/nutBoltFragment"
         android:name="xyz.neupokoev.forgottenstandards.advanced.NutBoltFragment"
         tools:layout="@layout/fragment_nut_bolt" />
+    <fragment
+        android:id="@+id/slavicCalendarFragment"
+        android:name="xyz.neupokoev.forgottenstandards.advanced.SlavicCalendarFragment"
+        tools:layout="@layout/fragment_slavic_calendar" />
 </navigation>

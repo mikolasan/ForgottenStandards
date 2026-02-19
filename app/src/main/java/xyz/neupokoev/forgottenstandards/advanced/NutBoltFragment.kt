@@ -22,7 +22,8 @@ private const val IMPERIAL_LABEL_X_POS_DP = 15 // Distance from right edge of vi
 class NutBoltFragment : Fragment(), LabelUpdateListener {
 
     private var labelContainer: FrameLayout? = null
-    private var renderer: TestRenderer? = null
+    // Use the abstract GlRenderer type
+    private var renderer: GlRenderer? = null
     
     // Two maps to manage labels for metric and imperial columns
     private val metricLabels = ConcurrentHashMap<String, TextView>()
@@ -34,18 +35,20 @@ class NutBoltFragment : Fragment(), LabelUpdateListener {
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_nut_bolt, container, false)
 
-        val textureView = view.findViewById<NutBoltView>(R.id.texture_view)
+        val textureView = view.findViewById<GlView>(R.id.texture_view)
         labelContainer = view.findViewById(R.id.texture_and_label_container)
         renderer = textureView.renderer
 
-        renderer?.labelUpdateListener = this
+        // Cast renderer to BoltRenderer to access the specific listener property
+        (renderer as? BoltRenderer)?.labelUpdateListener = this
 
         return view
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        renderer?.labelUpdateListener = null
+        // Cast renderer back to BoltRenderer for cleanup
+        (renderer as? BoltRenderer)?.labelUpdateListener = null
         renderer = null
         labelContainer = null
         metricLabels.clear()
@@ -53,10 +56,11 @@ class NutBoltFragment : Fragment(), LabelUpdateListener {
     }
 
     override fun onCenteredBoltChanged(boltName: String) {
-        // This is only used to trigger the styling logic in updateLabels
+        // This is only used to update the state variable for styling logic in updateLabels
         centeredBoltName = boltName
     }
 
+    // Listener now receives List<BoltPair> from BoltRenderer
     override fun onAllBoltsUpdated(boltData: List<BoltPair>) {
         activity?.runOnUiThread {
             updateLabels(boltData)
@@ -66,16 +70,17 @@ class NutBoltFragment : Fragment(), LabelUpdateListener {
     private fun updateLabels(boltData: List<BoltPair>) {
         val container = labelContainer ?: return
         val renderer = renderer ?: return
-        val screenWidth = renderer.width.toFloat()
+        
+        // Since the renderer is BoltRenderer in this fragment, we can safely access its size properties via GlRenderer
         val screenHeight = renderer.height.toFloat()
 
         val activeMetricNames = mutableSetOf<String>()
         val activeImperialNames = mutableSetOf<String>()
 
-        val horizontalMarginPx = resources.displayMetrics.density * METRIC_LABEL_X_POS_DP // Use one for both columns
+        val horizontalMarginPx = resources.displayMetrics.density * METRIC_LABEL_X_POS_DP
 
         for (pair in boltData) {
-            val worldY = pair.offset + renderer.positionY // Pair's World Y position relative to the camera
+            val worldY = pair.offset + renderer.positionY 
             
             // Screen Y calculation: worldY in [-1, 1] maps to screenY in [0, height]
             val screenY = (1f - worldY) / 2f * screenHeight
@@ -89,7 +94,8 @@ class NutBoltFragment : Fragment(), LabelUpdateListener {
             val metricTextView = metricLabels.getOrPut(metricName) {
                 createLabelTextView(container, Gravity.START)
             }
-            updateSingleLabel(metricTextView, metricName, screenY, horizontalMarginPx, isVisible, container, true)
+            // Highlight if metric name matches centeredBoltName
+            updateSingleLabel(metricTextView, metricName, screenY, horizontalMarginPx, isVisible, true, metricName == centeredBoltName)
 
             // --- IMPERIAL Label ---
             val imperialName = pair.imperial.name
@@ -97,10 +103,12 @@ class NutBoltFragment : Fragment(), LabelUpdateListener {
             val imperialTextView = imperialLabels.getOrPut(imperialName) {
                 createLabelTextView(container, Gravity.END)
             }
-            updateSingleLabel(imperialTextView, imperialName, screenY, horizontalMarginPx, isVisible, container, false)
+            // Highlight if imperial name's pair metric name matches centeredBoltName
+            val isImperialCentered = pair.metric.name == centeredBoltName
+            updateSingleLabel(imperialTextView, imperialName, screenY, horizontalMarginPx, isVisible, false, isImperialCentered)
         }
 
-        // Cleanup: remove any unused views (though likely static for bolt lists)
+        // Cleanup: remove any unused views 
         metricLabels.keys.filter { it !in activeMetricNames }.forEach { key -> container.removeView(metricLabels.remove(key)) }
         imperialLabels.keys.filter { it !in activeImperialNames }.forEach { key -> container.removeView(imperialLabels.remove(key)) }
     }
@@ -111,15 +119,13 @@ class NutBoltFragment : Fragment(), LabelUpdateListener {
         screenY: Float,
         marginPx: Float,
         isVisible: Boolean,
-        container: ViewGroup,
-        isMetric: Boolean
+        isMetric: Boolean,
+        isCentered: Boolean
     ) {
         if (isVisible) {
-            val isCentered = name == centeredBoltName || (isMetric && name == centeredBoltName) || (!isMetric && name == imperialLabels.filterValues { it == textView }.keys.singleOrNull())
-
             // Style: Use consistent colors/sizes
             textView.text = name
-            val textColor = if (isCentered) Color.WHITE else ContextCompat.getColor(requireContext(), R.color.fontPrimary)
+            val textColor = if (isCentered) ContextCompat.getColor(requireContext(), R.color.primary) else ContextCompat.getColor(requireContext(), R.color.font)
             textView.setTextColor(textColor)
             textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, BOLT_LABEL_TEXT_SIZE_SP)
 
@@ -132,16 +138,13 @@ class NutBoltFragment : Fragment(), LabelUpdateListener {
 
             // Horizontal Positioning
             if (isMetric) {
-                // Metric label is LEFT aligned and uses LEFT margin
                 layoutParams.leftMargin = marginPx.toInt()
                 layoutParams.rightMargin = 0
             } else {
-                // Imperial label is RIGHT aligned and uses RIGHT margin
                 layoutParams.rightMargin = marginPx.toInt()
                 layoutParams.leftMargin = 0
             }
             
-            // Ensure gravity matches the positioning strategy
             layoutParams.gravity = Gravity.TOP or if (isMetric) Gravity.LEFT else Gravity.RIGHT
 
             textView.visibility = View.VISIBLE
@@ -153,7 +156,6 @@ class NutBoltFragment : Fragment(), LabelUpdateListener {
 
     private fun createLabelTextView(container: ViewGroup, gravity: Int): TextView {
         val textView = TextView(requireContext())
-        // Use a color that contrasts with the background, like primary color
         textView.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.backgroundPanel)) 
         textView.setPadding(8, 4, 8, 4)
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, BOLT_LABEL_TEXT_SIZE_SP)
@@ -163,7 +165,7 @@ class NutBoltFragment : Fragment(), LabelUpdateListener {
             FrameLayout.LayoutParams.WRAP_CONTENT,
             FrameLayout.LayoutParams.WRAP_CONTENT
         )
-        layoutParams.gravity = Gravity.TOP or gravity // TOP for margin, gravity for horizontal alignment
+        layoutParams.gravity = Gravity.TOP or gravity
         container.addView(textView, layoutParams)
         return textView
     }

@@ -13,6 +13,7 @@ import io.github.mikolasan.ratiogenerator.MinNutBoltUnits
 import io.github.mikolasan.ratiogenerator.MinPowerUnits
 import io.github.mikolasan.ratiogenerator.MinPressureUnits
 import io.github.mikolasan.ratiogenerator.MinResistanceUnits
+import io.github.mikolasan.ratiogenerator.MinSlavicCalendarUnits
 import io.github.mikolasan.ratiogenerator.MinSpeedUnits
 import io.github.mikolasan.ratiogenerator.MinStorageUnits
 import io.github.mikolasan.ratiogenerator.MinTemperatureUnits
@@ -42,7 +43,8 @@ object ImperialCategory {
         ImperialUnitCategoryName("Fuel"),
         ImperialUnitCategoryName("Angle"),
 
-        ImperialUnitCategoryName("Nut & Bolt")
+        ImperialUnitCategoryName("Nut and Bolt size"),
+        ImperialUnitCategoryName("Slavic Calendar")
     )
 
     val typeMap: Map<ImperialUnitType, ImperialUnitCategory> = mapOf(
@@ -62,6 +64,7 @@ object ImperialCategory {
         ImperialUnitType.TIME to MinTimeUnits,
         ImperialUnitType.VOLUME to MinVolumeUnits,
         ImperialUnitType.WEIGHT to MinWeightUnits,
-        ImperialUnitType.NUT_AND_BOLT to MinNutBoltUnits,
+        ImperialUnitType.NUT_AND_BOLT_SIZE to MinNutBoltUnits,
+        ImperialUnitType.SLAVIC_CALENDAR to MinSlavicCalendarUnits,
     )
 }
