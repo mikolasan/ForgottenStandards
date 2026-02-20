@@ -25,8 +25,9 @@ private val THEME_BOLT_COLOR = floatArrayOf(0.298f, 0.192f, 0.518f, 1.0f) // #4C
 private val THEME_HIGHLIGHT_COLOR = floatArrayOf(0.98f, 0.98f, 0.98f, 1.0f) // #FAFAFA
 
 // --- WORLD COORDINATE OFFSETS ---
-private const val METRIC_X_OFFSET = -0.75f
-private const val IMPERIAL_X_OFFSET = 0.75f
+// Moved closer to center as requested
+private const val METRIC_X_OFFSET = -0.25f
+private const val IMPERIAL_X_OFFSET = 0.25f
 
 class BoltRenderer(val refreshRate: Long, val dpi: Int) : Thread("BoltRendererThread"), GlRenderer {
     private lateinit var surfaceTexture: SurfaceTexture
@@ -40,15 +41,13 @@ class BoltRenderer(val refreshRate: Long, val dpi: Int) : Thread("BoltRendererTh
     @Volatile
     override var height: Int = 0
     @Volatile
-    override var positionY: Float = 0.0f // Initial position to center the first bolt
+    override var positionY: Float = 0.0f
 
     var labelUpdateListener: LabelUpdateListener? = null
     private var lastCenteredBoltName: String = ""
 
     private val DEFAULT_BOLT_COLOR = THEME_BOLT_COLOR
     private val HIGHLIGHT_BOLT_COLOR = THEME_HIGHLIGHT_COLOR
-
-    // ... (Bolt data maps and initialization logic remains the same)
 
     private val metricToMm = mapOf(
         "M6" to 6f, "M7" to 7f, "M8" to 8f, "M10" to 10f, "M12" to 12f,
@@ -59,9 +58,11 @@ class BoltRenderer(val refreshRate: Long, val dpi: Int) : Thread("BoltRendererTh
         "1/2\"" to 12.70f, "9/16\"" to 14.29f, "5/8\"" to 15.87f, "3/4\"" to 19.05f,
     )
 
-    private val mBoltPairs: List<BoltPair>
+    private var mBoltPairs: List<BoltPair> = emptyList()
 
-    init {
+    private fun initBolts() {
+        if (height <= 0) return
+
         val metricBolts = metricToMm.map { (name, nominalMm) ->
             Bolt(name, nominalMm, createBoltFigures(nominalMm, DEFAULT_BOLT_COLOR, METRIC_X_OFFSET))
         }.sortedBy { it.nominalMm }
@@ -78,7 +79,7 @@ class BoltRenderer(val refreshRate: Long, val dpi: Int) : Thread("BoltRendererTh
             }
         }.distinctBy { it.metric.name }
 
-        var acc = -1.0f 
+        var acc = 0.7f 
         mBoltPairs.forEach { pair ->
             val spacingRadius = pair.metric.figures.hex.radius
             pair.offset = acc
@@ -86,7 +87,7 @@ class BoltRenderer(val refreshRate: Long, val dpi: Int) : Thread("BoltRendererTh
             pair.metric.figures.body.offset = acc
             pair.imperial.figures.hex.offset = acc
             pair.imperial.figures.body.offset = acc
-            acc += 2.0f * spacingRadius
+            acc -= 2.2f * spacingRadius
         }
     }
 
@@ -95,42 +96,43 @@ class BoltRenderer(val refreshRate: Long, val dpi: Int) : Thread("BoltRendererTh
         val inches: Float = nominalDiameterCm / 2.54f
         val nominalPixelSize = dpi * inches
 
-        val hexHeadSize = nominalPixelSize * 1.5f
-        val threadSize = nominalPixelSize
+        val threadRadius = nominalPixelSize / height.toFloat()
+        val hexRadius = (nominalPixelSize * 1.5f) / height.toFloat()
 
         return BoltFigures(
-            hex = HexFigure(hexHeadSize, color).apply { this.xOffset = xOffset },
-            body = CircleFigure(threadSize).apply { this.xOffset = xOffset }
+            hex = HexFigure(hexRadius, color).apply { this.xOffset = xOffset },
+            body = CircleFigure(threadRadius).apply { this.xOffset = xOffset }
         )
     }
 
     private val vPMatrix = FloatArray(16)
     private val projectionMatrix = FloatArray(16)
     private val viewMatrix = FloatArray(16)
-    private val rotationMatrix = FloatArray(16) // FIX: Declared as instance field
-
-    // Rotation angle property is kept here for bolt rotation animation
+    private val rotationMatrix = FloatArray(16)
+    
     @Volatile
-    override var angle: Float = 0f
+    override var angle: Float = 0f 
     @Volatile
-    override var positionX: Float = 0f
+    override var positionX: Float = 0f 
 
-    // GlRenderer implementation methods
     override fun setSurface(surface: SurfaceTexture) { this.surfaceTexture = surface }
     override fun setSize(width: Int, height: Int) {
         this.width = width
         this.height = height
+        initBolts()
     }
     override fun startRendering() { this.start() }
     override fun stopRendering() { this.isStopped = true }
     override fun getThread(): Thread = this
 
     private fun getConfig(eglDisplay: EGLDisplay): EGLConfig {
-        // ... (getConfig implementation remains the same)
         val renderableType = EGL14.EGL_OPENGL_ES2_BIT
         val attribList = intArrayOf(
-            EGL14.EGL_RED_SIZE, 8, EGL14.EGL_GREEN_SIZE, 8, EGL14.EGL_BLUE_SIZE, 8,
-            EGL14.EGL_ALPHA_SIZE, 8, EGL14.EGL_RENDERABLE_TYPE, renderableType,
+            EGL14.EGL_RED_SIZE, 8,
+            EGL14.EGL_GREEN_SIZE, 8,
+            EGL14.EGL_BLUE_SIZE, 8,
+            EGL14.EGL_ALPHA_SIZE, 8,
+            EGL14.EGL_RENDERABLE_TYPE, renderableType,
             EGL14.EGL_NONE, 0, EGL14.EGL_NONE
         )
         val flags = 0
@@ -158,7 +160,6 @@ class BoltRenderer(val refreshRate: Long, val dpi: Int) : Thread("BoltRendererTh
     }
 
     override fun run() {
-        // ... (run method contains the main OpenGL rendering loop)
         val eglDisplay = EGL14.eglGetDisplay(EGL14.EGL_DEFAULT_DISPLAY)
         val version = intArrayOf(0, 0)
         EGL14.eglInitialize(eglDisplay, version, 0, version, 1)
@@ -171,14 +172,6 @@ class BoltRenderer(val refreshRate: Long, val dpi: Int) : Thread("BoltRendererTh
         GLES20.glViewport(0, 0, width, height)
         val ratio: Float = width.toFloat() / height.toFloat()
         Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1f, 1f, 1f, 2f)
-
-        EGL14.eglMakeCurrent(eglDisplay, eglSurface, eglSurface, eglContext)
-        mBoltPairs.forEach { pair ->
-            pair.metric.figures.body.prepare()
-            pair.metric.figures.hex.prepare()
-            pair.imperial.figures.body.prepare()
-            pair.imperial.figures.hex.prepare()
-        }
 
         while (!isStopped && EGL14.eglGetError() == EGL14.EGL_SUCCESS) {
             EGL14.eglMakeCurrent(eglDisplay, eglSurface, eglSurface, eglContext)

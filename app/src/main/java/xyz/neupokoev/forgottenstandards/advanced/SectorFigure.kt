@@ -92,7 +92,7 @@ class SectorFigure(
     }
 
     fun draw(mvpMatrix: FloatArray) {
-        if (mProgram == 0) return // Safety check, should be prepared once
+        if (mProgram == 0) prepare()
 
         // Dynamically generate the vertex data for the slice
         val drawCount = generateSectorVertices(startAngleDeg, sweepAngleDeg)

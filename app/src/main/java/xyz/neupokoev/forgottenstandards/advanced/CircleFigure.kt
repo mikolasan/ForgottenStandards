@@ -12,23 +12,20 @@ import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
-class CircleFigure(val size: Float) {
+class CircleFigure(val radius: Float) {
 
     var width = 0f
     var height = 0f
 
     var offset: Float = 0f
-    var xOffset: Float = 0f // New horizontal offset
-    val radius: Float
+    var xOffset: Float = 0f
     private val scaleMatrix = FloatArray(16)
     init {
-        // size - in pixels. This is the diameter of the thread.
-        radius = (size / 1000.0).toFloat() // Divide by 2000.0 (size / 2 / 1000.0) to get half the size and scale it to the OpenGL coordinate system
         Matrix.setIdentityM(scaleMatrix, 0)
     }
 
     private companion object {
-        const val NUMBER_OF_SEGMENTS = 36 // A higher number for a smoother circle
+        const val NUMBER_OF_SEGMENTS = 36
 
         val simpleVertexShader = """
             uniform mat4 uMVPMatrix;
@@ -48,31 +45,25 @@ class CircleFigure(val size: Float) {
     private var mProgram: Int = 0
 
     fun prepare() {
-        if (mProgram != 0) {
-            return
-        }
+        if (mProgram != 0) return
         mProgram = createProgram(simpleVertexShader, simpleFragmentShader) ?: 0
     }
 
-    // Set color to a simple gray for the bolt body
     val color = floatArrayOf(0.4f, 0.4f, 0.4f, 1.0f)
 
-    // Circle vertices: Center (0,0,0) + NUMBER_OF_SEGMENTS + closing vertex
     private var vertexBuffer: FloatBuffer =
-        // (1 center + NUMBER_OF_SEGMENTS + 1 closing vertex) * 3 coords * 4 bytes
         ByteBuffer.allocateDirect((NUMBER_OF_SEGMENTS + 2) * COORDS_PER_VERTEX * SIZE_OF_FLOAT).run {
-            // use the device hardware's native byte order
             order(ByteOrder.nativeOrder())
             asFloatBuffer().apply {
-                put(0.0f) // Center X
-                put(0.0f) // Center Y
-                put(0.0f) // Center Z
+                put(0.0f)
+                put(0.0f)
+                put(0.0f)
 
                 for (i in 0..NUMBER_OF_SEGMENTS) {
                     val angle = i * 2 * PI / NUMBER_OF_SEGMENTS
-                    put((cos(angle) * radius).toFloat())    // X coordinate
-                    put((sin(angle) * radius).toFloat())    // Y coordinate
-                    put(0.0f)                   // Z coordinate
+                    put((cos(angle) * radius).toFloat())
+                    put((sin(angle) * radius).toFloat())
+                    put(0.0f)
                 }
                 rewind()
             }
@@ -80,17 +71,19 @@ class CircleFigure(val size: Float) {
 
 
     fun draw(mvpMatrix: FloatArray) {
+        if (mProgram == 0) prepare()
         GLES20.glUseProgram(mProgram)
 
         val attribPosition = GLES20.glGetAttribLocation(mProgram, "aPosition")
         val uniformMvpMatrix = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix")
         val uniformColor = GLES20.glGetUniformLocation(mProgram, "uColor")
 
-        // Pass the projection and view transformation to the shader
         val finalTransform = FloatArray(16)
-        Matrix.multiplyMM(finalTransform, 0, mvpMatrix, 0, scaleMatrix, 0)
-        // Apply X and Y offset
-        Matrix.translateM(finalTransform, 0, xOffset, offset, 0f)
+        val modelMatrix = FloatArray(16)
+        Matrix.setIdentityM(modelMatrix, 0)
+        Matrix.translateM(modelMatrix, 0, xOffset, offset, 0f)
+        Matrix.multiplyMM(finalTransform, 0, mvpMatrix, 0, modelMatrix, 0)
+        
         GLES20.glUniformMatrix4fv(uniformMvpMatrix, 1, false, finalTransform, 0)
         GLES20.glUniform4fv(uniformColor, 1, color, 0)
 
@@ -104,10 +97,7 @@ class CircleFigure(val size: Float) {
             vertexBuffer
         )
 
-        // Draw the circle using a Triangle Fan, starting from the center (0) and going through all segments (+1 for closing)
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, 0, NUMBER_OF_SEGMENTS + 2)
-
         GLES20.glDisableVertexAttribArray(attribPosition)
-        GLES20.glUseProgram(0);
     }
 }

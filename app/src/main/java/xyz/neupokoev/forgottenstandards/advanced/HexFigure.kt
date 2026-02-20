@@ -12,18 +12,15 @@ import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
-class HexFigure(val size: Float, defaultColor: FloatArray) {
+class HexFigure(val radius: Float, defaultColor: FloatArray) {
 
     var width = 0f
     var height = 0f
 
     var offset: Float = 0f
-    var xOffset: Float = 0f // New horizontal offset
-    val radius: Float
+    var xOffset: Float = 0f
     private val scaleMatrix = FloatArray(16)
     init {
-        // size - in pixels
-        radius = (size / 1000.0).toFloat() // ???
         Matrix.setIdentityM(scaleMatrix, 0)
     }
 
@@ -49,34 +46,25 @@ class HexFigure(val size: Float, defaultColor: FloatArray) {
     private var mProgram: Int = 0
 
     fun prepare() {
-        if (mProgram != 0) {
-            return
-        }
+        if (mProgram != 0) return
         mProgram = createProgram(simpleVertexShader, simpleFragmentShader) ?: 0
     }
 
-    // Set color with red, green, blue and alpha (opacity) values
     var color = defaultColor
 
-    // Hex
     private var vertexBuffer: FloatBuffer =
-        // (number of coordinate values * 4 bytes per float)
         ByteBuffer.allocateDirect((NUMBER_OF_VERTICES * 2 + 2) * 3 * 4).run {
-            // use the device hardware's native byte order
             order(ByteOrder.nativeOrder())
-
-            // create a floating point buffer from the ByteBuffer
             asFloatBuffer().apply {
-                val innerRadius = if (radius > ringSize) radius - ringSize else 0.01
+                val innerRadius = if (radius > (radius * 0.1f)) radius * 0.8f else 0.01f
                 for (i in 0 until NUMBER_OF_VERTICES) {
                     val angle = i * 2 * PI / NUMBER_OF_VERTICES
-                    put((cos(angle) * radius).toFloat())    // X coordinate
-                    put((sin(angle) * radius).toFloat())    // Y coordinate
-                    put(0.0f)                   // Z coordinate
-                    // inner loop
-                    put((cos(angle) * innerRadius).toFloat())    // X coordinate
-                    put((sin(angle) * innerRadius).toFloat())    // Y coordinate
-                    put(0.0f)                   // Z coordinate
+                    put((cos(angle) * radius).toFloat())
+                    put((sin(angle) * radius).toFloat())
+                    put(0.0f)
+                    put((cos(angle) * innerRadius).toFloat())
+                    put((sin(angle) * innerRadius).toFloat())
+                    put(0.0f)
                 }
                 put(radius.toFloat())
                 put(0.0f)
@@ -90,18 +78,19 @@ class HexFigure(val size: Float, defaultColor: FloatArray) {
 
 
     fun draw(mvpMatrix: FloatArray) {
-        // Add program to OpenGL ES environment
+        if (mProgram == 0) prepare()
         GLES20.glUseProgram(mProgram)
 
         val attribPosition = GLES20.glGetAttribLocation(mProgram, "aPosition")
         val uniformMvpMatrix = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix")
         val uniformColor = GLES20.glGetUniformLocation(mProgram, "uColor")
 
-        // Pass the projection and view transformation to the shader
         val finalTransform = FloatArray(16)
-        Matrix.multiplyMM(finalTransform, 0, mvpMatrix, 0, scaleMatrix, 0)
-        // Apply X and Y offset
-        Matrix.translateM(finalTransform, 0, xOffset, offset, 0f)
+        val modelMatrix = FloatArray(16)
+        Matrix.setIdentityM(modelMatrix, 0)
+        Matrix.translateM(modelMatrix, 0, xOffset, offset, 0f)
+        Matrix.multiplyMM(finalTransform, 0, mvpMatrix, 0, modelMatrix, 0)
+        
         GLES20.glUniformMatrix4fv(uniformMvpMatrix, 1, false, finalTransform, 0)
         GLES20.glUniform4fv(uniformColor, 1, color, 0)
 
@@ -116,9 +105,6 @@ class HexFigure(val size: Float, defaultColor: FloatArray) {
         )
 
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, NUMBER_OF_VERTICES * 2 + 2)
-
         GLES20.glDisableVertexAttribArray(attribPosition)
-        GLES20.glUseProgram(0);
     }
-
 }
