@@ -59,7 +59,7 @@ class GlView(context: Context, attributeSet: AttributeSet) : TextureView(context
                 var dy: Float = y - previousY
 
                 if (currentRenderer is BoltRenderer) {
-                    // BoltRenderer: Only vertical pan for scrolling through bolts
+                    currentRenderer.positionX += dx / 1000f
                     currentRenderer.positionY -= dy / 1000f
                 } else if (currentRenderer is CalendarRenderer) {
                     // CalendarRenderer: Rotation control

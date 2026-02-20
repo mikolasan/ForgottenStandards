@@ -40,7 +40,7 @@ class BoltRenderer(val refreshRate: Long, val dpi: Int) : Thread("BoltRendererTh
     @Volatile
     override var height: Int = 0
     @Volatile
-    override var positionY: Float = 1.0f // Initial position to center the first bolt
+    override var positionY: Float = 0.0f // Initial position to center the first bolt
 
     var labelUpdateListener: LabelUpdateListener? = null
     private var lastCenteredBoltName: String = ""
@@ -171,6 +171,14 @@ class BoltRenderer(val refreshRate: Long, val dpi: Int) : Thread("BoltRendererTh
         GLES20.glViewport(0, 0, width, height)
         val ratio: Float = width.toFloat() / height.toFloat()
         Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1f, 1f, 1f, 2f)
+
+        EGL14.eglMakeCurrent(eglDisplay, eglSurface, eglSurface, eglContext)
+        mBoltPairs.forEach { pair ->
+            pair.metric.figures.body.prepare()
+            pair.metric.figures.hex.prepare()
+            pair.imperial.figures.body.prepare()
+            pair.imperial.figures.hex.prepare()
+        }
 
         while (!isStopped && EGL14.eglGetError() == EGL14.EGL_SUCCESS) {
             EGL14.eglMakeCurrent(eglDisplay, eglSurface, eglSurface, eglContext)

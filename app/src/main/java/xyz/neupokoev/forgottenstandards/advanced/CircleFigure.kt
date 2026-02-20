@@ -23,7 +23,7 @@ class CircleFigure(val size: Float) {
     private val scaleMatrix = FloatArray(16)
     init {
         // size - in pixels. This is the diameter of the thread.
-        radius = (size / 2000.0).toFloat() // Divide by 2000.0 (size / 2 / 1000.0) to get half the size and scale it to the OpenGL coordinate system
+        radius = (size / 1000.0).toFloat() // Divide by 2000.0 (size / 2 / 1000.0) to get half the size and scale it to the OpenGL coordinate system
         Matrix.setIdentityM(scaleMatrix, 0)
     }
 

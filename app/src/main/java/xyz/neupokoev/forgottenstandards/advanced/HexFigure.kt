@@ -101,7 +101,7 @@ class HexFigure(val size: Float, defaultColor: FloatArray) {
         val finalTransform = FloatArray(16)
         Matrix.multiplyMM(finalTransform, 0, mvpMatrix, 0, scaleMatrix, 0)
         // Apply X and Y offset
-        Matrix.translateM(finalTransform, 0, 0f, offset, 0f)
+        Matrix.translateM(finalTransform, 0, xOffset, offset, 0f)
         GLES20.glUniformMatrix4fv(uniformMvpMatrix, 1, false, finalTransform, 0)
         GLES20.glUniform4fv(uniformColor, 1, color, 0)
 
