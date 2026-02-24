@@ -12,16 +12,17 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import xyz.neupokoev.forgottenstandards.R
+import xyz.neupokoev.forgottenstandards.getDpi
+import xyz.neupokoev.forgottenstandards.getDisplayRefreshRate
 import java.util.concurrent.ConcurrentHashMap
 
 private const val BOLT_LABEL_TEXT_SIZE_SP = 16f
-// Decreased from 80 to 50 because bolts moved from 0.4 to 0.25 in World X
 private const val BOLT_LABEL_CENTER_OFFSET_DP = 50 
 
 class NutBoltFragment : Fragment(), LabelUpdateListener {
 
     private var labelContainer: FrameLayout? = null
-    private var renderer: GlRenderer? = null
+    private var boltRenderer: BoltRenderer? = null
     
     private val metricLabels = ConcurrentHashMap<String, TextView>()
     private val imperialLabels = ConcurrentHashMap<String, TextView>()
@@ -31,17 +32,27 @@ class NutBoltFragment : Fragment(), LabelUpdateListener {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_nut_bolt, container, false)
-        val textureView = view.findViewById<GlView>(R.id.texture_view)
+        val context = requireContext()
+        
+        // Construct BoltRenderer properly using context-aware utilities
+        val dpi = getDpi(context)
+        val refreshRate = getDisplayRefreshRate(context)
+        boltRenderer = BoltRenderer(refreshRate, dpi)
+        boltRenderer?.labelUpdateListener = this
+
+        val glView = view.findViewById<GlView>(R.id.texture_view)
+        glView.renderer = boltRenderer
+        
         labelContainer = view.findViewById(R.id.texture_and_label_container)
-        renderer = textureView.renderer
-        (renderer as? BoltRenderer)?.labelUpdateListener = this
+        
         return view
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        (renderer as? BoltRenderer)?.labelUpdateListener = null
-        renderer = null
+        boltRenderer?.stopRendering()
+        boltRenderer?.labelUpdateListener = null
+        boltRenderer = null
         labelContainer = null
         metricLabels.clear()
         imperialLabels.clear()
@@ -59,7 +70,7 @@ class NutBoltFragment : Fragment(), LabelUpdateListener {
 
     private fun updateLabels(boltData: List<BoltPair>) {
         val container = labelContainer ?: return
-        val renderer = renderer ?: return
+        val renderer = boltRenderer ?: return
         val screenWidth = renderer.width.toFloat()
         val screenHeight = renderer.height.toFloat()
 
@@ -74,12 +85,10 @@ class NutBoltFragment : Fragment(), LabelUpdateListener {
             val screenY = (1f - worldY) / 2f * screenHeight
             val isVisible = screenY > -100f && screenY < screenHeight + 100f
 
-            // --- METRIC Label ---
             val metricName = pair.metric.name
             activeMetricNames.add(metricName)
             val metricTextView = metricLabels.getOrPut(metricName) { createLabelTextView(container) }
             
-            // --- IMPERIAL Label ---
             val imperialName = pair.imperial.name
             activeImperialNames.add(imperialName)
             val imperialTextView = imperialLabels.getOrPut(imperialName) { createLabelTextView(container) }

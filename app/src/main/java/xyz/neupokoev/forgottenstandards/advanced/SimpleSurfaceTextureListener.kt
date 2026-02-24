@@ -4,25 +4,31 @@ import android.graphics.SurfaceTexture
 import android.view.TextureView
 
 class SimpleSurfaceTextureListener : TextureView.SurfaceTextureListener {
-    // Now uses the generic GlRenderer interface
-    lateinit var renderer: GlRenderer
+    // Renderer is set by GlView
+    var renderer: GlRenderer? = null
 
     override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) {
-        renderer.setSurface(surface)
-        renderer.setSize(width, height)
-        renderer.startRendering()
+        renderer?.let {
+            it.setSurface(surface)
+            it.setSize(width, height)
+            it.startRendering()
+        }
     }
 
     override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture, width: Int, height: Int) {
-        // Only size matters for projection matrix update
-        renderer.setSize(width, height)
+        renderer?.setSize(width, height)
     }
 
     override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean {
-        renderer.stopRendering()
-        // Wait for the rendering thread to finish (optional but safer)
-        renderer.getThread().join()
-        return true // Surface is released in the renderer's run() method
+        renderer?.let {
+            it.stopRendering()
+            try {
+                it.getThread().join()
+            } catch (e: InterruptedException) {
+                // Ignore
+            }
+        }
+        return true 
     }
 
     override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {

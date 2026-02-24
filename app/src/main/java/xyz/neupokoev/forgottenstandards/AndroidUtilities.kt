@@ -1,6 +1,9 @@
 package xyz.neupokoev.forgottenstandards
 
+import android.content.Context
 import android.opengl.GLES20
+import android.os.Build
+import android.view.Display
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
@@ -51,4 +54,29 @@ fun createProgram(vertexShader: String, fragmentShader: String): Int? {
             return null
         }
     }
+}
+
+fun getDpi(context: Context): Int {
+    return context.resources.displayMetrics.densityDpi
+}
+
+@Suppress("DEPRECATION")
+fun getDisplayRefreshRate(context: Context): Long {
+    val display: Display? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        try {
+            context.display
+        } catch (e: UnsupportedOperationException) {
+            null
+        }
+    } else {
+        null
+    }
+
+    display?.let {
+        val displayFps: Double = it.refreshRate.toDouble()
+        return Math.round(1000.0 / displayFps)
+    }
+
+    // Default to 60 FPS (16.67ms per frame)
+    return 16L
 }

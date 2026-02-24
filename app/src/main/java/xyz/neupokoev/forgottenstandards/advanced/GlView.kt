@@ -1,65 +1,64 @@
 package xyz.neupokoev.forgottenstandards.advanced
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.TextureView
+import kotlin.math.sqrt
 
 
 const val TOUCH_SCALE_FACTOR: Float = 180.0f / 320f
 
+interface GlViewClickListener {
+    fun onGlViewClicked(x: Float, y: Float)
+}
+
 /**
  * A generic TextureView wrapper for GlRenderer implementations.
  */
-class GlView(context: Context, attributeSet: AttributeSet) : TextureView(context, attributeSet) {
+class GlView(context: Context, attributeSet: AttributeSet?) : TextureView(context, attributeSet) {
     private val simpleSurfaceTextureListener = SimpleSurfaceTextureListener()
-    private val refreshRate = getDisplayRefreshRate(context)
-    private val dpi = getDpi(context)
 
-    // The view will start with the BoltRenderer by default
-    var renderer: GlRenderer = BoltRenderer(refreshRate, dpi)
+    /**
+     * The renderer used to draw on this view. 
+     * Setting this will automatically update the surface texture listener.
+     */
+    var renderer: GlRenderer? = null
         set(value) {
             field = value
             simpleSurfaceTextureListener.renderer = value
         }
 
+    var clickListener: GlViewClickListener? = null
+
     init {
-        simpleSurfaceTextureListener.renderer = renderer
         surfaceTextureListener = simpleSurfaceTextureListener
     }
+    
     private var previousX: Float = 0f
     private var previousY: Float = 0f
-
-    @SuppressLint("NewApi")
-    fun getDisplayRefreshRate(context: Context): Long {
-        context.display?.let { display ->
-            val displayFps: Double = display.refreshRate.toDouble()
-            val refreshMilli = Math.round(1f / displayFps * 1000)
-            println("refresh rate is $displayFps fps --> $refreshMilli millis")
-            return refreshMilli
-        }
-        val defaulValue = (1f / 60f * 1000f).toLong()
-        return defaulValue
-    }
-
-    fun getDpi(context: Context): Int {
-        return context.resources.displayMetrics.densityDpi
-    }
+    private var startX: Float = 0f
+    private var startY: Float = 0f
+    private val clickThreshold = 10f // Pixels
 
     override fun onTouchEvent(e: MotionEvent): Boolean {
+        val currentRenderer = renderer ?: return false
+        
         val x: Float = e.x
         val y: Float = e.y
-        val currentRenderer = renderer
 
         when (e.action) {
+            MotionEvent.ACTION_DOWN -> {
+                startX = x
+                startY = y
+            }
             MotionEvent.ACTION_MOVE -> {
 
-                var dx: Float = x - previousX
-                var dy: Float = y - previousY
+                val dx: Float = x - previousX
+                val dy: Float = y - previousY
 
                 if (currentRenderer is BoltRenderer) {
-                    currentRenderer.positionX += dx / 1000f
+                    // BoltRenderer: Only vertical pan for scrolling through bolts
                     currentRenderer.positionY -= dy / 1000f
                 } else if (currentRenderer is CalendarRenderer) {
                     // CalendarRenderer: Rotation control
@@ -67,12 +66,16 @@ class GlView(context: Context, attributeSet: AttributeSet) : TextureView(context
                     currentRenderer.angle += (dx + dy) * TOUCH_SCALE_FACTOR
                 }
             }
+            MotionEvent.ACTION_UP -> {
+                val dist = sqrt((x - startX) * (x - startX) + (y - startY) * (y - startY))
+                if (dist < clickThreshold) {
+                    clickListener?.onGlViewClicked(x, y)
+                }
+            }
         }
 
         previousX = x
         previousY = y
         return true
-
     }
-
 }
