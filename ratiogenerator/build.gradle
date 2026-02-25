@@ -19,22 +19,25 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
 }
 
-task runRatioGenerator(type: JavaExec) {
-    group = 'units'
-    classpath = sourceSets.main.runtimeClasspath
-    main = 'io.github.mikolasan.ratiogenerator.RatioGeneratorKt'
-    // store the output instead of printing to the console:
-    standardOutput = new ByteArrayOutputStream()
-    // extension method genSource.output() can be used to obtain the output:
-    def outputDir = new File(sourceSets.main.java.srcDirs.first(), "io/github/mikolasan/ratiogenerator")
-    doLast {
-        if(!outputDir.exists()) {
-            outputDir.mkdirs()
-        }
-        def outputFile = new File(outputDir, imperialUnits? imperialUnits : "Output.kt")
-        outputFile.text = standardOutput.toString()
-    }
-}
+// TODO: after upgrading to AGP 9.0.1:
+// Could not set unknown property 'main' for task ':ratiogenerator:runRatioGenerator' of type org.gradle.api.tasks.JavaExec.
+
+//task runRatioGenerator(type: JavaExec) {
+//    group = 'units'
+//    classpath = sourceSets.main.runtimeClasspath
+//    main = 'io.github.mikolasan.ratiogenerator.RatioGeneratorKt'
+//    // store the output instead of printing to the console:
+//    standardOutput = new ByteArrayOutputStream()
+//    // extension method genSource.output() can be used to obtain the output:
+//    def outputDir = new File(sourceSets.main.java.srcDirs.first(), "io/github/mikolasan/ratiogenerator")
+//    doLast {
+//        if(!outputDir.exists()) {
+//            outputDir.mkdirs()
+//        }
+//        def outputFile = new File(outputDir, imperialUnits? imperialUnits : "Output.kt")
+//        outputFile.text = standardOutput.toString()
+//    }
+//}
 
 // References:
 // https://stackoverflow.com/questions/38275583/create-version-txt-file-in-project-dir-via-build-gradle-task
