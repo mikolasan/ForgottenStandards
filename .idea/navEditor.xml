@@ -8,6 +8,11 @@
             <LayoutPositions>
               <option name="myPositions">
                 <map>
+                  <entry key="action_global_settings">
+                    <value>
+                      <LayoutPositions />
+                    </value>
+                  </entry>
                   <entry key="converterFragment">
                     <value>
                       <LayoutPositions>
@@ -32,13 +37,37 @@
                       </LayoutPositions>
                     </value>
                   </entry>
+                  <entry key="settingsFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="-35" />
+                            <option name="y" value="265" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="slavicCalendarFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="496" />
+                            <option name="y" value="-311" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="switchFragment">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="12" />
-                            <option name="y" value="12" />
+                            <option name="x" value="-107" />
+                            <option name="y" value="-97" />
                           </Point>
                         </option>
                         <option name="myPositions">
@@ -48,7 +77,7 @@
                                 <LayoutPositions />
                               </value>
                             </entry>
-                            <entry key="action_switchFragment_to_nutBoltFragment">
+                            <entry key="action_select_nut_bolt">
                               <value>
                                 <LayoutPositions />
                               </value>

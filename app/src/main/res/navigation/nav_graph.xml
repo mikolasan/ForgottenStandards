@@ -43,4 +43,13 @@
         android:id="@+id/slavicCalendarFragment"
         android:name="xyz.neupokoev.forgottenstandards.advanced.SlavicCalendarFragment"
         tools:layout="@layout/fragment_slavic_calendar" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="xyz.neupokoev.forgottenstandards.settings.SettingsFragment"
+        android:label="@string/settings_title"
+        tools:layout="@layout/fragment_settings" />
+
+    <action
+        android:id="@+id/action_global_settings"
+        app:destination="@id/settingsFragment" />
 </navigation>

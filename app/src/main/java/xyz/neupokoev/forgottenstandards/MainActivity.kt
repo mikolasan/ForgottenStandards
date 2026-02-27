@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -31,6 +32,7 @@ import xyz.neupokoev.forgottenstandards.converter.ImperialUnitPanel
 import xyz.neupokoev.forgottenstandards.converter.UnitListFragment
 import xyz.neupokoev.forgottenstandards.menu.ImperialUnitCategoryName
 import xyz.neupokoev.forgottenstandards.menu.SwitchFragment
+import xyz.neupokoev.forgottenstandards.settings.SettingsFragment
 import java.io.IOException
 import java.util.Locale
 
@@ -47,6 +49,7 @@ class MainActivity : AppCompatActivity() {
     private var keyboardButtonView: FragmentContainerView? = null
     private var keyboardButtonFragment: KeyboardButtonFragment? = null
     private var searchFragment: SearchFragment? = null
+    private var settingsFragment: SettingsFragment? = null
     private var navController: NavController? = null
     private val unitObserver = ImperialUnitObserver(null)
 
@@ -96,6 +99,16 @@ class MainActivity : AppCompatActivity() {
         }
 
         return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_settings -> {
+                navController?.navigate(R.id.action_global_settings)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -241,6 +254,10 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.nutBoltFragment -> {
                 setTitleAsCategory()
+                hideKeyboardCompletely()
+            }
+            R.id.settingsFragment -> {
+                setTitleToDefaultName()
                 hideKeyboardCompletely()
             }
         }
@@ -442,6 +459,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             is SearchFragment -> searchFragment = fragment
+            is SettingsFragment -> settingsFragment = fragment
         }
     }
 
@@ -584,4 +602,3 @@ class MainActivity : AppCompatActivity() {
         keyboardButtonView?.visibility = View.GONE
     }
 }
-
