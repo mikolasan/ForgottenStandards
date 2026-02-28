@@ -12,7 +12,7 @@ import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
-class HexFigure(val radius: Float, defaultColor: FloatArray) {
+class HexFigure(val radius: Float, var color: FloatArray) {
 
     var width = 0f
     var height = 0f
@@ -50,13 +50,11 @@ class HexFigure(val radius: Float, defaultColor: FloatArray) {
         mProgram = createProgram(simpleVertexShader, simpleFragmentShader) ?: 0
     }
 
-    var color = defaultColor
-
     private var vertexBuffer: FloatBuffer =
         ByteBuffer.allocateDirect((NUMBER_OF_VERTICES * 2 + 2) * 3 * 4).run {
             order(ByteOrder.nativeOrder())
             asFloatBuffer().apply {
-                val innerRadius = if (radius > (radius * 0.1f)) radius * 0.8f else 0.01f
+                val innerRadius = 0.01f
                 for (i in 0 until NUMBER_OF_VERTICES) {
                     val angle = i * 2 * PI / NUMBER_OF_VERTICES
                     put((cos(angle) * radius).toFloat())
@@ -66,10 +64,10 @@ class HexFigure(val radius: Float, defaultColor: FloatArray) {
                     put((sin(angle) * innerRadius).toFloat())
                     put(0.0f)
                 }
-                put(radius.toFloat())
+                put(radius)
                 put(0.0f)
                 put(0.0f)
-                put(innerRadius.toFloat())
+                put(innerRadius)
                 put(0.0f)
                 put(0.0f)
                 rewind()

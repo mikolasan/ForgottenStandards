@@ -12,7 +12,7 @@ import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
-class CircleFigure(val radius: Float) {
+class CircleFigure(val radius: Float, var color: FloatArray) {
 
     var width = 0f
     var height = 0f
@@ -48,8 +48,6 @@ class CircleFigure(val radius: Float) {
         if (mProgram != 0) return
         mProgram = createProgram(simpleVertexShader, simpleFragmentShader) ?: 0
     }
-
-    val color = floatArrayOf(0.4f, 0.4f, 0.4f, 1.0f)
 
     private var vertexBuffer: FloatBuffer =
         ByteBuffer.allocateDirect((NUMBER_OF_SEGMENTS + 2) * COORDS_PER_VERTEX * SIZE_OF_FLOAT).run {

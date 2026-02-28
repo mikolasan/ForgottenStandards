@@ -41,7 +41,7 @@
             android:id="@+id/slavic_info_panel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/backgroundPanel"
+            android:background="@color/panel_back"
             android:orientation="vertical"
             android:padding="12dp">
             <TextView
@@ -62,7 +62,7 @@
             android:id="@+id/gregorian_info_panel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/inputNormal"
+            android:background="@color/input_back"
             android:orientation="vertical"
             android:padding="12dp">
             <TextView

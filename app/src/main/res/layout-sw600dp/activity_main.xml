@@ -40,7 +40,7 @@
         android:layout_marginStart="6dp"
         android:layout_marginTop="6dp"
         android:layout_marginEnd="6dp"
-        android:background="@color/backgroundPanel"
+        android:background="@color/panel_back"
         android:minWidth="@dimen/min_imperial_panel_width"
 
         android:visibility="gone"
@@ -83,7 +83,7 @@
             android:paddingBottom="@dimen/imperial_panel_input_padding_bottom"
             android:singleLine="true"
             android:textAppearance="@style/ImperialPanel"
-            android:textColor="@color/inputNormal"
+            android:textColor="@color/input_back"
             android:textCursorDrawable="@drawable/cursor"
             android:textIsSelectable="true"
             android:textSize="@dimen/imperial_panel_text_size"

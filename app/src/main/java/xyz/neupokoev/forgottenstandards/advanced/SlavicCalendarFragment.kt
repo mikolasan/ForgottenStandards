@@ -18,7 +18,6 @@ import xyz.neupokoev.forgottenstandards.R
 import xyz.neupokoev.forgottenstandards.getDpi
 import xyz.neupokoev.forgottenstandards.getDisplayRefreshRate
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.time.temporal.ChronoUnit
 import java.util.Locale
@@ -50,7 +49,7 @@ class SlavicCalendarFragment : Fragment(), CalendarLabelUpdateListener, GlViewCl
         val dpi = getDpi(context)
         val refreshRate = getDisplayRefreshRate(context)
         
-        calendarRenderer = CalendarRenderer(refreshRate, dpi)
+        calendarRenderer = CalendarRenderer(context, refreshRate, dpi)
         calendarRenderer?.labelUpdateListener = this
 
         this.container = view.findViewById(R.id.calendar_container)
@@ -115,11 +114,11 @@ class SlavicCalendarFragment : Fragment(), CalendarLabelUpdateListener, GlViewCl
         }
 
         val slavicText = createInfoTextView(context, R.color.font)
-        rootLayout.addView(wrapInPanel(context, slavicText, R.color.backgroundPanel))
+        rootLayout.addView(wrapInPanel(context, slavicText, R.color.panel_back))
         rootLayout.addView(View(context).apply { layoutParams = LinearLayout.LayoutParams(1, 16) })
 
         val gregorianText = createInfoTextView(context, R.color.fontPrimary)
-        rootLayout.addView(wrapInPanel(context, gregorianText, R.color.inputNormal))
+        rootLayout.addView(wrapInPanel(context, gregorianText, R.color.input_back))
         rootLayout.addView(View(context).apply { layoutParams = LinearLayout.LayoutParams(1, 32) })
 
         // Calculate offset for the grid: weekday of the 1st day of this month

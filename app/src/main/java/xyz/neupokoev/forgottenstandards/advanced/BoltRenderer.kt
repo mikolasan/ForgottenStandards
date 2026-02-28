@@ -1,11 +1,14 @@
 package xyz.neupokoev.forgottenstandards.advanced
 
+import android.content.Context
 import android.graphics.SurfaceTexture
 import android.opengl.EGL14
 import android.opengl.EGLConfig
 import android.opengl.EGLDisplay
 import android.opengl.GLES20
 import android.opengl.Matrix
+import xyz.neupokoev.forgottenstandards.R
+import xyz.neupokoev.forgottenstandards.getNormalizedColor
 import kotlin.math.abs
 
 // --- DATA CLASSES for Bolt Representation ---
@@ -19,17 +22,18 @@ interface LabelUpdateListener {
     fun onCenteredBoltChanged(boltName: String)
 }
 
-// --- THEME COLORS ---
-private val THEME_BACKGROUND_COLOR = floatArrayOf(0.125f, 0.113f, 0.368f, 1.0f) // #321D5E
-private val THEME_BOLT_COLOR = floatArrayOf(0.298f, 0.192f, 0.518f, 1.0f) // #4C3184
-private val THEME_HIGHLIGHT_COLOR = floatArrayOf(0.98f, 0.98f, 0.98f, 1.0f) // #FAFAFA
+private lateinit var BACKGROUND_COLOR: FloatArray
+private lateinit var BOLT_HEAD_COLOR: FloatArray
+private lateinit var BOLT_HEAD_SELECTED_COLOR: FloatArray
+private lateinit var BOLT_SHAFT_COLOR: FloatArray
+private lateinit var BOLT_SHAFT_SELECTED_COLOR: FloatArray
 
 // --- WORLD COORDINATE OFFSETS ---
 // Moved closer to center as requested
 private const val METRIC_X_OFFSET = -0.25f
 private const val IMPERIAL_X_OFFSET = 0.25f
 
-class BoltRenderer(val refreshRate: Long, val dpi: Int) : Thread("BoltRendererThread"), GlRenderer {
+class BoltRenderer(private val context: Context, val refreshRate: Long, val dpi: Int) : Thread("BoltRendererThread"), GlRenderer {
     private lateinit var surfaceTexture: SurfaceTexture
 
     @Volatile
@@ -46,9 +50,6 @@ class BoltRenderer(val refreshRate: Long, val dpi: Int) : Thread("BoltRendererTh
     var labelUpdateListener: LabelUpdateListener? = null
     private var lastCenteredBoltName: String = ""
 
-    private val DEFAULT_BOLT_COLOR = THEME_BOLT_COLOR
-    private val HIGHLIGHT_BOLT_COLOR = THEME_HIGHLIGHT_COLOR
-
     private val metricToMm = mapOf(
         "M6" to 6f, "M7" to 7f, "M8" to 8f, "M10" to 10f, "M12" to 12f,
         "M14" to 14f, "M16" to 16f, "M18" to 18f, "M20" to 20f,
@@ -60,15 +61,24 @@ class BoltRenderer(val refreshRate: Long, val dpi: Int) : Thread("BoltRendererTh
 
     private var mBoltPairs: List<BoltPair> = emptyList()
 
+    init {
+        val appContext = context.applicationContext
+        BACKGROUND_COLOR = getNormalizedColor(appContext, R.color.background)
+        BOLT_HEAD_COLOR = getNormalizedColor(appContext, R.color.bolt_head)
+        BOLT_HEAD_SELECTED_COLOR = getNormalizedColor(appContext, R.color.bolt_head_selected)
+        BOLT_SHAFT_COLOR = getNormalizedColor(appContext, R.color.bolt_shaft)
+        BOLT_SHAFT_SELECTED_COLOR = getNormalizedColor(appContext, R.color.bolt_shaft_selected)
+    }
+
     private fun initBolts() {
         if (height <= 0) return
 
         val metricBolts = metricToMm.map { (name, nominalMm) ->
-            Bolt(name, nominalMm, createBoltFigures(nominalMm, DEFAULT_BOLT_COLOR, METRIC_X_OFFSET))
+            Bolt(name, nominalMm, createBoltFigures(nominalMm, BOLT_HEAD_COLOR, BOLT_SHAFT_COLOR, METRIC_X_OFFSET))
         }.sortedBy { it.nominalMm }
 
         val imperialBolts = imperialToMm.map { (name, nominalMm) ->
-            Bolt(name, nominalMm, createBoltFigures(nominalMm, DEFAULT_BOLT_COLOR, IMPERIAL_X_OFFSET))
+            Bolt(name, nominalMm, createBoltFigures(nominalMm, BOLT_HEAD_COLOR, BOLT_SHAFT_COLOR, IMPERIAL_X_OFFSET))
         }.sortedBy { it.nominalMm }
 
         mBoltPairs = metricBolts.mapNotNull { metricBolt ->
@@ -91,17 +101,17 @@ class BoltRenderer(val refreshRate: Long, val dpi: Int) : Thread("BoltRendererTh
         }
     }
 
-    private fun createBoltFigures(nominalMm: Float, color: FloatArray, xOffset: Float): BoltFigures {
+    private fun createBoltFigures(nominalMm: Float, headColor: FloatArray, shaftColor: FloatArray, xOffset: Float): BoltFigures {
         val nominalDiameterCm: Float = nominalMm / 10f
         val inches: Float = nominalDiameterCm / 2.54f
         val nominalPixelSize = dpi * inches
 
         val threadRadius = nominalPixelSize / height.toFloat()
-        val hexRadius = (nominalPixelSize * 1.5f) / height.toFloat()
+        val hexRadius = (nominalPixelSize * 1.75f) / height.toFloat()
 
         return BoltFigures(
-            hex = HexFigure(hexRadius, color).apply { this.xOffset = xOffset },
-            body = CircleFigure(threadRadius).apply { this.xOffset = xOffset }
+            hex = HexFigure(hexRadius, headColor).apply { this.xOffset = xOffset },
+            body = CircleFigure(threadRadius, shaftColor).apply { this.xOffset = xOffset }
         )
     }
 
@@ -149,7 +159,7 @@ class BoltRenderer(val refreshRate: Long, val dpi: Int) : Thread("BoltRendererTh
 
         mBoltPairs.forEach { pair ->
             val isCentered = pair.metric.name == newCenteredName
-            val color = if (isCentered) HIGHLIGHT_BOLT_COLOR else DEFAULT_BOLT_COLOR
+            val color = if (isCentered) BOLT_HEAD_SELECTED_COLOR else BOLT_HEAD_COLOR
             pair.metric.figures.hex.color = color
             pair.imperial.figures.hex.color = color
         }
@@ -176,7 +186,7 @@ class BoltRenderer(val refreshRate: Long, val dpi: Int) : Thread("BoltRendererTh
         while (!isStopped && EGL14.eglGetError() == EGL14.EGL_SUCCESS) {
             EGL14.eglMakeCurrent(eglDisplay, eglSurface, eglSurface, eglContext)
 
-            GLES20.glClearColor(THEME_BACKGROUND_COLOR[0], THEME_BACKGROUND_COLOR[1], THEME_BACKGROUND_COLOR[2], THEME_BACKGROUND_COLOR[3])
+            GLES20.glClearColor(BACKGROUND_COLOR[0], BACKGROUND_COLOR[1], BACKGROUND_COLOR[2], BACKGROUND_COLOR[3])
             GLES20.glDisable(GLES20.GL_DEPTH_TEST)
             GLES20.glDisable(GLES20.GL_CULL_FACE)
             GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
@@ -192,10 +202,10 @@ class BoltRenderer(val refreshRate: Long, val dpi: Int) : Thread("BoltRendererTh
             Matrix.multiplyMM(vPMatrix, 0, projectionMatrix, 0, viewMatrix, 0)
 
             mBoltPairs.forEach { pair ->
-                pair.metric.figures.body.draw(scratch)
-                pair.metric.figures.hex.draw(scratch)
-                pair.imperial.figures.body.draw(scratch)
-                pair.imperial.figures.hex.draw(scratch)
+                pair.metric.figures.hex.draw(scratch) // head
+                pair.metric.figures.body.draw(scratch) // shaft
+                pair.imperial.figures.hex.draw(scratch) // head
+                pair.imperial.figures.body.draw(scratch) // shaft
             }
             
             labelUpdateListener?.onAllBoltsUpdated(mBoltPairs)

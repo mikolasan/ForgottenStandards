@@ -155,24 +155,24 @@ class ImperialListAdapter
     }
 
     private val backgrounds = mapOf(
-            ViewState.SECOND to R.color.backgroundAccent,
-            ViewState.SELECTED to R.color.colorPrimaryDark,
-            ViewState.NORMAL to R.color.backgroundAccent
+            ViewState.SECOND to R.color.panel_back,
+            ViewState.SELECTED to R.color.panel_selected_back,
+            ViewState.NORMAL to R.color.panel_back
     )
     private val nameColors = mapOf(
-            ViewState.SECOND to R.color.fontPrimary,
-            ViewState.SELECTED to R.color.fontPrimary,
-            ViewState.NORMAL to R.color.fontPrimary
+            ViewState.SECOND to R.color.panel_font,
+            ViewState.SELECTED to R.color.panel_selected_font,
+            ViewState.NORMAL to R.color.panel_font
     )
     private val valueColors = mapOf(
-            ViewState.SECOND to R.color.fontPrimary,
-            ViewState.SELECTED to R.color.fontPrimary,
-            ViewState.NORMAL to R.color.fontPrimary
+            ViewState.SECOND to R.color.panel_font,
+            ViewState.SELECTED to R.color.panel_selected_font,
+            ViewState.NORMAL to R.color.panel_font
     )
     private val valueBackgrounds = mapOf(
-        ViewState.SECOND to R.color.backgroundAccent,
-        ViewState.SELECTED to R.color.backgroundDark,
-        ViewState.NORMAL to R.color.backgroundAccent
+        ViewState.SECOND to R.color.panel_back,
+        ViewState.SELECTED to R.color.panel_selected_back,
+        ViewState.NORMAL to R.color.panel_back
     )
 
     private fun updateViewColors(holder: ViewHolder, dataPosition: Int) {

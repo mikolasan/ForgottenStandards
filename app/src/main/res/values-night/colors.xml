@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Semantic Mappings (Dark Version) -->
+    <color name="background">@color/grey_900</color>
+    <color name="backgroundAccent">@color/white</color>
+    <color name="colorPrimaryDark">@color/black</color>
+    <color name="colorAccent">@color/white</color>
+    <color name="colorAccentDark">@color/grey_400</color>
+    <color name="font">@color/white</color>
+    <color name="primary">@color/white</color>
+    <color name="fontPrimary">@color/black</color>
+
+    <color name="panel_back">@color/grey_800</color>
+    <color name="panel_selected_back">@color/grey_400</color>
+    <color name="panel_font">@color/white</color>
+    <color name="panel_selected_font">@color/black</color>
+    <color name="action">@color/grey_600</color>
+    <color name="bookmark">@color/grey_400</color>
+    <color name="input_back">@color/grey_600</color>
+    <color name="input_selected_back">@color/grey_800</color>
+    <color name="input_font">@color/grey_200</color>
+    <color name="input_selected_font">@color/white</color>
+
+    <color name="floatingButton">@color/grey_500</color>
+    <color name="keyboard_back">@color/grey_600</color>
+    <color name="keyboard_digit">@android:color/transparent</color>
+    <color name="keyboard_func">@color/grey_50</color>
+    <color name="keyboard_special">@color/black</color>
+    <color name="keyboard_tint">@color/black</color>
+
+    <color name="bolt_head">@color/grey_400</color>
+    <color name="bolt_head_selected">@color/white</color>
+    <color name="bolt_shaft">@color/grey_800</color>
+    <color name="bolt_shaft_selected">@color/grey_600</color>
+</resources>

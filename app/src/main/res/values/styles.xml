@@ -1,24 +1,34 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/background</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="android:windowBackground">@color/background</item>
+        <item name="android:textColor">@color/font</item>
     </style>
 
     <style name="ImperialTales" parent="@android:style/TextAppearance">
         <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/font</item>
     </style>
 
     <style name="ImperialKeypad" parent="@android:style/TextAppearance">
         <item name="android:fontFamily">@font/gotham_pro_medium</item>
+        <item name="android:textColor">@color/font</item>
     </style>
 
     <style name="ImperialSymbol" parent="@android:style/TextAppearance">
         <item name="android:fontFamily">@font/gotham_rounded_light</item>
+        <item name="android:textColor">@color/font</item>
     </style>
 
     <style name="ImperialPanel" parent="@android:style/TextAppearance">
         <item name="android:fontFamily">@font/gotham_pro_regular</item>
+        <item name="android:textColor">@color/font</item>
     </style>
 
 </resources>

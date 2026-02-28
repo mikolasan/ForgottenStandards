@@ -37,7 +37,7 @@ class NutBoltFragment : Fragment(), LabelUpdateListener {
         // Construct BoltRenderer properly using context-aware utilities
         val dpi = getDpi(context)
         val refreshRate = getDisplayRefreshRate(context)
-        boltRenderer = BoltRenderer(refreshRate, dpi)
+        boltRenderer = BoltRenderer(context, refreshRate, dpi)
         boltRenderer?.labelUpdateListener = this
 
         val glView = view.findViewById<GlView>(R.id.texture_view)

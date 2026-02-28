@@ -1,9 +1,15 @@
 package xyz.neupokoev.forgottenstandards
 
 import android.content.Context
+import android.graphics.Color
 import android.opengl.GLES20
 import android.os.Build
 import android.view.Display
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.alpha
+import androidx.core.graphics.blue
+import androidx.core.graphics.green
+import androidx.core.graphics.red
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
@@ -11,6 +17,24 @@ import java.nio.FloatBuffer
 const val SIZE_OF_FLOAT = 4
 const val COORDS_PER_VERTEX = 3
 
+fun getNormalizedColor(context: Context, colorResId: Int): FloatArray {
+    // 1. Get the color as an integer (0xAARRGGBB) from resources
+    val colorInt = ContextCompat.getColor(context, colorResId)
+
+    // 2. Extract components (0-255)
+    val red255 = Color.red(colorInt)
+    val green255 = Color.green(colorInt)
+    val blue255 = Color.blue(colorInt)
+    val alpha255 = Color.alpha(colorInt)
+
+    // 3. Normalize to 0.0f - 1.0f
+    return floatArrayOf(
+        red255 / 255f,
+        green255 / 255f,
+        blue255 / 255f,
+        alpha255 / 255f
+    )
+}
 
 fun FloatArray.toFloatBuffer(): FloatBuffer =
     ByteBuffer.allocateDirect(size * 4)

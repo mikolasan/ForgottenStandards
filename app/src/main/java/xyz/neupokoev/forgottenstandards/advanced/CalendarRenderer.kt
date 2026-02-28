@@ -1,5 +1,6 @@
 package xyz.neupokoev.forgottenstandards.advanced
 
+import android.content.Context
 import android.graphics.SurfaceTexture
 import android.opengl.EGL14
 import android.opengl.EGLConfig
@@ -39,7 +40,7 @@ interface CalendarLabelUpdateListener {
     fun onCalendarUpdated(months: List<Month>, globalAngle: Float)
 }
 
-class CalendarRenderer(val refreshRate: Long, val dpi: Int) : Thread("CalendarRendererThread"), GlRenderer {
+class CalendarRenderer(private val context: Context, val refreshRate: Long, val dpi: Int) : Thread("CalendarRendererThread"), GlRenderer {
     private lateinit var surfaceTexture: SurfaceTexture
 
     @Volatile override var isStopped: Boolean = false

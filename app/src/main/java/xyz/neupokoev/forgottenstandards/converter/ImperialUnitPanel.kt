@@ -29,8 +29,10 @@ class ImperialUnitPanel(context: Context, attributeSet: AttributeSet) : Constrai
     private val layout: ConstraintLayout = findViewById(R.id.big_unit_space)
     val bookmark: ImageView = findViewById(R.id.bookmark)
 
-    private val colorInputSelected = getColor(R.color.fontPrimary)
-    private val colorInputNormal = getColor(R.color.font)
+    private val colorInputNormal = getColor(R.color.input_font)
+    private val colorInputSelected = getColor(R.color.input_selected_font)
+    private val colorNormal = getColor(R.color.panel_font)
+    private val colorSelected = getColor(R.color.panel_selected_font)
 
     init {
         val bookmarkColor = R.color.bookmark
@@ -45,9 +47,11 @@ class ImperialUnitPanel(context: Context, attributeSet: AttributeSet) : Constrai
 
     fun setHighlight(highlight: Boolean) {
         isActive = highlight
-        layout.setBackgroundResource(if (highlight) R.color.backgroundAccent else R.color.backgroundPanel)
+        layout.setBackgroundResource(if (highlight) R.color.panel_selected_back else R.color.panel_back)
+        title.setTextColor(if (highlight) colorSelected else colorNormal)
+        input.setBackgroundResource(if (highlight) R.color.input_selected_back else R.color.input_back)
+        input.setTextColor(if (highlight) colorInputSelected else colorInputNormal)
 
-        title.setTextColor(if (highlight) colorInputSelected else colorInputNormal)
         if (!isActive && hasUnitAssigned() && getString() == "") {
             setUnitValue(0.0)
             updateDisplayValue()

@@ -14,25 +14,39 @@
     <color name="grey_50">#FAFAFA</color>
     <color name="white">#FFFFFF</color>
 
-    <!-- Semantic Mappings (Greyscale Version) -->
-    <color name="background">@color/black</color>
-    <color name="backgroundPanel">@color/grey_900</color>
-    <color name="backgroundAccent">@color/white</color>
-    <color name="backgroundDark">@color/grey_100</color>
-    <color name="font">@color/white</color>
-    <color name="primary">@color/white</color>
-    <color name="fontPrimary">@color/black</color>
-    <color name="floatingButton">@color/grey_500</color>
+    <!-- Semantic Mappings (Light Version) -->
+    <color name="background">@color/white</color>
+    <color name="backgroundAccent">@color/black</color>
+    <color name="colorPrimaryDark">@color/grey_100</color>
+    <color name="colorAccent">@color/black</color>
+    <color name="colorAccentDark">@color/grey_600</color>
+    <color name="font">@color/black</color>
+    <color name="primary">@color/black</color>
+    <color name="fontPrimary">@color/white</color>
 
-    <color name="colorPrimaryDark">@color/black</color>
-    <color name="colorAccent">@color/white</color>
-    <color name="colorAccentDark">@color/grey_400</color>
-    <color name="inputSelected">@color/white</color>
-    <color name="inputNormal">@color/grey_200</color>
-    <color name="keyboardDigit">@color/grey_800</color>
-    <color name="keyboardFunc">@color/grey_50</color>
-    <color name="keyboardSpecial">@color/black</color>
-    <color name="backgroundKeyboardOperation">@color/black</color>
-    <color name="action">@color/grey_600</color>
-    <color name="bookmark">@color/grey_400</color>
+    <color name="panel_back">@color/grey_200</color>
+    <color name="panel_selected_back">@color/grey_800</color>
+    <color name="panel_font">@color/black</color>
+    <color name="panel_selected_font">@color/white</color>
+    <color name="action">@color/grey_400</color>
+    <color name="bookmark">@color/grey_600</color>
+    <color name="input_selected_back">@color/black</color>
+    <color name="input_back">@color/grey_800</color>
+    <color name="input_font">@color/grey_50</color>
+    <color name="input_selected_font">@color/white</color>
+
+    <color name="floatingButton">@color/grey_400</color>
+    <color name="keyboard_back">@color/grey_300</color>
+    <color name="keyboard_digit">@android:color/transparent</color>
+    <color name="keyboard_func">@color/grey_700</color>
+    <color name="keyboard_special">@color/grey_900</color>
+    <color name="keyboard_tint">@color/grey_300</color>
+
+    <color name="bolt_font">@color/grey_400</color>
+    <color name="bolt_font_back">@color/grey_400</color>
+    <color name="bolt_head">@color/grey_400</color>
+    <color name="bolt_head_selected">@color/grey_600</color>
+    <color name="bolt_shaft">@color/grey_800</color>
+    <color name="bolt_shaft_selected">@color/grey_900</color>
+
 </resources>
