@@ -7,12 +7,14 @@ import android.opengl.EGLConfig
 import android.opengl.EGLDisplay
 import android.opengl.GLES20
 import android.opengl.Matrix
+import xyz.neupokoev.forgottenstandards.R
+import xyz.neupokoev.forgottenstandards.getNormalizedColor
 import kotlin.math.PI
 import kotlin.math.atan2
 import kotlin.math.sqrt
 
 // Theme Colors
-private val THEME_BACKGROUND_COLOR = floatArrayOf(0.125f, 0.113f, 0.368f, 1.0f) // #321D5E
+private lateinit var BACKGROUND_COLOR: FloatArray
 
 // Season/Month Colors
 private val WINTER_1 = floatArrayOf(1.0f, 1.0f, 1.0f, 1.0f)
@@ -64,6 +66,10 @@ class CalendarRenderer(private val context: Context, val refreshRate: Long, val 
     )
 
     init {
+
+        val appContext = context.applicationContext
+        BACKGROUND_COLOR = getNormalizedColor(appContext, R.color.background)
+
         // Start from 90 degrees (12 o'clock) and stack months CLOCKWISE
         var currentAngle = 90f
         months.forEach { month ->
@@ -116,7 +122,7 @@ class CalendarRenderer(private val context: Context, val refreshRate: Long, val 
 
         while (!isStopped && EGL14.eglGetError() == EGL14.EGL_SUCCESS) {
             EGL14.eglMakeCurrent(eglDisplay, eglSurface, eglSurface, eglContext)
-            GLES20.glClearColor(THEME_BACKGROUND_COLOR[0], THEME_BACKGROUND_COLOR[1], THEME_BACKGROUND_COLOR[2], THEME_BACKGROUND_COLOR[3])
+            GLES20.glClearColor(BACKGROUND_COLOR[0], BACKGROUND_COLOR[1], BACKGROUND_COLOR[2], BACKGROUND_COLOR[3])
             GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
 
             Matrix.setLookAtM(viewMatrix, 0, 0f, 0f, 1f, 0f, 0f, 0f, 0f, 1.0f, 0.0f)

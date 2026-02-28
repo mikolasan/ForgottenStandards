@@ -119,7 +119,11 @@ class NutBoltFragment : Fragment(), LabelUpdateListener {
         isCentered: Boolean
     ) {
         textView.text = name
-        val textColor = if (isCentered) ContextCompat.getColor(requireContext(), R.color.primary) else ContextCompat.getColor(requireContext(), R.color.font)
+//        val textColor = when {
+//            isCentered -> ContextCompat.getColor(requireContext(), R.color.primary)
+//            else -> ContextCompat.getColor(requireContext(), R.color.bolt_font)
+//        }
+        val textColor = ContextCompat.getColor(requireContext(), R.color.bolt_font)
         textView.setTextColor(textColor)
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, BOLT_LABEL_TEXT_SIZE_SP)
 
@@ -141,6 +145,8 @@ class NutBoltFragment : Fragment(), LabelUpdateListener {
     private fun createLabelTextView(container: ViewGroup): TextView {
         val textView = TextView(requireContext())
         textView.setPadding(8, 4, 8, 4)
+        textView.setBackgroundResource(R.color.bolt_font_back)
+        textView.setTextAppearance(R.style.ImperialPanel)
         val layoutParams = FrameLayout.LayoutParams(
             FrameLayout.LayoutParams.WRAP_CONTENT,
             FrameLayout.LayoutParams.WRAP_CONTENT
