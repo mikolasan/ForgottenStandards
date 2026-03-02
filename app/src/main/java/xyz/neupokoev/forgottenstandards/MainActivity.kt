@@ -10,6 +10,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
@@ -18,6 +19,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelStore
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -30,6 +32,7 @@ import xyz.neupokoev.forgottenstandards.converter.ConverterFragment
 import xyz.neupokoev.forgottenstandards.converter.ImperialUnitObserver
 import xyz.neupokoev.forgottenstandards.converter.ImperialUnitPanel
 import xyz.neupokoev.forgottenstandards.converter.UnitListFragment
+import xyz.neupokoev.forgottenstandards.menu.ImperialCategory
 import xyz.neupokoev.forgottenstandards.menu.ImperialUnitCategoryName
 import xyz.neupokoev.forgottenstandards.menu.SwitchFragment
 import xyz.neupokoev.forgottenstandards.settings.SettingsFragment
@@ -57,7 +60,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var workingUnits: WorkingUnits
     lateinit var markwon: Markwon
     private val descriptions by lazy {
-        ImperialUnitName.values().map {
+        ImperialUnitName.entries.map {
             try {
                 val inputReader = applicationContext.assets.open(it.name + ".txt")
                 return@map inputReader.bufferedReader().readLines().joinToString("\n")
@@ -66,6 +69,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    private var isTrackingConversion = false
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the options menu from XML.
@@ -113,8 +118,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        settings = ViewModelProviders.of(this).get(ImperialSettings::class.java)
+        settings = ViewModelProviders.of(this)[ImperialSettings::class.java]
         markwon = Markwon.create(applicationContext)
 
         if (savedInstanceState == null) {
@@ -148,17 +152,6 @@ class MainActivity : AppCompatActivity() {
 
         keyboardView = findViewById(R.id.keyboard)
         keyboardButtonView = findViewById(R.id.keyboard_button)
-
-
-
-//        try {
-//            val label = findViewById<TextView>(R.id.description_text)
-//            val unit = workingUnits.topUnit
-//            markwon.setMarkdown(label, descriptions[unit.unitName.ordinal])
-//        } catch (e: Exception) {
-//            // layout without view pager
-//        }
-
     }
 
     override fun onStart() {
@@ -171,22 +164,6 @@ class MainActivity : AppCompatActivity() {
         navController?.currentDestination?.id?.let { destinationId ->
             updateFragment(destinationId, navController?.currentDestination?.label ?: "")
         }
-
-//        val listVisible = unitListFragment != null
-//        val converterVisible = converterFragment != null
-//        if (!converterVisible && listVisible) {
-//            // only list - show button
-//            unitListFragment?.keyboardButtonFragment?.view?.visibility = View.VISIBLE
-//            unitListFragment?.keyboardButtonView?.visibility = View.VISIBLE
-//        } else if (converterVisible && !listVisible) {
-//            // only converter - show keyboard
-//            converterFragment?.keyboardFragment?.view?.visibility = View.VISIBLE
-//            converterFragment?.keyboardView?.visibility = View.VISIBLE
-//        } else {
-//            // show keyboard only in converter
-//            converterFragment?.keyboardFragment?.view?.visibility = View.VISIBLE
-//            converterFragment?.keyboardView?.visibility = View.VISIBLE
-//        }
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
@@ -275,24 +252,22 @@ class MainActivity : AppCompatActivity() {
         val selectedUnit = panel.unit!!
         workingUnits.mainUnit = selectedUnit
         unitObserver.setUnitAndUpdateValue(selectedUnit) // change keyboard focus
-
-//        if (workingUnits.topUnit == selectedUnit) return
-//
-//        val tmp = workingUnits.topUnit
-//        workingUnits.topUnit = selectedUnit
-//        workingUnits.bottomUnit = tmp
-//
-//        unitObserver.setUnitAndUpdateValue(selectedUnit) // change keyboard focus
-//
-//        unitListFragment?.run {
-//            workingUnits.listAdapter.notifyDataSetChanged()
-//        }
-
     }
 
     fun onPanelTextChanged(panel: ImperialUnitPanel, s: Editable) {
         unitListFragment?.onPanelTextChanged(panel.unit!!, panel.unit?.value ?: 0.0)
-//        workingUnits.listAdapter.updateAllValues(panel.unit, panel.unit?.value ?: 0.0)
+
+        val unit = panel.unit ?: return
+        if (s.isEmpty()) {
+            isTrackingConversion = false
+        } else if (!isTrackingConversion) {
+            val favorites = workingUnits.favoriteUnits
+            if (favorites.size == 2 && favorites.contains(unit)) {
+                val other = favorites.find { it != unit }!!
+                settings.incrementConversionCount(unit, other)
+                isTrackingConversion = true
+            }
+        }
 
         converterFragment?.let {
             val oppositePanel = if (it.bottomPanel == panel) it.topPanel else it.bottomPanel
@@ -419,7 +394,6 @@ class MainActivity : AppCompatActivity() {
     fun onTopPanelUnitChanged(unit: ImperialUnit) {
         converterFragment?.let {
             workingUnits.mainUnit = unit
-//            unitListFragment?.onUnitSelected(unit)
             settings.saveTopUnit(unit, makeSerializedString(it.topPanel.input.editableText))
         }
     }
@@ -427,7 +401,6 @@ class MainActivity : AppCompatActivity() {
     fun onBottomPanelUnitChanged(unit: ImperialUnit) {
         converterFragment?.let {
             workingUnits.mainUnit = unit
-//            unitListFragment?.onUnitSelected(unit)
             settings.saveBottomUnit(unit, makeSerializedString(it.bottomPanel.input.editableText))
         }
     }
@@ -464,17 +437,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun showTypeSwitcher() {
-        supportFragmentManager.commit {
-            setReorderingAllowed(true)
-//            add(R.id.fragment_container_view, switchFragment)
-        }
     }
 
     fun hideTypeSwitcher() {
-//        supportFragmentManager.commit {
-//            setReorderingAllowed(true)
-//            remove(switchFragment)
-//        }
     }
 
     fun onCategorySelected(category: ImperialUnitCategoryName) {
@@ -510,6 +475,38 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun onConversionPairSelected(name1: ImperialUnitName, name2: ImperialUnitName) {
+        // Find category
+        var foundType: ImperialUnitType? = null
+        for ((type, category) in ImperialCategory.typeMap) {
+            if (category.nameMap.containsKey(name1) && category.nameMap.containsKey(name2)) {
+                foundType = type
+                break
+            }
+        }
+        val type = foundType ?: return
+        val categoryName = ImperialCategory.names.find { categoryNameToType(it) == type } ?: return
+
+        workingUnits.selectedCategory = categoryName
+        workingUnits.orderedUnits = workingUnits.allUnits.getValue(type)
+        settings.saveCategory(categoryName.name)
+
+        workingUnits.favoriteUnits.forEach { it.bookmarked = false }
+        val unit1 = workingUnits.allUnits.getValue(type).find { it.unitName == name1 } ?: return
+        val unit2 = workingUnits.allUnits.getValue(type).find { it.unitName == name2 } ?: return
+        unit1.bookmarked = true
+        unit2.bookmarked = true
+        workingUnits.favoriteUnits = mutableListOf(unit1, unit2)
+        workingUnits.mainUnit = unit1
+
+        if (navController != null) {
+            val bundle = bundleOf(
+                "categoryTitle" to categoryName.name
+            )
+            navController?.navigate(R.id.action_select_category, bundle)
+        }
+    }
+
     fun onCategoryOpened() {
         unitObserver.setUnitAndUpdateValue(workingUnits.mainUnit)
 
@@ -517,6 +514,14 @@ class MainActivity : AppCompatActivity() {
             setUnits(workingUnits.orderedUnits)
             updateAllValues(workingUnits.mainUnit, 0.0)
             hidePanels()
+            // restore bookmarks if we came from ConversionPair
+            val favorites = workingUnits.favoriteUnits
+            if (favorites.size == 2) {
+                // units in orderedUnits are same objects as in favorites?
+                // Probably not if we just re-loaded. But here they should be.
+                showBookmark(favorites[0])
+                showBookmark(favorites[1])
+            }
             selectFirstInList()
         }
     }
@@ -541,23 +546,6 @@ class MainActivity : AppCompatActivity() {
         keyboardButtonFragment?.view?.visibility = View.GONE
         keyboardButtonView?.visibility = View.GONE
 
-//        val listVisible = unitListFragment != null
-//        val converterVisible = converterFragment != null
-//
-//        if (!converterVisible && listVisible) {
-//            unitListFragment?.keyboardFragment?.view?.visibility = View.VISIBLE
-//            unitListFragment?.keyboardView?.visibility = View.VISIBLE
-//        } else if (converterVisible && !listVisible) {
-//            converterFragment?.keyboardFragment?.view?.visibility = View.VISIBLE
-//            converterFragment?.keyboardView?.visibility = View.VISIBLE
-//        } else {
-//            converterFragment?.keyboardFragment?.view?.visibility = View.VISIBLE
-//            converterFragment?.keyboardView?.visibility = View.VISIBLE
-//        }
-//
-//        unitListFragment?.keyboardButtonFragment?.view?.visibility = View.INVISIBLE
-//        converterFragment?.keyboardButtonFragment?.view?.visibility = View.INVISIBLE
-
         // hide soft Android keyboard
         // Only runs if there is a view that is currently focused
         this.currentFocus?.let { view ->
@@ -576,23 +564,6 @@ class MainActivity : AppCompatActivity() {
         keyboardView?.visibility = View.GONE
         keyboardButtonFragment?.view?.visibility = View.VISIBLE
         keyboardButtonView?.visibility = View.VISIBLE
-
-//        val listVisible = unitListFragment != null
-//        val converterVisible = converterFragment != null
-//
-//        if (!converterVisible && listVisible) {
-//            unitListFragment?.keyboardButtonFragment?.view?.visibility = View.VISIBLE
-//            unitListFragment?.keyboardButtonView?.visibility = View.VISIBLE
-//        } else if (converterVisible && !listVisible) {
-//            converterFragment?.keyboardButtonFragment?.view?.visibility = View.VISIBLE
-//            converterFragment?.keyboardButtonView?.visibility = View.VISIBLE
-//        } else {
-//            converterFragment?.keyboardButtonFragment?.view?.visibility = View.VISIBLE
-//            converterFragment?.keyboardButtonView?.visibility = View.VISIBLE
-//        }
-//
-//        unitListFragment?.keyboardFragment?.view?.visibility = View.GONE
-//        converterFragment?.keyboardFragment?.view?.visibility = View.GONE
     }
 
     fun hideKeyboardCompletely() {

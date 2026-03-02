@@ -12,7 +12,7 @@ open class ImperialTextWatcher(val panel: ImperialUnitPanel, val fragment: Conve
 
     override fun afterTextChanged(s: Editable?) {
         println("[topInput] afterTextChanged ${s.toString()}")
-        if (fragment.selectedPanel?.input != input)
+        if (fragment.selectedPanel.input != input)
             return
         if (selfEditing)
             return

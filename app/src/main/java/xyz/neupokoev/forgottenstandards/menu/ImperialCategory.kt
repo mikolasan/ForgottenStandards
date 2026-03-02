@@ -22,30 +22,36 @@ import io.github.mikolasan.ratiogenerator.MinVolumeUnits
 import io.github.mikolasan.ratiogenerator.MinWeightUnits
 
 object ImperialCategory {
-    val names: Array<ImperialUnitCategoryName> = arrayOf(
-        ImperialUnitCategoryName("Length"),
-        ImperialUnitCategoryName("Area"),
-        ImperialUnitCategoryName("Volume"),
-        ImperialUnitCategoryName("Temperature"),
-        ImperialUnitCategoryName("Weight"),
-        ImperialUnitCategoryName("Speed"),
-        ImperialUnitCategoryName("Time"),
-        // Physics
-        ImperialUnitCategoryName("Pressure"),
-        ImperialUnitCategoryName("Power"),
-        ImperialUnitCategoryName("Energy"), // aka Work
-        ImperialUnitCategoryName("Force"),
-        ImperialUnitCategoryName("Resistance"), // ?
-
-        ImperialUnitCategoryName("Currency"),
-
-        ImperialUnitCategoryName("Storage"),
-        ImperialUnitCategoryName("Fuel"),
-        ImperialUnitCategoryName("Angle"),
-
-        ImperialUnitCategoryName("Nut and Bolt size"),
-        ImperialUnitCategoryName("Slavic Calendar")
+    val items: List<CategoryMenuItem> = listOf(
+        CategoryMenuItem.Header("Common"),
+        CategoryMenuItem.Item(ImperialUnitCategoryName("Length")),
+        CategoryMenuItem.Item(ImperialUnitCategoryName("Area")),
+        CategoryMenuItem.Item(ImperialUnitCategoryName("Volume")),
+        CategoryMenuItem.Item(ImperialUnitCategoryName("Temperature")),
+        CategoryMenuItem.Item(ImperialUnitCategoryName("Weight")),
+        CategoryMenuItem.Item(ImperialUnitCategoryName("Speed")),
+        CategoryMenuItem.Item(ImperialUnitCategoryName("Time")),
+        CategoryMenuItem.Header("Physics"),
+        CategoryMenuItem.Item(ImperialUnitCategoryName("Pressure")),
+        CategoryMenuItem.Item(ImperialUnitCategoryName("Power")),
+        CategoryMenuItem.Item(ImperialUnitCategoryName("Energy")),
+        CategoryMenuItem.Item(ImperialUnitCategoryName("Force")),
+        CategoryMenuItem.Header("Electronics"),
+        CategoryMenuItem.Item(ImperialUnitCategoryName("Resistance")),
+        CategoryMenuItem.Header("Misc"),
+        CategoryMenuItem.Item(ImperialUnitCategoryName("Currency")),
+        CategoryMenuItem.Item(ImperialUnitCategoryName("Storage")),
+        CategoryMenuItem.Item(ImperialUnitCategoryName("Fuel")),
+        CategoryMenuItem.Item(ImperialUnitCategoryName("Angle")),
+        CategoryMenuItem.Item(ImperialUnitCategoryName("Nut and Bolt size")),
+        CategoryMenuItem.Header("Calendars"),
+        CategoryMenuItem.Item(ImperialUnitCategoryName("Slavic Calendar"))
     )
+
+    val names: Array<ImperialUnitCategoryName> = items
+        .filterIsInstance<CategoryMenuItem.Item>()
+        .map { it.category }
+        .toTypedArray()
 
     val typeMap: Map<ImperialUnitType, ImperialUnitCategory> = mapOf(
         ImperialUnitType.ANGLE to MinAngleUnits,

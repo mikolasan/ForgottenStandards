@@ -129,4 +129,25 @@ class ImperialSettings(application: Application) : AndroidViewModel(application)
         preferencesEditor.putString("bottomPanelValue", serializedString)
         preferencesEditor.apply()
     }
+
+    fun incrementConversionCount(unit1: ImperialUnit, unit2: ImperialUnit) {
+        val name1 = unit1.unitName.name
+        val name2 = unit2.unitName.name
+        val pairKey = if (name1 < name2) "pair_${name1}_${name2}" else "pair_${name2}_${name1}"
+        val count = preferences.getInt(pairKey, 0)
+        preferencesEditor.putInt(pairKey, count + 1)
+        preferencesEditor.apply()
+    }
+
+    fun getFrequentConversions(): List<Pair<ImperialUnitName, ImperialUnitName>> {
+        val all = preferences.all
+        return all.filterKeys { it.startsWith("pair_") }
+            .map { (key, value) -> key to (value as Int) }
+            .sortedByDescending { it.second }
+            .take(5)
+            .map { (key, _) ->
+                val parts = key.removePrefix("pair_").split("_")
+                ImperialUnitName.valueOf(parts[0]) to ImperialUnitName.valueOf(parts[1])
+            }
+    }
 }
