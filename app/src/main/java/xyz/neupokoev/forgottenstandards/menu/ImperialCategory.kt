@@ -20,6 +20,7 @@ import io.github.mikolasan.ratiogenerator.MinTemperatureUnits
 import io.github.mikolasan.ratiogenerator.MinTimeUnits
 import io.github.mikolasan.ratiogenerator.MinVolumeUnits
 import io.github.mikolasan.ratiogenerator.MinWeightUnits
+import xyz.neupokoev.forgottenstandards.ImperialSettings
 
 object ImperialCategory {
     val items: List<CategoryMenuItem> = listOf(
@@ -47,6 +48,19 @@ object ImperialCategory {
         CategoryMenuItem.Header("Calendars"),
         CategoryMenuItem.Item(ImperialUnitCategoryName("Slavic Calendar"))
     )
+
+    fun getItemsWithFrequent(settings: ImperialSettings): List<CategoryMenuItem> {
+        val frequent = settings.getFrequentConversions()
+        if (frequent.isEmpty()) return items
+        
+        val list = mutableListOf<CategoryMenuItem>()
+        list.add(CategoryMenuItem.Header("Frequent"))
+        frequent.forEach { (u1, u2) ->
+            list.add(CategoryMenuItem.ConversionPair(u1, u2))
+        }
+        list.addAll(items)
+        return list
+    }
 
     val names: Array<ImperialUnitCategoryName> = items
         .filterIsInstance<CategoryMenuItem.Item>()

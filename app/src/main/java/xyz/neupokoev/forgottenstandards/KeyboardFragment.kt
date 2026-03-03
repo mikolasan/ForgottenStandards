@@ -25,10 +25,10 @@ class KeyboardFragment : Fragment() {
         return view
     }
 
-    override fun onStart() {
-        super.onStart()
-        (activity as MainActivity).onKeyboardConnected(this)
-    }
+//    override fun onStart() {
+//        super.onStart()
+//        (activity as MainActivity).onKeyboardConnected(this)
+//    }
 
 
     private fun setButtonListeners(view: View) {

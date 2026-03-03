@@ -10,7 +10,6 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
@@ -19,7 +18,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProviders
-import androidx.lifecycle.ViewModelStore
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -56,11 +54,11 @@ class MainActivity : AppCompatActivity() {
     private var navController: NavController? = null
     private val unitObserver = ImperialUnitObserver(null)
 
-    private lateinit var settings: ImperialSettings
+    lateinit var settings: ImperialSettings
     lateinit var workingUnits: WorkingUnits
     lateinit var markwon: Markwon
     private val descriptions by lazy {
-        ImperialUnitName.entries.map {
+        ImperialUnitName.values().map {
             try {
                 val inputReader = applicationContext.assets.open(it.name + ".txt")
                 return@map inputReader.bufferedReader().readLines().joinToString("\n")
@@ -118,7 +116,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        settings = ViewModelProviders.of(this)[ImperialSettings::class.java]
+
+        settings = ViewModelProviders.of(this).get(ImperialSettings::class.java)
         markwon = Markwon.create(applicationContext)
 
         if (savedInstanceState == null) {
@@ -152,6 +151,13 @@ class MainActivity : AppCompatActivity() {
 
         keyboardView = findViewById(R.id.keyboard)
         keyboardButtonView = findViewById(R.id.keyboard_button)
+
+        unitObserver.onErase = {
+            isTrackingConversion = false
+        }
+        unitObserver.addObserver(this) { unit, value ->
+            trackConversion(unit, unitObserver.getEditable())
+        }
     }
 
     override fun onStart() {
@@ -178,39 +184,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun recreatePreviousActivity(savedInstanceState: Bundle) {
         restoreMainUnits()
-    }
-
-    private fun applyLanguageSettings() {
-//        val prefs = getPreferences()
-//        var currentLang = prefs.getString(languageSetting, "en") ?: "en" // just want a safe call
-//        val editor = prefs.edit()
-//
-//        val languageButton = findViewById<Button>(R.id.language)
-//
-//        languageButton.text = currentLang
-//        languageButton.setOnClickListener { view ->
-//            val btn = view as Button
-//            if (currentLang == "ru") {
-//                currentLang = "en"
-//            } else if (currentLang == "en") {
-//                currentLang = "ru"
-//            }
-//
-//            newLocale = Locale(currentLang)
-//            Locale.setDefault(newLocale!!)
-//            btn.text = currentLang
-//            editor.putString(languageSetting, currentLang)
-//            editor.apply()
-//
-//            val config = resources.configuration
-//            config.locale = newLocale
-//            resources.updateConfiguration(config, resources.displayMetrics)
-//
-//
-//            listAdapter.notifyDataSetChanged()
-//            bottomPanel.updateUnitText()
-//            topPanel.updateUnitText()
-//        }
     }
 
     fun updateFragment(destinationId: Int, title: CharSequence) {
@@ -254,11 +227,8 @@ class MainActivity : AppCompatActivity() {
         unitObserver.setUnitAndUpdateValue(selectedUnit) // change keyboard focus
     }
 
-    fun onPanelTextChanged(panel: ImperialUnitPanel, s: Editable) {
-        unitListFragment?.onPanelTextChanged(panel.unit!!, panel.unit?.value ?: 0.0)
-
-        val unit = panel.unit ?: return
-        if (s.isEmpty()) {
+    private fun trackConversion(unit: ImperialUnit, s: CharSequence) {
+        if (s.isEmpty() || s.toString() == "0") {
             isTrackingConversion = false
         } else if (!isTrackingConversion) {
             val favorites = workingUnits.favoriteUnits
@@ -268,6 +238,12 @@ class MainActivity : AppCompatActivity() {
                 isTrackingConversion = true
             }
         }
+    }
+
+    fun onPanelTextChanged(panel: ImperialUnitPanel, s: Editable) {
+        unitListFragment?.onPanelTextChanged(panel.unit!!, panel.unit?.value ?: 0.0)
+
+        trackConversion(panel.unit!!, s)
 
         converterFragment?.let {
             val oppositePanel = if (it.bottomPanel == panel) it.topPanel else it.bottomPanel
@@ -282,95 +258,6 @@ class MainActivity : AppCompatActivity() {
     fun onUnitSelectedInList(unit: ImperialUnit) {
         workingUnits.mainUnit = unit
         unitObserver.setUnitAndUpdateValue(unit) // change keyboard focus
-
-//        var topChanged = true
-//        converterFragment?.let {
-//            val selectedUnit = it.selectedPanel.unit ?: return@let
-//            val topUnit = it.topPanel.unit ?: return@let
-//            topChanged = (topUnit == selectedUnit)
-//        }
-//
-//        if (workingUnits.topUnit == unit) {
-//            return
-//        }
-//        val swapped = workingUnits.bottomUnit == unit
-//        if (swapped) {
-//            val tmp = workingUnits.topUnit
-//            workingUnits.topUnit = unit
-//            workingUnits.bottomUnit = tmp
-//        } else if (topChanged) {
-//            workingUnits.topUnit = unit
-//            // keep the bottom
-//        } else {
-//            val tmp = workingUnits.topUnit
-//            workingUnits.topUnit = unit
-//            workingUnits.bottomUnit = tmp
-//        }
-//
-//        unitObserver.setUnitAndUpdateValue(unit) // change keyboard focus
-//
-//        unitListFragment?.run {
-//            workingUnits.listAdapter.notifyDataSetChanged()
-//        }
-//
-//        converterFragment?.let {
-//            if (swapped) {
-////                it.swapPanels()
-//                val selectedUnit = it.selectedPanel.unit ?: return@let
-//                val topUnit = it.topPanel.unit ?: return@let
-//                it.selectedPanel = if (topUnit == selectedUnit) {
-//                    it.bottomPanel
-//                } else {
-//                    it.topPanel
-//                }
-//                val otherPanel = if (topUnit == selectedUnit) {
-//                    it.topPanel
-//                } else {
-//                    it.bottomPanel
-//                }
-//                it.selectPanel(it.selectedPanel, otherPanel)
-//
-//            } else {
-//                val selectedUnit = it.selectedPanel.unit ?: return@let
-//                val topUnit = it.topPanel.unit ?: return@let
-//                if (topChanged) {
-//                    it.restoreTopPanel(unit)
-//                } else {
-//                    it.restoreBottomPanel(unit)
-//                }
-//                it.displayUnitValues()
-//            }
-//
-//        }
-
-        // TODO: only when the second unit is selected as fav
-//        if (workingUnits.favoritedUnits.size > 1) {
-//            try {
-//                val bundle = bundleOf(
-//                    "category" to unit.category.type.name,
-//                    "topUnit" to workingUnits.topUnit.unitName.name,
-//                    "bottomUnit" to workingUnits.bottomUnit.unitName.name
-//                )
-//                navController.navigate(R.id.action_select_unit, bundle)
-//            } catch (e: Exception) {
-//                // ignore
-//            }
-//        }
-
-        // save last input values
-//        settings.saveTopUnit(workingUnits.topUnit, workingUnits.topUnit.formattedString)
-//        settings.saveBottomUnit(workingUnits.bottomUnit, workingUnits.bottomUnit.formattedString)
-
-//        try {
-//            val label = findViewById<TextView>(R.id.description_text)
-//            markwon.setMarkdown(label, descriptions[unit.unitName.ordinal])
-//        } catch (e: Exception) {
-//            // layout without view pager
-//        }
-    }
-
-    fun onKeyboardConnected(keyboardFragment: KeyboardFragment) {
-//        keyboardFragment.selectedPanel = selectedPanel
     }
 
     fun onArrowClicked(unit: ImperialUnit) {

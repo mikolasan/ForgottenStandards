@@ -10,6 +10,7 @@ import java.util.Optional
 
 class ImperialUnitObserver (var unit: ImperialUnit?) {
     private var observers: MutableMap<Any, ObserverCallable> = mutableMapOf()
+    var onErase: (() -> Unit)? = null
     var value: Double = 0.0
     private var formatted = SpannableStringBuilder()
 
@@ -24,6 +25,9 @@ class ImperialUnitObserver (var unit: ImperialUnit?) {
     fun getEditable(): Editable = formatted
 
     fun setValueAndNotify(v: Double) {
+        if (v == 0.0) {
+            onErase?.invoke()
+        }
         value = v
         formatted = valueForDisplay(v)
         unit?.let {
@@ -62,6 +66,7 @@ class ImperialUnitObserver (var unit: ImperialUnit?) {
     }
 
     fun dropLastChar() {
+        onErase?.invoke()
         if (formatted.isNotEmpty()) {
             formatted.delete(formatted.length - 1, formatted.length)
             if (formatted.length == 0) {

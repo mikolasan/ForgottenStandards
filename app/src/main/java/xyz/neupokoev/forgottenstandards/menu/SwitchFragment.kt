@@ -19,22 +19,22 @@ class SwitchFragment : Fragment(R.layout.fragment_switch) {
         val view = inflater.inflate(R.layout.fragment_switch, container, false)
         val categoryGrid = view.findViewById<RecyclerView>(R.id.category_grid)
 
-        categoryAdapter = ImperialCategoryAdapter(ImperialCategory.items, activity as MainActivity)
+        val mainActivity = activity as MainActivity
+        val items = ImperialCategory.getItemsWithFrequent(mainActivity.settings)
+
+        categoryAdapter = ImperialCategoryAdapter(items, mainActivity)
         categoryGrid.adapter = categoryAdapter
         val manager = GridLayoutManager(activity as MainActivity, 2, GridLayoutManager.VERTICAL, false)
         manager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
                 return when (categoryAdapter.getItemViewType(position)) {
                     0 -> 2 // TYPE_HEADER
-                    1 -> 1 // TYPE_ITEM
+                    2 -> 2 // TYPE_CONVERSION - Frequent items span 2 columns
                     else -> 1
                 }
             }
         }
         categoryGrid.layoutManager = manager
-//        view.findViewById<ConstraintLayout>(R.id.switch_layout).setOnClickListener{
-//            (activity as MainActivity).hideTypeSwitcher()
-//        }
         return view
     }
 }
