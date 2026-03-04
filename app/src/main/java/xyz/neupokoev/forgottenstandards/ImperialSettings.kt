@@ -150,4 +150,13 @@ class ImperialSettings(application: Application) : AndroidViewModel(application)
                 ImperialUnitName.valueOf(parts[0]) to ImperialUnitName.valueOf(parts[1])
             }
     }
+
+    fun isFirstRun(): Boolean {
+        return preferences.getBoolean("isFirstRun", true)
+    }
+
+    fun setFirstRunDone() {
+        preferencesEditor.putBoolean("isFirstRun", false)
+        preferencesEditor.apply()
+    }
 }

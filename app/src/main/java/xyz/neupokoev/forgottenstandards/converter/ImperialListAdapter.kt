@@ -20,6 +20,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import xyz.neupokoev.forgottenstandards.MainActivity
 import xyz.neupokoev.forgottenstandards.R
 import xyz.neupokoev.forgottenstandards.WorkingUnits
 import xyz.neupokoev.forgottenstandards.convertValueWrapper
@@ -96,13 +97,14 @@ class ImperialListAdapter
 
     fun excludeUnit(unit: ImperialUnit) {
         val id = listUnits.indexOfFirst { it.unitName == unit.unitName }
-        noPinnedUnits.remove(unit)
-        listUnits = noPinnedUnits
-        notifyItemRemoved(id)
+        if (id != -1) {
+            noPinnedUnits.remove(unit)
+            listUnits = noPinnedUnits
+            notifyItemRemoved(id)
+        }
     }
 
     fun restoreUnit(unit: ImperialUnit) {
-        //val id = allUnits.indexOfFirst { it.unitName == unit.unitName }
         noPinnedUnits.add(0, unit)
         listUnits = noPinnedUnits
         notifyItemInserted(0)
@@ -176,10 +178,20 @@ class ImperialListAdapter
     )
 
     private fun updateViewColors(holder: ViewHolder, dataPosition: Int) {
-        val bookmarkColor = if (getItem(dataPosition).bookmarked) R.color.bookmark else R.color.action
-        val color = holder.bookmark.context.resources.getColor(bookmarkColor)
+        val unit = getItem(dataPosition)
+        val mainActivity = holder.itemView.context as? MainActivity
+        
+        var bookmarkColorRes = if (unit.bookmarked) R.color.bookmark else R.color.action
+        
+        // Highlight first item on first run
+        if (dataPosition == 0 && mainActivity?.settings?.isFirstRun() == true) {
+            bookmarkColorRes = R.color.panel_selected_back // Use a darker/more visible color to highlight
+        }
+
+        val color = holder.bookmark.context.resources.getColor(bookmarkColorRes)
         holder.bookmark.drawable.mutate().setColorFilter(color, PorterDuff.Mode.SRC_IN)
-        when (getItem(dataPosition) as ImperialUnit) {
+        
+        when (unit) {
             workingUnits.mainUnit -> {
                 holder.layout.setBackgroundResource(backgrounds.getValue(ViewState.SELECTED))
                 holder.name.setTextColorId(nameColors.getValue(ViewState.SELECTED))
@@ -188,20 +200,12 @@ class ImperialListAdapter
                 holder.value.setBackgroundResource(valueBackgrounds.getValue(ViewState.SELECTED))
                 holder.arrowUp.visibility = if (dataPosition == 0) View.INVISIBLE else View.VISIBLE
             }
-//            workingUnits.bottomUnit -> {
-//                layout.setBackgroundResource(backgrounds.getValue(ViewState.SECOND))
-//                name.setTextColorId(nameColors.getValue(ViewState.SECOND))
-//                value.setTextColorId(valueColors.getValue(ViewState.SECOND))
-//                symbol.setTextColorId(valueColors.getValue(ViewState.SECOND))
-//                arrowUp.visibility = View.INVISIBLE
-//            }
             else -> {
                 holder.layout.setBackgroundResource(backgrounds.getValue(ViewState.NORMAL))
                 holder.name.setTextColorId(nameColors.getValue(ViewState.NORMAL))
                 holder.value.setTextColorId(valueColors.getValue(ViewState.NORMAL))
                 holder.symbol.setTextColorId(valueColors.getValue(ViewState.NORMAL))
                 holder.value.setBackgroundResource(valueBackgrounds.getValue(ViewState.NORMAL))
-//                bookmark.setColorFilter(if (units[dataPosition].bookmarked) R.color.colorPrimaryDark else R.color.action, PorterDuff.Mode.SRC_IN)
                 holder.arrowUp.visibility = View.INVISIBLE
             }
         }
@@ -291,8 +295,6 @@ class ImperialListAdapter
         override fun publishResults(constraint: CharSequence?, filterResults: FilterResults?) {
             listUnits = filterResults?.values as ArrayList<ImperialUnit>
             notifyDataSetChanged()
-            // TODO: use submitList from AsyncListDiffer (used in ListAdapter)
-            //submitList(filterResults?.values as MutableList<String>)
         }
 
     }

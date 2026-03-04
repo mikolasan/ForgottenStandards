@@ -7,18 +7,52 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
+    <TextView
+        android:id="@+id/favorites_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="8dp"
+        android:text="Favorites"
+        android:textAllCaps="true"
+        android:textColor="@color/action"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/gotham_pro_bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/favorites_placeholder"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/bg_rect_selected"
+        android:gravity="center"
+        android:padding="24dp"
+        android:text="Star up to 2 units for quick access"
+        android:textColor="@color/action"
+        android:textSize="14sp"
+        android:fontFamily="@font/gotham_pro_regular"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/favorites_header" />
+
     <xyz.neupokoev.forgottenstandards.converter.ImperialUnitPanel
         android:id="@+id/convert_to"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:minWidth="@dimen/min_imperial_panel_width"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/favorites_header"
         tools:layout="@layout/big_unit_space" />
 
     <xyz.neupokoev.forgottenstandards.converter.ImperialUnitPanel
@@ -26,7 +60,7 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/imperial_panel_height"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:minWidth="@dimen/min_imperial_panel_width"
         android:visibility="visible"
@@ -34,6 +68,29 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/convert_to"
         tools:layout="@layout/big_unit_space" />
+
+    <!-- Barrier to handle dynamic visibility of favorites -->
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/favorites_barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="favorites_placeholder,convert_to,convert_from" />
+
+    <TextView
+        android:id="@+id/all_units_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="16dp"
+        android:text="All Units"
+        android:textAllCaps="true"
+        android:textColor="@color/action"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/gotham_pro_bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/favorites_barrier" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/units_list"
@@ -45,10 +102,9 @@
         android:divider="@android:color/transparent"
         android:dividerHeight="@dimen/unit_list_divider"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/convert_from"
+        app:layout_constraintTop_toBottomOf="@id/all_units_header"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         tools:listitem="@layout/unit_space" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

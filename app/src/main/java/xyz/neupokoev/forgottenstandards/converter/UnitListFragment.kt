@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.widget.TextView
+import androidx.appcompat.widget.TooltipCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,6 +23,7 @@ class UnitListFragment : Fragment() {
     private lateinit var bottomPanel: ImperialUnitPanel
     private lateinit var topPanel: ImperialUnitPanel
     private lateinit var selectedPanel: ImperialUnitPanel
+    private lateinit var favoritesPlaceholder: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +35,7 @@ class UnitListFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_list, container, false)
         unitsList = view.findViewById(R.id.units_list)
+        favoritesPlaceholder = view.findViewById(R.id.favorites_placeholder)
 
         val mainActivity = activity as MainActivity
         listAdapter.workingUnits = mainActivity.workingUnits
@@ -46,61 +50,39 @@ class UnitListFragment : Fragment() {
         topPanel.setHintText(view.context.resources.getString(R.string.select_unit_hint))
         bottomPanel.setHintText(view.context.resources.getString(R.string.select_unit_2_hint))
 
-        hidePanels()
-
-
-        // This is moved to another fragment (main activity for tablets ??)
-//        val searchInput = view.findViewById<EditText>(R.id.search_input)
-//        searchInput.addTextChangedListener {
-//            listAdapter.filter.filter(it.toString())
-//        }
-//        searchInput.setOnFocusChangeListener { view, hasFocus ->
-//            if (hasFocus) {
-//                (activity as MainActivity).showKeyboardButton()
-//            }
-//        }
-//        title = view.findViewById(R.id.unit_type_label)
-//        title.text = arguments?.getString("categoryTitle")
-
-//        keyboardView = view.findViewById(R.id.keyboard)
-//        keyboardButtonView = view.findViewById(R.id.keyboard_button)
+        updateFavoritesUI()
 
         setListeners(view)
 
-        // This will be too late, DestinationChangedListener is applied before that
-        // the only quirk: label in the nav graph must be omitted
-        // (activity as AppCompatActivity?)!!.supportActionBar!!.title = "your title"
         return view
     }
 
     override fun onStart() {
         super.onStart()
 
-        (activity as MainActivity).onCategoryOpened()
+        val mainActivity = activity as MainActivity
+        mainActivity.onCategoryOpened()
 
-//        keyboardFragment = keyboardView.getFragment()
-//        keyboardButtonFragment = keyboardButtonView.getFragment()
-
-//        (activity as? MainActivity)?.workingUnits?.let { workingUnits ->
-//            restoreSelectedUnit(workingUnits.topUnit)
-//            restoreSecondUnit(workingUnits.bottomUnit)
-//            val unit = workingUnits.topUnit
-//            listAdapter.updateAllValues(unit, unit.value)
-//        }
-
-        //(activity as? MainActivity)?.updateKeyboard()
-//        (activity as? MainActivity)?.showKeyboard()
+        if (mainActivity.settings.isFirstRun()) {
+            unitsList.postDelayed({
+                val viewHolder = unitsList.findViewHolderForAdapterPosition(0) as? ImperialListAdapter.ViewHolder
+                viewHolder?.bookmark?.let { bookmarkView ->
+                    TooltipCompat.setTooltipText(bookmarkView, getString(R.string.pin_hint))
+                    bookmarkView.performLongClick() // Force tooltip display if supported
+                    // Alternatively, we could use a custom view or library, 
+                    // but we'll stick to standard TooltipCompat for now.
+                    mainActivity.settings.setFirstRunDone()
+                }
+            }, 500)
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        //listAdapter.notifyDataSetChanged()
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
-        //listAdapter.notifyDataSetChanged()
-
     }
 
     fun setUnits(units: Array<ImperialUnit>) {
@@ -111,23 +93,22 @@ class UnitListFragment : Fragment() {
         listAdapter.updateAllValues(unit, value)
     }
 
-//    fun restoreSelectedUnit(unit: ImperialUnit) {
-//        (activity as? MainActivity)?.let { mainActivity ->
-//            mainActivity.workingUnits.topUnit = unit
-//        }
-//        //listAdapter.setSelectedUnit(unit)
-//    }
-//
-//    fun restoreSecondUnit(unit: ImperialUnit) {
-//        (activity as? MainActivity)?.let { mainActivity ->
-//            mainActivity.workingUnits.bottomUnit = unit
-//        }
-//        //listAdapter.setSelectedUnit(unit)
-//    }
-
     fun selectFirstInList() {
         unitsList.scrollToPosition(0)
         selectedId = 0
+    }
+
+    private fun updateFavoritesUI() {
+        val mainActivity = activity as MainActivity
+        val favorites = mainActivity.workingUnits.favoriteUnits
+        if (favorites.isEmpty()) {
+            favoritesPlaceholder.visibility = View.VISIBLE
+            topPanel.visibility = View.GONE
+            bottomPanel.visibility = View.GONE
+        } else {
+            favoritesPlaceholder.visibility = View.GONE
+            // Panels visibility is managed by showBookmark/hidePanels
+        }
     }
 
     fun hidePanels() {
@@ -136,6 +117,7 @@ class UnitListFragment : Fragment() {
         bottomPanel.visibility = View.GONE
         mainActivity.removeKeyboardInputObserver(topPanel)
         mainActivity.removeKeyboardInputObserver(bottomPanel)
+        updateFavoritesUI()
     }
 
     fun onPanelTextChanged(unit: ImperialUnit, value: Double) {
@@ -191,10 +173,8 @@ class UnitListFragment : Fragment() {
     fun showBookmark(unit: ImperialUnit) {
         val mainActivity = activity as MainActivity
         val favorites = mainActivity.workingUnits.favoriteUnits
-        if (favorites.isEmpty()) {
-            hidePanels()
-            return
-        }
+        
+        updateFavoritesUI()
 
         if (favorites.size == 1
             || favorites.size == 2 && bottomPanel.visibility == View.VISIBLE
@@ -252,19 +232,9 @@ class UnitListFragment : Fragment() {
         panel.visibility = View.GONE
         mainActivity.removeKeyboardInputObserver(panel)
 
+        updateFavoritesUI()
         selectFirstInList()
     }
-
-    // TODO: remove '?'
-//    fun onUnitSelected(selectedUnit: ImperialUnit) {
-//        (activity as? MainActivity)?.let { mainActivity ->
-//            mainActivity.workingUnits.mainUnit = selectedUnit
-//        }
-////        listAdapter.setSelectedUnit(selectedUnit)
-////        listAdapter.setSecondUnit(secondUnit)
-//        //listAdapter.notifyDataSetChanged()
-//
-//    }
 
     fun setFilter(query: String?) {
         listAdapter.filter.filter(query)
@@ -293,7 +263,6 @@ class UnitListFragment : Fragment() {
             listAdapter.setOnArrowLongClickListener { _: Int, arrow: View, unit: ImperialUnit ->
                 arrow.visibility = View.INVISIBLE // hide the arrow
                 mainActivity.onArrowLongClicked(unit)
-                //unitsList.setSelectionAfterHeaderView()
             }
             listAdapter.setOnBookmarkClickListener { _: Int, arrow: View, unit: ImperialUnit ->
                 if (mainActivity.workingUnits.favoriteUnits.size == 2) {
@@ -301,7 +270,6 @@ class UnitListFragment : Fragment() {
                 }
                 if (unit.bookmarked) {
                     mainActivity.workingUnits.favoriteUnits.plusAssign(unit)
-                    //mainActivity.onUnitSelected(unit)
                     showBookmark(unit)
                     listAdapter.excludeUnit(unit)
                 }
@@ -343,24 +311,12 @@ class UnitListFragment : Fragment() {
         bottomPanel.bookmark.setOnClickListener {
             removeBookmark(bottomPanel, bottomPanel.unit!!)
         }
-        // This is replaced by the toolbar
-//        view.run {
-//            val typeSwitcher: ConstraintLayout = view.findViewById(R.id.unit_type)
-//            typeSwitcher.setOnClickListener { v ->
-//                (activity as MainActivity).showTypeSwitcher()
-//            }
-//        }
 
         view.viewTreeObserver.addOnGlobalLayoutListener {
             object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
-//                    view.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                    // do whatever
-//                    val layout = view.findViewById<FragmentContainerView>(R.id.keyboard)
-//                    print(layout.visibility)
                 }
             }
         }
-
     }
 }
