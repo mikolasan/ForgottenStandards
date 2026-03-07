@@ -40,12 +40,12 @@ class ImperialContentProvider : ContentProvider() {
         sortOrderAlswaysNull: String?
     ): Cursor {
 
-        //val query: String = uri.lastPathSegment?.toLowerCase(Locale.ROOT) ?: ""
         val query: String = selectionArgs?.get(0) ?: ""
         val cursor = MatrixCursor(arrayOf(
             BaseColumns._ID,
             SearchManager.SUGGEST_COLUMN_TEXT_1,
-            SearchManager.SUGGEST_COLUMN_TEXT_2
+            SearchManager.SUGGEST_COLUMN_TEXT_2,
+            SearchManager.SUGGEST_COLUMN_INTENT_DATA_ID
         ))
 
         val filtered = FuzzySearch.extractSorted(
@@ -65,25 +65,26 @@ class ImperialContentProvider : ContentProvider() {
             cursor.addRow(arrayOf(
                 it.uniqueId,
                 name,
-                displayString
+                displayString,
+                it.uniqueId.toString()
             ))
         }
         return cursor
     }
 
     override fun getType(p0: Uri): String? {
-        TODO("Not yet implemented")
+        return null
     }
 
     override fun insert(p0: Uri, p1: ContentValues?): Uri? {
-        TODO("Not yet implemented")
+        return null
     }
 
     override fun delete(p0: Uri, p1: String?, p2: Array<out String>?): Int {
-        TODO("Not yet implemented")
+        return 0
     }
 
     override fun update(p0: Uri, p1: ContentValues?, p2: String?, p3: Array<out String>?): Int {
-        TODO("Not yet implemented")
+        return 0
     }
 }

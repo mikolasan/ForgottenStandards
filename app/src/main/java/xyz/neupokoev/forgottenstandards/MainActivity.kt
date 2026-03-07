@@ -2,6 +2,7 @@ package xyz.neupokoev.forgottenstandards
 
 import android.app.SearchManager
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.view.Menu
@@ -16,7 +17,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
-import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -80,7 +80,9 @@ class MainActivity : AppCompatActivity() {
         (menu.findItem(R.id.action_search).actionView as SearchView).apply {
             // Assumes current activity is the searchable activity.
             setSearchableInfo(searchManager.getSearchableInfo(componentName))
-            setIconifiedByDefault(true)
+            setIconifiedByDefault(false)
+            onActionViewExpanded()
+            maxWidth = Integer.MAX_VALUE
 
             val listener = object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
@@ -158,6 +160,64 @@ class MainActivity : AppCompatActivity() {
         unitObserver.addObserver(this) { unit, value ->
             trackConversion(unit, unitObserver.getEditable())
         }
+
+        handleIntent(intent)
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleIntent(intent)
+    }
+
+    private fun handleIntent(intent: Intent) {
+        if (Intent.ACTION_VIEW == intent.action) {
+            // suggestion clicked
+            val id = intent.data?.lastPathSegment?.toLongOrNull() ?: return
+            findUnitById(id)?.let { unit ->
+                // Delay navigation slightly to ensure the UI is ready
+                findViewById<View>(android.R.id.content).post {
+                    onUnitSelectedFromSearch(unit)
+                }
+            }
+        }
+    }
+
+    private fun findUnitById(id: Long): ImperialUnit? {
+        var currentId = 0L
+        for (category in ImperialCategory.typeMap.values) {
+            for (unit in category.units) {
+                if (currentId == id) return unit
+                currentId++
+            }
+        }
+        return null
+    }
+
+    private fun onUnitSelectedFromSearch(unit: ImperialUnit) {
+        val type = unit.unitType
+        val category = ImperialCategory.names.find { categoryNameToType(it) == type } ?: return
+        
+        // Open category
+        workingUnits.selectedCategory = category
+        workingUnits.orderedUnits = workingUnits.allUnits.getValue(type)
+        settings.saveCategory(category.name)
+
+        // Move unit to top of the list (not favorites)
+        workingUnits.orderedUnits.moveToFront(unit)
+        settings.saveNewOrder(workingUnits.orderedUnits)
+        
+        workingUnits.mainUnit = unit
+        
+        // Navigate
+        navController?.run {
+            val bundle = bundleOf("categoryTitle" to category.name)
+            when (type) {
+                ImperialUnitType.SLAVIC_CALENDAR -> navigate(R.id.slavicCalendarFragment, bundle)
+                ImperialUnitType.NUT_AND_BOLT_SIZE -> navigate(R.id.nutBoltFragment, bundle)
+                else -> navigate(R.id.unitListFragment, bundle)
+            }
+        } ?: onCategoryOpened()
     }
 
     override fun onStart() {
@@ -342,24 +402,15 @@ class MainActivity : AppCompatActivity() {
         workingUnits.favoriteUnits.forEach { it.bookmarked = false }
         workingUnits.favoriteUnits = mutableListOf()
 
-        if (navController != null) {
-            val bundle = bundleOf(
-                "categoryTitle" to category.name
-            )
+        // Navigate
+        navController?.run {
+            val bundle = bundleOf("categoryTitle" to category.name)
             when (type) {
-                ImperialUnitType.SLAVIC_CALENDAR -> {
-                    navController?.navigate(R.id.slavicCalendarFragment, bundle)
-                }
-                ImperialUnitType.NUT_AND_BOLT_SIZE -> {
-                    navController?.navigate(R.id.action_select_nut_bolt, bundle)
-                }
-                else -> {
-                    navController?.navigate(R.id.action_select_category, bundle)
-                }
+                ImperialUnitType.SLAVIC_CALENDAR -> navigate(R.id.slavicCalendarFragment, bundle)
+                ImperialUnitType.NUT_AND_BOLT_SIZE -> navigate(R.id.nutBoltFragment, bundle)
+                else -> navigate(R.id.unitListFragment, bundle)
             }
-        } else {
-            onCategoryOpened()
-        }
+        } ?: onCategoryOpened()
     }
 
     fun onConversionPairSelected(name1: ImperialUnitName, name2: ImperialUnitName) {
