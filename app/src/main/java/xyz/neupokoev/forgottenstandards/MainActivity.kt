@@ -17,6 +17,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
+import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -78,23 +79,23 @@ class MainActivity : AppCompatActivity() {
         // Get the SearchView and set the searchable configuration.
         val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
         (menu.findItem(R.id.action_search).actionView as SearchView).apply {
-            // Assumes current activity is the searchable activity.
-            setSearchableInfo(searchManager.getSearchableInfo(componentName))
+            // We REMOVE setSearchableInfo to disable the default dropdown suggestions
+            // setSearchableInfo(searchManager.getSearchableInfo(componentName))
+            
             setIconifiedByDefault(false)
             onActionViewExpanded()
             maxWidth = Integer.MAX_VALUE
 
             val listener = object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
-//                    unitListFragment?.run {
-//                        listAdapter.filter.filter(query)
-//                    }
-//                    return true
                     return false
                 }
 
                 override fun onQueryTextChange(newText: String?): Boolean {
                     unitListFragment?.run {
+                        setFilter(newText)
+                    }
+                    switchFragment?.run {
                         setFilter(newText)
                     }
                     return true
@@ -172,7 +173,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun handleIntent(intent: Intent) {
         if (Intent.ACTION_VIEW == intent.action) {
-            // suggestion clicked
+            // suggestion clicked (though dropdown is disabled, we keep this for robustness)
             val id = intent.data?.lastPathSegment?.toLongOrNull() ?: return
             findUnitById(id)?.let { unit ->
                 // Delay navigation slightly to ensure the UI is ready
@@ -194,14 +195,14 @@ class MainActivity : AppCompatActivity() {
         return null
     }
 
-    private fun onUnitSelectedFromSearch(unit: ImperialUnit) {
+    fun onUnitSelectedFromSearch(unit: ImperialUnit) {
         val type = unit.unitType
-        val category = ImperialCategory.names.find { categoryNameToType(it) == type } ?: return
+        val categoryName = ImperialCategory.names.find { categoryNameToType(it) == type } ?: return
         
         // Open category
-        workingUnits.selectedCategory = category
+        workingUnits.selectedCategory = categoryName
         workingUnits.orderedUnits = workingUnits.allUnits.getValue(type)
-        settings.saveCategory(category.name)
+        settings.saveCategory(categoryName.name)
 
         // Move unit to top of the list (not favorites)
         workingUnits.orderedUnits.moveToFront(unit)
@@ -211,7 +212,7 @@ class MainActivity : AppCompatActivity() {
         
         // Navigate
         navController?.run {
-            val bundle = bundleOf("categoryTitle" to category.name)
+            val bundle = bundleOf("categoryTitle" to categoryName.name)
             when (type) {
                 ImperialUnitType.SLAVIC_CALENDAR -> navigate(R.id.slavicCalendarFragment, bundle)
                 ImperialUnitType.NUT_AND_BOLT_SIZE -> navigate(R.id.nutBoltFragment, bundle)
@@ -402,15 +403,24 @@ class MainActivity : AppCompatActivity() {
         workingUnits.favoriteUnits.forEach { it.bookmarked = false }
         workingUnits.favoriteUnits = mutableListOf()
 
-        // Navigate
-        navController?.run {
-            val bundle = bundleOf("categoryTitle" to category.name)
+        if (navController != null) {
+            val bundle = bundleOf(
+                "categoryTitle" to category.name
+            )
             when (type) {
-                ImperialUnitType.SLAVIC_CALENDAR -> navigate(R.id.slavicCalendarFragment, bundle)
-                ImperialUnitType.NUT_AND_BOLT_SIZE -> navigate(R.id.nutBoltFragment, bundle)
-                else -> navigate(R.id.unitListFragment, bundle)
+                ImperialUnitType.SLAVIC_CALENDAR -> {
+                    navController?.navigate(R.id.slavicCalendarFragment, bundle)
+                }
+                ImperialUnitType.NUT_AND_BOLT_SIZE -> {
+                    navController?.navigate(R.id.nutBoltFragment, bundle)
+                }
+                else -> {
+                    navController?.navigate(R.id.unitListFragment, bundle)
+                }
             }
-        } ?: onCategoryOpened()
+        } else {
+            onCategoryOpened()
+        }
     }
 
     fun onConversionPairSelected(name1: ImperialUnitName, name2: ImperialUnitName) {
@@ -441,7 +451,7 @@ class MainActivity : AppCompatActivity() {
             val bundle = bundleOf(
                 "categoryTitle" to categoryName.name
             )
-            navController?.navigate(R.id.action_select_category, bundle)
+            navController?.navigate(R.id.unitListFragment, bundle)
         }
     }
 
@@ -465,9 +475,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun showUnitList() {
-        converterFragment?.let { f ->
-            f.view?.visibility = if (f.isVisible) View.GONE else View.VISIBLE
-        }
+//        converterFragment?.let { f ->
+//            f.visibility = if (f.isVisible) View.GONE else View.VISIBLE
+//        }
     }
 
     fun addKeyboardInputObserver(observer: Any, callable: ObserverCallable) {

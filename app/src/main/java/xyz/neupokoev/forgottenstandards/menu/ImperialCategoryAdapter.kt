@@ -1,5 +1,7 @@
 package xyz.neupokoev.forgottenstandards.menu
 
+import android.util.TypedValue
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,19 +11,22 @@ import androidx.recyclerview.widget.RecyclerView
 import io.github.mikolasan.ratiogenerator.ImperialUnitName
 import xyz.neupokoev.forgottenstandards.MainActivity
 import xyz.neupokoev.forgottenstandards.R
+import xyz.neupokoev.forgottenstandards.converter.ImperialSymbol
 import java.util.Locale
 
-class ImperialCategoryAdapter(private val items: List<CategoryMenuItem>,
+class ImperialCategoryAdapter(private var items: List<CategoryMenuItem>,
                               private val publishSubject: MainActivity
 )
     : RecyclerView.Adapter<RecyclerView.ViewHolder>()
 {
     private var selectedViewHolder: ItemViewHolder? = null
+    var isSearchMode: Boolean = false
 
     companion object {
-        private const val TYPE_HEADER = 0
-        private const val TYPE_ITEM = 1
-        private const val TYPE_CONVERSION = 2
+        const val TYPE_HEADER = 0
+        const val TYPE_ITEM = 1
+        const val TYPE_CONVERSION = 2
+        const val TYPE_UNIT = 3
     }
 
     class HeaderViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -32,6 +37,7 @@ class ImperialCategoryAdapter(private val items: List<CategoryMenuItem>,
         var category: ImperialUnitCategoryName? = null
         val categoryTitle: TextView = view.findViewById(R.id.category_title)
         val space: ConstraintLayout = view.findViewById(R.id.category_space)
+        val divider: View = view.findViewById(R.id.category_divider)
     }
 
     class ConversionViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -41,11 +47,22 @@ class ImperialCategoryAdapter(private val items: List<CategoryMenuItem>,
         var unit2: ImperialUnitName? = null
     }
 
+    class UnitViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val unitTitle: TextView = view.findViewById(R.id.category_title)
+        val space: ConstraintLayout = view.findViewById(R.id.category_space)
+    }
+
+    fun updateItems(newItems: List<CategoryMenuItem>) {
+        items = newItems
+        notifyDataSetChanged()
+    }
+
     override fun getItemViewType(position: Int): Int {
         return when (items[position]) {
             is CategoryMenuItem.Header -> TYPE_HEADER
             is CategoryMenuItem.Item -> TYPE_ITEM
             is CategoryMenuItem.ConversionPair -> TYPE_CONVERSION
+            is CategoryMenuItem.UnitItem -> TYPE_UNIT
         }
     }
 
@@ -60,6 +77,11 @@ class ImperialCategoryAdapter(private val items: List<CategoryMenuItem>,
                 val view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.conversion_item, parent, false)
                 ConversionViewHolder(view)
+            }
+            TYPE_UNIT -> {
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.unit_menu_item, parent, false)
+                UnitViewHolder(view)
             }
             else -> {
                 val view = LayoutInflater.from(parent.context)
@@ -87,19 +109,38 @@ class ImperialCategoryAdapter(private val items: List<CategoryMenuItem>,
                 itemHolder.categoryTitle.text = item.category.name
                 val viewCategory = item.category
                 itemHolder.category = viewCategory
-                val selectedCategory = publishSubject.workingUnits.selectedCategory
-                if (selectedCategory == viewCategory) {
-                    selectedViewHolder = itemHolder
-                    itemHolder.space.setBackgroundResource(R.drawable.bg_rect_selected)
-                } else {
+                
+                if (isSearchMode) {
                     itemHolder.space.setBackgroundResource(0)
+                    itemHolder.categoryTitle.gravity = Gravity.START
+                    itemHolder.categoryTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
+                    itemHolder.categoryTitle.setTextColor(itemHolder.itemView.context.getColor(R.color.menu_search_header_font))
+                    itemHolder.divider.visibility = View.GONE
+                    // adjust padding for sub-header feel
+                    itemHolder.categoryTitle.setPadding(0, 16, 0, 0)
+                } else {
+                    itemHolder.categoryTitle.gravity = Gravity.CENTER
+                    itemHolder.categoryTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
+                    itemHolder.categoryTitle.setTextColor(itemHolder.itemView.context.getColor(R.color.menu_header_font))
+                    itemHolder.divider.visibility = View.GONE
+                    itemHolder.categoryTitle.setPadding(16, 16, 16, 16)
+                    
+                    val selectedCategory = publishSubject.workingUnits.selectedCategory
+                    if (selectedCategory == viewCategory) {
+                        selectedViewHolder = itemHolder
+                        itemHolder.space.setBackgroundResource(R.drawable.bg_rect_selected)
+                    } else {
+                        itemHolder.space.setBackgroundResource(0)
+                    }
                 }
+                
                 itemHolder.space.setOnClickListener {
-                    // unselect previous holder
-                    selectedViewHolder?.space?.setBackgroundResource(0)
-                    selectedViewHolder = itemHolder
-                    publishSubject.onCategorySelected(holder.category!!)
-                    itemHolder.space.setBackgroundResource(R.drawable.bg_rect_selected)
+                    if (!isSearchMode) {
+                        selectedViewHolder?.space?.setBackgroundResource(0)
+                        selectedViewHolder = itemHolder
+                        itemHolder.space.setBackgroundResource(R.drawable.bg_rect_selected)
+                    }
+                    publishSubject.onCategorySelected(item.category)
                 }
             }
             is CategoryMenuItem.ConversionPair -> {
@@ -109,6 +150,15 @@ class ImperialCategoryAdapter(private val items: List<CategoryMenuItem>,
                 convHolder.conversionTitle.text = "${formatUnitName(item.unit1.name)} \u2194 ${formatUnitName(item.unit2.name)}"
                 convHolder.space.setOnClickListener {
                     publishSubject.onConversionPairSelected(item.unit1, item.unit2)
+                }
+            }
+            is CategoryMenuItem.UnitItem -> {
+                val unitHolder = holder as UnitViewHolder
+                val unit = item.unit
+                val short = ImperialSymbol.symbols[unit.unitName]?.let { s -> " ($s)" } ?: ""
+                unitHolder.unitTitle.text = "${formatUnitName(unit.unitName.name)}$short"
+                unitHolder.space.setOnClickListener {
+                    publishSubject.onUnitSelectedFromSearch(unit)
                 }
             }
         }

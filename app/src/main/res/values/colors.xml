@@ -49,4 +49,10 @@
     <color name="bolt_shaft">@color/grey_800</color>
     <color name="bolt_shaft_selected">@color/grey_900</color>
 
+    <color name="menu_section_font">@color/black</color>
+    <color name="menu_header_font">@color/black</color>
+    <color name="menu_search_header_font">@color/grey_800</color>
+    <color name="menu_unit_font">@color/grey_700</color>
+    <color name="menu_frequent_unit_font">@color/grey_900</color>
+
 </resources>

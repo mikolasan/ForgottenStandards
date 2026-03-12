@@ -1,12 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/header_title"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp"
-    android:text="Header"
-    android:textAllCaps="true"
-    android:textColor="@color/font"
-    android:textSize="18sp"
-    android:textStyle="bold"
-    android:fontFamily="@font/gotham_pro_bold" />
+    android:orientation="vertical"
+    android:paddingStart="16dp"
+    android:paddingTop="16dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="8dp">
+
+    <TextView
+        android:id="@+id/header_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Header"
+        android:textAllCaps="true"
+        android:textColor="@color/menu_section_font"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/gotham_pro_bold" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="4dp"
+        android:background="@color/action" />
+</LinearLayout>
