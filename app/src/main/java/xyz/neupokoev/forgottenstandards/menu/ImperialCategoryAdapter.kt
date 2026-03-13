@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.flexbox.FlexboxLayoutManager
 import io.github.mikolasan.ratiogenerator.ImperialUnitName
 import xyz.neupokoev.forgottenstandards.MainActivity
 import xyz.neupokoev.forgottenstandards.R
@@ -100,6 +101,26 @@ class ImperialCategoryAdapter(private var items: List<CategoryMenuItem>,
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val layoutParams = holder.itemView.layoutParams
+        if (layoutParams is FlexboxLayoutManager.LayoutParams) {
+            when (items[position]) {
+                is CategoryMenuItem.UnitItem -> {
+                    layoutParams.flexBasisPercent = -1f // wrap_content
+                    layoutParams.flexGrow = 0f
+                }
+                is CategoryMenuItem.Item -> {
+                    if (isSearchMode) {
+                        layoutParams.flexBasisPercent = 1.0f // full width
+                    } else {
+                        layoutParams.flexBasisPercent = 0.4f // half width
+                    }
+                }
+                else -> {
+                    layoutParams.flexBasisPercent = 1.0f // full width
+                }
+            }
+        }
+
         when (val item = items[position]) {
             is CategoryMenuItem.Header -> {
                 (holder as HeaderViewHolder).headerTitle.text = item.title
@@ -111,7 +132,6 @@ class ImperialCategoryAdapter(private var items: List<CategoryMenuItem>,
                 itemHolder.category = viewCategory
                 
                 if (isSearchMode) {
-                    itemHolder.space.setBackgroundResource(0)
                     itemHolder.categoryTitle.gravity = Gravity.START
                     itemHolder.categoryTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
                     itemHolder.categoryTitle.setTextColor(itemHolder.itemView.context.getColor(R.color.menu_search_header_font))
@@ -128,9 +148,7 @@ class ImperialCategoryAdapter(private var items: List<CategoryMenuItem>,
                     val selectedCategory = publishSubject.workingUnits.selectedCategory
                     if (selectedCategory == viewCategory) {
                         selectedViewHolder = itemHolder
-                        itemHolder.space.setBackgroundResource(R.drawable.bg_rect_selected)
                     } else {
-                        itemHolder.space.setBackgroundResource(0)
                     }
                 }
                 
@@ -138,7 +156,6 @@ class ImperialCategoryAdapter(private var items: List<CategoryMenuItem>,
                     if (!isSearchMode) {
                         selectedViewHolder?.space?.setBackgroundResource(0)
                         selectedViewHolder = itemHolder
-                        itemHolder.space.setBackgroundResource(R.drawable.bg_rect_selected)
                     }
                     publishSubject.onCategorySelected(item.category)
                 }

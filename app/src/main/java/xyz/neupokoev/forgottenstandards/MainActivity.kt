@@ -55,6 +55,9 @@ class MainActivity : AppCompatActivity() {
     private var navController: NavController? = null
     private val unitObserver = ImperialUnitObserver(null)
 
+    private var searchView: SearchView? = null
+    var lastSearchQuery: String? = ""
+
     lateinit var settings: ImperialSettings
     lateinit var workingUnits: WorkingUnits
     lateinit var markwon: Markwon
@@ -77,11 +80,9 @@ class MainActivity : AppCompatActivity() {
         inflater.inflate(R.menu.options_menu, menu)
 
         // Get the SearchView and set the searchable configuration.
-        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        (menu.findItem(R.id.action_search).actionView as SearchView).apply {
-            // We REMOVE setSearchableInfo to disable the default dropdown suggestions
-            // setSearchableInfo(searchManager.getSearchableInfo(componentName))
-            
+        val searchItem = menu.findItem(R.id.action_search)
+        searchView = searchItem.actionView as? SearchView
+        searchView?.apply {
             setIconifiedByDefault(false)
             onActionViewExpanded()
             maxWidth = Integer.MAX_VALUE
@@ -92,6 +93,9 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun onQueryTextChange(newText: String?): Boolean {
+                    if (navController?.currentDestination?.id == R.id.switchFragment) {
+                        lastSearchQuery = newText
+                    }
                     unitListFragment?.run {
                         setFilter(newText)
                     }
@@ -102,6 +106,19 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             setOnQueryTextListener(listener)
+
+            // Restore or clear query based on current destination
+            if (navController?.currentDestination?.id == R.id.switchFragment && !lastSearchQuery.isNullOrEmpty()) {
+                post {
+                    setQuery(lastSearchQuery, false)
+                    isIconified = false
+                }
+            } else if (navController?.currentDestination?.id != R.id.switchFragment) {
+                post {
+                    setQuery("", false)
+                    isIconified = true
+                }
+            }
         }
 
         return true
@@ -254,22 +271,40 @@ class MainActivity : AppCompatActivity() {
             R.id.switchFragment -> {
                 setTitleToDefaultName()
                 hideKeyboardCompletely()
+                if (!lastSearchQuery.isNullOrEmpty()) {
+                    searchView?.setQuery(lastSearchQuery, false)
+                    searchView?.isIconified = false
+                }
             }
             R.id.unitListFragment -> {
                 setTitleAsCategory()
                 showKeyboardButton()
+                searchView?.setQuery("", false)
+                searchView?.isIconified = true
             }
             R.id.converterFragment -> {
                 setTitleAsCategory()
                 showKeyboard()
+                searchView?.setQuery("", false)
+                searchView?.isIconified = true
             }
             R.id.nutBoltFragment -> {
                 setTitleAsCategory()
                 hideKeyboardCompletely()
+                searchView?.setQuery("", false)
+                searchView?.isIconified = true
+            }
+            R.id.slavicCalendarFragment -> {
+                setTitleAsCategory()
+                hideKeyboardCompletely()
+                searchView?.setQuery("", false)
+                searchView?.isIconified = true
             }
             R.id.settingsFragment -> {
                 setTitleToDefaultName()
                 hideKeyboardCompletely()
+                searchView?.setQuery("", false)
+                searchView?.isIconified = true
             }
         }
     }

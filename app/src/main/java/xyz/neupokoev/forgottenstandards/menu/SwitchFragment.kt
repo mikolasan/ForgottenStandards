@@ -5,8 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.flexbox.FlexDirection
+import com.google.android.flexbox.FlexWrap
+import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.android.flexbox.JustifyContent
 import com.willowtreeapps.fuzzywuzzy.ToStringFunction
 import com.willowtreeapps.fuzzywuzzy.diffutils.FuzzySearch
 import com.willowtreeapps.fuzzywuzzy.diffutils.algorithms.WeightedRatio
@@ -39,25 +42,22 @@ class SwitchFragment : Fragment(R.layout.fragment_switch) {
         categoryAdapter = ImperialCategoryAdapter(items, mainActivity)
         categoryGrid.adapter = categoryAdapter
         
-        // 4 columns for better wrapping of units in search results
-        val totalSpans = 4
-        val manager = GridLayoutManager(activity as MainActivity, totalSpans, GridLayoutManager.VERTICAL, false)
-        manager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-            override fun getSpanSize(position: Int): Int {
-                val viewType = categoryAdapter.getItemViewType(position)
-                return when (viewType) {
-                    ImperialCategoryAdapter.TYPE_HEADER -> totalSpans
-                    ImperialCategoryAdapter.TYPE_CONVERSION -> totalSpans
-                    ImperialCategoryAdapter.TYPE_ITEM -> {
-                        if (categoryAdapter.isSearchMode) totalSpans else totalSpans / 2
-                    }
-                    ImperialCategoryAdapter.TYPE_UNIT -> 1 // 4 units per line
-                    else -> 1
-                }
-            }
+        val layoutManager = FlexboxLayoutManager(context).apply {
+            flexDirection = FlexDirection.ROW
+            flexWrap = FlexWrap.WRAP
+            justifyContent = JustifyContent.FLEX_START
         }
-        categoryGrid.layoutManager = manager
+        categoryGrid.layoutManager = layoutManager
+
         return view
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val mainActivity = activity as MainActivity
+        if (!mainActivity.lastSearchQuery.isNullOrEmpty()) {
+            setFilter(mainActivity.lastSearchQuery)
+        }
     }
 
     class UnitToString : ToStringFunction<ImperialUnit> {
@@ -73,6 +73,10 @@ class SwitchFragment : Fragment(R.layout.fragment_switch) {
     }
 
     fun setFilter(query: String?) {
+        // Ensure categoryAdapter is initialized before using it.
+        // This is important if setFilter is called before onCreateView finishes or from MainActivity.
+        if (!::categoryAdapter.isInitialized) return
+
         val mainActivity = activity as MainActivity
         if (query.isNullOrBlank()) {
             categoryAdapter.isSearchMode = false
