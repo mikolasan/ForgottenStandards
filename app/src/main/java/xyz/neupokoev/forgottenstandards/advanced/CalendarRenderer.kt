@@ -99,12 +99,12 @@ class CalendarRenderer(private val context: Context, val refreshRate: Long, val 
         val renderableType = EGL14.EGL_OPENGL_ES2_BIT
         val attribList = intArrayOf(
             EGL14.EGL_RED_SIZE, 8, EGL14.EGL_GREEN_SIZE, 8, EGL14.EGL_BLUE_SIZE, 8, EGL14.EGL_ALPHA_SIZE, 8,
-            EGL14.EGL_RENDERABLE_TYPE, renderableType, EGL14.EGL_NONE, 0, EGL14.EGL_NONE
+            EGL14.EGL_RENDERABLE_TYPE, renderableType, EGL14.EGL_NONE
         )
         val configsCount = intArrayOf(0)
         val configs = arrayOfNulls<EGLConfig>(1)
         EGL14.eglChooseConfig(eglDisplay, attribList, 0, configs, 0, configs.size, configsCount, 0)
-        return configs[0]!!
+        return configs[0] ?: throw RuntimeException("eglChooseConfig failed")
     }
 
     override fun run() {
@@ -115,13 +115,17 @@ class CalendarRenderer(private val context: Context, val refreshRate: Long, val 
         val eglContext = EGL14.eglCreateContext(eglDisplay, eglConfig, EGL14.EGL_NO_CONTEXT, intArrayOf(EGL14.EGL_CONTEXT_CLIENT_VERSION, 2, EGL14.EGL_NONE), 0)
         val eglSurface = EGL14.eglCreateWindowSurface(eglDisplay, eglConfig, surfaceTexture, intArrayOf(EGL14.EGL_NONE), 0)
 
-        GLES20.glViewport(0, 0, width, height)
-        val ratio: Float = width.toFloat() / height.toFloat()
-        Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1f, 1f, 1f, 2f)
+        if (!EGL14.eglMakeCurrent(eglDisplay, eglSurface, eglSurface, eglContext)) {
+            return
+        }
+
         sectorFigure.prepare()
 
-        while (!isStopped && EGL14.eglGetError() == EGL14.EGL_SUCCESS) {
-            EGL14.eglMakeCurrent(eglDisplay, eglSurface, eglSurface, eglContext)
+        while (!isStopped) {
+            GLES20.glViewport(0, 0, width, height)
+            val ratio: Float = if (height > 0) width.toFloat() / height.toFloat() else 1.0f
+            Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1f, 1f, 1f, 2f)
+
             GLES20.glClearColor(BACKGROUND_COLOR[0], BACKGROUND_COLOR[1], BACKGROUND_COLOR[2], BACKGROUND_COLOR[3])
             GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
 
@@ -142,11 +146,18 @@ class CalendarRenderer(private val context: Context, val refreshRate: Long, val 
             
             labelUpdateListener?.onCalendarUpdated(months, angle)
             EGL14.eglSwapBuffers(eglDisplay, eglSurface)
-            sleep(refreshRate)
+            
+            try {
+                sleep(refreshRate)
+            } catch (e: InterruptedException) {
+                break
+            }
         }
-        surfaceTexture.release()
+        
+        EGL14.eglMakeCurrent(eglDisplay, EGL14.EGL_NO_SURFACE, EGL14.EGL_NO_SURFACE, EGL14.EGL_NO_CONTEXT)
         EGL14.eglDestroyContext(eglDisplay, eglContext)
         EGL14.eglDestroySurface(eglDisplay, eglSurface)
+        EGL14.eglTerminate(eglDisplay)
     }
 
     fun resolveMonth(x: Float, y: Float): Month? {

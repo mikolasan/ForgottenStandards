@@ -143,13 +143,12 @@ class BoltRenderer(private val context: Context, val refreshRate: Long, val dpi:
             EGL14.EGL_BLUE_SIZE, 8,
             EGL14.EGL_ALPHA_SIZE, 8,
             EGL14.EGL_RENDERABLE_TYPE, renderableType,
-            EGL14.EGL_NONE, 0, EGL14.EGL_NONE
+            EGL14.EGL_NONE
         )
-        val flags = 0
-        val configsCount = intArrayOf(0);
-        val configs = arrayOfNulls<EGLConfig>(1);
+        val configsCount = intArrayOf(0)
+        val configs = arrayOfNulls<EGLConfig>(1)
         EGL14.eglChooseConfig(eglDisplay, attribList, 0, configs, 0, configs.size, configsCount, 0)
-        return configs[0]!!
+        return configs[0] ?: throw RuntimeException("eglChooseConfig failed")
     }
 
     private fun findAndHighlightCenteredBolt() {
@@ -174,17 +173,17 @@ class BoltRenderer(private val context: Context, val refreshRate: Long, val dpi:
         val version = intArrayOf(0, 0)
         EGL14.eglInitialize(eglDisplay, version, 0, version, 1)
         val eglConfig = getConfig(eglDisplay)
-        val attribList = intArrayOf(EGL14.EGL_CONTEXT_CLIENT_VERSION, 2, EGL14.EGL_NONE)
-        val eglContext = EGL14.eglCreateContext(eglDisplay, eglConfig, EGL14.EGL_NO_CONTEXT, attribList, 0)
-        val surfaceAttribs = intArrayOf(EGL14.EGL_NONE)
-        val eglSurface = EGL14.eglCreateWindowSurface(eglDisplay, eglConfig, surfaceTexture, surfaceAttribs, 0)
+        val eglContext = EGL14.eglCreateContext(eglDisplay, eglConfig, EGL14.EGL_NO_CONTEXT, intArrayOf(EGL14.EGL_CONTEXT_CLIENT_VERSION, 2, EGL14.EGL_NONE), 0)
+        val eglSurface = EGL14.eglCreateWindowSurface(eglDisplay, eglConfig, surfaceTexture, intArrayOf(EGL14.EGL_NONE), 0)
 
-        GLES20.glViewport(0, 0, width, height)
-        val ratio: Float = width.toFloat() / height.toFloat()
-        Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1f, 1f, 1f, 2f)
+        if (!EGL14.eglMakeCurrent(eglDisplay, eglSurface, eglSurface, eglContext)) {
+            return
+        }
 
-        while (!isStopped && EGL14.eglGetError() == EGL14.EGL_SUCCESS) {
-            EGL14.eglMakeCurrent(eglDisplay, eglSurface, eglSurface, eglContext)
+        while (!isStopped) {
+            GLES20.glViewport(0, 0, width, height)
+            val ratio: Float = if (height > 0) width.toFloat() / height.toFloat() else 1.0f
+            Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1f, 1f, 1f, 2f)
 
             GLES20.glClearColor(BACKGROUND_COLOR[0], BACKGROUND_COLOR[1], BACKGROUND_COLOR[2], BACKGROUND_COLOR[3])
             GLES20.glDisable(GLES20.GL_DEPTH_TEST)
@@ -210,11 +209,17 @@ class BoltRenderer(private val context: Context, val refreshRate: Long, val dpi:
             
             labelUpdateListener?.onAllBoltsUpdated(mBoltPairs)
             EGL14.eglSwapBuffers(eglDisplay, eglSurface)
-            sleep(refreshRate)
+            
+            try {
+                sleep(refreshRate)
+            } catch (e: InterruptedException) {
+                break
+            }
         }
 
-        surfaceTexture.release()
+        EGL14.eglMakeCurrent(eglDisplay, EGL14.EGL_NO_SURFACE, EGL14.EGL_NO_SURFACE, EGL14.EGL_NO_CONTEXT)
         EGL14.eglDestroyContext(eglDisplay, eglContext)
         EGL14.eglDestroySurface(eglDisplay, eglSurface)
+        EGL14.eglTerminate(eglDisplay)
     }
 }
