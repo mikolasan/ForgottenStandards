@@ -45,6 +45,7 @@ class ImperialListAdapter
         val symbol: TextView = layout.findViewById(R.id.unit_symbol)
         val arrowUp: ImageView = layout.findViewById(R.id.arrow_up)
         val bookmark: ImageView = layout.findViewById(R.id.bookmark)
+        val infoButton: ImageView = layout.findViewById(R.id.info_button)
         init {
             layout.setOnClickListener {
                 unitSelectedListener(this.absoluteAdapterPosition, view, data)
@@ -72,6 +73,9 @@ class ImperialListAdapter
     private var bookmarkClickListener: (Int, View, ImperialUnit) -> Unit = { position, _, _ ->
         println("bookmarkClickListener $position")
     }
+    private var infoClickListener: (Int, View, ImperialUnit) -> Unit = { position, _, _ ->
+        println("infoClickListener $position")
+    }
 
     fun setOnUnitSelectedListener(listener: (Int, View, ImperialUnit) -> Unit) {
         unitSelectedListener = listener
@@ -87,6 +91,10 @@ class ImperialListAdapter
 
     fun setOnBookmarkClickListener(listener: (Int, View, ImperialUnit) -> Unit) {
         bookmarkClickListener = listener
+    }
+
+    fun setOnInfoClickListener(listener: (Int, View, ImperialUnit) -> Unit) {
+        infoClickListener = listener
     }
 
     fun setUnits(units: Array<ImperialUnit>) {
@@ -257,6 +265,9 @@ class ImperialListAdapter
             unit.bookmarked = !unit.bookmarked
             bookmarkClickListener(dataPosition, it, unit)
             notifyItemChanged(dataPosition)
+        }
+        holder.infoButton.setOnClickListener {
+            infoClickListener(dataPosition, it, unit)
         }
     }
 

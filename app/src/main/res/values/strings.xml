@@ -57,4 +57,12 @@ In addition to its use in the measurement of length, the centimetre is used: som
     <string name="settings_author">Author: neupokoev</string>
     <string name="settings_app_name_version">%1$s v%2$s</string>
     <string name="pin_hint">Tap to pin your most used units to the top.</string>
+
+    <!-- Unit Descriptions -->
+    <string name="desc_ARSHIN">The **Arshin** (Russian: арши́н) is an obsolete Russian unit of length.
+
+> \"Measuring everyone by one\'s own arshin.\"
+> — *Russian Proverb*
+
+It was equal to **71.12 cm** (28 inches). Peter the Great standardized the arshin in the early 18th century.</string>
 </resources>

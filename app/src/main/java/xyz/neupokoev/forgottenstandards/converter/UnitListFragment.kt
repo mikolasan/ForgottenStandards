@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.mikolasan.ratiogenerator.ImperialUnit
+import xyz.neupokoev.forgottenstandards.DescriptionFragment
 import xyz.neupokoev.forgottenstandards.MainActivity
 import xyz.neupokoev.forgottenstandards.R
 import xyz.neupokoev.forgottenstandards.convertValueWrapper
@@ -273,6 +274,10 @@ class UnitListFragment : Fragment() {
                     showBookmark(unit)
                     listAdapter.excludeUnit(unit)
                 }
+            }
+            listAdapter.setOnInfoClickListener { _: Int, _: View, unit: ImperialUnit ->
+                val descriptionFragment = DescriptionFragment.newInstance(unit.unitName)
+                descriptionFragment.show(parentFragmentManager, "unit_description")
             }
         }
 
