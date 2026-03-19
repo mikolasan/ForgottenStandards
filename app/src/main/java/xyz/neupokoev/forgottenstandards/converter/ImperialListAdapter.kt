@@ -43,7 +43,7 @@ class ImperialListAdapter
         val range_min_value: TextView = layout.findViewById(R.id.range_min_value)
         val range_max_value: TextView = layout.findViewById(R.id.range_max_value)
         val symbol: TextView = layout.findViewById(R.id.unit_symbol)
-        val arrowUp: ImageView = layout.findViewById(R.id.arrow_up)
+//        val arrowUp: ImageView = layout.findViewById(R.id.arrow_up)
         val bookmark: ImageView = layout.findViewById(R.id.bookmark)
         val infoButton: ImageView = layout.findViewById(R.id.info_button)
         init {
@@ -206,7 +206,7 @@ class ImperialListAdapter
                 holder.value.setTextColorId(valueColors.getValue(ViewState.SELECTED))
                 holder.symbol.setTextColorId(valueColors.getValue(ViewState.SELECTED))
                 holder.value.setBackgroundResource(valueBackgrounds.getValue(ViewState.SELECTED))
-                holder.arrowUp.visibility = if (dataPosition == 0) View.INVISIBLE else View.VISIBLE
+//                holder.arrowUp.visibility = if (dataPosition == 0) View.INVISIBLE else View.VISIBLE
             }
             else -> {
                 holder.layout.setBackgroundResource(backgrounds.getValue(ViewState.NORMAL))
@@ -214,7 +214,7 @@ class ImperialListAdapter
                 holder.value.setTextColorId(valueColors.getValue(ViewState.NORMAL))
                 holder.symbol.setTextColorId(valueColors.getValue(ViewState.NORMAL))
                 holder.value.setBackgroundResource(valueBackgrounds.getValue(ViewState.NORMAL))
-                holder.arrowUp.visibility = View.INVISIBLE
+//                holder.arrowUp.visibility = View.INVISIBLE
             }
         }
     }
@@ -246,21 +246,21 @@ class ImperialListAdapter
 
     private fun updateControlListeners(holder: ViewHolder, dataPosition: Int) {
         val unit = getItem(dataPosition)
-        holder.arrowUp.setOnClickListener {
-            if (dataPosition != 0) {
-                listUnits.moveToFrontFrom(dataPosition)
-                arrowClickListener(dataPosition, it, unit)
-                notifyItemMoved(dataPosition, 0)
-            }
-        }
-        holder.arrowUp.setOnLongClickListener {
-            if (dataPosition != 0) {
-                listUnits.moveToFrontFrom(dataPosition)
-                notifyItemMoved(dataPosition, 0)
-                arrowLongClickListener(dataPosition, it, unit)
-            }
-            dataPosition != 0
-        }
+//        holder.arrowUp.setOnClickListener {
+//            if (dataPosition != 0) {
+//                listUnits.moveToFrontFrom(dataPosition)
+//                arrowClickListener(dataPosition, it, unit)
+//                notifyItemMoved(dataPosition, 0)
+//            }
+//        }
+//        holder.arrowUp.setOnLongClickListener {
+//            if (dataPosition != 0) {
+//                listUnits.moveToFrontFrom(dataPosition)
+//                notifyItemMoved(dataPosition, 0)
+//                arrowLongClickListener(dataPosition, it, unit)
+//            }
+//            dataPosition != 0
+//        }
         holder.bookmark.setOnClickListener {
             unit.bookmarked = !unit.bookmarked
             bookmarkClickListener(dataPosition, it, unit)
