@@ -323,7 +323,6 @@
         android:textSize="@dimen/op_back_font_size"
 
         app:layout_constraintStart_toEndOf="@+id/op_eval"
-        app:layout_constraintTop_toBottomOf="@+id/op_plus"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/op_plus" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

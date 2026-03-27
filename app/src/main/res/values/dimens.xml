@@ -48,10 +48,11 @@
     <dimen name="unit_list_value_size">30sp</dimen>
     <dimen name="unit_list_height">100dp</dimen>
     <dimen name="unit_list_margin_start">12dp</dimen>
-    <dimen name="unit_list_name_margin_top">8dp</dimen>
+    <dimen name="unit_list_name_margin_top">4dp</dimen>
     <dimen name="unit_list_value_margin_bottom">4dp</dimen>
     <dimen name="unit_list_padding_vertical">4dp</dimen>
     <dimen name="unit_list_element_spacing">4dp</dimen>
+    <dimen name="unit_list_value_padding_end">48dp</dimen>
 
     <!-- Miscellaneous -->
     <dimen name="floating_button_width">40dp</dimen>

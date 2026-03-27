@@ -321,6 +321,7 @@ class MainActivity : AppCompatActivity() {
         val selectedUnit = panel.unit!!
         workingUnits.mainUnit = selectedUnit
         unitObserver.setUnitAndUpdateValue(selectedUnit) // change keyboard focus
+        keyboardFragment?.updateLayout()
     }
 
     private fun trackConversion(unit: ImperialUnit, s: CharSequence) {
@@ -354,6 +355,7 @@ class MainActivity : AppCompatActivity() {
     fun onUnitSelectedInList(unit: ImperialUnit) {
         workingUnits.mainUnit = unit
         unitObserver.setUnitAndUpdateValue(unit) // change keyboard focus
+        keyboardFragment?.updateLayout()
     }
 
     fun onArrowClicked(unit: ImperialUnit) {
@@ -411,6 +413,7 @@ class MainActivity : AppCompatActivity() {
 
             is SwitchFragment -> switchFragment = fragment
             is KeyboardFragment -> {
+                keyboardFragment = fragment
                 fragment.observer = unitObserver
             }
 
@@ -528,6 +531,8 @@ class MainActivity : AppCompatActivity() {
         keyboardView?.visibility = View.VISIBLE
         keyboardButtonFragment?.view?.visibility = View.GONE
         keyboardButtonView?.visibility = View.GONE
+        
+        keyboardFragment?.updateLayout()
 
         // hide soft Android keyboard
         // Only runs if there is a view that is currently focused

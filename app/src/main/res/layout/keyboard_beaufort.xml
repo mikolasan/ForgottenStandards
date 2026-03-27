@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/keyboard_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="0dp"
+    android:layout_marginTop="0dp"
+    android:layout_marginEnd="0dp"
+    android:background="@color/keyboard_back"
+    android:minWidth="@dimen/min_imperial_panel_width"
+    android:paddingLeft="12dp"
+    android:elevation="5dp"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/convert_from">
+
+    <xyz.neupokoev.forgottenstandards.converter.DigitButton
+        android:id="@+id/digit_9"
+        android:layout_width="@dimen/digit_key_side"
+        android:layout_height="@dimen/digit_key_side"
+        android:layout_marginEnd="@dimen/keypad_margin"
+        android:background="@color/keyboard_digit"
+        android:text="@string/key_9"
+        android:textAppearance="@style/ImperialKeypad"
+        android:textColor="@color/font"
+        android:textSize="@dimen/digit_font_size"
+        app:layout_constraintEnd_toStartOf="@+id/digit_10"
+        app:layout_constraintTop_toTopOf="@+id/digit_10" />
+
+
+    <xyz.neupokoev.forgottenstandards.converter.DigitButton
+        android:id="@+id/digit_10"
+        android:layout_width="@dimen/digit_key_side"
+        android:layout_height="@dimen/digit_key_side"
+        android:layout_marginEnd="@dimen/keypad_margin"
+        android:background="@color/keyboard_digit"
+        android:elevation="@dimen/key_elevation"
+        android:gravity="center"
+        android:text="10"
+        android:textAppearance="@style/ImperialKeypad"
+        android:textColor="@color/font"
+        android:textSize="@dimen/digit_font_size"
+        app:layout_constraintEnd_toStartOf="@+id/digit_11"
+        app:layout_constraintTop_toTopOf="@+id/digit_11" />
+
+    <xyz.neupokoev.forgottenstandards.converter.DigitButton
+        android:id="@+id/digit_11"
+        android:layout_width="@dimen/digit_key_side"
+        android:layout_height="@dimen/digit_key_side"
+        android:layout_marginTop="12dp"
+        android:background="@color/keyboard_digit"
+        android:elevation="@dimen/key_elevation"
+        android:gravity="center"
+        android:text="11"
+        android:textAppearance="@style/ImperialKeypad"
+        android:textColor="@color/font"
+        android:textSize="@dimen/digit_font_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <xyz.neupokoev.forgottenstandards.converter.DigitButton
+        android:id="@+id/digit_12"
+        android:layout_width="@dimen/digit_key_side"
+        android:layout_height="@dimen/digit_key_side"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="@dimen/keypad_margin"
+        android:background="@color/keyboard_digit"
+        android:elevation="@dimen/key_elevation"
+        android:gravity="center"
+        android:text="12"
+        android:textAppearance="@style/ImperialKeypad"
+        android:textColor="@color/font"
+        android:textSize="@dimen/digit_font_size"
+        app:layout_constraintStart_toEndOf="@+id/digit_11"
+        app:layout_constraintBottom_toBottomOf="@+id/digit_11" />
+
+    <xyz.neupokoev.forgottenstandards.converter.DigitButton
+        android:id="@+id/digit_5"
+        android:layout_width="@dimen/digit_key_side"
+        android:layout_height="@dimen/digit_key_side"
+        android:layout_marginTop="@dimen/keypad_margin"
+        android:background="@color/keyboard_digit"
+        android:elevation="@dimen/key_elevation"
+        android:gravity="center"
+        android:text="@string/key_5"
+        android:textAppearance="@style/ImperialKeypad"
+        android:textColor="@color/font"
+        android:textSize="@dimen/digit_font_size"
+        app:layout_constraintStart_toStartOf="@+id/digit_9"
+        app:layout_constraintTop_toBottomOf="@+id/digit_9" />
+
+    <xyz.neupokoev.forgottenstandards.converter.DigitButton
+        android:id="@+id/digit_6"
+        android:layout_width="@dimen/digit_key_side"
+        android:layout_height="@dimen/digit_key_side"
+        android:layout_marginStart="@dimen/keypad_margin"
+        android:layout_marginTop="@dimen/keypad_margin"
+        android:background="@color/keyboard_digit"
+        android:elevation="@dimen/key_elevation"
+        android:gravity="center"
+        android:text="@string/key_6"
+        android:textAppearance="@style/ImperialKeypad"
+        android:textColor="@color/font"
+        android:textSize="@dimen/digit_font_size"
+        app:layout_constraintStart_toEndOf="@+id/digit_5"
+        app:layout_constraintTop_toBottomOf="@+id/digit_10" />
+
+    <xyz.neupokoev.forgottenstandards.converter.DigitButton
+        android:id="@+id/digit_7"
+        android:layout_width="@dimen/digit_key_side"
+        android:layout_height="@dimen/digit_key_side"
+        android:layout_marginStart="@dimen/keypad_margin"
+        android:layout_marginTop="@dimen/keypad_margin"
+        android:background="@color/keyboard_digit"
+        android:elevation="@dimen/key_elevation"
+        android:gravity="center"
+        android:text="@string/key_7"
+        android:textAppearance="@style/ImperialKeypad"
+        android:textColor="@color/font"
+        android:textSize="@dimen/digit_font_size"
+        app:layout_constraintStart_toEndOf="@+id/digit_6"
+        app:layout_constraintTop_toBottomOf="@+id/digit_11" />
+
+    <xyz.neupokoev.forgottenstandards.converter.DigitButton
+        android:id="@+id/digit_8"
+        android:layout_width="@dimen/digit_key_side"
+        android:layout_height="@dimen/digit_key_side"
+        android:layout_marginStart="@dimen/keypad_margin"
+        android:layout_marginTop="@dimen/keypad_margin"
+        android:background="@color/keyboard_digit"
+        android:elevation="@dimen/key_elevation"
+        android:gravity="center"
+        android:text="@string/key_8"
+        android:textAppearance="@style/ImperialKeypad"
+        android:textColor="@color/font"
+        android:textSize="@dimen/digit_font_size"
+        app:layout_constraintStart_toEndOf="@+id/digit_7"
+        app:layout_constraintTop_toBottomOf="@+id/digit_11" />
+
+    <xyz.neupokoev.forgottenstandards.converter.DigitButton
+        android:id="@+id/digit_1"
+        style="@android:style/Widget.Button"
+        android:layout_width="@dimen/digit_key_side"
+        android:layout_height="@dimen/digit_key_side"
+        android:layout_marginTop="@dimen/keypad_margin"
+        android:background="@color/keyboard_digit"
+        android:elevation="@dimen/key_elevation"
+        android:gravity="center"
+        android:text="@string/key_1"
+        android:textAppearance="@style/ImperialKeypad"
+        android:textColor="@color/font"
+        android:textSize="@dimen/digit_font_size"
+        app:layout_constraintStart_toStartOf="@+id/digit_5"
+        app:layout_constraintTop_toBottomOf="@+id/digit_5" />
+
+    <xyz.neupokoev.forgottenstandards.converter.DigitButton
+        android:id="@+id/digit_2"
+        android:layout_width="@dimen/digit_key_side"
+        android:layout_height="@dimen/digit_key_side"
+        android:layout_marginStart="@dimen/keypad_margin"
+        android:layout_marginTop="@dimen/keypad_margin"
+        android:background="@color/keyboard_digit"
+        android:elevation="@dimen/key_elevation"
+        android:gravity="center"
+        android:text="@string/key_2"
+        android:textAppearance="@style/ImperialKeypad"
+        android:textColor="@color/font"
+        android:textSize="@dimen/digit_font_size"
+        app:layout_constraintStart_toEndOf="@+id/digit_1"
+        app:layout_constraintTop_toBottomOf="@+id/digit_6" />
+
+    <xyz.neupokoev.forgottenstandards.converter.DigitButton
+        android:id="@+id/digit_3"
+        android:layout_width="@dimen/digit_key_side"
+        android:layout_height="@dimen/digit_key_side"
+        android:layout_marginStart="@dimen/keypad_margin"
+        android:layout_marginTop="@dimen/keypad_margin"
+        android:background="@color/keyboard_digit"
+        android:elevation="@dimen/key_elevation"
+        android:gravity="center"
+        android:text="@string/key_3"
+        android:textAppearance="@style/ImperialKeypad"
+        android:textColor="@color/font"
+        android:textSize="@dimen/digit_font_size"
+        app:layout_constraintStart_toEndOf="@+id/digit_2"
+        app:layout_constraintTop_toBottomOf="@+id/digit_7" />
+
+    <xyz.neupokoev.forgottenstandards.converter.DigitButton
+        android:id="@+id/digit_4"
+        android:layout_width="@dimen/digit_key_side"
+        android:layout_height="@dimen/digit_key_side"
+        android:layout_marginStart="@dimen/keypad_margin"
+        android:layout_marginTop="@dimen/keypad_margin"
+        android:background="@color/keyboard_digit"
+        android:elevation="@dimen/key_elevation"
+        android:gravity="center"
+        android:text="@string/key_4"
+        android:textAppearance="@style/ImperialKeypad"
+        android:textColor="@color/font"
+        android:textSize="@dimen/digit_font_size"
+        app:layout_constraintStart_toEndOf="@+id/digit_3"
+        app:layout_constraintTop_toBottomOf="@+id/digit_7" />
+
+    <xyz.neupokoev.forgottenstandards.converter.DigitButton
+        android:id="@+id/digit_0"
+        android:layout_width="@dimen/digit_key_side"
+        android:layout_height="@dimen/digit_key_side"
+        android:layout_marginTop="@dimen/keypad_margin"
+        android:layout_marginBottom="12dp"
+        android:background="@color/keyboard_digit"
+        android:elevation="@dimen/key_elevation"
+        android:gravity="center"
+        android:text="@string/key_0"
+        android:textAppearance="@style/ImperialKeypad"
+        android:textColor="@color/font"
+        android:textSize="@dimen/digit_font_size"
+        app:layout_constraintStart_toStartOf="@+id/digit_2"
+        app:layout_constraintTop_toBottomOf="@+id/digit_2"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <xyz.neupokoev.forgottenstandards.converter.OperationButton
+        android:id="@+id/hide_keyboard"
+        style="@android:style/Widget.Button"
+        android:layout_width="@dimen/op_key_side"
+        android:layout_height="@dimen/op_key_side"
+        android:layout_marginStart="@dimen/keypad_margin"
+        android:background="@drawable/bg_keyboard_special"
+        android:backgroundTint="@color/floatingButton"
+        android:elevation="@dimen/key_elevation"
+        android:gravity="center_horizontal|center_vertical"
+        android:text="@string/key_hide"
+        android:textAppearance="@style/ImperialKeypad"
+        android:textColor="@color/keyboard_special"
+        android:textSize="@dimen/op_back_font_size"
+
+        app:layout_constraintStart_toEndOf="@+id/digit_12"
+        app:layout_constraintTop_toTopOf="@+id/digit_0" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

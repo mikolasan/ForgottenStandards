@@ -14,26 +14,28 @@ import xyz.neupokoev.forgottenstandards.maxDisplayLength
 class DigitButton(context: Context, attributeSet: AttributeSet) : AppCompatButton(context, attributeSet) {
     fun setOnClickPanel(observer: ImperialUnitObserver) {
         setOnClickListener{ view ->
-            if (text.length > maxDisplayLength) {
+            val button = view as Button
+            val textToAppend = button.text.toString()
+            
+            if (textToAppend.length > maxDisplayLength) {
                 return@setOnClickListener
             }
 
-            val button = view as Button
-            val char = button.text[0]
-            observer.appendString(char)
-
-//            fragment.selectedPanel?.let { panel ->
-//                if (!panel.hasUnitAssigned()) return@setOnClickListener
-//                if (panel.hasExponent()) {
-//                    panel.setUnitValue(0.0)
-//                    panel.setString("")
-//                }
-//                val text = panel.getString() ?: ""
-//                val button = view as Button
-//                if (text.length <= maxDisplayLength) {
-//                    panel.appendString(button.text[0])
-//                }
-//            }
+            // If it's a single digit, append it normally.
+            // If it's multiple digits (like "10", "11", "12" for Beaufort), 
+            // it might mean we want to SET the value instead of appending.
+            // But the observer appendString/appendStringOrReplace logic is based on characters.
+            
+            // For Beaufort, we actually set the value directly in KeyboardFragment 
+            // using standard Button listener if I kept it that way.
+            // But I used DigitButton in the xml.
+            
+            // Let's make DigitButton smarter: if it's more than 1 char, it should probably call setString or similar.
+            if (textToAppend.length > 1) {
+                observer.setValueAndNotify(textToAppend.toDoubleOrNull() ?: 0.0)
+            } else {
+                observer.appendString(textToAppend[0])
+            }
         }
     }
 }

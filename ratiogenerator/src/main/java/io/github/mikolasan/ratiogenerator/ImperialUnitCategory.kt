@@ -41,17 +41,27 @@ abstract class ImperialUnitCategory(val type: ImperialUnitType,
                 unit.rangeUnit = nameMap.get(rangeParity.first)
                 unit.rangeMap = rangeParity.third
                     .associateTo(mutableMapOf()) { it.second.first to it.first }
+                unit.rangeValueNames = rangeParity.third
+                    .associateTo(mutableMapOf()) { it.second.first to it.second.second }
             }
         }
     }
 
     private fun getAllUnits(ratioList: RatioList, formulaList: FormulaList, rangeParity: RangeParity): Set<ImperialUnit> {
-        val unitNames: Set<ImperialUnitName> =
-            ratioList.flatMap { arrayOf(it.first.second).asIterable() }.toSet() +
-                    ratioList.flatMap { arrayOf(it.second.second).asIterable() }.toSet() +
-                    formulaList.flatMap { arrayOf(it.first, it.third).asIterable() }.toSet() +
-                    arrayOf(rangeParity.first, rangeParity.second).asIterable().toSet()
-        return unitNames.map { name -> ImperialUnit(this, type, name) }.toSet()
+        val names = mutableSetOf<ImperialUnitName>()
+        ratioList.forEach {
+            names.add(it.first.second)
+            names.add(it.second.second)
+        }
+        formulaList.forEach {
+            names.add(it.first)
+            names.add(it.third)
+        }
+        names.add(rangeParity.first)
+        names.add(rangeParity.second)
+        return names.filter { it != ImperialUnitName.NO_UNIT }
+            .map { name -> ImperialUnit(this, type, name) }
+            .toSet()
     }
 
     private fun makeNameMapFromUnits(units: Set<ImperialUnit>): Map<ImperialUnitName, ImperialUnit> =

@@ -18,6 +18,8 @@ class ImperialUnit(val category: ImperialUnitCategory,
     var formulaMap: MutableMap<ImperialUnitName, Array<String>> = mutableMapOf()
     var rangeUnit: ImperialUnit? = null
     var rangeMap: MutableMap<Double, Range> = mutableMapOf()
+    var rangeValueNames: MutableMap<Double, String> = mutableMapOf()
+
     fun restoreValue(s: String, v: Double) {
         inputString = s
         value = v

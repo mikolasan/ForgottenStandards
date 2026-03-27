@@ -46,6 +46,53 @@
         app:layout_constraintTop_toBottomOf="@+id/panel_title"
         tools:visibility="visible" />
 
+    <LinearLayout
+        android:id="@+id/panel_controls"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/panel_input"
+        app:layout_constraintEnd_toEndOf="@+id/panel_input"
+        app:layout_constraintTop_toTopOf="@+id/panel_input"
+        android:gravity="center_vertical"
+        android:paddingEnd="8dp">
+
+        <ImageButton
+            android:id="@+id/button_minus"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_minus"
+            app:tint="@color/action"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:scaleType="center"
+            android:contentDescription="Minus" />
+
+        <ImageButton
+            android:id="@+id/button_plus"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_plus"
+            app:tint="@color/action"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:scaleType="center"
+            android:contentDescription="Plus" />
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/panel_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/primary"
+        android:textSize="14sp"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/panel_input"
+        tools:text="Still"
+        tools:visibility="visible"
+        android:visibility="gone" />
+
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/panel_hint"
         android:layout_width="fill_parent"

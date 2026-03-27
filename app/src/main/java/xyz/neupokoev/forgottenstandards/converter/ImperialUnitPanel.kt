@@ -5,10 +5,11 @@ import android.graphics.PorterDuff
 import android.text.InputType
 import android.text.SpannableString
 import android.util.AttributeSet
-import android.widget.ImageView
+import android.view.View
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import io.github.mikolasan.ratiogenerator.ImperialUnit
+import io.github.mikolasan.ratiogenerator.ImperialUnitName
 import xyz.neupokoev.forgottenstandards.BasicCalculator
 import xyz.neupokoev.forgottenstandards.R
 import xyz.neupokoev.forgottenstandards.getColor
@@ -26,8 +27,12 @@ class ImperialUnitPanel(context: Context, attributeSet: AttributeSet) : Constrai
     val input: TextView = findViewById(R.id.panel_input)
     private val title: TextView = findViewById(R.id.panel_title)
     private val hint: TextView = findViewById(R.id.panel_hint)
+    private val description: TextView = findViewById(R.id.panel_description)
     private val layout: ConstraintLayout = findViewById(R.id.big_unit_space)
-    val bookmark: ImageView = findViewById(R.id.bookmark)
+    val bookmark: View = findViewById(R.id.bookmark)
+    private val controls: View = findViewById(R.id.panel_controls)
+    private val buttonMinus: View = findViewById(R.id.button_minus)
+    private val buttonPlus: View = findViewById(R.id.button_plus)
 
     private val colorInputNormal = getColor(R.color.input_font)
     private val colorInputSelected = getColor(R.color.input_selected_font)
@@ -37,11 +42,33 @@ class ImperialUnitPanel(context: Context, attributeSet: AttributeSet) : Constrai
     init {
         val bookmarkColor = R.color.bookmark
         val color = bookmark.context.resources.getColor(bookmarkColor)
-        bookmark.drawable.mutate().setColorFilter(color, PorterDuff.Mode.SRC_IN)
+        if (bookmark is android.widget.ImageView) {
+            bookmark.drawable.mutate().setColorFilter(color, PorterDuff.Mode.SRC_IN)
+        }
 
-        //input.inputType = InputType.TYPE_NULL // hide keyboard on focus
         input.inputType = InputType.TYPE_CLASS_NUMBER
         input.setTextColor(colorInputNormal)
+        
+        buttonMinus.setOnClickListener {
+            unit?.let { u ->
+                val newValue = (u.value - 1.0).coerceAtLeast(0.0)
+                if (newValue != u.value) {
+                    u.value = newValue
+                    updateDisplayValue()
+                }
+            }
+        }
+        
+        buttonPlus.setOnClickListener {
+            unit?.let { u ->
+                val newValue = (u.value + 1.0).coerceAtMost(12.0)
+                if (newValue != u.value) {
+                    u.value = newValue
+                    updateDisplayValue()
+                }
+            }
+        }
+        
         deactivate()
     }
 
@@ -62,21 +89,34 @@ class ImperialUnitPanel(context: Context, attributeSet: AttributeSet) : Constrai
 
     fun activate() {
         title.visibility = VISIBLE
-//        input.isEnabled = false
         input.visibility = VISIBLE
         hint.visibility = INVISIBLE
+        updateControlsVisibility()
     }
 
     fun deactivate() {
         title.visibility = INVISIBLE
-//        input.isEnabled = false
         input.visibility = INVISIBLE
         hint.visibility = VISIBLE
+        controls.visibility = GONE
+        description.visibility = GONE
     }
 
     fun changeUnit(newUnit: ImperialUnit) {
         unit = newUnit
         updateUnitText()
+        updateControlsVisibility()
+        updateDisplayValue()
+    }
+
+    private fun updateControlsVisibility() {
+        if (unit?.unitName == ImperialUnitName.BEAUFORT && hasUnitAssigned()) {
+            controls.visibility = VISIBLE
+            input.isEnabled = false // Disable direct text input for Beaufort if using buttons
+        } else {
+            controls.visibility = GONE
+            input.isEnabled = true
+        }
     }
 
     private fun updateUnitText() {
@@ -87,7 +127,6 @@ class ImperialUnitPanel(context: Context, attributeSet: AttributeSet) : Constrai
                 .replaceFirstChar {
                     if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString()
                 })
-            //underlineText.setSpan(UnderlineSpan(), 0, underlineText.length, 0)
             title.text = underlineText
         }
     }
@@ -104,14 +143,29 @@ class ImperialUnitPanel(context: Context, attributeSet: AttributeSet) : Constrai
 
     fun setUnitValue(v: Double) {
         unit?.apply {
-            value = v
-            //formattedString = makeSerializedString(valueForDisplay(v))
+            value = if (unitName == ImperialUnitName.BEAUFORT) v.coerceIn(0.0, 12.0) else v
         }
     }
 
     fun updateDisplayValue() {
-        val v = unit?.value
+        val u = unit ?: return
+        val v = u.value
         input.text = valueForDisplay(v)
+        
+        // Update descriptive name
+        if (u.rangeValueNames.containsKey(v)) {
+            description.text = u.rangeValueNames[v]
+            description.visibility = VISIBLE
+        } else if (u.unitName == ImperialUnitName.BEAUFORT) {
+             // For Beaufort, we might need to find the name even if it's not an exact key 
+             // because conversion can result in non-integer values if we aren't careful
+             // but our convertValueFromRange returns an exact key.
+             description.text = u.rangeValueNames[v.toInt().toDouble()] ?: ""
+             description.visibility = VISIBLE
+        } else {
+            description.visibility = GONE
+        }
+
         if (isActive && getString() == "0") {
             input.setText("")
         }
@@ -130,6 +184,7 @@ class ImperialUnitPanel(context: Context, attributeSet: AttributeSet) : Constrai
     }
 
     fun appendString(c: Char) {
+        if (unit?.unitName == ImperialUnitName.BEAUFORT) return // No direct typing for Beaufort
         setString(getString() + c.toString())
     }
 
@@ -143,6 +198,7 @@ class ImperialUnitPanel(context: Context, attributeSet: AttributeSet) : Constrai
     }
 
     fun appendStringOrReplace(c: Char, replaceable: Set<Char>) {
+        if (unit?.unitName == ImperialUnitName.BEAUFORT) return // No direct typing for Beaufort
         val value = getString()
         when {
             value.isEmpty() -> {
@@ -169,10 +225,12 @@ class ImperialUnitPanel(context: Context, attributeSet: AttributeSet) : Constrai
     }
 
     fun dropLastChar() {
+        if (unit?.unitName == ImperialUnitName.BEAUFORT) return
         setString(getString().dropLast(1))
     }
 
     fun evaluateString(s: String? = null) {
+        if (unit?.unitName == ImperialUnitName.BEAUFORT) return
         val expression = s ?: getString()
         val value = BasicCalculator(expression).eval()
         setUnitValue(value)
@@ -181,12 +239,10 @@ class ImperialUnitPanel(context: Context, attributeSet: AttributeSet) : Constrai
 
     fun hasExponent(): Boolean {
         return false
-//        return input.text
-//            .getSpans(0, input.text.length, SuperscriptSpan::class.java)
-//            .isNotEmpty()
     }
 
     fun formatStringAndSet(s: String) {
+        if (unit?.unitName == ImperialUnitName.BEAUFORT) return
         val expression = s ?: getString()
         val value = BasicCalculator(expression).eval()
         setUnitValue(value)

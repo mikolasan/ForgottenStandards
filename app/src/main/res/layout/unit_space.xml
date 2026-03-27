@@ -13,7 +13,7 @@
         android:id="@+id/info_button"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:layout_marginTop="@dimen/spacing_medium"
+        android:layout_marginTop="@dimen/spacing_small"
         android:layout_marginEnd="@dimen/spacing_medium"
         android:src="@drawable/ic_book"
         app:layout_constraintEnd_toStartOf="@id/bookmark"
@@ -25,7 +25,7 @@
         android:id="@+id/bookmark"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:layout_marginTop="@dimen/spacing_medium"
+        android:layout_marginTop="@dimen/spacing_small"
         android:layout_marginEnd="@dimen/spacing_large"
         android:src="@drawable/ic_bookmark"
         app:layout_constraintEnd_toEndOf="parent"
@@ -52,49 +52,58 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/range_min_value"
+    <LinearLayout
+        android:id="@+id/range_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/unit_list_margin_start"
-        android:layout_marginEnd="@dimen/unit_list_margin_start"
         android:layout_marginTop="@dimen/unit_list_element_spacing"
+        android:layout_marginEnd="@dimen/unit_list_margin_start"
         android:layout_marginBottom="@dimen/spacing_small"
+        android:background="@color/input_back"
+        android:gravity="center_vertical"
+        android:minWidth="100dp"
+        android:orientation="horizontal"
         android:paddingStart="@dimen/imperial_panel_input_padding_start"
         android:paddingTop="@dimen/unit_list_padding_vertical"
-        android:paddingEnd="@dimen/imperial_panel_input_padding_end"
+        android:paddingEnd="@dimen/unit_list_value_padding_end"
         android:paddingBottom="@dimen/unit_list_padding_vertical"
-        android:minWidth="80dp"
-        android:background="@color/input_back"
-        android:text="1.11"
-        android:textColor="@color/fontPrimary"
-        android:textSize="@dimen/unit_list_value_size"
-        app:layout_constraintEnd_toStartOf="@id/range_max_value"
+        app:layout_constraintBottom_toTopOf="@+id/unit_description"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/unit_name"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        tools:visibility="visible">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/range_max_value"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/unit_list_margin_start"
-        android:layout_marginEnd="@dimen/unit_list_margin_start"
-        android:layout_marginTop="@dimen/unit_list_element_spacing"
-        android:layout_marginBottom="@dimen/spacing_small"
-        android:paddingStart="@dimen/imperial_panel_input_padding_start"
-        android:paddingTop="@dimen/unit_list_padding_vertical"
-        android:paddingEnd="@dimen/imperial_panel_input_padding_end"
-        android:paddingBottom="@dimen/unit_list_padding_vertical"
-        android:minWidth="80dp"
-        android:background="@color/input_back"
-        android:text="9.99"
-        android:textColor="@color/fontPrimary"
-        android:textSize="@dimen/unit_list_value_size"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/range_min_value"
-        app:layout_constraintTop_toBottomOf="@+id/unit_name"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/range_min_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="1.11"
+            android:textColor="@color/fontPrimary"
+            android:textSize="@dimen/unit_list_value_size" />
+
+        <TextView
+            android:id="@+id/range_separator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/spacing_small"
+            android:paddingEnd="@dimen/spacing_small"
+            android:text="@string/range_separator"
+            android:textColor="@color/fontPrimary"
+            android:textSize="@dimen/unit_list_value_size" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/range_max_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:text="9.99"
+            android:textColor="@color/fontPrimary"
+            android:textSize="@dimen/unit_list_value_size" />
+
+    </LinearLayout>
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/unit_value"
@@ -108,16 +117,64 @@
         android:minWidth="100dp"
         android:paddingStart="@dimen/imperial_panel_input_padding_start"
         android:paddingTop="@dimen/unit_list_padding_vertical"
-        android:paddingEnd="@dimen/imperial_panel_input_padding_end"
+        android:paddingEnd="@dimen/unit_list_value_padding_end"
         android:paddingBottom="@dimen/unit_list_padding_vertical"
         android:text="123.45"
         android:textColor="@color/fontPrimary"
         android:textSize="@dimen/unit_list_value_size"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/unit_description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/unit_name"
-        tools:visibility="invisible" />
+        tools:visibility="gone" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/unit_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unit_list_margin_start"
+        android:layout_marginBottom="@dimen/spacing_small"
+        android:textColor="@color/action"
+        android:textSize="12sp"
+        android:gravity="start"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:text="Still"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/unit_controls"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/unit_value"
+        app:layout_constraintEnd_toEndOf="@+id/unit_value"
+        app:layout_constraintTop_toTopOf="@+id/unit_value"
+        android:gravity="center_vertical"
+        android:paddingEnd="4dp">
+
+        <ImageButton
+            android:id="@+id/button_minus"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_minus"
+            app:tint="@color/action"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:scaleType="center"
+            android:contentDescription="Minus" />
+
+        <ImageButton
+            android:id="@+id/button_plus"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_plus"
+            app:tint="@color/action"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:scaleType="center"
+            android:contentDescription="Plus" />
+    </LinearLayout>
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/unit_symbol"
@@ -129,7 +186,8 @@
         android:textColor="@color/fontPrimary"
         android:textIsSelectable="false"
         android:textSize="@dimen/unit_list_name_size"
-        app:layout_constraintBottom_toBottomOf="@+id/unit_value"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintBottom_toTopOf="@+id/unit_description"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/unit_name" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

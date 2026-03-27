@@ -58,6 +58,10 @@ In addition to its use in the measurement of length, the centimetre is used: som
     <string name="settings_app_name_version">%1$s v%2$s</string>
     <string name="pin_hint">Tap to pin your most used units to the top.</string>
 
+    <string name="range_separator" translatable="false">—</string>
+    <string name="action_plus">Plus</string>
+    <string name="action_minus">Minus</string>
+
     <!-- Unit Descriptions -->
     <string name="desc_ARSHIN"><![CDATA[The **Arshin** (Russian: арши́н) is an obsolete Russian unit of length.
 \n\n

@@ -15,6 +15,7 @@ import com.willowtreeapps.fuzzywuzzy.ToStringFunction
 import com.willowtreeapps.fuzzywuzzy.diffutils.FuzzySearch
 import com.willowtreeapps.fuzzywuzzy.diffutils.algorithms.WeightedRatio
 import io.github.mikolasan.ratiogenerator.ImperialUnit
+import io.github.mikolasan.ratiogenerator.ImperialUnitName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -40,12 +41,18 @@ class ImperialListAdapter
         val layout: ConstraintLayout = view as ConstraintLayout
         val name: TextView = layout.findViewById(R.id.unit_name)
         val value: TextView = layout.findViewById(R.id.unit_value)
-        val range_min_value: TextView = layout.findViewById(R.id.range_min_value)
-        val range_max_value: TextView = layout.findViewById(R.id.range_max_value)
+        val rangeContainer: View = layout.findViewById(R.id.range_container)
+        val rangeMinValue: TextView = layout.findViewById(R.id.range_min_value)
+        val rangeMaxValue: TextView = layout.findViewById(R.id.range_max_value)
+        val rangeSeparator: TextView = layout.findViewById(R.id.range_separator)
         val symbol: TextView = layout.findViewById(R.id.unit_symbol)
-//        val arrowUp: ImageView = layout.findViewById(R.id.arrow_up)
         val bookmark: ImageView = layout.findViewById(R.id.bookmark)
         val infoButton: ImageView = layout.findViewById(R.id.info_button)
+        val description: TextView = layout.findViewById(R.id.unit_description)
+        val controls: View = layout.findViewById(R.id.unit_controls)
+        val buttonMinus: View = layout.findViewById(R.id.button_minus)
+        val buttonPlus: View = layout.findViewById(R.id.button_plus)
+
         init {
             layout.setOnClickListener {
                 unitSelectedListener(this.absoluteAdapterPosition, view, data)
@@ -199,24 +206,19 @@ class ImperialListAdapter
         val color = holder.bookmark.context.resources.getColor(bookmarkColorRes)
         holder.bookmark.drawable.mutate().setColorFilter(color, PorterDuff.Mode.SRC_IN)
         
-        when (unit) {
-            workingUnits.mainUnit -> {
-                holder.layout.setBackgroundResource(backgrounds.getValue(ViewState.SELECTED))
-                holder.name.setTextColorId(nameColors.getValue(ViewState.SELECTED))
-                holder.value.setTextColorId(valueColors.getValue(ViewState.SELECTED))
-                holder.symbol.setTextColorId(valueColors.getValue(ViewState.SELECTED))
-                holder.value.setBackgroundResource(valueBackgrounds.getValue(ViewState.SELECTED))
-//                holder.arrowUp.visibility = if (dataPosition == 0) View.INVISIBLE else View.VISIBLE
-            }
-            else -> {
-                holder.layout.setBackgroundResource(backgrounds.getValue(ViewState.NORMAL))
-                holder.name.setTextColorId(nameColors.getValue(ViewState.NORMAL))
-                holder.value.setTextColorId(valueColors.getValue(ViewState.NORMAL))
-                holder.symbol.setTextColorId(valueColors.getValue(ViewState.NORMAL))
-                holder.value.setBackgroundResource(valueBackgrounds.getValue(ViewState.NORMAL))
-//                holder.arrowUp.visibility = View.INVISIBLE
-            }
-        }
+        val state = if (unit == workingUnits.mainUnit) ViewState.SELECTED else ViewState.NORMAL
+        
+        holder.layout.setBackgroundResource(backgrounds.getValue(state))
+        holder.name.setTextColorId(nameColors.getValue(state))
+        holder.value.setTextColorId(valueColors.getValue(state))
+        holder.rangeMinValue.setTextColorId(valueColors.getValue(state))
+        holder.rangeMaxValue.setTextColorId(valueColors.getValue(state))
+        holder.rangeSeparator.setTextColorId(valueColors.getValue(state))
+        holder.symbol.setTextColorId(valueColors.getValue(state))
+        
+        val valueBg = valueBackgrounds.getValue(state)
+        holder.value.setBackgroundResource(valueBg)
+        holder.rangeContainer.setBackgroundResource(valueBg)
     }
 
     private fun updateViewData(holder: ViewHolder, dataPosition: Int) {
@@ -230,44 +232,47 @@ class ImperialListAdapter
                 ) else it.toString()
             }
         if (data.range.isPresent) {
-            holder.range_min_value.text = valueForDisplay(data.range.get().first)
-            holder.range_max_value.text = valueForDisplay(data.range.get().second)
-            holder.range_min_value.visibility = View.VISIBLE
-            holder.range_max_value.visibility = View.VISIBLE
+            holder.rangeMinValue.text = valueForDisplay(data.range.get().first)
+            holder.rangeMaxValue.text = valueForDisplay(data.range.get().second)
+            holder.rangeContainer.visibility = View.VISIBLE
             holder.value.visibility = View.INVISIBLE
+            holder.controls.visibility = View.GONE
+            holder.description.visibility = View.GONE
         } else {
             holder.value.text = valueForDisplay(data.value)
             holder.value.visibility = View.VISIBLE
-            holder.range_min_value.visibility = View.INVISIBLE
-            holder.range_max_value.visibility = View.INVISIBLE
+            holder.rangeContainer.visibility = View.INVISIBLE
+            
+            if (data.unitName == ImperialUnitName.BEAUFORT) {
+                holder.controls.visibility = View.VISIBLE
+                val v = data.value
+                holder.description.text = data.rangeValueNames[v.toInt().toDouble()] ?: ""
+                holder.description.visibility = View.VISIBLE
+            } else {
+                holder.controls.visibility = View.GONE
+                holder.description.visibility = View.GONE
+            }
         }
         holder.symbol.text = ImperialSymbol.symbols[data.unitName] ?: ""
     }
 
     private fun updateControlListeners(holder: ViewHolder, dataPosition: Int) {
         val unit = getItem(dataPosition)
-//        holder.arrowUp.setOnClickListener {
-//            if (dataPosition != 0) {
-//                listUnits.moveToFrontFrom(dataPosition)
-//                arrowClickListener(dataPosition, it, unit)
-//                notifyItemMoved(dataPosition, 0)
-//            }
-//        }
-//        holder.arrowUp.setOnLongClickListener {
-//            if (dataPosition != 0) {
-//                listUnits.moveToFrontFrom(dataPosition)
-//                notifyItemMoved(dataPosition, 0)
-//                arrowLongClickListener(dataPosition, it, unit)
-//            }
-//            dataPosition != 0
-//        }
         holder.bookmark.setOnClickListener {
             unit.bookmarked = !unit.bookmarked
             bookmarkClickListener(dataPosition, it, unit)
             notifyItemChanged(dataPosition)
         }
         holder.infoButton.setOnClickListener {
-            infoClickListener(dataPosition, it, unit)
+            infoClickListener(holder.absoluteAdapterPosition, it, unit)
+        }
+        holder.buttonMinus.setOnClickListener {
+            unit.value = (unit.value - 1.0).coerceAtLeast(0.0)
+            updateAllValues(unit, unit.value)
+        }
+        holder.buttonPlus.setOnClickListener {
+            unit.value = (unit.value + 1.0).coerceAtMost(12.0)
+            updateAllValues(unit, unit.value)
         }
     }
 

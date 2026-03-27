@@ -3,6 +3,7 @@ package xyz.neupokoev.forgottenstandards.converter
 import android.text.Editable
 import android.text.SpannableStringBuilder
 import io.github.mikolasan.ratiogenerator.ImperialUnit
+import io.github.mikolasan.ratiogenerator.ImperialUnitName
 import xyz.neupokoev.forgottenstandards.BasicCalculator
 import xyz.neupokoev.forgottenstandards.ObserverCallable
 import xyz.neupokoev.forgottenstandards.valueForDisplay
@@ -25,15 +26,19 @@ class ImperialUnitObserver (var unit: ImperialUnit?) {
     fun getEditable(): Editable = formatted
 
     fun setValueAndNotify(v: Double) {
-        if (v == 0.0) {
+        var finalValue = v
+        if (unit?.unitName == ImperialUnitName.BEAUFORT) {
+            finalValue = v.coerceIn(0.0, 12.0)
+        }
+        
+        if (finalValue == 0.0) {
             onErase?.invoke()
         }
-        value = v
-        formatted = valueForDisplay(v)
+        value = finalValue
+        formatted = valueForDisplay(finalValue)
         unit?.let {
-            it.value = v
+            it.value = finalValue
             it.range = Optional.empty()
-            //it.formattedString = makeSerializedString(formatted)
         }
         onValueUpdated()
     }
@@ -41,28 +46,24 @@ class ImperialUnitObserver (var unit: ImperialUnit?) {
     fun setUnitAndUpdateValue(u: ImperialUnit) {
         unit = u
         formatted = valueForDisplay(u.value)
-        //u.formattedString = makeSerializedString(formatted)
     }
 
     fun addChar(char: Char) {
+        if (unit?.unitName == ImperialUnitName.BEAUFORT && !char.isDigit()) return
         val v = BasicCalculator(formatted.append(char).toString()).eval()
         setValueAndNotify(v)
     }
 
     fun appendString(c: Char) {
+        if (unit?.unitName == ImperialUnitName.BEAUFORT && !c.isDigit()) return
+        
         if (formatted.toString() == "0") {
             setString(c.toString())
         } else {
             setString(formatted.toString() + c)
         }
         val v = BasicCalculator(formatted.toString()).eval()
-        value = v
-        unit?.let {
-            it.value = v
-            it.range = Optional.empty()
-            //it.formattedString = makeSerializedString(formatted)
-        }
-        onValueUpdated()
+        setValueAndNotify(v)
     }
 
     fun dropLastChar() {
@@ -74,17 +75,13 @@ class ImperialUnitObserver (var unit: ImperialUnit?) {
             }
 
             val v = BasicCalculator(formatted.toString()).eval()
-            value = v
-            unit?.let {
-                it.value = v
-                it.range = Optional.empty()
-                //it.formattedString = makeSerializedString(formatted)
-            }
-            onValueUpdated()
+            setValueAndNotify(v)
         }
     }
 
     fun appendStringOrReplace(c: Char, replaceable: Set<Char>) {
+        if (unit?.unitName == ImperialUnitName.BEAUFORT && !c.isDigit()) return
+        
         val s = formatted.toString()
         when {
             s.isEmpty() -> {
@@ -109,13 +106,7 @@ class ImperialUnitObserver (var unit: ImperialUnit?) {
             }
         }
         val v = BasicCalculator(formatted.toString()).eval()
-        value = v
-        unit?.let {
-            it.value = v
-            it.range = Optional.empty()
-            //it.formattedString = makeSerializedString(formatted)
-        }
-        onValueUpdated()
+        setValueAndNotify(v)
     }
 
     private fun setString(s: String) {
