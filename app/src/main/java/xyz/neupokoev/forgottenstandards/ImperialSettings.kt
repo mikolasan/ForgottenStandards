@@ -11,7 +11,7 @@ import xyz.neupokoev.forgottenstandards.menu.ImperialCategory
 import xyz.neupokoev.forgottenstandards.menu.ImperialUnitCategoryName
 
 class ImperialSettings(application: Application) : AndroidViewModel(application) {
-    private val preferencesFile = "ForgStPref.11"
+    private val preferencesFile = "ForgStPref.12"
 
     private val preferencesEditor: SharedPreferences.Editor by lazy {
         return@lazy preferences.edit()

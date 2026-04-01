@@ -3,6 +3,7 @@ package io.github.mikolasan.ratiogenerator
 enum class ImperialUnitType {
     ANGLE,
     AREA,
+    COOKING,
     CURRENCY,
     ENERGY,
     FORCE,

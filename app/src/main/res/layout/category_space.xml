@@ -7,12 +7,24 @@
     android:layout_marginStart="5dp"
     android:layout_marginTop="5dp">
 
+    <ImageView
+        android:id="@+id/category_icon"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="12dp"
+        android:scaleType="fitCenter"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/menu_header_font" />
+
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/category_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:hyphenationFrequency="none"
@@ -27,7 +39,7 @@
         app:layout_constraintBottom_toTopOf="@+id/category_divider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/category_icon" />
 
     <View
         android:id="@+id/category_divider"

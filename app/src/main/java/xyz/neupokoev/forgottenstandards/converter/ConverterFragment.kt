@@ -1,5 +1,6 @@
 package xyz.neupokoev.forgottenstandards.converter
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +8,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import io.github.mikolasan.ratiogenerator.ImperialUnit
+import io.github.mikolasan.ratiogenerator.ImperialUnitType
+import io.github.mikolasan.ratiogenerator.MinCookingUnits
 import xyz.neupokoev.forgottenstandards.MainActivity
 import xyz.neupokoev.forgottenstandards.R
 import xyz.neupokoev.forgottenstandards.getConversionRatio
@@ -17,6 +20,8 @@ class ConverterFragment : Fragment() {
     lateinit var topPanel: ImperialUnitPanel
     lateinit var selectedPanel: ImperialUnitPanel
     private lateinit var ratioLabel: TextView
+    private lateinit var ingredientSelector: View
+    private lateinit var ingredientName: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,37 +35,50 @@ class ConverterFragment : Fragment() {
         topPanel.setHintText(view.context.resources.getString(R.string.select_unit_hint))
         bottomPanel.setHintText(view.context.resources.getString(R.string.select_unit_2_hint))
         ratioLabel = view.findViewById(R.id.ratio_label)
+        ingredientSelector = view.findViewById(R.id.ingredient_selector)
+        ingredientName = view.findViewById(R.id.ingredient_name)
+        
         selectedPanel = topPanel // init before use
         setPanelListeners(view)
+        setIngredientListeners()
 
-//        keyboardView = view.findViewById(R.id.keyboard)
-//        keyboardButtonView = view.findViewById(R.id.keyboard_button)
-
-
-//        arguments?.let {
-//            val categoryName = it.getString("category")
-//            val topUnitName = it.getString("topUnit")
-//            val bottomUnitName = it.getString("bottomUnit")
-//            val topUnit =
-//        }
-//        setKeyboardButtonListeners(view)
         return view
     }
 
     override fun onStart() {
         super.onStart()
 
-//        keyboardFragment = keyboardView.getFragment()
-//        keyboardButtonFragment = keyboardButtonView.getFragment()
-
         (activity as? MainActivity)?.workingUnits?.let { workingUnits ->
             restoreTopPanel(workingUnits.mainUnit)
-            //restoreBottomPanel(workingUnits.bottomUnit)
             selectPanel(topPanel, bottomPanel)
+            updateIngredientSelectorVisibility(workingUnits.selectedCategory?.name)
             displayUnitValues()
         }
+    }
 
-//        (activity as? MainActivity)?.updateKeyboard()
+    private fun updateIngredientSelectorVisibility(categoryName: String?) {
+        if (categoryName == "Cooking") {
+            ingredientSelector.visibility = View.VISIBLE
+            ingredientName.text = MinCookingUnits.currentIngredient
+        } else {
+            ingredientSelector.visibility = View.GONE
+        }
+    }
+
+    private fun setIngredientListeners() {
+        ingredientName.setOnClickListener {
+            val ingredients = MinCookingUnits.ingredients.keys.toTypedArray()
+            AlertDialog.Builder(requireContext())
+                .setTitle("Select Ingredient")
+                .setItems(ingredients) { _, which ->
+                    val selected = ingredients[which]
+                    MinCookingUnits.setIngredient(selected)
+                    ingredientName.text = selected
+                    updateRatioLabel()
+                    displayUnitValues()
+                }
+                .show()
+        }
     }
 
     private fun selectPanel(new: ImperialUnitPanel, old: ImperialUnitPanel) {
@@ -106,7 +124,7 @@ class ConverterFragment : Fragment() {
         bottomInput.addTextChangedListener(object : ImperialTextWatcher(bottomPanel, this, activity as MainActivity) {})
     }
 
-    private fun updateRatioLabel() {
+    fun updateRatioLabel() {
         val fromUnit = selectedPanel.unit
         val toUnit = if (fromUnit == topPanel.unit) bottomPanel.unit else topPanel.unit
         if (fromUnit == null || toUnit == null) {

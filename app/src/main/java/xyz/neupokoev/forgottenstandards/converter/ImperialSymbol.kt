@@ -9,12 +9,9 @@ object ImperialSymbol {
             ImperialUnitName.MINUTE_OF_ARC to "min",
             ImperialUnitName.SECOND_OF_ARC to "sec",
             ImperialUnitName.GRAD to "grad",
-//            ImperialUnitName.CIRCLE to "circle",
 
             // Area
-//            ImperialUnitName.DESYATINA to "",
             ImperialUnitName.ARE to "a", // sotka
-//            ImperialUnitName.ACRE to "",
             ImperialUnitName.HECTARE to "ha",
             ImperialUnitName.SQUARE_CENTIMETER to "cm²",
             ImperialUnitName.SQUARE_KILOMETER to "km²",
@@ -23,11 +20,15 @@ object ImperialSymbol {
             ImperialUnitName.SQUARE_FOOT to "ft²",
             ImperialUnitName.SQUARE_MILE to "mi²",
 
-            // Currency
-//            ImperialUnitName.MOSKOVKA to "",
-//            ImperialUnitName.DENGA to "",
-//            ImperialUnitName.KOPEIKA to "",
-//            ImperialUnitName.ALTIN to "",
+            // Cooking
+            ImperialUnitName.TEASPOON to "tsp",
+            ImperialUnitName.TABLESPOON to "tbsp",
+            ImperialUnitName.CUP to "cup",
+            ImperialUnitName.DASH to "dash",
+            ImperialUnitName.PINCH to "pinch",
+            ImperialUnitName.SMIDGEN to "smidgen",
+            ImperialUnitName.DROP to "drop",
+            ImperialUnitName.STAKAN to "st",
 
             // Energy
             ImperialUnitName.JOULE to "J",
@@ -40,7 +41,6 @@ object ImperialSymbol {
             ImperialUnitName.DYNE to "dyn",
             ImperialUnitName.NEWTON to "N",
             ImperialUnitName.KILONEWTON to "kN",
-//            ImperialUnitName.POUNDAL to "",
             ImperialUnitName.KILOGRAM_FORCE to "kgf",
 
             // Fuel
@@ -55,26 +55,11 @@ object ImperialSymbol {
             ImperialUnitName.CENTIMETER to "cm",
             ImperialUnitName.MILLIMETER to "mm",
             ImperialUnitName.MICROMETER to "um",
-//            ImperialUnitName.POINT to "", // tochka
-//            ImperialUnitName.LINE to "", // liniya
             ImperialUnitName.INCH to "in", // dyuym
-//            ImperialUnitName.VERSHOK to "",
-//            ImperialUnitName.PALM to "", // ladon
-//            ImperialUnitName.SPAN to "", // pyad
             ImperialUnitName.FOOT to "ft",
-//            ImperialUnitName.ELL to "", // lokot
-//            ImperialUnitName.STEP to "",
-//            ImperialUnitName.ARSHIN to "",
-//            ImperialUnitName.SAZHEN to "",
-//            ImperialUnitName.VERST to "",
             ImperialUnitName.MILE to "mi",
-//            ImperialUnitName.POPRISCHE to "",
             ImperialUnitName.FURLONG to "fur",
             ImperialUnitName.CHAIN to "ch",
-//            ImperialUnitName.ROD to "",
-//            ImperialUnitName.PARSEC to "",
-//            ImperialUnitName.LIGHT_YEAR to "",
-//            ImperialUnitName.ASTRONOMICAL_UNIT to "",
 
             // Power
             ImperialUnitName.WATT to "W",
@@ -99,16 +84,10 @@ object ImperialSymbol {
             ImperialUnitName.METER_PER_SECOND to "m/s",
             ImperialUnitName.MILE_PER_HOUR to "mph",
             ImperialUnitName.KILOMETER_PER_HOUR to "km/h",
-//            ImperialUnitName.KNOT to "",
-//            ImperialUnitName.MACH to "",
-            //ImperialUnitName.BEAUFORT to "", // TODO: this unit is not in constant relation to other units, need a formula
 
             // Storage
-//            ImperialUnitName.BIT to "",
             ImperialUnitName.BYTE to "B",
             ImperialUnitName.KIBIBYTE to "KiB",
-//            ImperialUnitName.PACKET to "",
-//            ImperialUnitName.BLOCK to "",
 
             // Temperature
             ImperialUnitName.CELSIUS to "°C",
@@ -120,22 +99,9 @@ object ImperialSymbol {
 
             // Time
             ImperialUnitName.HOUR to "h",
-//            ImperialUnitName.DAY to "",
-//            ImperialUnitName.WEEK to "",
-//            ImperialUnitName.MONTH to "",
-//            ImperialUnitName.YEAR to "",
-//            ImperialUnitName.FORTNIGHT to "",
 
 
             // Volume
-//            ImperialUnitName.BOCHKA to "",
-//            ImperialUnitName.VEDRO to "",
-//            ImperialUnitName.GARNETS to "",
-//            ImperialUnitName.OSMINA to "",
-//            ImperialUnitName.SHKALIK to "",
-//            ImperialUnitName.CHARKA to "",
-//            ImperialUnitName.SHTOF to "",
-//            ImperialUnitName.SOROKOVKA to "",
             ImperialUnitName.LITER to "L",
             ImperialUnitName.MILLILITER to "mL",
             ImperialUnitName.GALLON to "gal",
@@ -147,23 +113,10 @@ object ImperialSymbol {
             ImperialUnitName.CUBIC_METER to "m³",
 
             // Weight
-//            ImperialUnitName.DOLYA to "",
-//            ImperialUnitName.ZOLOTNIK to "",
-//            ImperialUnitName.LOT to "",
-//            ImperialUnitName.FUNT to "",
-//            ImperialUnitName.POOD to "",
-//            ImperialUnitName.BERKOVETS to "",
-//            ImperialUnitName.GRAN to "",
-//            ImperialUnitName.SCRUPUL to "",
-//            ImperialUnitName.DRAKHMA to "dr",
-//            ImperialUnitName.UNTSIYA to "",
             ImperialUnitName.KILOGRAMM to "kg",
             ImperialUnitName.GRAMM to "g",
             ImperialUnitName.POUND to "lb",
             ImperialUnitName.STONE to "st",
-//            ImperialUnitName.CARAT to "",
-//            ImperialUnitName.TOLA to "",
-//            ImperialUnitName.RATTI to "",
             ImperialUnitName.GRAIN to "gr"
     )
 }

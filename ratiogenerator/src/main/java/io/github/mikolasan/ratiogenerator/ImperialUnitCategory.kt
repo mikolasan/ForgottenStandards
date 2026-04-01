@@ -11,7 +11,7 @@ typealias RangeList = List<eq<Range, r<Double, String>>>
 typealias RangeParity = f<ImperialUnitName, ImperialUnitName, RangeList>
 
 abstract class ImperialUnitCategory(val type: ImperialUnitType,
-                                    val ratioList: RatioList,
+                                    var ratioList: RatioList,
                                     val formulaList: FormulaList,
     val rangeParity: RangeParity = Triple(ImperialUnitName.NO_UNIT, ImperialUnitName.NO_UNIT, listOf())
 ) {
@@ -20,6 +20,11 @@ abstract class ImperialUnitCategory(val type: ImperialUnitType,
     val nameMap: Map<ImperialUnitName, ImperialUnit> = makeNameMapFromUnits(units)
 
     init {
+        updateRatios(ratioList)
+    }
+
+    fun updateRatios(newRatioList: RatioList) {
+        ratioList = newRatioList
         units.forEach { unit ->
             val leftToRight = ratioList
                 .filter { it.first.second == unit.unitName }

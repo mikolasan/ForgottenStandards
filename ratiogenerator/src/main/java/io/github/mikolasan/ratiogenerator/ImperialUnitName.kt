@@ -25,6 +25,16 @@ enum class ImperialUnitName {
     SQUARE_FOOT,
     SQUARE_MILE,
 
+    // Cooking
+    TEASPOON,
+    TABLESPOON,
+    CUP,
+    DASH,
+    PINCH,
+    SMIDGEN,
+    DROP,
+    STAKAN,
+
     // Currency
     MOSKOVKA,
     DENGA,

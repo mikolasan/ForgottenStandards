@@ -5,6 +5,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
@@ -37,6 +38,7 @@ class ImperialCategoryAdapter(private var items: List<CategoryMenuItem>,
     class ItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var category: ImperialUnitCategoryName? = null
         val categoryTitle: TextView = view.findViewById(R.id.category_title)
+        val categoryIcon: ImageView = view.findViewById(R.id.category_icon)
         val space: ConstraintLayout = view.findViewById(R.id.category_space)
         val divider: View = view.findViewById(R.id.category_divider)
     }
@@ -131,6 +133,13 @@ class ImperialCategoryAdapter(private var items: List<CategoryMenuItem>,
                 val viewCategory = item.category
                 itemHolder.category = viewCategory
                 
+                if (item.category.iconRes != null && !isSearchMode) {
+                    itemHolder.categoryIcon.visibility = View.VISIBLE
+                    itemHolder.categoryIcon.setImageResource(item.category.iconRes)
+                } else {
+                    itemHolder.categoryIcon.visibility = View.GONE
+                }
+
                 if (isSearchMode) {
                     itemHolder.categoryTitle.gravity = Gravity.START
                     itemHolder.categoryTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
@@ -143,7 +152,11 @@ class ImperialCategoryAdapter(private var items: List<CategoryMenuItem>,
                     itemHolder.categoryTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
                     itemHolder.categoryTitle.setTextColor(itemHolder.itemView.context.getColor(R.color.menu_header_font))
                     itemHolder.divider.visibility = View.GONE
-                    itemHolder.categoryTitle.setPadding(16, 16, 16, 16)
+                    if (item.category.iconRes != null) {
+                        itemHolder.categoryTitle.setPadding(16, 0, 16, 16)
+                    } else {
+                        itemHolder.categoryTitle.setPadding(16, 16, 16, 16)
+                    }
                     
                     val selectedCategory = publishSubject.workingUnits.selectedCategory
                     if (selectedCategory == viewCategory) {

@@ -4,6 +4,7 @@ import io.github.mikolasan.ratiogenerator.ImperialUnitCategory
 import io.github.mikolasan.ratiogenerator.ImperialUnitType
 import io.github.mikolasan.ratiogenerator.MinAngleUnits
 import io.github.mikolasan.ratiogenerator.MinAreaUnits
+import io.github.mikolasan.ratiogenerator.MinCookingUnits
 import io.github.mikolasan.ratiogenerator.MinCurrencyUnits
 import io.github.mikolasan.ratiogenerator.MinEnergyUnits
 import io.github.mikolasan.ratiogenerator.MinForceUnits
@@ -21,17 +22,20 @@ import io.github.mikolasan.ratiogenerator.MinTimeUnits
 import io.github.mikolasan.ratiogenerator.MinVolumeUnits
 import io.github.mikolasan.ratiogenerator.MinWeightUnits
 import xyz.neupokoev.forgottenstandards.ImperialSettings
+import xyz.neupokoev.forgottenstandards.R
 
 object ImperialCategory {
     val items: List<CategoryMenuItem> = listOf(
         CategoryMenuItem.Header("Common"),
-        CategoryMenuItem.Item(ImperialUnitCategoryName("Length")),
+        CategoryMenuItem.Item(ImperialUnitCategoryName("Length", R.drawable.ic_length)),
         CategoryMenuItem.Item(ImperialUnitCategoryName("Area")),
         CategoryMenuItem.Item(ImperialUnitCategoryName("Volume")),
-        CategoryMenuItem.Item(ImperialUnitCategoryName("Temperature")),
-        CategoryMenuItem.Item(ImperialUnitCategoryName("Weight")),
+        CategoryMenuItem.Item(ImperialUnitCategoryName("Temperature", R.drawable.ic_temperature)),
+        CategoryMenuItem.Item(ImperialUnitCategoryName("Weight", R.drawable.ic_weight)),
         CategoryMenuItem.Item(ImperialUnitCategoryName("Speed")),
         CategoryMenuItem.Item(ImperialUnitCategoryName("Time")),
+        CategoryMenuItem.Header("Cooking"),
+        CategoryMenuItem.Item(ImperialUnitCategoryName("Cooking", R.drawable.ic_chef_hat)),
         CategoryMenuItem.Header("Physics"),
         CategoryMenuItem.Item(ImperialUnitCategoryName("Pressure")),
         CategoryMenuItem.Item(ImperialUnitCategoryName("Power")),
@@ -70,6 +74,7 @@ object ImperialCategory {
     val typeMap: Map<ImperialUnitType, ImperialUnitCategory> = mapOf(
         ImperialUnitType.ANGLE to MinAngleUnits,
         ImperialUnitType.AREA to MinAreaUnits,
+        ImperialUnitType.COOKING to MinCookingUnits,
         ImperialUnitType.CURRENCY to MinCurrencyUnits,
         ImperialUnitType.ENERGY to MinEnergyUnits,
         ImperialUnitType.FORCE to MinForceUnits,

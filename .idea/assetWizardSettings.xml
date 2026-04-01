@@ -355,8 +355,8 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="outputName" value="ic_book" />
-                            <entry key="sourceFile" value="C:\Users\neupo\develop\ForgottenStandards\assets\book.svg" />
+                            <entry key="outputName" value="ic_weight" />
+                            <entry key="sourceFile" value="C:\Users\neupo\develop\ForgottenStandards\assets\weight.svg" />
                           </map>
                         </option>
                       </PersistentState>

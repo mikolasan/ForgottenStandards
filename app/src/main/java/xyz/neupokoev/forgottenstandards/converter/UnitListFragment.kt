@@ -1,5 +1,6 @@
 package xyz.neupokoev.forgottenstandards.converter
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.mikolasan.ratiogenerator.ImperialUnit
+import io.github.mikolasan.ratiogenerator.MinCookingUnits
 import xyz.neupokoev.forgottenstandards.DescriptionFragment
 import xyz.neupokoev.forgottenstandards.MainActivity
 import xyz.neupokoev.forgottenstandards.R
@@ -25,6 +27,8 @@ class UnitListFragment : Fragment() {
     private lateinit var topPanel: ImperialUnitPanel
     private lateinit var selectedPanel: ImperialUnitPanel
     private lateinit var favoritesPlaceholder: TextView
+    private lateinit var ingredientSelector: View
+    private lateinit var ingredientName: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,9 +55,12 @@ class UnitListFragment : Fragment() {
         topPanel.setHintText(view.context.resources.getString(R.string.select_unit_hint))
         bottomPanel.setHintText(view.context.resources.getString(R.string.select_unit_2_hint))
 
-        updateFavoritesUI()
+        ingredientSelector = view.findViewById(R.id.ingredient_selector)
+        ingredientName = view.findViewById(R.id.ingredient_name)
 
+        updateFavoritesUI()
         setListeners(view)
+        setIngredientListeners()
 
         return view
     }
@@ -64,26 +71,49 @@ class UnitListFragment : Fragment() {
         val mainActivity = activity as MainActivity
         mainActivity.onCategoryOpened()
 
+        updateIngredientSelectorVisibility(mainActivity.workingUnits.selectedCategory?.name)
+
         if (mainActivity.settings.isFirstRun()) {
             unitsList.postDelayed({
                 val viewHolder = unitsList.findViewHolderForAdapterPosition(0) as? ImperialListAdapter.ViewHolder
                 viewHolder?.bookmark?.let { bookmarkView ->
                     TooltipCompat.setTooltipText(bookmarkView, getString(R.string.pin_hint))
                     bookmarkView.performLongClick() // Force tooltip display if supported
-                    // Alternatively, we could use a custom view or library, 
-                    // but we'll stick to standard TooltipCompat for now.
                     mainActivity.settings.setFirstRunDone()
                 }
             }, 500)
         }
     }
 
-    override fun onResume() {
-        super.onResume()
+    private fun updateIngredientSelectorVisibility(categoryName: String?) {
+        if (categoryName == "Cooking") {
+            ingredientSelector.visibility = View.VISIBLE
+            ingredientName.text = MinCookingUnits.currentIngredient
+        } else {
+            ingredientSelector.visibility = View.GONE
+        }
     }
 
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
+    private fun setIngredientListeners() {
+        ingredientName.setOnClickListener {
+            val ingredients = MinCookingUnits.ingredients.keys.toTypedArray()
+            AlertDialog.Builder(requireContext())
+                .setTitle("Select Ingredient")
+                .setItems(ingredients) { _, which ->
+                    val selected = ingredients[which]
+                    MinCookingUnits.setIngredient(selected)
+                    ingredientName.text = selected
+                    val mainActivity = activity as MainActivity
+                    updateAllValues(mainActivity.workingUnits.mainUnit, mainActivity.workingUnits.mainUnit.value)
+                    if (topPanel.visibility == View.VISIBLE) {
+                        topPanel.updateDisplayValue()
+                    }
+                    if (bottomPanel.visibility == View.VISIBLE) {
+                        bottomPanel.updateDisplayValue()
+                    }
+                }
+                .show()
+        }
     }
 
     fun setUnits(units: Array<ImperialUnit>) {
@@ -108,7 +138,6 @@ class UnitListFragment : Fragment() {
             bottomPanel.visibility = View.GONE
         } else {
             favoritesPlaceholder.visibility = View.GONE
-            // Panels visibility is managed by showBookmark/hidePanels
         }
     }
 
