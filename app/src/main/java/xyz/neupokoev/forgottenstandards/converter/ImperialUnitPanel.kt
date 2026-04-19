@@ -34,8 +34,8 @@ class ImperialUnitPanel(context: Context, attributeSet: AttributeSet) : Constrai
     private val buttonMinus: View = findViewById(R.id.button_minus)
     private val buttonPlus: View = findViewById(R.id.button_plus)
 
-    private val colorInputNormal = getColor(R.color.input_font)
-    private val colorInputSelected = getColor(R.color.input_selected_font)
+    private val colorInputNormal = getColor(R.color.panel_font)
+    private val colorInputSelected = getColor(R.color.panel_selected_font)
     private val colorNormal = getColor(R.color.panel_font)
     private val colorSelected = getColor(R.color.panel_selected_font)
 
@@ -76,7 +76,7 @@ class ImperialUnitPanel(context: Context, attributeSet: AttributeSet) : Constrai
         isActive = highlight
         layout.setBackgroundResource(if (highlight) R.color.panel_selected_back else R.color.panel_back)
         title.setTextColor(if (highlight) colorSelected else colorNormal)
-        input.setBackgroundResource(if (highlight) R.color.input_selected_back else R.color.input_back)
+        input.setBackgroundResource(if (highlight) R.color.panel_selected_back else R.color.panel_back)
         input.setTextColor(if (highlight) colorInputSelected else colorInputNormal)
 
         if (!isActive && hasUnitAssigned() && getString() == "") {
@@ -157,9 +157,6 @@ class ImperialUnitPanel(context: Context, attributeSet: AttributeSet) : Constrai
             description.text = u.rangeValueNames[v]
             description.visibility = VISIBLE
         } else if (u.unitName == ImperialUnitName.BEAUFORT) {
-             // For Beaufort, we might need to find the name even if it's not an exact key 
-             // because conversion can result in non-integer values if we aren't careful
-             // but our convertValueFromRange returns an exact key.
              description.text = u.rangeValueNames[v.toInt().toDouble()] ?: ""
              description.visibility = VISIBLE
         } else {
@@ -184,7 +181,7 @@ class ImperialUnitPanel(context: Context, attributeSet: AttributeSet) : Constrai
     }
 
     fun appendString(c: Char) {
-        if (unit?.unitName == ImperialUnitName.BEAUFORT) return // No direct typing for Beaufort
+        if (unit?.unitName == ImperialUnitName.BEAUFORT) return 
         setString(getString() + c.toString())
     }
 
@@ -198,7 +195,7 @@ class ImperialUnitPanel(context: Context, attributeSet: AttributeSet) : Constrai
     }
 
     fun appendStringOrReplace(c: Char, replaceable: Set<Char>) {
-        if (unit?.unitName == ImperialUnitName.BEAUFORT) return // No direct typing for Beaufort
+        if (unit?.unitName == ImperialUnitName.BEAUFORT) return
         val value = getString()
         when {
             value.isEmpty() -> {

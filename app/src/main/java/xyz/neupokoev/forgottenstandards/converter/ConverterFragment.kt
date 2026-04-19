@@ -2,18 +2,22 @@ package xyz.neupokoev.forgottenstandards.converter
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.view.GestureDetector
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.view.GestureDetectorCompat
 import androidx.fragment.app.Fragment
 import io.github.mikolasan.ratiogenerator.ImperialUnit
-import io.github.mikolasan.ratiogenerator.ImperialUnitType
 import io.github.mikolasan.ratiogenerator.MinCookingUnits
 import xyz.neupokoev.forgottenstandards.MainActivity
 import xyz.neupokoev.forgottenstandards.R
+import xyz.neupokoev.forgottenstandards.convertValueWrapper
 import xyz.neupokoev.forgottenstandards.getConversionRatio
 import xyz.neupokoev.forgottenstandards.patternForDisplay
+import kotlin.math.abs
 
 class ConverterFragment : Fragment() {
     lateinit var bottomPanel: ImperialUnitPanel
@@ -73,12 +77,51 @@ class ConverterFragment : Fragment() {
                 .setItems(ingredients) { _, which ->
                     val selected = ingredients[which]
                     MinCookingUnits.setIngredient(selected)
-                    ingredientName.text = selected
-                    updateRatioLabel()
-                    displayUnitValues()
+                    onIngredientChanged()
                 }
                 .show()
         }
+
+        val gestureDetector = GestureDetectorCompat(requireContext(), object : GestureDetector.SimpleOnGestureListener() {
+            private var accumulatedDistanceY = 0f
+            private val threshold = 50f
+
+            override fun onScroll(e1: MotionEvent?, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
+                accumulatedDistanceY += distanceY
+                if (abs(accumulatedDistanceY) > threshold) {
+                    if (accumulatedDistanceY > 0) {
+                        MinCookingUnits.nextIngredient()
+                    } else {
+                        MinCookingUnits.previousIngredient()
+                    }
+                    onIngredientChanged()
+                    accumulatedDistanceY = 0f
+                }
+                return true
+            }
+
+            override fun onDown(e: MotionEvent): Boolean {
+                accumulatedDistanceY = 0f
+                return true
+            }
+        })
+
+        ingredientSelector.setOnTouchListener { _, event ->
+            gestureDetector.onTouchEvent(event)
+            true
+        }
+    }
+
+    private fun onIngredientChanged() {
+        ingredientName.text = MinCookingUnits.currentIngredient
+        
+        val oppositePanel = if (selectedPanel == topPanel) bottomPanel else topPanel
+        if (selectedPanel.unit != null && oppositePanel.unit != null) {
+            convertValueWrapper(selectedPanel.unit!!, selectedPanel.unit!!.value, oppositePanel.unit!!)
+        }
+        
+        updateRatioLabel()
+        displayUnitValues()
     }
 
     private fun selectPanel(new: ImperialUnitPanel, old: ImperialUnitPanel) {

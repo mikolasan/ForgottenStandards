@@ -47,7 +47,12 @@ class ImperialSettings(application: Application) : AndroidViewModel(application)
         val type: ImperialUnitType = categoryNameToType(category)
         val currentUnits = units.getValue(type)
 
-        val topPanelUnit: ImperialUnit = restoreUnit(type, "topPanelUnit", currentUnits[0])
+        val topPanelUnit: ImperialUnit = if (currentUnits.isNotEmpty()) {
+            restoreUnit(type, "topPanelUnit", currentUnits[0])
+        } else {
+            // Fallback for empty categories
+            ImperialUnit(ImperialCategory.typeMap.getValue(type), type, ImperialUnitName.NO_UNIT)
+        }
 
         return WorkingUnits().apply {
             allUnits = units
@@ -66,40 +71,40 @@ class ImperialSettings(application: Application) : AndroidViewModel(application)
     }
 
     private fun loadOrderedUnits(type: ImperialUnitType): Array<ImperialUnit> {
-        val units = ImperialCategory.typeMap.getValue(type).units.toTypedArray().copyOf()
-        ImperialCategory.typeMap.getValue(type).units.forEachIndexed { i, u ->
-            // TODO
-            if (u.unitName.name == "NO_UNIT") {
+        val category = ImperialCategory.typeMap.getValue(type)
+        val units = category.units.toTypedArray().copyOf()
+        if (units.isEmpty()) return units
+        
+        category.units.forEachIndexed { i, u ->
+            if (u.unitName == ImperialUnitName.NO_UNIT) {
                 return@forEachIndexed
             }
             val unitName = u.unitName.name
             val settingName = "unit${unitName}Position"
             val p = preferences.getInt(settingName, i)
             if (p < 0) {
-                throw ImperialInsistentException("Shit: pos ${i}, unit ${unitName} got ${p}")
+                return@forEachIndexed
             }
             if (!preferences.contains(settingName)) {
-                System.err.println("First time loading ${settingName}")
                 preferencesEditor.putInt(settingName, i)
             }
-            units[p] = u
+            if (p < units.size) {
+                units[p] = u
+            }
         }
         if (units.distinct().size != units.size) {
-            ImperialCategory.typeMap.getValue(type).units.toTypedArray().copyInto(units)
+            category.units.toTypedArray().copyInto(units)
         }
         preferencesEditor.apply()
         return units
     }
 
     fun saveNewOrder(orderedUnits: Array<ImperialUnit>) {
-        println("== saveNewOrder ==")
         orderedUnits.forEachIndexed { i, u ->
             val unitName = u.unitName.name
             val settingName = "unit${unitName}Position"
-            println("$settingName - $i")
             preferencesEditor.putInt(settingName, i)
         }
-        println("== END ==")
         preferencesEditor.apply()
     }
 
@@ -142,12 +147,22 @@ class ImperialSettings(application: Application) : AndroidViewModel(application)
     fun getFrequentConversions(): List<Pair<ImperialUnitName, ImperialUnitName>> {
         val all = preferences.all
         return all.filterKeys { it.startsWith("pair_") }
-            .map { (key, value) -> key to (value as Int) }
+            .map { (key, value) -> 
+                try {
+                    key to (value as Int)
+                } catch (e: Exception) {
+                    key to 0
+                }
+            }
             .sortedByDescending { it.second }
             .take(5)
-            .map { (key, _) ->
-                val parts = key.removePrefix("pair_").split("_")
-                ImperialUnitName.valueOf(parts[0]) to ImperialUnitName.valueOf(parts[1])
+            .mapNotNull { (key, _) ->
+                try {
+                    val parts = key.removePrefix("pair_").split("_")
+                    ImperialUnitName.valueOf(parts[0]) to ImperialUnitName.valueOf(parts[1])
+                } catch (e: Exception) {
+                    null
+                }
             }
     }
 

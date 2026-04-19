@@ -33,10 +33,6 @@ object MinCookingUnits : ImperialUnitCategory(
         val density = ingredients[name] ?: return
         currentIngredient = name
         
-        // Update ratio between GRAMM and MILLILITER
-        // 1 gram = 1 / density ml
-        // 1 ml = density gram
-        
         val newRatioList = listOf(
             eq(x(1.0, ImperialUnitName.CUP), x(250.0, ImperialUnitName.MILLILITER)),
             eq(x(1.0, ImperialUnitName.STAKAN), x(200.0, ImperialUnitName.MILLILITER)),
@@ -54,5 +50,19 @@ object MinCookingUnits : ImperialUnitCategory(
         )
         
         updateRatios(newRatioList)
+    }
+
+    fun nextIngredient() {
+        val keys = ingredients.keys.toList()
+        val currentIndex = keys.indexOf(currentIngredient)
+        val nextIndex = (currentIndex + 1) % keys.size
+        setIngredient(keys[nextIndex])
+    }
+
+    fun previousIngredient() {
+        val keys = ingredients.keys.toList()
+        val currentIndex = keys.indexOf(currentIngredient)
+        val prevIndex = if (currentIndex <= 0) keys.size - 1 else currentIndex - 1
+        setIngredient(keys[prevIndex])
     }
 }

@@ -2,12 +2,14 @@ package xyz.neupokoev.forgottenstandards.converter
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.view.GestureDetector
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.widget.TextView
 import androidx.appcompat.widget.TooltipCompat
+import androidx.core.view.GestureDetectorCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,6 +19,7 @@ import xyz.neupokoev.forgottenstandards.DescriptionFragment
 import xyz.neupokoev.forgottenstandards.MainActivity
 import xyz.neupokoev.forgottenstandards.R
 import xyz.neupokoev.forgottenstandards.convertValueWrapper
+import kotlin.math.abs
 
 class UnitListFragment : Fragment() {
 
@@ -102,17 +105,60 @@ class UnitListFragment : Fragment() {
                 .setItems(ingredients) { _, which ->
                     val selected = ingredients[which]
                     MinCookingUnits.setIngredient(selected)
-                    ingredientName.text = selected
-                    val mainActivity = activity as MainActivity
-                    updateAllValues(mainActivity.workingUnits.mainUnit, mainActivity.workingUnits.mainUnit.value)
-                    if (topPanel.visibility == View.VISIBLE) {
-                        topPanel.updateDisplayValue()
-                    }
-                    if (bottomPanel.visibility == View.VISIBLE) {
-                        bottomPanel.updateDisplayValue()
-                    }
+                    onIngredientChanged()
                 }
                 .show()
+        }
+
+        val gestureDetector = GestureDetectorCompat(requireContext(), object : GestureDetector.SimpleOnGestureListener() {
+            private var accumulatedDistanceY = 0f
+            private val threshold = 50f
+
+            override fun onScroll(e1: MotionEvent?, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
+                accumulatedDistanceY += distanceY
+                if (abs(accumulatedDistanceY) > threshold) {
+                    if (accumulatedDistanceY > 0) {
+                        MinCookingUnits.nextIngredient()
+                    } else {
+                        MinCookingUnits.previousIngredient()
+                    }
+                    onIngredientChanged()
+                    accumulatedDistanceY = 0f
+                }
+                return true
+            }
+
+            override fun onDown(e: MotionEvent): Boolean {
+                accumulatedDistanceY = 0f
+                return true
+            }
+        })
+
+        ingredientSelector.setOnTouchListener { _, event ->
+            gestureDetector.onTouchEvent(event)
+            true
+        }
+    }
+
+    private fun onIngredientChanged() {
+        ingredientName.text = MinCookingUnits.currentIngredient
+        val mainActivity = activity as MainActivity
+        
+        // Update main unit value based on conversion if applicable
+        val oppositePanel = if (selectedPanel == topPanel) bottomPanel else topPanel
+        if (selectedPanel.visibility == View.VISIBLE && oppositePanel.visibility == View.VISIBLE) {
+             if (selectedPanel.unit != null && oppositePanel.unit != null) {
+                 convertValueWrapper(selectedPanel.unit!!, selectedPanel.unit!!.value, oppositePanel.unit!!)
+             }
+        }
+
+        updateAllValues(mainActivity.workingUnits.mainUnit, mainActivity.workingUnits.mainUnit.value)
+        
+        if (topPanel.visibility == View.VISIBLE) {
+            topPanel.updateDisplayValue()
+        }
+        if (bottomPanel.visibility == View.VISIBLE) {
+            bottomPanel.updateDisplayValue()
         }
     }
 
@@ -214,6 +260,7 @@ class UnitListFragment : Fragment() {
             topPanel.changeUnit(unit)
             topPanel.updateDisplayValue()
             topPanel.setHighlight(true)
+            selectedPanel = topPanel
             mainActivity.removeKeyboardInputObserver(topPanel)
             attachKeyboardInputToTopPanel()
             mainActivity.onPanelSelected(topPanel)
@@ -230,6 +277,7 @@ class UnitListFragment : Fragment() {
             bottomPanel.changeUnit(unit)
             bottomPanel.updateDisplayValue()
             bottomPanel.setHighlight(true)
+            selectedPanel = bottomPanel
             mainActivity.removeKeyboardInputObserver(bottomPanel)
             attachKeyboardInputToBottomPanel()
             mainActivity.onPanelSelected(bottomPanel)
@@ -315,6 +363,7 @@ class UnitListFragment : Fragment() {
 
             topPanel.setHighlight(true)
             bottomPanel.setHighlight(false)
+            selectedPanel = topPanel
 
             mainActivity.removeKeyboardInputObserver(topPanel)
             attachKeyboardInputToTopPanel()
@@ -333,6 +382,7 @@ class UnitListFragment : Fragment() {
 
             bottomPanel.setHighlight(true)
             topPanel.setHighlight(false)
+            selectedPanel = bottomPanel
 
             mainActivity.removeKeyboardInputObserver(bottomPanel)
             attachKeyboardInputToBottomPanel()
@@ -344,13 +394,6 @@ class UnitListFragment : Fragment() {
         }
         bottomPanel.bookmark.setOnClickListener {
             removeBookmark(bottomPanel, bottomPanel.unit!!)
-        }
-
-        view.viewTreeObserver.addOnGlobalLayoutListener {
-            object : ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                }
-            }
         }
     }
 }
