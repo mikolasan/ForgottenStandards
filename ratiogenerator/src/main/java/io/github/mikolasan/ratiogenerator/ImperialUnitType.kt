@@ -20,4 +20,5 @@ enum class ImperialUnitType {
     WEIGHT,
     NUT_AND_BOLT_SIZE,
     SLAVIC_CALENDAR,
+    CYRILLIC_NUMERALS,
 }

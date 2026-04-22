@@ -5,14 +5,14 @@ import android.text.TextWatcher
 import xyz.neupokoev.forgottenstandards.BasicCalculator
 import xyz.neupokoev.forgottenstandards.MainActivity
 
-open class ImperialTextWatcher(val panel: ImperialUnitPanel, val fragment: ConverterFragment, val activity: MainActivity) :
+open class ImperialTextWatcher(val panel: ImperialUnitPanel, val fragment: ConverterFragment?, val activity: MainActivity) :
     TextWatcher {
     var selfEditing = false
     val input = panel.input
 
     override fun afterTextChanged(s: Editable?) {
         println("[topInput] afterTextChanged ${s.toString()}")
-        if (fragment.selectedPanel.input != input)
+        if (fragment != null && fragment.selectedPanel.input != input)
             return
         if (selfEditing)
             return

@@ -6,6 +6,7 @@ import io.github.mikolasan.ratiogenerator.MinAngleUnits
 import io.github.mikolasan.ratiogenerator.MinAreaUnits
 import io.github.mikolasan.ratiogenerator.MinCookingUnits
 import io.github.mikolasan.ratiogenerator.MinCurrencyUnits
+import io.github.mikolasan.ratiogenerator.MinCyrillicNumeralsUnits
 import io.github.mikolasan.ratiogenerator.MinEnergyUnits
 import io.github.mikolasan.ratiogenerator.MinForceUnits
 import io.github.mikolasan.ratiogenerator.MinFuelUnits
@@ -50,7 +51,9 @@ object ImperialCategory {
         CategoryMenuItem.Item(ImperialUnitCategoryName("Angle")),
         CategoryMenuItem.Item(ImperialUnitCategoryName("Nut and Bolt size")),
         CategoryMenuItem.Header("Calendars"),
-        CategoryMenuItem.Item(ImperialUnitCategoryName("Slavic Calendar"))
+        CategoryMenuItem.Item(ImperialUnitCategoryName("Slavic Calendar")),
+        CategoryMenuItem.Header("Numerals"),
+        CategoryMenuItem.Item(ImperialUnitCategoryName("Cyrillic Numerals"))
     )
 
     fun getItemsWithFrequent(settings: ImperialSettings): List<CategoryMenuItem> {
@@ -91,5 +94,6 @@ object ImperialCategory {
         ImperialUnitType.WEIGHT to MinWeightUnits,
         ImperialUnitType.NUT_AND_BOLT_SIZE to MinNutBoltUnits,
         ImperialUnitType.SLAVIC_CALENDAR to MinSlavicCalendarUnits,
+        ImperialUnitType.CYRILLIC_NUMERALS to MinCyrillicNumeralsUnits,
     )
 }

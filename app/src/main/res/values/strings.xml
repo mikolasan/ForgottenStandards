@@ -58,6 +58,10 @@ In addition to its use in the measurement of length, the centimetre is used: som
     <string name="settings_app_name_version">%1$s v%2$s</string>
     <string name="pin_hint">Tap to pin your most used units to the top.</string>
 
+    <string name="cyrillic_numerals_title">Cyrillic Numerals</string>
+    <string name="cyrillic_numerals_description">The Cyrillic numeral system is a numeral system derived from the Cyrillic script, used by South and East Slavic peoples. It was used in Russia as late as the early 18th century when Peter the Great replaced it with Arabic numerals.\n\nThe system is alphabetic, based on the Greek numerals but using the letters of the Cyrillic alphabet. A titlo (҃) is placed over the numbers to distinguish them from text.</string>
+    <string name="placeholder_three_dashes">---</string>
+
     <string name="range_separator" translatable="false">—</string>
     <string name="action_plus">Plus</string>
     <string name="action_minus">Minus</string>

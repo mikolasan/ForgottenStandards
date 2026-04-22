@@ -35,6 +35,7 @@ import xyz.neupokoev.forgottenstandards.menu.ImperialCategory
 import xyz.neupokoev.forgottenstandards.menu.ImperialUnitCategoryName
 import xyz.neupokoev.forgottenstandards.menu.SwitchFragment
 import xyz.neupokoev.forgottenstandards.settings.SettingsFragment
+import xyz.neupokoev.forgottenstandards.advanced.CyrillicNumeralsFragment
 import java.io.IOException
 import java.util.Locale
 
@@ -45,6 +46,7 @@ class MainActivity : AppCompatActivity() {
 
     private var converterFragment: ConverterFragment? = null
     private var unitListFragment: UnitListFragment? = null
+    private var cyrillicNumeralsFragment: CyrillicNumeralsFragment? = null
     private var switchFragment: SwitchFragment? = null
     private var keyboardView: FragmentContainerView? = null
     private var keyboardFragment: KeyboardFragment? = null
@@ -73,6 +75,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private var isTrackingConversion = false
+
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        val searchItem = menu.findItem(R.id.action_search)
+        val currentDest = navController?.currentDestination?.id
+        searchItem?.isVisible = currentDest == R.id.switchFragment || currentDest == R.id.unitListFragment
+        return super.onPrepareOptionsMenu(menu)
+    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the options menu from XML.
@@ -233,6 +242,7 @@ class MainActivity : AppCompatActivity() {
             when (type) {
                 ImperialUnitType.SLAVIC_CALENDAR -> navigate(R.id.slavicCalendarFragment, bundle)
                 ImperialUnitType.NUT_AND_BOLT_SIZE -> navigate(R.id.nutBoltFragment, bundle)
+                ImperialUnitType.CYRILLIC_NUMERALS -> navigate(R.id.cyrillicNumeralsFragment, bundle)
                 else -> navigate(R.id.unitListFragment, bundle)
             }
         } ?: onCategoryOpened()
@@ -265,6 +275,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun updateFragment(destinationId: Int, title: CharSequence) {
+        invalidateOptionsMenu()
         val setTitleAsCategory = { supportActionBar?.title = workingUnits.selectedCategory?.name }
         val setTitleToDefaultName = { supportActionBar?.title = title }
         when (destinationId) {
@@ -272,39 +283,43 @@ class MainActivity : AppCompatActivity() {
                 setTitleToDefaultName()
                 hideKeyboardCompletely()
                 if (!lastSearchQuery.isNullOrEmpty()) {
-                    searchView?.setQuery(lastSearchQuery, false)
-                    searchView?.isIconified = false
+                    searchView?.post {
+                        searchView?.setQuery(lastSearchQuery, false)
+                        searchView?.isIconified = false
+                    }
                 }
             }
             R.id.unitListFragment -> {
                 setTitleAsCategory()
                 showKeyboardButton()
-                searchView?.setQuery("", false)
-                searchView?.isIconified = true
+                searchView?.post {
+                    searchView?.setQuery("", false)
+                    searchView?.isIconified = true
+                }
             }
             R.id.converterFragment -> {
                 setTitleAsCategory()
                 showKeyboard()
-                searchView?.setQuery("", false)
-                searchView?.isIconified = true
+                searchView?.post {
+                    searchView?.setQuery("", false)
+                    searchView?.isIconified = true
+                }
             }
             R.id.nutBoltFragment -> {
                 setTitleAsCategory()
                 hideKeyboardCompletely()
-                searchView?.setQuery("", false)
-                searchView?.isIconified = true
             }
             R.id.slavicCalendarFragment -> {
                 setTitleAsCategory()
                 hideKeyboardCompletely()
-                searchView?.setQuery("", false)
-                searchView?.isIconified = true
+            }
+            R.id.cyrillicNumeralsFragment -> {
+                setTitleAsCategory()
+                showKeyboard()
             }
             R.id.settingsFragment -> {
                 setTitleToDefaultName()
                 hideKeyboardCompletely()
-                searchView?.setQuery("", false)
-                searchView?.isIconified = true
             }
         }
     }
@@ -417,6 +432,14 @@ class MainActivity : AppCompatActivity() {
                 fragment.observer = unitObserver
             }
 
+            is CyrillicNumeralsFragment -> {
+                cyrillicNumeralsFragment = fragment
+                val callable = { unit: ImperialUnit, value: Double ->
+                    fragment.updateArabicPanel(unit, value)
+                }
+                unitObserver.addObserver(fragment, callable)
+            }
+
             is SearchFragment -> searchFragment = fragment
             is SettingsFragment -> settingsFragment = fragment
         }
@@ -451,6 +474,9 @@ class MainActivity : AppCompatActivity() {
                 }
                 ImperialUnitType.NUT_AND_BOLT_SIZE -> {
                     navController?.navigate(R.id.nutBoltFragment, bundle)
+                }
+                ImperialUnitType.CYRILLIC_NUMERALS -> {
+                    navController?.navigate(R.id.cyrillicNumeralsFragment, bundle)
                 }
                 else -> {
                     navController?.navigate(R.id.unitListFragment, bundle)

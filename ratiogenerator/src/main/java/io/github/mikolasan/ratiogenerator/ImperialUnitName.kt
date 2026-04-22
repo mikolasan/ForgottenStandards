@@ -178,6 +178,14 @@ enum class ImperialUnitName {
     CARAT,
     TOLA,
     RATTI,
-    GRAIN
+    GRAIN,
 
+    // Cyrillic Numerals
+    ARABIC_NUMBER,
+
+    // Slavic Calendar
+    SLAVIC_YEAR,
+
+    // Nut and Bolt
+    NUT_AND_BOLT_SIZE
 }
